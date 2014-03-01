@@ -1,0 +1,111 @@
+#ifndef __FUNCTIONS__
+#define __FUNCTIONS__
+
+#counter __CURR_FUNCTION_CALL__	0
+
+##define PROGRAM_ENTRY			!start
+								call @%0%
+								goto @%1%
+								!exit
+##
+
+##define PROGRAM_EXIT			!start
+								!jump %0%
+								!exit
+##
+
+##define FUNCTION_VOID			!start
+								!jump %0%
+								!namespace %0%__NS__
+								#define __FUNCTION_RETURN_%0%__
+								#define __CURRENT_FUNCTION_TYPE__#counter __COUNTER_CURRENT_ARG__ 0
+								#counter __COUNTER_ARGS_TYPE__ 1
+								#counter __COUNTER_ARGS_NAME__ 2
+								#loop
+									#if %__COUNTER_ARGS_TYPE__% >= %__ARGS_COUNT%
+										#break
+									#endif
+									!data %%__COUNTER_ARGS_TYPE__%% %%__COUNTER_ARGS_NAME__%% 0
+									pop $%%__COUNTER_ARGS_NAME__%% %%__COUNTER_ARGS_TYPE__%% 0
+									#define __FUNCTION_ARG_%1%_%__COUNTER_CURRENT_ARG__%__ %%__COUNTER_ARGS_TYPE__%%
+									#increment __COUNTER_ARGS_TYPE__
+									#increment __COUNTER_ARGS_TYPE__
+									#increment __COUNTER_ARGS_NAME__
+									#increment __COUNTER_ARGS_NAME__
+									#increment __COUNTER_CURRENT_ARG__
+								#endloop
+								#define __FUNCTION_ARGS_%0%__ %__COUNTER_CURRENT_ARG__%
+								#undef __COUNTER_ARGS_TYPE__
+								#undef __COUNTER_ARGS_NAME__
+								#undef __COUNTER_CURRENT_ARG__
+##
+
+##define FUNCTION				!start
+								!jump %1%
+								!namespace %1%__NS__
+								!data int __return_c__ 1
+								!data int __function_c__ 1
+								movi regi:0 $__function_c__
+								#define __FUNCTION_RETURN_%1%__ %0%
+								#define __CURRENT_FUNCTION_TYPE__ %0%
+								#counter __COUNTER_CURRENT_ARG__ 0
+								#counter __COUNTER_ARGS_TYPE__ 2
+								#counter __COUNTER_ARGS_NAME__ 3
+								#loop
+									#if %__COUNTER_ARGS_TYPE__% >= %__ARGS_COUNT%
+										#break
+									#endif
+									!data %%__COUNTER_ARGS_TYPE__%% %%__COUNTER_ARGS_NAME__%% 0
+									pop $%%__COUNTER_ARGS_NAME__%% %%__COUNTER_ARGS_TYPE__%% 0
+									#define __FUNCTION_ARG_%1%_%__COUNTER_CURRENT_ARG__%__ %%__COUNTER_ARGS_TYPE__%%
+									#increment __COUNTER_ARGS_TYPE__
+									#increment __COUNTER_ARGS_TYPE__
+									#increment __COUNTER_ARGS_NAME__
+									#increment __COUNTER_ARGS_NAME__
+									#increment __COUNTER_CURRENT_ARG__
+								#endloop
+								#define __FUNCTION_ARGS_%1%__ %__COUNTER_CURRENT_ARG__%
+								#undef __COUNTER_ARGS_TYPE__
+								#undef __COUNTER_ARGS_NAME__
+								#undef __COUNTER_CURRENT_ARG__
+##
+
+##define ENDFUNCTION			!namespace-end
+								ret
+								!exit
+								#undef __CURRENT_FUNCTION_TYPE__
+##
+
+##define RETURN					movi regi:0 $__return_c__
+								shb %__CURRENT_FUNCTION_TYPE__% 0
+								psh %0% %__CURRENT_FUNCTION_TYPE__% 0
+								ret
+##
+
+##define FUNCTION_CALL			#increment __CURR_FUNCTION_CALL__
+								!data int __call_c_%__CURR_FUNCTION_CALL__%__ 1
+								movi regi:0 $__call_c_%__CURR_FUNCTION_CALL__%__
+								shf %__FUNCTION_RETURN_%1%__% 0
+								!data int __call_s_%__CURR_FUNCTION_CALL__%__ 1
+								save $__call_s_%__CURR_FUNCTION_CALL__%__
+								#counter __COUNTER_ARGS_NAME__ %__ARGS_COUNT%
+								#counter __COUNTER_ARGS_TYPE__ %__FUNCTION_ARGS_%1%__%
+								#decrement __COUNTER_ARGS_NAME__
+								#decrement __COUNTER_ARGS_TYPE__
+								#loop
+									#if %__COUNTER_ARGS_TYPE__% < 0
+										#break
+									#endif
+									psh %%__COUNTER_ARGS_NAME__%% %__FUNCTION_ARG_%1%_%__COUNTER_ARGS_TYPE__%__% 0
+									#decrement __COUNTER_ARGS_TYPE__
+									#decrement __COUNTER_ARGS_NAME__
+								#endloop
+								#undef __COUNTER_ARGS_NAME__
+								#undef __COUNTER_ARGS_TYPE__
+								call @%1%
+								load $__call_s_%__CURR_FUNCTION_CALL__%__
+								movi regi:0 $__call_c_%__CURR_FUNCTION_CALL__%__
+								pop %0% %__FUNCTION_RETURN_%1%__% 0
+##
+
+#endif

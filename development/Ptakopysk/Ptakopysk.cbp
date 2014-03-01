@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Ptakopysk" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug Static">
+				<Option output="bin/Ptakopysk-d" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Debug/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add library="..\requirements\xenon-core-3-sdk\Code\Engine\XenonCore3\libs\libXenonCore3-d.a" />
+					<Add library="..\requirements\JsonCpp\bin\Debug\libJsonCpp.a" />
+					<Add library="..\requirements\Box2D\bin\Debug\libBox2D.a" />
+					<Add library="..\requirements\SFML-2.1\lib\libsfml-audio-s-d.a" />
+					<Add library="..\requirements\SFML-2.1\lib\libsfml-graphics-s-d.a" />
+					<Add library="..\requirements\SFML-2.1\lib\libsfml-window-s-d.a" />
+					<Add library="..\requirements\SFML-2.1\lib\libsfml-system-s-d.a" />
+				</Linker>
+			</Target>
+			<Target title="Release Static">
+				<Option output="bin/Ptakopysk" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Release/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-Wall" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="..\requirements\xenon-core-3-sdk\Code\Engine\XenonCore3\libs\libXenonCore3.a" />
+					<Add library="..\requirements\JsonCpp\bin\Release\libJsonCpp.a" />
+					<Add library="..\requirements\Box2D\bin\Release\libBox2D.a" />
+					<Add library="..\requirements\SFML-2.1\lib\libsfml-audio-s.a" />
+					<Add library="..\requirements\SFML-2.1\lib\libsfml-graphics-s.a" />
+					<Add library="..\requirements\SFML-2.1\lib\libsfml-window-s.a" />
+					<Add library="..\requirements\SFML-2.1\lib\libsfml-system-s.a" />
+				</Linker>
+			</Target>
+			<Target title="Debug Dynamic">
+				<Option output="bin/Ptakopysk-d" imp_lib="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)-d" def_file="$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME)-d.def" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="bin" />
+				<Option object_output="obj/DebugDynamic/" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add library="..\requirements\xenon-core-3-sdk\Code\Engine\XenonCore3\libs\libXenonCore3-d.a" />
+					<Add library="..\requirements\JsonCpp\bin\Debug\libJsonCpp.a" />
+					<Add library="..\requirements\Box2D\bin\Debug\libBox2D.a" />
+					<Add library="..\requirements\SFML-2.1\lib\libsfml-audio-s-d.a" />
+					<Add library="..\requirements\SFML-2.1\lib\libsfml-graphics-s-d.a" />
+					<Add library="..\requirements\SFML-2.1\lib\libsfml-window-s-d.a" />
+					<Add library="..\requirements\SFML-2.1\lib\libsfml-system-s-d.a" />
+				</Linker>
+			</Target>
+			<Target title="Release Dynamic">
+				<Option output="bin/Ptakopysk" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="bin" />
+				<Option object_output="obj/ReleaseDynamic/" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-Wall" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="..\requirements\xenon-core-3-sdk\Code\Engine\XenonCore3\libs\libXenonCore3.a" />
+					<Add library="..\requirements\JsonCpp\bin\Release\libJsonCpp.a" />
+					<Add library="..\requirements\Box2D\bin\Release\libBox2D.a" />
+					<Add library="..\requirements\SFML-2.1\lib\libsfml-audio-s.a" />
+					<Add library="..\requirements\SFML-2.1\lib\libsfml-graphics-s.a" />
+					<Add library="..\requirements\SFML-2.1\lib\libsfml-window-s.a" />
+					<Add library="..\requirements\SFML-2.1\lib\libsfml-system-s.a" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-DSFML_STATIC" />
+			<Add directory="../requirements/xenon-core-3-sdk/Code/Engine/XenonCore3/include" />
+			<Add directory="../requirements/SFML-2.1/include" />
+			<Add directory="../requirements/jsoncpp-src-0.5.0/include" />
+			<Add directory="../requirements/Box2D_v2.2.1" />
+		</Compiler>
+		<Unit filename="include/Ptakopysk/Components/Body.h" />
+		<Unit filename="include/Ptakopysk/Components/Component.h" />
+		<Unit filename="include/Ptakopysk/Components/SpriteRenderer.h" />
+		<Unit filename="include/Ptakopysk/Components/Transform.h" />
+		<Unit filename="include/Ptakopysk/Serialization/EnumSerializer.h" />
+		<Unit filename="include/Ptakopysk/Serialization/Serialized.h" />
+		<Unit filename="include/Ptakopysk/Serialization/Serialized.inl" />
+		<Unit filename="include/Ptakopysk/Serialization/b2BodyTypeSerializer.h" />
+		<Unit filename="include/Ptakopysk/System/Assets.h" />
+		<Unit filename="include/Ptakopysk/System/Events.h" />
+		<Unit filename="include/Ptakopysk/System/GameManager.h" />
+		<Unit filename="include/Ptakopysk/System/GameObject.h" />
+		<Unit filename="source/Components/Body.cpp" />
+		<Unit filename="source/Components/Component.cpp" />
+		<Unit filename="source/Components/SpriteRenderer.cpp" />
+		<Unit filename="source/Components/Transform.cpp" />
+		<Unit filename="source/Serialization/EnumSerializer.cpp" />
+		<Unit filename="source/Serialization/Serialized.cpp" />
+		<Unit filename="source/System/Assets.cpp" />
+		<Unit filename="source/System/Events.cpp" />
+		<Unit filename="source/System/GameManager.cpp" />
+		<Unit filename="source/System/GameObject.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

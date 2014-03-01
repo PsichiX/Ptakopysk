@@ -1,0 +1,52 @@
+!intuicio	// every Intuicio program must start with header.
+
+!registers-i 2
+!stack 128 // we will use call stack with 128 bytes size.
+
+// intialize some static data.
+!data bytes nl 10, 0
+!data bytes txt "Hello World!", 0
+!data int size 13
+!data int count 1
+!data int num0 5
+!data int num1 2
+
+!start	// start program code.
+	
+	call @main
+	goto @exit
+	
+	// ------
+	
+	!jump main
+		!data int pTxt 0
+		!data int pNum0 0
+		!data int pNum1 0
+		
+		movi regi:0 $size
+		movi regi:1 $count
+		new $pTxt byte 0
+		new $pNum0 int 1
+		new $pNum1 int 1
+		
+		movb :$pTxt $txt 0
+		movi :$pNum0 $num0
+		movi :$pNum1 $num1
+		
+		dbgb :$pTxt
+		dbgb $nl
+		dbgi :$pNum0
+		dbgb $nl
+		dbgi :$pNum1
+		dbgb $nl
+		
+		del $pTxt
+		del $pNum0
+		del $pNum1
+	ret
+	
+	// ------
+	
+	!jump exit
+	
+!exit // end program code.

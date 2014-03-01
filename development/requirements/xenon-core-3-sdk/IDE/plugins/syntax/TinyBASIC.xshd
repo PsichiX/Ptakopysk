@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<SyntaxDefinition name="TinyBasic" extensions=".bas">
+
+	<Properties>
+	</Properties>
+	
+	<Digits name="Digits" bold="false" italic="false" color="#880000"/>
+	
+	<RuleSets>
+	
+		<RuleSet ignorecase="true">
+			
+			<Delimiters>;"	, </Delimiters>
+			
+			<Span name="String" bold="false" italic="false" color="Magenta">
+				<Begin>"</Begin>
+				<End>"</End>
+			</Span>
+			
+			<Span name="Remark" bold="true" italic="false" color="#FFFF0000" stopateol="true">
+				<Begin>REM</Begin>
+			</Span>
+			
+			<KeyWords name="Keywords" bold="true" italic="false" color="DarkBlue">
+				<Key word="print" />
+				<Key word="if" />
+				<Key word="goto" />
+				<Key word="input" />
+				<Key word="let" />
+				<Key word="gosub" />
+				<Key word="return" />
+				<Key word="end" />
+			</KeyWords>
+			
+		</RuleSet>
+		
+	</RuleSets>
+
+</SyntaxDefinition>

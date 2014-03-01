@@ -1,0 +1,98 @@
+!intuicio
+!registers-i 8
+!stack 128
+
+#inject "functions.isc"
+#inject "classes.isc"
+
+%PROGRAM_ENTRY( main, exit )%
+
+%FUNCTION( int Add, int a1, int a2 )%
+	movi regi:0 $a1
+	movi regi:1 $a2
+	addi 2 1 0
+	%RETURN( regi:2 )%
+%ENDFUNCTION%
+
+%CLASS( Test )%
+	
+	%FIELDS%
+
+		!field int value 1
+
+	%ENDFIELDS%
+	
+	%METHODS%
+		// constructor
+		%METHOD_VOID( Test )%
+			!data int tmp 23
+			movi :$this->Test.value $tmp
+		%ENDMETHOD%
+		
+		// destructor
+		%METHOD_VOID( ~Test )%
+			!data int tmp 0
+			movi :$this->Test.value $tmp
+		%ENDMETHOD%
+		
+		%METHOD_VOID( SetValue, int val )%
+			movi :$this->Test.value $val
+		%ENDMETHOD%
+		
+		%METHOD( int GetValue )%
+			%RETURN( :$this->Test.value )%
+		%ENDMETHOD%
+	
+	%ENDMETHODS%
+
+%ENDCLASS%
+
+!start
+	
+	!jump main
+	
+		!data bytes nl 10, 0
+		!data bytes init "init: ", 0
+		!data bytes set "set: ", 0
+		!data bytes get "get: ", 0
+		!data bytes raw "raw: ", 0
+		!data bytes add "add: ", 0
+		
+		!data int obj 0
+		%NEW( Test $obj )%
+		
+		dbgb $init
+		dbgi :$obj->Test.value
+		dbgb $nl
+		
+		!data int value 5
+		%CALL_VOID( Test/SetValue, $obj, $value )%
+		
+		dbgb $set
+		dbgi :$obj->Test.value
+		dbgb $nl
+		
+		!data int result 0
+		%CALL( $result, Test/GetValue, $obj )%
+		
+		dbgb $get
+		dbgi $result
+		dbgb $nl
+		
+		dbgb $raw
+		dbgi :$obj->Test.value
+		dbgb $nl
+		
+		%DELETE( Test $obj )%
+		
+		%FUNCTION_CALL( $result, Add, $result, $result )%
+		
+		dbgb $add
+		dbgi $result
+		dbgb $nl
+		
+	ret
+	
+!exit
+
+%PROGRAM_EXIT( exit )%

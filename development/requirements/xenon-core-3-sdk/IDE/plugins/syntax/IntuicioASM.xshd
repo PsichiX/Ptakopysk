@@ -1,0 +1,202 @@
+<?xml version="1.0"?>
+<SyntaxDefinition name="IntuicioASM" extensions=".isc">
+
+	<Properties>
+	</Properties>
+	
+	<Digits name="Digits" bold="false" italic="false" color="#880000"/>
+	
+	<RuleSets>
+	
+		<RuleSet ignorecase="false">
+			
+			<Delimiters>@#$%^&amp;.:;/"'	, </Delimiters>
+			
+			<Span name="PreprocessorBlock" bold="false" italic="false" color="Green">
+				<Begin>##</Begin>
+				<End>##</End>
+			</Span>
+			
+			<Span name="Preprocessor" bold="false" italic="false" color="Green" stopateol="true">
+				<Begin>#</Begin>
+			</Span>
+			
+			<Span name="DefinitionsUsage" bold="true" italic="false" color="Black" stopateol="true">
+				<Begin>%</Begin>
+				<End>%</End>
+			</Span>
+			
+			<Span name="Comment" rule="CommentMarkerSet" bold="false" italic="false" color="Red" stopateol="true">
+				<Begin>//</Begin>
+			</Span>
+			
+			<Span name="String1" rule="PreprocessorSet" bold="false" italic="false" color="Magenta">
+				<Begin>"</Begin>
+				<End>"</End>
+			</Span>
+			
+			<Span name="String2" rule="PreprocessorSet" bold="false" italic="false" color="Magenta">
+				<Begin>'</Begin>
+				<End>'</End>
+			</Span>
+			
+			<KeyWords name="Instructions" bold="true" italic="false" color="DarkBlue">
+				<Key word="intc" />
+				<Key word="dbgi" />
+				<Key word="dbgf" />
+				<Key word="dbgb" />
+				<Key word="movi" />
+				<Key word="movf" />
+				<Key word="movb" />
+				<Key word="mov" />
+				<Key word="addi" />
+				<Key word="addf" />
+				<Key word="subi" />
+				<Key word="subf" />
+				<Key word="muli" />
+				<Key word="mulf" />
+				<Key word="divi" />
+				<Key word="divf" />
+				<Key word="inci" />
+				<Key word="incf" />
+				<Key word="deci" />
+				<Key word="decf" />
+				<Key word="rcpf" />
+				<Key word="mini" />
+				<Key word="minf" />
+				<Key word="maxi" />
+				<Key word="maxf" />
+				<Key word="flrf" />
+				<Key word="cilf" />
+				<Key word="frcf" />
+				<Key word="sqti" />
+				<Key word="sqtf" />
+				<Key word="rsqf" />
+				<Key word="powi" />
+				<Key word="powf" />
+				<Key word="logf" />
+				<Key word="expf" />
+				<Key word="sinf" />
+				<Key word="cosf" />
+				<Key word="tanf" />
+				<Key word="absi" />
+				<Key word="absf" />
+				<Key word="negi" />
+				<Key word="negf" />
+				<Key word="sgni" />
+				<Key word="sgnf" />
+				<Key word="modf" />
+				<Key word="clpi" />
+				<Key word="clpf" />
+				<Key word="mixf" />
+				<Key word="tlti" />
+				<Key word="tltf" />
+				<Key word="tgti" />
+				<Key word="tgtf" />
+				<Key word="teti" />
+				<Key word="tetf" />
+				<Key word="not" />
+				<Key word="and" />
+				<Key word="or" />
+				<Key word="xor" />
+				<Key word="bshl" />
+				<Key word="bshr" />
+				<Key word="goto" />
+				<Key word="jifi" />
+				<Key word="jiff" />
+				<Key word="call" />
+				<Key word="ret" />
+				<Key word="pshi" />
+				<Key word="pshf" />
+				<Key word="pshb" />
+				<Key word="psh" />
+				<Key word="popi" />
+				<Key word="popf" />
+				<Key word="popb" />
+				<Key word="pop" />
+				<Key word="shfi" />
+				<Key word="shff" />
+				<Key word="shfb" />
+				<Key word="shf" />
+				<Key word="shbi" />
+				<Key word="shbf" />
+				<Key word="shbb" />
+				<Key word="shb" />
+				<Key word="save" />
+				<Key word="load" />
+				<Key word="new" />
+				<Key word="del" />
+				<Key word="ptr" />
+				<Key word="off" />
+				<Key word="mobj" />
+				<Key word="mdel" />
+				<Key word="mnew" />
+				<Key word="mref" />
+				<Key word="mder" />
+				<Key word="mpsh" />
+				<Key word="mpop" />
+				<Key word="itf" />
+				<Key word="fti" />
+			</KeyWords>
+			
+			<KeyWords name="SpecialInstructions" bold="true" italic="true" color="DarkBlue">
+				<Key word="!intuicio" />
+				<Key word="!exit" />
+				<Key word="!registers-i" />
+				<Key word="!registers-f" />
+				<Key word="!stack" />
+				<Key word="!data" />
+				<Key word="!start" />
+				<Key word="!jump" />
+				<Key word="!external" />
+				<Key word="!struct-def" />
+				<Key word="!struct-end" />
+				<Key word="!field" />
+				<Key word="!export" />
+				<Key word="!import" />
+				<Key word="!namespace" />
+				<Key word="!namespace-end" />
+				<Key word="!namespace-using" />
+			</KeyWords>
+			
+			<KeyWords name="KeyWords" bold="false" italic="false" color="Blue">
+				<Key word="int" />
+				<Key word="float" />
+				<Key word="bytes" />
+				<Key word="byte" />
+				<Key word="regi" />
+				<Key word="regf" />
+			</KeyWords>
+			
+		</RuleSet>
+		
+		<RuleSet name="PreprocessorSet" ignorecase="false">
+		
+			<Delimiters>@#$%^&amp;.:;/"'	, </Delimiters>
+			
+			<Span name="DefinitionsUsage" bold="true" italic="false" color="DarkGray" stopateol="true">
+				<Begin>%</Begin>
+				<End>%</End>
+			</Span>
+			
+		</RuleSet>
+		
+		<RuleSet name="CommentMarkerSet" ignorecase="false">
+			
+			<Delimiters>@#$%^&amp;.:;/"'	, </Delimiters>
+			
+			<KeyWords name="ErrorWords" bold="true" italic="false" color="#FFFF0000">
+				<Key word="TODO" />
+				<Key word="FIXME" />
+			</KeyWords>
+			
+			<KeyWords name="WarningWords" bold="true" italic="false" color="#EEE0E000">
+				<Key word="HACK" />
+				<Key word="UNDONE" />
+			</KeyWords>
+			
+		</RuleSet>
+	
+	</RuleSets>
+
+</SyntaxDefinition>

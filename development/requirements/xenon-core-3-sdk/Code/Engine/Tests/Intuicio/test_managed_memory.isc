@@ -1,0 +1,204 @@
+!intuicio	// every Intuicio program must start with header.
+
+!stack 128
+!registers-i 8
+
+!data bytes txtCountObj "obj references count: ", 0
+!data bytes txtCountCpy "cpy references count: ", 0
+!data bytes txtValueObj "obj value: ", 0
+!data bytes txtValueCpy "cpy value: ", 0
+!data bytes txtCountA "ManagedClass.a references count: ", 0
+!data bytes txtCountB "ManagedClass.b references count: ", 0
+!data bytes txtValueA "ManagedClass.a value: ", 0
+!data bytes txtValueB "ManagedClass.b value: ", 0
+!data bytes txtConst "* construct class instance", 10, 0
+!data bytes txtDecon "* deconstruct class instance", 10, 0
+!data bytes txtCreat "* create obj and cpy", 10, 0
+!data bytes txtSetup "* setup obj and reference cpy to it", 10, 0
+!data bytes txtDeref "* dereference obj", 10, 0
+!data bytes txtDelet "* delete obj and cpy", 10, 0
+!data bytes nl, 10, 0
+!data int count 1
+!data int value 23
+!data int refCounter 0
+
+!start
+	goto @main
+!exit
+
+!struct-def ManagedClass
+	!field int a 1
+	!field int b 1
+!struct-end
+
+!start
+!namespace ManagedClass
+	
+	// constructor.
+	!jump ManagedClass
+	!namespace ManagedClass
+		// prepare and pop managed objects arguments.
+		!data int this 0
+		!data int argA 0
+		!data int argB 0
+		mpop $this $argA $argB
+		// prepare pure pointer of this object.
+		!data int pThis 0
+		ptr $pThis *$this
+		// initialize objects of this instance.
+		mobj :$pThis->ManagedClass.a
+		mobj :$pThis->ManagedClass.b
+		mref :$pThis->ManagedClass.a $argA
+		mref :$pThis->ManagedClass.b $argB
+		// print counters
+		mcnt $refCounter :$pThis->ManagedClass.a
+		dbgb $txtCountA
+		dbgi $refCounter
+		dbgb $nl
+		mcnt $refCounter :$pThis->ManagedClass.b
+		dbgb $txtCountB
+		dbgi $refCounter
+		dbgb $nl
+	!namespace-end
+	ret
+	
+	// finalizer.
+	!jump ~ManagedClass
+	!namespace ~ManagedClass
+		// prepare and pop managed objects arguments.
+		!data int this 0
+		mpop $this
+		// prepare pure pointer of this object.
+		!data int pThis 0
+		ptr $pThis *$this
+		// delete objects of this instance.
+		mdel :$pThis->ManagedClass.a
+		mdel :$pThis->ManagedClass.b
+	!namespace-end
+	ret
+	
+!namespace-end
+!exit
+
+!start	// start program code.
+	
+	!jump main
+	
+	!namespace Scope
+	
+		// create managed memory objects and bind them to variables.
+		dbgb $txtCreat
+		!data int obj 0
+		!data int cpy 0
+		mobj $obj
+		mobj $cpy
+		
+		mcnt $refCounter $obj
+		dbgb $txtCountObj
+		dbgi $refCounter
+		dbgb $nl
+		mcnt $refCounter $cpy
+		dbgb $txtCountCpy
+		dbgi $refCounter
+		dbgb $nl
+		
+		// setup managed objects values.
+		dbgb $txtSetup
+		movi regi:0 $count
+		// make new managed memory block and bind it to managed memory object.
+		mnew $obj int 0
+		// make reference in first managed memory object to second managed memory object.
+		mref $cpy $obj
+		// set value of managed memory object. '*' allows you to use pointer to data of managed object.
+		movi *$obj $value
+		
+		mcnt $refCounter $obj
+		dbgb $txtCountObj
+		dbgi $refCounter
+		dbgb $nl
+		mcnt $refCounter $cpy
+		dbgb $txtCountCpy
+		dbgi $refCounter
+		dbgb $nl
+		
+		dbgb $txtValueObj
+		dbgi *$obj
+		dbgb $nl
+		dbgb $txtValueCpy
+		dbgi *$cpy
+		dbgb $nl
+		
+		// create instance.
+		dbgb $txtConst
+		!data int instObj 0
+		mobj $instObj
+		mnew $instObj ManagedClass 0
+		mpsh $obj $cpy $instObj
+		call @ManagedClass/ManagedClass
+		!data int pInstObj 0
+		ptr $pInstObj *$instObj
+		
+		mcnt $refCounter $obj
+		dbgb $txtCountObj
+		dbgi $refCounter
+		dbgb $nl
+		mcnt $refCounter $cpy
+		dbgb $txtCountCpy
+		dbgi $refCounter
+		dbgb $nl
+		
+		dbgb $txtValueA
+		dbgi *:$pInstObj->ManagedClass.a
+		dbgb $nl
+		dbgb $txtValueB
+		dbgi *:$pInstObj->ManagedClass.b
+		dbgb $nl
+		
+		// dereference given managed object.
+		dbgb $txtDeref
+		mder $obj
+		
+		mcnt $refCounter $obj
+		dbgb $txtCountObj
+		dbgi $refCounter
+		dbgb $nl
+		mcnt $refCounter $cpy
+		dbgb $txtCountCpy
+		dbgi $refCounter
+		dbgb $nl
+		
+		// always delete managed memory objects.
+		// if you delete managed memory object it will delete it's data only when
+		// there is no reference to it's data.
+		dbgb $txtDelet
+		mdel $obj
+		mdel $cpy
+		
+		mcnt $refCounter :$pInstObj->ManagedClass.a
+		dbgb $txtCountA
+		dbgi $refCounter
+		dbgb $nl
+		mcnt $refCounter :$pInstObj->ManagedClass.b
+		dbgb $txtCountB
+		dbgi $refCounter
+		dbgb $nl
+		
+		// destroy instance.
+		dbgb $txtDecon
+		mpsh $instObj
+		call @ManagedClass/~ManagedClass
+		mdel $instObj
+	
+	!namespace-end
+	
+	// after delete managed objects you better not try to use them,
+	// because this can cause undefined behaviour of application (i.e. crash).
+	//dbgi *$obj
+	//dbgi *$cpy
+	// so proper managed objects flow inside name space scope should be:
+	// - after beginning of scope, use mobj to create managed objects;
+	// - make new managed object data (mnew) or reference to another (mref);
+	// - when managed object is no longer nesessary, unreference it (mder);
+	// - before scope ending, delete managed objects.
+	
+!exit // end program code.

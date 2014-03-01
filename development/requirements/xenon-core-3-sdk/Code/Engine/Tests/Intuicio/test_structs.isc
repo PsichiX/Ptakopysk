@@ -1,0 +1,65 @@
+!intuicio	// every Intuicio program must start with header.
+
+!registers-i 2
+!stack 128 // we will use call stack with 128 bytes size.
+
+// intialize some static data.
+!data bytes nl 10, 0
+!data bytes name "John", 0
+!data bytes txtName "Name: ", 0
+!data bytes txtAge "Age: ", 0
+!data int size 5
+!data int age 20
+
+#inject "person.isc"
+
+!start	// start program code.
+	
+	call @main
+	goto @exit
+	
+	// ------
+	
+	!jump main
+		// we can declare static data after "!start" too.
+		!data int count 1
+		// pointer is just integer value that contains memory address.
+		!data int pPerson 0
+		
+		// copy to integer registers values from size and count variables.
+		movi regi:0 $size
+		movi regi:1 $count
+		
+		// create new instance of "Person" structure and store it"s address in "pPerson" variable.
+		new $pPerson Person 1
+		
+		// move bytes from "name" variable to "pPerson.name" field with size from regi:0.
+		// take a look at this construction: ":$pPerson->Person.name.value".
+		// ":" character tells us that "pPerson" variable stores a pointer so we get this pointer
+		// as destination point, but also "->" characters tells us that memory at destination point
+		// has structure and we want go to specific field, "Person.name.value" tells us that "Person" type
+		// structure forms data at destination point and we want to reach location at "pPerson->name->value".
+		// dummy explanation: use value of "pPerson" as pointer to memory location and go there,
+		// we are now in memory constructed to store fields for "Person" structure and we want to go
+		// to field "name" of type "Name", then as we know that "Name" has field "value" so we finally there -
+		// now we are in location that stores 10 raw bytes. Now we need to copy here another bytes
+		// from variable "name" and we want to copy amount of bytes that is defined by integer register #0.
+		mov :$pPerson->Person.name.value $name byte 0
+		mov :$pPerson->Person.age.value $age int 1
+		
+		dbgb $txtName
+		dbgb :$pPerson->Person.name.value
+		dbgb $nl
+		dbgb $txtAge
+		dbgi :$pPerson->Person.age.value
+		dbgb $nl
+		
+		// always delete dynamically allocated data when you"ll never use it again!
+		del $pPerson
+	ret
+	
+	// ------
+	
+	!jump exit
+	
+!exit // end program code.

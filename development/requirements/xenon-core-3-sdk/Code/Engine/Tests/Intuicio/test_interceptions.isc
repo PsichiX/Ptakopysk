@@ -1,0 +1,35 @@
+!intuicio	// every Intuicio program must start with header.
+
+!stack 128
+
+!data bytes nl, 10, 0
+!data int val 0
+!data bytes natInts "NativeInterceptions", 0
+!data bytes txtInput "a = ", 0
+!data bytes txtOutput "a * a = ", 0
+
+!start	// start program code.
+	
+	// display interceptions context name.
+	dbgb $natInts
+	dbgb $nl
+	
+	// select interceptions context by name.
+	ints $natInts
+	
+	// get initial value using interception with code 2.
+	dbgb $txtInput
+	intc 2
+	popi $val
+	
+	// push value on stack, call interception with code 1, then pop result of intercept operation.
+	pshi $val
+	intc 1
+	popi $val
+	
+	// print intercept operation result.
+	dbgb $txtOutput
+	dbgi $val
+	dbgb $nl
+	
+!exit // end program code.

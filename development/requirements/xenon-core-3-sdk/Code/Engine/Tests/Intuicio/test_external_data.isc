@@ -1,0 +1,38 @@
+!intuicio	// every Intuicio program must start with header.
+
+!registers-i 3
+!stack 128 // we will use call stack with 128 bytes size.
+
+// intialize some static data.
+!data bytes nl 10, 0
+!data bytes add " + ", 0
+!data bytes result " = ", 0
+
+!external extNum0
+!external extNum1
+
+!start	// start program code.
+	
+	call @main
+	goto @exit
+	
+	// ------
+	
+	!jump main
+		movi regi:0 ^extNum0
+		movi regi:1 ^extNum1
+		addi 2, 0, 1
+		
+		dbgi regi:0
+		dbgb $add
+		dbgi regi:1
+		dbgb $result
+		dbgi regi:2
+		dbgb $nl
+	ret
+	
+	// ------
+	
+	!jump exit
+	
+!exit // end program code.

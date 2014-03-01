@@ -1,0 +1,452 @@
+!intuicio	// every Intuicio program must start with header.
+
+!registers-i 4		// we will use 3 integer registers.
+!registers-f 4		// we will use 3 float registers.
+
+// initialize some static data.
+!data bytes nl 10, 0 // new line
+!data bytes add " + ", 0
+!data bytes integers ">> integer ops:", 10, 0
+!data bytes floats ">> float ops:", 10, 0
+!data bytes sub " - ", 0
+!data bytes mul " * ", 0
+!data bytes div " / ", 0
+!data bytes result " = ", 0
+!data bytes comma ", ", 0
+!data bytes rcp "rcp: ", 0
+!data bytes min "min: ", 0
+!data bytes max "max: ", 0
+!data bytes flr "flr: ", 0
+!data bytes cil "cil: ", 0
+!data bytes frc "frc: ", 0
+!data bytes sqt "sqt: ", 0
+!data bytes rsq "rsq: ", 0
+!data bytes pow "pow: ", 0
+!data bytes log "log: ", 0
+!data bytes exp "exp: ", 0
+!data bytes sin "sin: ", 0
+!data bytes cos "cos: ", 0
+!data bytes abs "abs: ", 0
+!data bytes neg "neg: ", 0
+!data bytes sgn "sgn: ", 0
+!data bytes mod "mod: ", 0
+!data bytes clp "clp: ", 0
+!data bytes mix "mix: ", 0
+!data bytes tlt "tlt: ", 0
+!data bytes tgt "tgt: ", 0
+!data bytes tet "tet: ", 0
+!data bytes not "not: ", 0
+!data bytes and "and: ", 0
+!data bytes or "or: ", 0
+!data bytes xor "xor: ", 0
+!data bytes bshl "bshl: ", 0
+!data bytes bshr "bshr: ", 0
+!data int num0 5
+!data int num1 2
+!data int num2 10
+!data float fnum0 2.5
+!data float fnum1 5.1
+!data float fnum2 0.4
+
+!start	// start program code.
+	
+	// integers ops
+	dbgb $integers
+	
+	movi regi:0, $num0
+	movi regi:1, $num1
+	movi regi:3, $num2
+	
+	addi 2, 0, 1
+	dbgi regi:0
+	dbgb $add
+	dbgi regi:1
+	dbgb $result
+	dbgi regi:2
+	dbgb $nl
+	
+	subi 2, 0, 1
+	dbgi regi:0
+	dbgb $sub
+	dbgi regi:1
+	dbgb $result
+	dbgi regi:2
+	dbgb $nl
+	
+	muli 2, 0, 1
+	dbgi regi:0
+	dbgb $mul
+	dbgi regi:1
+	dbgb $result
+	dbgi regi:2
+	dbgb $nl
+	
+	divi 2, 0, 1
+	dbgi regi:0
+	dbgb $div
+	dbgi regi:1
+	dbgb $result
+	dbgi regi:2
+	dbgb $nl
+	
+	mini 2, 0, 1
+	dbgb $min
+	dbgi regi:0
+	dbgb $comma
+	dbgi regi:1
+	dbgb $result
+	dbgi regi:2
+	dbgb $nl
+	
+	maxi 2, 0, 1
+	dbgb $max
+	dbgi regi:0
+	dbgb $comma
+	dbgi regi:1
+	dbgb $result
+	dbgi regi:2
+	dbgb $nl
+	
+	sqti 2, 0
+	dbgb $sqt
+	dbgi regi:0
+	dbgb $result
+	dbgi regi:2
+	dbgb $nl
+	
+	powi 2, 0, 1
+	dbgb $pow
+	dbgi regi:0
+	dbgb $comma
+	dbgi regi:1
+	dbgb $result
+	dbgi regi:2
+	dbgb $nl
+	
+	absi 2, 0
+	dbgb $abs
+	dbgi regi:0
+	dbgb $result
+	dbgi regi:2
+	dbgb $nl
+	
+	negi 2, 0
+	dbgb $neg
+	dbgi regi:0
+	dbgb $result
+	dbgi regi:2
+	dbgb $nl
+	
+	sgni 2, 0
+	dbgb $sgn
+	dbgi regi:0
+	dbgb $result
+	dbgi regi:2
+	dbgb $nl
+	
+	clpi 2, 0, 1, 3
+	dbgb $clp
+	dbgi regi:0
+	dbgb $comma
+	dbgi regi:1
+	dbgb $comma
+	dbgi regi:3
+	dbgb $result
+	dbgi regi:2
+	dbgb $nl
+	
+	tlti 2, 0, 1
+	dbgb $tlt
+	dbgi regi:0
+	dbgb $comma
+	dbgi regi:1
+	dbgb $result
+	dbgi regi:2
+	dbgb $nl
+	
+	tgti 2, 0, 1
+	dbgb $tgt
+	dbgi regi:0
+	dbgb $comma
+	dbgi regi:1
+	dbgb $result
+	dbgi regi:2
+	dbgb $nl
+	
+	teti 2, 0, 1
+	dbgb $tet
+	dbgi regi:0
+	dbgb $comma
+	dbgi regi:1
+	dbgb $result
+	dbgi regi:2
+	dbgb $nl
+	
+	not 2, 0
+	dbgb $not
+	dbgi regi:0
+	dbgb $result
+	dbgi regi:2
+	dbgb $nl
+	
+	and 2, 0, 1
+	dbgb $and
+	dbgi regi:0
+	dbgb $comma
+	dbgi regi:1
+	dbgb $result
+	dbgi regi:2
+	dbgb $nl
+	
+	or 2, 0, 1
+	dbgb $or
+	dbgi regi:0
+	dbgb $comma
+	dbgi regi:1
+	dbgb $result
+	dbgi regi:2
+	dbgb $nl
+	
+	xor 2, 0, 1
+	dbgb $xor
+	dbgi regi:0
+	dbgb $comma
+	dbgi regi:1
+	dbgb $result
+	dbgi regi:2
+	dbgb $nl
+	
+	bshl 2, 0, 1
+	dbgb $bshl
+	dbgi regi:0
+	dbgb $comma
+	dbgi regi:1
+	dbgb $result
+	dbgi regi:2
+	dbgb $nl
+	
+	bshr 2, 0, 1
+	dbgb $bshr
+	dbgi regi:0
+	dbgb $comma
+	dbgi regi:1
+	dbgb $result
+	dbgi regi:2
+	dbgb $nl
+	
+	// float ops
+	dbgb $floats
+	
+	movf regf:0, $fnum0
+	movf regf:1, $fnum1
+	movf regf:3, $fnum2
+	
+	addf 2, 0, 1
+	dbgf regf:0
+	dbgb $add
+	dbgf regf:1
+	dbgb $result
+	dbgf regf:2
+	dbgb $nl
+	
+	subf 2, 0, 1
+	dbgf regf:0
+	dbgb $sub
+	dbgf regf:1
+	dbgb $result
+	dbgf regf:2
+	dbgb $nl
+	
+	mulf 2, 0, 1
+	dbgf regf:0
+	dbgb $mul
+	dbgf regf:1
+	dbgb $result
+	dbgf regf:2
+	dbgb $nl
+	
+	divf 2, 0, 1
+	dbgf regf:0
+	dbgb $div
+	dbgf regf:1
+	dbgb $result
+	dbgf regf:2
+	dbgb $nl
+	
+	rcpf 2, 0
+	dbgb $rcp
+	dbgf regf:0
+	dbgb $result
+	dbgf regf:2
+	dbgb $nl
+	
+	minf 2, 0, 1
+	dbgb $min
+	dbgf regf:0
+	dbgb $comma
+	dbgf regf:1
+	dbgb $result
+	dbgf regf:2
+	dbgb $nl
+	
+	maxf 2, 0, 1
+	dbgb $max
+	dbgf regf:0
+	dbgb $comma
+	dbgf regf:1
+	dbgb $result
+	dbgf regf:2
+	dbgb $nl
+	
+	flrf 2, 0
+	dbgb $flr
+	dbgf regf:0
+	dbgb $result
+	dbgf regf:2
+	dbgb $nl
+	
+	cilf 2, 0
+	dbgb $cil
+	dbgf regf:0
+	dbgb $result
+	dbgf regf:2
+	dbgb $nl
+	
+	frcf 2, 0
+	dbgb $frc
+	dbgf regf:0
+	dbgb $result
+	dbgf regf:2
+	dbgb $nl
+	
+	sqtf 2, 0
+	dbgb $sqt
+	dbgf regf:0
+	dbgb $result
+	dbgf regf:2
+	dbgb $nl
+	
+	rsqf 2, 0
+	dbgb $rsq
+	dbgf regf:0
+	dbgb $result
+	dbgf regf:2
+	dbgb $nl
+	
+	powf 2, 0, 1
+	dbgb $pow
+	dbgf regf:0
+	dbgb $comma
+	dbgf regf:1
+	dbgb $result
+	dbgf regf:2
+	dbgb $nl
+	
+	logf 2, 0
+	dbgb $log
+	dbgf regf:0
+	dbgb $result
+	dbgf regf:2
+	dbgb $nl
+	
+	expf 2, 0
+	dbgb $exp
+	dbgf regf:0
+	dbgb $result
+	dbgf regf:2
+	dbgb $nl
+	
+	sinf 2, 0
+	dbgb $sin
+	dbgf regf:0
+	dbgb $result
+	dbgf regf:2
+	dbgb $nl
+	
+	cosf 2, 0
+	dbgb $cos
+	dbgf regf:0
+	dbgb $result
+	dbgf regf:2
+	dbgb $nl
+	
+	absf 2, 0
+	dbgb $abs
+	dbgf regf:0
+	dbgb $result
+	dbgf regf:2
+	dbgb $nl
+	
+	negf 2, 0
+	dbgb $neg
+	dbgf regf:0
+	dbgb $result
+	dbgf regf:2
+	dbgb $nl
+	
+	sgnf 2, 0
+	dbgb $sgn
+	dbgf regf:0
+	dbgb $result
+	dbgf regf:2
+	dbgb $nl
+	
+	modf 2, 0, 1
+	dbgb $mod
+	dbgf regf:0
+	dbgb $comma
+	dbgf regf:1
+	dbgb $result
+	dbgf regf:2
+	dbgb $nl
+	
+	clpf 2, 0, 1, 3
+	dbgb $clp
+	dbgf regf:0
+	dbgb $comma
+	dbgf regf:1
+	dbgb $comma
+	dbgf regf:3
+	dbgb $result
+	dbgf regf:2
+	dbgb $nl
+	
+	mixf 2, 0, 1, 3
+	dbgb $mix
+	dbgf regf:0
+	dbgb $comma
+	dbgf regf:1
+	dbgb $comma
+	dbgf regf:3
+	dbgb $result
+	dbgf regf:2
+	dbgb $nl
+	
+	tltf 2, 0, 1
+	dbgb $tlt
+	dbgf regf:0
+	dbgb $comma
+	dbgf regf:1
+	dbgb $result
+	dbgf regf:2
+	dbgb $nl
+	
+	tgtf 2, 0, 1
+	dbgb $tgt
+	dbgf regf:0
+	dbgb $comma
+	dbgf regf:1
+	dbgb $result
+	dbgf regf:2
+	dbgb $nl
+	
+	tetf 2, 0, 1
+	dbgb $tet
+	dbgf regf:0
+	dbgb $comma
+	dbgf regf:1
+	dbgb $result
+	dbgf regf:2
+	dbgb $nl
+	
+!exit // end program code.

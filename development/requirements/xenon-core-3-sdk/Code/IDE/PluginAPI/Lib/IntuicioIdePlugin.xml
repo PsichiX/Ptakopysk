@@ -1,0 +1,250 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>IntuicioIdePlugin</name>
+    </assembly>
+    <members>
+        <member name="M:IntuicioIdePlugin.IIdePlugin.onLoad(IntuicioIdePlugin.IIdeBridge)">
+            <summary>
+            Called when plugin is loaded to IDE.
+            </summary>
+            <param name="bridge">Callback instance for communication from plugin to IDE.</param>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdePlugin.onUnload">
+            <summary>
+            Called when plugin is unloaded from IDE.
+            </summary>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdePlugin.onAction(System.String)">
+            <summary>
+            Called when plugin action menu item is performed.
+            </summary>
+            <param name="actionTag">Plugin action tag.</param>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdePlugin.onNewProject(System.String,System.String)">
+            <summary>
+            Called when new project is created.
+            You should only create and fill project instance here. All other action must be in onProjectCreated().
+            </summary>
+            <param name="name">Project name from IDE dialog.</param>
+            <param name="dir">Project location directory from IDE dialog.</param>
+            <returns>New project descriptor instance that contains basic information about created project.</returns>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdePlugin.onProjectCreated(IntuicioIdePlugin.IdeProject)">
+            <summary>
+            Called after new project is created.
+            </summary>
+            <param name="project"></param>
+            <returns></returns>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdePlugin.onLoadProject(IntuicioIdePlugin.IdeProject)">
+            <summary>
+            Called when existing project is loaded.
+            </summary>
+            <param name="project">Loaded project descriptor instance.</param>
+            <returns>True if loaded project is valid and ready to work on.</returns>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdePlugin.onSaveProject(IntuicioIdePlugin.IdeProject)">
+            <summary>
+            Called when existing project is saved.
+            </summary>
+            <param name="project">Project descriptor instance to save.</param>
+            <returns>True if project is valid and ready to save.</returns>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdePlugin.onNewFile(IntuicioIdePlugin.IdeProject.File,System.Boolean)">
+            <summary>
+            Called when new file is created.
+            </summary>
+            <param name="file">File descriptor instance.</param>
+            <param name="alreadyExists">True if file already exists on drive (just added to project instead creating from project).</param>
+            <returns>Document content control.</returns>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdePlugin.onLoadFile(IntuicioIdePlugin.IdeProject.File)">
+            <summary>
+            Called when existing file is loaded.
+            </summary>
+            <param name="file">File descriptor instance.</param>
+            <returns>Document content control.</returns>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdePlugin.onSaveFile(IntuicioIdePlugin.IdeProject.File,System.Windows.Forms.Control)">
+            <summary>
+            Called when existing file is saved.
+            </summary>
+            <param name="file">File descriptor instance.</param>
+            <param name="control">Document content control.</param>
+            <returns>True if file is valid and ready to save.</returns>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdePlugin.onBuildProject(IntuicioIdePlugin.IdeProject)">
+            <summary>
+            Called when user performs IDE to build project.
+            </summary>
+            <param name="project">Project descriptor instance to build.</param>
+            <returns>True if project was build successful, false otherwise.</returns>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdePlugin.onRunProject(IntuicioIdePlugin.IdeProject)">
+            <summary>
+            Called when user performs IDE to run compiled program.
+            </summary>
+            <param name="project">Project descriptor instance to run.</param>
+            <returns>True if project runs successful, false otherwise.</returns>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdePlugin.onCloseUnmanagedDocument(System.Windows.Forms.Control)">
+            <summary>
+            Called when user is closing unmanaged document.
+            </summary>
+            <param name="control">Document content control.</param>
+            <returns>True if document can proceed closing action, false otherwise.</returns>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdePlugin.GetDefaultExt">
+            <summary>
+            Returns default file extension.
+            </summary>
+            <returns>Default file extension.</returns>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdePlugin.GetFileFilters">
+            <summary>
+            Returns accepted files filters.
+            Example:
+            "My project file format (*.mpff)|*.mpff".
+            </summary>
+            <returns>Accepted files filters.</returns>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdePlugin.GetRequiredPlugins">
+            <summary>
+            Returns plugin names required by this plugin.
+            </summary>
+            <returns>Required plugins names.</returns>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdePlugin.GetUsageFlags">
+            <summary>
+            Returns plugin usage flags.
+            </summary>
+            <returns>Plugin Usage flags.</returns>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdePlugin.GetActionMenuList">
+            <summary>
+            Returns list of action menu items.
+            </summary>
+            <returns>Dictionary of key-value data:
+            Key - Menu item name.
+            Value - Menu item tag.</returns>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdeBridge.onProjectChanged(IntuicioIdePlugin.IdeProject)">
+            <summary>
+            Called when project state is changed (added new file to project or removed some file from project).
+            </summary>
+            <param name="project">Project descriptor instance that state is changed.</param>
+            <returns>True if IDE updated project state.</returns>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdeBridge.onOpenDocument(IntuicioIdePlugin.IdeProject.File)">
+            <summary>
+            Called when project requests to open document.
+            </summary>
+            <param name="file">File descriptor instance.</param>
+            <returns>True if IDE opened document.</returns>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdeBridge.onCloseDocument(IntuicioIdePlugin.IdeProject.File)">
+            <summary>
+            Called when project requests to close document.
+            </summary>
+            <param name="file">File descriptor instance.</param>
+            <returns>True if IDE closed document.</returns>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdeBridge.onOpenUnmanagedDocument(IntuicioIdePlugin.IIdePlugin,System.Windows.Forms.Control,System.String)">
+            <summary>
+            Called when plugin ask for opening unmanaged document.
+            </summary>
+            <param name="owner">Owner of given document.</param>
+            <param name="content">Document content control</param>
+            <param name="title">Document tab title.</param>
+            <returns>True if IDE opened unmanaged document.</returns>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdeBridge.onSelectProgram(System.String[])">
+            <summary>
+            Called when user must decide which program to run.
+            </summary>
+            <param name="programs">Array of programs paths.</param>
+            <returns>Selected program.</returns>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdeBridge.onLogInfo(System.String)">
+            <summary>
+            Called when plugin needs to log some information into IDE console output.
+            </summary>
+            <param name="text">Information string.</param>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdeBridge.onLogWarning(System.String)">
+            <summary>
+            Called when plugin needs to log some warning into IDE console output.
+            </summary>
+            <param name="text">Warning string.</param>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdeBridge.onLogError(System.String)">
+            <summary>
+            Called when plugin needs to log some error into IDE console output.
+            </summary>
+            <param name="text">Error string.</param>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdeBridge.GetIdePath">
+            <summary>
+            Returns IDE application startup directory.
+            </summary>
+            <returns>IDE application startup directory.</returns>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdeBridge.GetPluginsPath">
+            <summary>
+            Returns IDE plugins directory.
+            </summary>
+            <returns>IDE plugins directory.</returns>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdeBridge.GetSdksPath">
+            <summary>
+            Returns IDE plugins SDKS directory.
+            </summary>
+            <returns>IDE plugins SDKS directory.</returns>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdeBridge.GetProjectPath">
+            <summary>
+            Returns given project root path.
+            </summary>
+            <returns>Project root path.</returns>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdeBridge.GetIntuicioCompilerPath">
+            <summary>
+            Returns Intuicio Compiler application path.
+            </summary>
+            <returns>Intuicio Compiler application path.</returns>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdeBridge.GetIntuicioRunnerPath">
+            <summary>
+            Returns Intuicio Runner application path.
+            </summary>
+            <returns>Intuicio Runner application path.</returns>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdeBridge.CompileIntuicioAssembly(System.String,System.String,System.String,System.String[])">
+            <summary>
+            Performs Intuicio Compiler to compile program and returns compilation result status.
+            </summary>
+            <param name="input">Input Intuicio Assembly file path. Path should be absolute.</param>
+            <param name="output">Output Intuicio Program file path. Path should be absolute.</param>
+            <param name="immediate">Immediate Intuicio Assembly file path. Path should be absolute.</param>
+            <param name="searchDirs">Array of directories for searching files. Parameter can be null for nothing more than compiled file directory is needed.</param>
+            <returns>True if compilation was successful, false otherwise.</returns>
+        </member>
+        <member name="M:IntuicioIdePlugin.IIdeBridge.RunIntuicioProgram(System.String,System.Boolean)">
+            <summary>
+            Performs Intuicio Runner to run program and returns result status.
+            </summary>
+            <param name="input">Input Intuicio Program file path.</param>
+            <param name="pauseOnExit">True if runner should pause on before exit.</param>
+            <returns>True if program running exit code is 0 (SUCCESS).</returns>
+        </member>
+        <member name="M:IntuicioIdePlugin.Utils.MakeRelativePath(System.String,System.String)">
+            <summary>
+            Extract relative path between two files or directories.
+            </summary>
+            <param name="fromPath">Path to translate from.</param>
+            <param name="toPath">Path to translate to.</param>
+            <returns>Relative path.</returns>
+        </member>
+    </members>
+</doc>

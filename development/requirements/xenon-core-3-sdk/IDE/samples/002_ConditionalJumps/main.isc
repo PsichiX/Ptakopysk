@@ -1,0 +1,39 @@
+!intuicio	// every Intuicio program must start with header.
+
+!registers-i 1
+
+// intialize some static data.
+!data bytes txtOnStart "> Here we start our program", 10, 0
+!data bytes txtOnEnd "> Here we end our program", 10, 0
+!data bytes txtMain ">> Here we are in main function", 10, 0
+!data bytes txtSome ">> Here we are in some function", 10, 0
+!data bytes txtIf ">> Here we are inside if-else", 10, 0
+!data int tester 1
+
+!start	// start program code.
+	
+	// on start we go to main function so we skip some instructions.
+	dbgb $txtOnStart
+	goto @main
+	goto @exit
+	
+	!jump main
+		dbgb $txtMain
+		movi regi:0 $tester
+		// jump to @if if regi:0 > 0 or else jump to @else
+		jifi 0 @if @else
+		!jump if
+			dbgb $txtIf
+		!jump else
+		// jump to @someSpace if regi:0 > 0 or else jump to @exit
+		jifi 0 @someSpace @exit
+	
+	!jump someSpace
+		dbgb $txtSome
+		goto @exit
+	
+	// here we end our program.
+	!jump exit
+	dbgb $txtOnEnd
+	
+!exit // end program code.

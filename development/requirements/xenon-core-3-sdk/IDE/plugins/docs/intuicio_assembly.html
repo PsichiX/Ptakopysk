@@ -1,0 +1,943 @@
+<html>
+<head>
+<link rel="Stylesheet" type="text/css" href="intuicio_assembly.css" />
+</head>
+<body>
+<div class="header">
+<div class="title">Intuicio Assembly Documentation</div>
+<div class="title_sub">version 3.8</div>
+</div>
+
+<div class="container">
+
+<div class="command">
+<div class="opcode">!intuicio</div>
+<div class="params">
+<div class="param"><span class="name">3.8</span><span class="desc">language version used. This parameter is optional and when it's ommited then compiler will use the largest version supported.</span></div>
+</div>
+<div class="description">Every Intuicio script must start with this header.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="sp_op_start">!start</div>
+<div class="description">Begin of code section. Must end with !exit</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="sp_op_exit">!exit</div>
+<div class="description">End of code section. Must follow !start</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="sp_op_registers_i">!registers-i</div>
+<div class="params">
+<div class="param"><span class="name">count</span><span class="desc">Integer registers count.</span></div>
+</div>
+<div class="description">Determines number of integer registers. You can use this command multiple times in program and compiler will use the largest value.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="sp_op_registers_f">!registers-f</div>
+<div class="params">
+<div class="param"><span class="name">count</span><span class="desc">Float registers count.</span></div>
+</div>
+<div class="description">Determines number of float registers. You can use this command multiple times in program and compiler will use the largest value.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="sp_op_stack">!stack</div>
+<div class="params">
+<div class="param"><span class="name">size</span><span class="desc">Size of the call stack in bytes.</span></div>
+</div>
+<div class="description">Determines size of call stack in bytes. You can use this command multiple times in program and compiler will use the largest value.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="sp_op_data">!data</div>
+<div class="params">
+<div class="param"><span class="name">type</span><span class="desc">Type of data value. Possible types: int, float, bytes.</span></div>
+<div class="param"><span class="name">alias</span><span class="desc">Name of data value.</span></div>
+<div class="param"><span class="name">value</span><span class="desc">Initial data value. For int: 10; float: 3.14; bytes: "string", 0.</span></div>
+</div>
+<div class="description">Maps given alias to data section and fills it's memory with initial value.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="sp_op_jump">!jump</div>
+<div class="params">
+<div class="param"><span class="name">alias</span><span class="desc">Name of jump space.</span></div>
+</div>
+<div class="description">Maps given alias to data section and fills it's memory with initial value.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="sp_op_external">!external</div>
+<div class="params">
+<div class="param"><span class="name">alias</span><span class="desc">Name of external pointer.</span></div>
+</div>
+<div class="description">Maps given alias to external pointer bound to Virtual Machine before running program.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="sp_op_struct_def">!struct-def</div>
+<div class="params">
+<div class="param"><span class="name">alias</span><span class="desc">Name of defined structure.</span></div>
+</div>
+<div class="description">Begins structure definition.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="sp_op_struct_end">!struct-end</div>
+<div class="description">End of structure definition.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="sp_op_field">!field</div>
+<div class="params">
+<div class="param"><span class="name">type</span><span class="desc">Type of defined field. You can use base types: int, float, byte; or another already defined structure type.</span></div>
+<div class="param"><span class="name">alias</span><span class="desc">Name of defined field.</span></div>
+<div class="param"><span class="name">count</span><span class="desc">Field size (array of fields if count > 1).</span></div>
+</div>
+<div class="description">Defines field inside current structure definition.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="sp_op_namespace">!namespace</div>
+<div class="params">
+<div class="param"><span class="name">alias</span><span class="desc">Name of pushed name space.</span></div>
+</div>
+<div class="description">Push name space. All aliases defined inside curent name space are like: namespace/aliasname.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="sp_op_namespace_end">!namespace-end</div>
+<div class="description">Pop name space.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="sp_op_namespace_using">!namespace-using</div>
+<div class="params">
+<div class="param"><span class="name">alias</span><span class="desc">Name of used name space.</span></div>
+</div>
+<div class="description">Use name space. All aliases defined inside current name space will be searched also in given name space.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_intc">intc</div>
+<div class="params">
+<div class="param"><span class="name">code</span><span class="desc">Interception code.</span></div>
+</div>
+<div class="description">Call interception context with given code. VM will give control for native function for calling time.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_ints">ints</div>
+<div class="params">
+<div class="param"><span class="name">address</span><span class="desc">Address to memory block that stores null terminated string of interception context to activate.</span></div>
+</div>
+<div class="description">Select interception context to activate. Every interception call will be redirected to that context on native side.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_dbgi">dbgi</div>
+<div class="params">
+<div class="param"><span class="name">address</span><span class="desc">Address to memory block that stores integer value to print for debug purposes.</span></div>
+</div>
+<div class="description">Print integer value into console output.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_dbgf">dbgf</div>
+<div class="params">
+<div class="param"><span class="name">address</span><span class="desc">Address to memory block that stores float value to print for debug purposes.</span></div>
+</div>
+<div class="description">Print float value into console output.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_dbgf">dbgb</div>
+<div class="params">
+<div class="param"><span class="name">address</span><span class="desc">Address to memory block that stores null terminated string to print for debug purposes.</span></div>
+</div>
+<div class="description">Print null terminated string into console output.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_movi">movi</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Address to destination memory block.</span></div>
+<div class="param"><span class="name">src</span><span class="desc">Address to source memory block.</span></div>
+</div>
+<div class="description">Copy integer value from source to destination memory block.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_movf">movf</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Address to destination memory block.</span></div>
+<div class="param"><span class="name">src</span><span class="desc">Address to source memory block.</span></div>
+</div>
+<div class="description">Copy float value from source to destination memory block.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_movb">movb</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Address to destination memory block.</span></div>
+<div class="param"><span class="name">src</span><span class="desc">Address to source memory block.</span></div>
+<div class="param"><span class="name">index</span><span class="desc">Index of integer register that stores number of bytes to copy.</span></div>
+</div>
+<div class="description">Copy bytes from source to destination memory block with size given by integer register value.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_mov">mov</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Address to destination memory block.</span></div>
+<div class="param"><span class="name">src</span><span class="desc">Address to source memory block.</span></div>
+<div class="param"><span class="name">type</span><span class="desc">Type name to obtain size in bytes of it's data.</span></div>
+<div class="param"><span class="name">index</span><span class="desc">Index of integer register that stores count of given type copies to move.</span></div>
+</div>
+<div class="description">Copy bytes from source to destination memory block with size given by type multiplied by integer register value.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_addi">addi</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination integer register.</span></div>
+<div class="param"><span class="name">src1</span><span class="desc">Index of first source integer register.</span></div>
+<div class="param"><span class="name">src2</span><span class="desc">Index of second source integer register.</span></div>
+</div>
+<div class="description">Adds two integer values from integer registers src1 and src2 and stores result into dest integer register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_addf">addf</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination float register.</span></div>
+<div class="param"><span class="name">src1</span><span class="desc">Index of first source float register.</span></div>
+<div class="param"><span class="name">src2</span><span class="desc">Index of second source float register.</span></div>
+</div>
+<div class="description">Adds two float values from float registers src1 and src2 and stores result into dest float register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_subi">subi</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination integer register.</span></div>
+<div class="param"><span class="name">src1</span><span class="desc">Index of first source integer register.</span></div>
+<div class="param"><span class="name">src2</span><span class="desc">Index of second source integer register.</span></div>
+</div>
+<div class="description">Subtracts two integer values from integer registers src1 and src2 and stores result into dest integer register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_subf">subf</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination float register.</span></div>
+<div class="param"><span class="name">src1</span><span class="desc">Index of first source float register.</span></div>
+<div class="param"><span class="name">src2</span><span class="desc">Index of second source float register.</span></div>
+</div>
+<div class="description">Subtracts two float values from float registers src1 and src2 and stores result into dest float register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_muli">muli</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination integer register.</span></div>
+<div class="param"><span class="name">src1</span><span class="desc">Index of first source integer register.</span></div>
+<div class="param"><span class="name">src2</span><span class="desc">Index of second source integer register.</span></div>
+</div>
+<div class="description">Adds two integer values from integer registers src1 and src2 and stores result into dest integer register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_mulf">mulf</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination float register.</span></div>
+<div class="param"><span class="name">src1</span><span class="desc">Index of first source float register.</span></div>
+<div class="param"><span class="name">src2</span><span class="desc">Index of second source float register.</span></div>
+</div>
+<div class="description">Multiplies two float values from float registers src1 and src2 and stores result into dest float register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_divi">divi</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination integer register.</span></div>
+<div class="param"><span class="name">src1</span><span class="desc">Index of first source integer register.</span></div>
+<div class="param"><span class="name">src2</span><span class="desc">Index of second source integer register.</span></div>
+</div>
+<div class="description">Adds two integer values from integer registers src1 and src2 and stores result into dest integer register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_divf">divf</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination float register.</span></div>
+<div class="param"><span class="name">src1</span><span class="desc">Index of first source float register.</span></div>
+<div class="param"><span class="name">src2</span><span class="desc">Index of second source float register.</span></div>
+</div>
+<div class="description">Divides two float values from float registers src1 and src2 and stores result into dest float register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_inci">inci</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination integer register.</span></div>
+<div class="param"><span class="name">src</span><span class="desc">Index of source integer register.</span></div>
+</div>
+<div class="description">Increments integer value from integer register src and stores result into dest integer register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_incf">incf</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination float register.</span></div>
+<div class="param"><span class="name">src</span><span class="desc">Index of source float register.</span></div>
+</div>
+<div class="description">Increments float value from float register src and stores result into dest float register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_deci">deci</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination integer register.</span></div>
+<div class="param"><span class="name">src</span><span class="desc">Index of source integer register.</span></div>
+</div>
+<div class="description">Decrements integer value from integer register src and stores result into dest integer register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_decf">decf</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination float register.</span></div>
+<div class="param"><span class="name">src</span><span class="desc">Index of source float register.</span></div>
+</div>
+<div class="description">Decrements float value from float register src and stores result into dest float register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_rcpf">rcpf</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination float register.</span></div>
+<div class="param"><span class="name">src</span><span class="desc">Index of source float register.</span></div>
+</div>
+<div class="description">Calculates 1.0 / src and stores result into dest float register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_mini">mini</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination integer register.</span></div>
+<div class="param"><span class="name">src1</span><span class="desc">Index of first source integer register.</span></div>
+<div class="param"><span class="name">src2</span><span class="desc">Index of second source integer register.</span></div>
+</div>
+<div class="description">Calculates minimum value from src1 and src2 and stores result into dest integer register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_minf">minf</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination float register.</span></div>
+<div class="param"><span class="name">src1</span><span class="desc">Index of first source float register.</span></div>
+<div class="param"><span class="name">src2</span><span class="desc">Index of second source float register.</span></div>
+</div>
+<div class="description">Calculates minimum value from src1 and src2 and stores result into dest float register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_maxi">maxi</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination integer register.</span></div>
+<div class="param"><span class="name">src1</span><span class="desc">Index of first source integer register.</span></div>
+<div class="param"><span class="name">src2</span><span class="desc">Index of second source integer register.</span></div>
+</div>
+<div class="description">Calculates maximum value from src1 and src2 and stores result into dest integer register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_maxi">maxf</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination float register.</span></div>
+<div class="param"><span class="name">src1</span><span class="desc">Index of first source float register.</span></div>
+<div class="param"><span class="name">src2</span><span class="desc">Index of second source float register.</span></div>
+</div>
+<div class="description">Calculates maximum value from src1 and src2 and stores result into dest float register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_flrf">flrf</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination float register.</span></div>
+<div class="param"><span class="name">src</span><span class="desc">Index of source float register.</span></div>
+</div>
+<div class="description">Calculates floor value of src and stores result into dest float register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_cilf">cilf</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination float register.</span></div>
+<div class="param"><span class="name">src</span><span class="desc">Index of source float register.</span></div>
+</div>
+<div class="description">Calculates ceil value of src and stores result into dest float register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_frcf">frcf</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination float register.</span></div>
+<div class="param"><span class="name">src</span><span class="desc">Index of source float register.</span></div>
+</div>
+<div class="description">Calculates fraction value of src and stores result into dest float register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_sqtf">sqtf</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination float register.</span></div>
+<div class="param"><span class="name">src</span><span class="desc">Index of source float register.</span></div>
+</div>
+<div class="description">Calculates square root float value of src and stores result into dest float register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_sqti">sqti</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination integer register.</span></div>
+<div class="param"><span class="name">src</span><span class="desc">Index of source integer register.</span></div>
+</div>
+<div class="description">Calculates square root integer value of src and stores result into dest integer register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_rsqf">rsqf</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination float register.</span></div>
+<div class="param"><span class="name">src</span><span class="desc">Index of source float register.</span></div>
+</div>
+<div class="description">Calculates 1.0 / square root value of src and stores result into dest float register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_powf">powf</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination float register.</span></div>
+<div class="param"><span class="name">src1</span><span class="desc">Index of first source float register.</span></div>
+<div class="param"><span class="name">src2</span><span class="desc">Index of second source float register.</span></div>
+</div>
+<div class="description">Calculates src1 ^ src2 float value and stores result into dest float register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_powi">powi</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination integer register.</span></div>
+<div class="param"><span class="name">src1</span><span class="desc">Index of first source integer register.</span></div>
+<div class="param"><span class="name">src2</span><span class="desc">Index of second source integer register.</span></div>
+</div>
+<div class="description">Calculates src1 ^ src2 integer value and stores result into dest integer register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_logf">logf</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination float register.</span></div>
+<div class="param"><span class="name">src</span><span class="desc">Index of source float register.</span></div>
+</div>
+<div class="description">Calculates natural logarithm value of src and stores result into dest float register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_expf">expf</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination float register.</span></div>
+<div class="param"><span class="name">src</span><span class="desc">Index of source float register.</span></div>
+</div>
+<div class="description">Calculates exponential value of src and stores result into dest float register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_sinf">sinf</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination float register.</span></div>
+<div class="param"><span class="name">src</span><span class="desc">Index of source float register.</span></div>
+</div>
+<div class="description">Calculates sinus value in radians of src and stores result into dest float register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_cosf">cosf</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination float register.</span></div>
+<div class="param"><span class="name">src</span><span class="desc">Index of source float register.</span></div>
+</div>
+<div class="description">Calculates cosinus value in radians of src and stores result into dest float register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_tanf">tanf</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination float register.</span></div>
+<div class="param"><span class="name">src</span><span class="desc">Index of source float register.</span></div>
+</div>
+<div class="description">Calculates tangent value in radians of src and stores result into dest float register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_absi">absi</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination integer register.</span></div>
+<div class="param"><span class="name">src</span><span class="desc">Index of source integer register.</span></div>
+</div>
+<div class="description">Calculates absolute integer value of src and stores result into dest integer register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_absf">absf</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination float register.</span></div>
+<div class="param"><span class="name">src</span><span class="desc">Index of source float register.</span></div>
+</div>
+<div class="description">Calculates absolute float value of src and stores result into dest float register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_negi">negi</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination integer register.</span></div>
+<div class="param"><span class="name">src</span><span class="desc">Index of source integer register.</span></div>
+</div>
+<div class="description">Calculates negative integer value of src and stores result into dest integer register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_negf">negf</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination float register.</span></div>
+<div class="param"><span class="name">src</span><span class="desc">Index of source float register.</span></div>
+</div>
+<div class="description">Calculates negative float value of src and stores result into dest float register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_sgni">sgni</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination integer register.</span></div>
+<div class="param"><span class="name">src</span><span class="desc">Index of source integer register.</span></div>
+</div>
+<div class="description">Calculates sign integer value (1 or -1) of src and stores result into dest integer register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_sgnf">sgnf</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination float register.</span></div>
+<div class="param"><span class="name">src</span><span class="desc">Index of source float register.</span></div>
+</div>
+<div class="description">Calculates sign float value (1.0 or -1.0) of src and stores result into dest float register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_modf">modf</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination float register.</span></div>
+<div class="param"><span class="name">src1</span><span class="desc">Index of first source float register.</span></div>
+<div class="param"><span class="name">src2</span><span class="desc">Index of second source float register.</span></div>
+</div>
+<div class="description">Calculates value of src1 modulated to src2 and stores result into dest float register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_clpi">clpi</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination integer register.</span></div>
+<div class="param"><span class="name">src1</span><span class="desc">Index of first source integer register.</span></div>
+<div class="param"><span class="name">src2</span><span class="desc">Index of second source integer register.</span></div>
+<div class="param"><span class="name">src3</span><span class="desc">Index of third source integer register.</span></div>
+</div>
+<div class="description">Calculates clamped integer src1 value to range from src2 to src3 and stores result into dest integer register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_clpf">clpf</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination float register.</span></div>
+<div class="param"><span class="name">src1</span><span class="desc">Index of first source float register.</span></div>
+<div class="param"><span class="name">src2</span><span class="desc">Index of second source float register.</span></div>
+<div class="param"><span class="name">src3</span><span class="desc">Index of third source float register.</span></div>
+</div>
+<div class="description">Calculates clamped float src1 value to range from src2 to src3 and stores result into dest float register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_mixf">mixf</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination float register.</span></div>
+<div class="param"><span class="name">src1</span><span class="desc">Index of first source float register.</span></div>
+<div class="param"><span class="name">src2</span><span class="desc">Index of second source float register.</span></div>
+<div class="param"><span class="name">src3</span><span class="desc">Index of third source float register.</span></div>
+</div>
+<div class="description">Interpolates float value between src2 and src3 using normalized src1 and stores result into dest float register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_tlti">tlti</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination integer register.</span></div>
+<div class="param"><span class="name">src1</span><span class="desc">Index of first source integer register.</span></div>
+<div class="param"><span class="name">src2</span><span class="desc">Index of second source integer register.</span></div>
+</div>
+<div class="description">Tests if src1 is less than src2 and stores result (1 if true or 0 if false) into dest integer register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_tltf">tltf</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination float register.</span></div>
+<div class="param"><span class="name">src1</span><span class="desc">Index of first source float register.</span></div>
+<div class="param"><span class="name">src2</span><span class="desc">Index of second source float register.</span></div>
+</div>
+<div class="description">Tests if src1 is less than src2 and stores result (1.0 if true or 0.0 if false) into dest float register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_tgti">tgti</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination integer register.</span></div>
+<div class="param"><span class="name">src1</span><span class="desc">Index of first source integer register.</span></div>
+<div class="param"><span class="name">src2</span><span class="desc">Index of second source integer register.</span></div>
+</div>
+<div class="description">Tests if src1 is greater than src2 and stores result (1 if true or 0 if false) into dest integer register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_tgtf">tgtf</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination float register.</span></div>
+<div class="param"><span class="name">src1</span><span class="desc">Index of first source float register.</span></div>
+<div class="param"><span class="name">src2</span><span class="desc">Index of second source float register.</span></div>
+</div>
+<div class="description">Tests if src1 is greater than src2 and stores result (1.0 if true or 0.0 if false) into dest float register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_teti">teti</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination integer register.</span></div>
+<div class="param"><span class="name">src1</span><span class="desc">Index of first source integer register.</span></div>
+<div class="param"><span class="name">src2</span><span class="desc">Index of second source integer register.</span></div>
+</div>
+<div class="description">Tests if src1 is equal to src2 and stores result (1 if true or 0 if false) into dest integer register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_tetf">tetf</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination float register.</span></div>
+<div class="param"><span class="name">src1</span><span class="desc">Index of first source float register.</span></div>
+<div class="param"><span class="name">src2</span><span class="desc">Index of second source float register.</span></div>
+</div>
+<div class="description">Tests if src1 is equal to src2 and stores result (1.0 if true or 0.0 if false) into dest float register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_not">not</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination integer register.</span></div>
+<div class="param"><span class="name">src</span><span class="desc">Index of source integer register.</span></div>
+</div>
+<div class="description">Performs binary negation on src integer value and stores result into dest integer register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_and">and</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination integer register.</span></div>
+<div class="param"><span class="name">src1</span><span class="desc">Index of first source integer register.</span></div>
+<div class="param"><span class="name">src2</span><span class="desc">Index of second source integer register.</span></div>
+</div>
+<div class="description">Performs binary AND operation on src1 and src2 integer values and stores result into dest integer register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_or">or</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination integer register.</span></div>
+<div class="param"><span class="name">src1</span><span class="desc">Index of first source integer register.</span></div>
+<div class="param"><span class="name">src2</span><span class="desc">Index of second source integer register.</span></div>
+</div>
+<div class="description">Performs binary OR operation on src1 and src2 integer values and stores result into dest integer register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_xor">xor</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination integer register.</span></div>
+<div class="param"><span class="name">src1</span><span class="desc">Index of first source integer register.</span></div>
+<div class="param"><span class="name">src2</span><span class="desc">Index of second source integer register.</span></div>
+</div>
+<div class="description">Performs binary XOR operation on src1 and src2 integer values and stores result into dest integer register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_bshl">bshl</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination integer register.</span></div>
+<div class="param"><span class="name">src1</span><span class="desc">Index of first source integer register.</span></div>
+<div class="param"><span class="name">src2</span><span class="desc">Index of second source integer register.</span></div>
+</div>
+<div class="description">Performs binary bits shift to left operation on src1 shifted by src2 integer value and stores result into dest integer register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_bshr">bshr</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Index of destination integer register.</span></div>
+<div class="param"><span class="name">src1</span><span class="desc">Index of first source integer register.</span></div>
+<div class="param"><span class="name">src2</span><span class="desc">Index of second source integer register.</span></div>
+</div>
+<div class="description">Performs binary bits shift to right operation on src1 shifted by src2 integer value and stores result into dest integer register.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_goto">goto</div>
+<div class="params">
+<div class="param"><span class="name">address</span><span class="desc">Address to jump space.</span></div>
+</div>
+<div class="description">Jumps to jump space defined by given address alias.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_jifi">jifi</div>
+<div class="params">
+<div class="param"><span class="name">index</span><span class="desc">Index of integer register with condition value.</span></div>
+<div class="param"><span class="name">addressTrue</span><span class="desc">Address to jump space if value is larger than 0.</span></div>
+<div class="param"><span class="name">addressFalse</span><span class="desc">Address to jump space if value is less or equal to 0.</span></div>
+</div>
+<div class="description">Check if integer register value at given index is larger than 0 then jump to addressTrue jump space, otherwise jump to addressFalse jump space.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_jifi">jiff</div>
+<div class="params">
+<div class="param"><span class="name">index</span><span class="desc">Index of float register with condition value.</span></div>
+<div class="param"><span class="name">addressTrue</span><span class="desc">Address to jump space if value is larger than 0.0.</span></div>
+<div class="param"><span class="name">addressFalse</span><span class="desc">Address to jump space if value is less or equal to 0.0.</span></div>
+</div>
+<div class="description">Check if float register value at given index is larger than 0.0 then jump to addressTrue jump space, otherwise jump to addressFalse jump space.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_call">call</div>
+<div class="params">
+<div class="param"><span class="name">address</span><span class="desc">Address to jump space.</span></div>
+</div>
+<div class="description">Jumps to jump space defined by given address alias and then return back here when ret command is performed.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_ret">ret</div>
+<div class="description">Jumps back to place where last call command was performed.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_pshi">pshi</div>
+<div class="params">
+<div class="param"><span class="name">address</span><span class="desc">Address to memory block that stores integer value.</span></div>
+</div>
+<div class="description">Push integer value on call stack from given address.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_pshf">pshf</div>
+<div class="params">
+<div class="param"><span class="name">address</span><span class="desc">Address to memory block that stores float value.</span></div>
+</div>
+<div class="description">Push float value on call stack from given address.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_pshb">pshb</div>
+<div class="params">
+<div class="param"><span class="name">address</span><span class="desc">Address to memory block that stores bytes.</span></div>
+<div class="param"><span class="name">index</span><span class="desc">Index of integer register that stores size in bytes value.</span></div>
+</div>
+<div class="description">Push bytes on call stack from given address using size value from integer register at given index.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_psh">psh</div>
+<div class="params">
+<div class="param"><span class="name">address</span><span class="desc">Address to memory block that stores bytes.</span></div>
+<div class="param"><span class="name">type</span><span class="desc">Type name to obtain it's contents size.</span></div>
+<div class="param"><span class="name">index</span><span class="desc">Index of integer register that stores count value.</span></div>
+</div>
+<div class="description">Push bytes on call stack from given address using size of given type multiplied by count value from integer register at given index.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_popi">popi</div>
+<div class="params">
+<div class="param"><span class="name">address</span><span class="desc">Address to destination memory block.</span></div>
+</div>
+<div class="description">Pop integer value from call stack to given address.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_popf">popf</div>
+<div class="params">
+<div class="param"><span class="name">address</span><span class="desc">Address to destination memory block.</span></div>
+</div>
+<div class="description">Pop float value from call stack to given address.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_popb">popb</div>
+<div class="params">
+<div class="param"><span class="name">address</span><span class="desc">Address to destination memory block.</span></div>
+<div class="param"><span class="name">index</span><span class="desc">Index of integer register that stores size in bytes value.</span></div>
+</div>
+<div class="description">Pop bytes from call stack to given address using size value from integer register at given index.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_pop">pop</div>
+<div class="params">
+<div class="param"><span class="name">address</span><span class="desc">Address to destination memory block.</span></div>
+<div class="param"><span class="name">type</span><span class="desc">Type name to obtain it's contents size.</span></div>
+<div class="param"><span class="name">index</span><span class="desc">Index of integer register that stores count value.</span></div>
+</div>
+<div class="description">Pop bytes from call stack value to given address using size of given type multiplied by count value from integer register at given index.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_shfi">shfi</div>
+<div class="description">Shift position forward in call stack by bytes size of integer.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_shff">shff</div>
+<div class="description">Shift position forward in call stack by bytes size of float.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_shfb">shfb</div>
+<div class="params">
+<div class="param"><span class="name">index</span><span class="desc">Index of integer register that stores size value in bytes.</span></div>
+</div>
+<div class="description">Shift position forward in call stack by bytes size defined by integer register value at given index.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_shf">shf</div>
+<div class="params">
+<div class="param"><span class="name">type</span><span class="desc">Type name to obtain it's contents size.</span></div>
+<div class="param"><span class="name">index</span><span class="desc">Index of integer register that stores count value.</span></div>
+</div>
+<div class="description">Shift position forward in call stack by bytes size of given type multiplied by count value from integer register at given index.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_shbi">shbi</div>
+<div class="description">Shift position backward in call stack by bytes size of integer.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_shbf">shbf</div>
+<div class="description">Shift position backward in call stack by bytes size of float.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_shbb">shbb</div>
+<div class="params">
+<div class="param"><span class="name">index</span><span class="desc">Index of integer register that stores size value in bytes.</span></div>
+</div>
+<div class="description">Shift position backward in call stack by bytes size defined by integer register value at given index.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_shb">shb</div>
+<div class="params">
+<div class="param"><span class="name">type</span><span class="desc">Type name to obtain it's contents size.</span></div>
+<div class="param"><span class="name">index</span><span class="desc">Index of integer register that stores count value.</span></div>
+</div>
+<div class="description">Shift position backward in call stack by bytes size of given type multiplied by count value from integer register at given index.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_save">save</div>
+<div class="params">
+<div class="param"><span class="name">address</span><span class="desc">Address to destination memory block that contains integer field.</span></div>
+</div>
+<div class="description">Save current call stack position to integer field at given memory address.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_load">load</div>
+<div class="params">
+<div class="param"><span class="name">address</span><span class="desc">Address to source memory block that contains integer field.</span></div>
+</div>
+<div class="description">Load current call stack position from integer field at given memory address.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_new">new</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Address to destination integer memory block.</span></div>
+<div class="param"><span class="name">type</span><span class="desc">Type name to obtain it's contents size.</span></div>
+<div class="param"><span class="name">index</span><span class="desc">Index of integer register that stores count value.</span></div>
+</div>
+<div class="description">Allocate new memory block for new instance with size of given type multiplied by count value from integer register at given index and store it's address in dest integer memory block.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_del">del</div>
+<div class="params">
+<div class="param"><span class="name">pointer</span><span class="desc">Pointer to memory block that contains integer field with address to previously allocated memory block.</span></div>
+</div>
+<div class="description">Deallocate previously allocated memory block at address stored in pointer integer memory block.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_ptr">ptr</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Address to destination integer memory block.</span></div>
+<div class="param"><span class="name">src</span><span class="desc">Address to source memory block.</span></div>
+</div>
+<div class="description">Get pointer to src address and store it into dest integer memory block.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_off">off</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Address to destination integer memory block.</span></div>
+<div class="param"><span class="name">type</span><span class="desc">Type name to obtain it's contents size.</span></div>
+<div class="param"><span class="name">index</span><span class="desc">Index of integer register that stores count value.</span></div>
+</div>
+<div class="description">Calculates offset using bytes size of given type multiplied by count value from integer register at given index and store result in dest integer memory block.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_itf">itf</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Address to destination float memory block.</span></div>
+<div class="param"><span class="name">src</span><span class="desc">Address to source integer memory block.</span></div>
+</div>
+<div class="description">Converts integer value from src memory block to float value and store result in dest memory block.</div>
+</div>
+
+<div class="command">
+<div class="opcode" id="op_fti">fti</div>
+<div class="params">
+<div class="param"><span class="name">dest</span><span class="desc">Address to destination integer memory block.</span></div>
+<div class="param"><span class="name">src</span><span class="desc">Address to source float memory block.</span></div>
+</div>
+<div class="description">Converts float value from src memory block to integer value and store result in dest memory block.</div>
+</div>
+
+</div>
+
+</body>
+<html>

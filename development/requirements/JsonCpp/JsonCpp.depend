@@ -1,0 +1,77 @@
+# depslib dependency file v1.0
+1268379095 source:d:\sdks\jsoncpp-src-0.5.0\src\lib_json\json_reader.cpp
+	<json/reader.h>
+	<json/value.h>
+	<utility>
+	<cstdio>
+	<cassert>
+	<cstring>
+	<iostream>
+	<stdexcept>
+
+1268379095 d:\sdks\jsoncpp-src-0.5.0\include\json\reader.h
+	"features.h"
+	"value.h"
+	<deque>
+	<stack>
+	<string>
+	<iostream>
+
+1268379095 d:\sdks\jsoncpp-src-0.5.0\include\json\features.h
+	"forwards.h"
+
+1268379095 d:\sdks\jsoncpp-src-0.5.0\include\json\forwards.h
+	"config.h"
+
+1268379095 d:\sdks\jsoncpp-src-0.5.0\include\json\config.h
+	<cpptl/config.h>
+
+1268379095 d:\sdks\jsoncpp-src-0.5.0\include\json\value.h
+	"forwards.h"
+	<string>
+	<vector>
+	<map>
+	<cpptl/smallmap.h>
+	<cpptl/forwards.h>
+
+1268379095 source:d:\sdks\jsoncpp-src-0.5.0\src\lib_json\json_value.cpp
+	<iostream>
+	<json/value.h>
+	<json/writer.h>
+	<utility>
+	<stdexcept>
+	<cstring>
+	<cassert>
+	<cpptl/conststring.h>
+	<cstddef>
+	"json_batchallocator.h"
+	"json_internalarray.inl"
+	"json_internalmap.inl"
+	"json_valueiterator.inl"
+
+1268379095 d:\sdks\jsoncpp-src-0.5.0\include\json\writer.h
+	"value.h"
+	<vector>
+	<string>
+	<iostream>
+
+1268379095 d:\sdks\jsoncpp-src-0.5.0\src\lib_json\json_batchallocator.h
+	<stdlib.h>
+	<assert.h>
+
+1268379095 d:\sdks\jsoncpp-src-0.5.0\src\lib_json\json_internalarray.inl
+
+1268379095 d:\sdks\jsoncpp-src-0.5.0\src\lib_json\json_internalmap.inl
+
+1268379095 d:\sdks\jsoncpp-src-0.5.0\src\lib_json\json_valueiterator.inl
+
+1268379095 source:d:\sdks\jsoncpp-src-0.5.0\src\lib_json\json_writer.cpp
+	<json/writer.h>
+	<utility>
+	<assert.h>
+	<stdio.h>
+	<string.h>
+	<iostream>
+	<sstream>
+	<iomanip>
+

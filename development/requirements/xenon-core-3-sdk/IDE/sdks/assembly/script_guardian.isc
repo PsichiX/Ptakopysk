@@ -1,0 +1,17 @@
+#ifndef __SCRIPT_GUARDIAN__
+#define __SCRIPT_GUARDIAN__
+
+#counter __EOF_COUNTER__ 	0
+
+##define SCRIPT_BEGIN		#increment __EOF_COUNTER__
+							!start
+							goto @eof%__EOF_COUNTER__%
+							!exit
+##
+
+##define SCRIPT_END			!start
+							!jump eof%__EOF_COUNTER__%
+							!exit
+##
+
+#endif

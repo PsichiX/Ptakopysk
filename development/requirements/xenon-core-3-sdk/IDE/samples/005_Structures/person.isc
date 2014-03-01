@@ -1,0 +1,19 @@
+#ifndef __PERSON__
+#define __PERSON__
+
+// define structure "Name".
+!struct-def Name
+	// define field "value" of type "byte" with 10 items size.
+	!field byte value 10
+!struct-end
+
+!struct-def Age
+	!field int value 1
+!struct-end
+
+!struct-def Person
+	!field Name name 1
+	!field Age age 1
+!struct-end
+
+#endif

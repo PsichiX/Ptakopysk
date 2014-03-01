@@ -1,0 +1,80 @@
+body{
+	color: white;
+	text-align: center;
+	background-image: url('bg.png');
+	font-family: Verdana;
+	margin: 0;
+}
+
+a:link{
+	text-decoration: none;
+	color: white;
+}
+
+a:visited{
+	text-decoration: none;
+	color: white;
+}
+
+a:active{
+	text-decoration: none;
+	color: white;
+}
+
+a:hover{
+	text-decoration: underline;
+	color: white;
+}
+
+.title{
+	font-weight: bold;
+	font-size: 20px;
+	margin-top: 24px;
+}
+
+.title_sub{
+	font-size: 18px;
+	font-style: italic;
+}
+
+.container{
+	width: 800px;
+	margin: 32px auto;
+}
+
+.command{
+	border: 1px dashed gray;
+	text-align: left;
+	padding: 0px 0px 12px 0px;
+	margin-bottom: 8px;
+}
+
+.opcode{
+	font-family: 'Courier New';
+	font-weight: bold;
+	background-color: black;
+	padding: 8px;
+	text-align: center;
+	border: 1px dashed gray;
+}
+
+.param{
+	font-weight: bold;
+	font-style: italic;
+	color: #D0D0D0;
+	margin-left: 24px;
+	margin-top: 8px;
+}
+
+.name{
+	font-weight: bold;
+	color: #FFFFFF;
+	margin-right: 32px;
+}
+
+.desc{
+}
+
+.description{
+	padding: 8px 8px;
+}

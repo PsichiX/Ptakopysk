@@ -1,0 +1,77 @@
+!intuicio	// every Intuicio program must start with header.
+
+!registers-i 3
+!stack 128 // we will use call stack with 128 bytes size.
+
+#inject "assembly/functions.isc"
+
+%PROGRAM_ENTRY( main, exit )%
+
+!data bytes nl, 10, 0
+!data bytes txtAdd " + ", 0
+!data bytes txtEqual " = ", 0
+!data bytes txtResult "result", 0
+
+#counter number 0
+!data int num%number% %number%
+!data bytes txtNum%number% "num%number%", 0
+#increment number
+!data int num%number% %number%
+!data bytes txtNum%number% "num%number%", 0
+#increment number
+!data int num%number% %number%
+!data bytes txtNum%number% "num%number%", 0
+
+%FUNCTION( int add, int a1, int a2 )%
+
+	movi regi:0 $a1
+	movi regi:1 $a2
+	addi 2 1 0
+	%RETURN( regi:2 )%
+
+%ENDFUNCTION%
+
+%FUNCTION_VOID( main )%
+
+	#counter number 0
+	dbgb $txtNum%number%
+	dbgb $txtEqual
+	dbgi $num%number%
+	dbgb $nl
+	
+	#increment number
+	dbgb $txtNum%number%
+	dbgb $txtEqual
+	dbgi $num%number%
+	dbgb $nl
+	
+	#increment number
+	dbgb $txtNum%number%
+	dbgb $txtEqual
+	dbgi $num%number%
+	dbgb $nl
+	
+	!data int result 0
+	dbgb $txtResult
+	dbgb $txtEqual
+	dbgb $txtNum1
+	dbgb $txtAdd
+	dbgb $txtNum2
+	dbgb $txtEqual
+	%FUNCTION_CALL( $result, add, $num1, $num2 )%
+	dbgi $result
+	dbgb $nl
+	
+	dbgb $txtResult
+	dbgb $txtEqual
+	dbgb $txtResult
+	dbgb $txtAdd
+	dbgb $txtResult
+	dbgb $txtEqual
+	%FUNCTION_CALL( $result, add, $result, $result )%
+	dbgi $result
+	dbgb $nl
+	
+%ENDFUNCTION%
+	
+%PROGRAM_EXIT( exit )%

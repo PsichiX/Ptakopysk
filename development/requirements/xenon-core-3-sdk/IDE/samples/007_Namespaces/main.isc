@@ -1,0 +1,31 @@
+!intuicio	// every Intuicio program must start with header.
+
+!data bytes nl, 10, 0
+
+!namespace ns0
+!data int num 0
+!namespace-end
+
+!namespace ns1
+!data int num 1
+!namespace-end
+
+!namespace ns2
+!data int num 2
+!namespace-end
+
+!start	// start program code.
+	
+	!namespace ns0
+	dbgi $num
+	dbgb $nl
+	!namespace-end
+	
+	dbgi $ns1/num
+	dbgb $nl
+	
+	!namespace-using ns2
+	dbgi $num
+	dbgb $nl
+	
+!exit // end program code.
