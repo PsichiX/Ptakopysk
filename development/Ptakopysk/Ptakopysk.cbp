@@ -108,9 +108,12 @@
 		<Unit filename="include/Ptakopysk/Components/SpriteRenderer.h" />
 		<Unit filename="include/Ptakopysk/Components/TextRenderer.h" />
 		<Unit filename="include/Ptakopysk/Components/Transform.h" />
+		<Unit filename="include/Ptakopysk/Serialization/BitFieldSerializer.h" />
+		<Unit filename="include/Ptakopysk/Serialization/BlendModeSerializer.h" />
 		<Unit filename="include/Ptakopysk/Serialization/EnumSerializer.h" />
 		<Unit filename="include/Ptakopysk/Serialization/Serialized.h" />
 		<Unit filename="include/Ptakopysk/Serialization/Serialized.inl" />
+		<Unit filename="include/Ptakopysk/Serialization/StyleSerializer.h" />
 		<Unit filename="include/Ptakopysk/Serialization/b2BodyTypeSerializer.h" />
 		<Unit filename="include/Ptakopysk/System/Assets.h" />
 		<Unit filename="include/Ptakopysk/System/Events.h" />
@@ -122,6 +125,7 @@
 		<Unit filename="source/Components/SpriteRenderer.cpp" />
 		<Unit filename="source/Components/TextRenderer.cpp" />
 		<Unit filename="source/Components/Transform.cpp" />
+		<Unit filename="source/Serialization/BitFieldSerializer.cpp" />
 		<Unit filename="source/Serialization/EnumSerializer.cpp" />
 		<Unit filename="source/Serialization/Serialized.cpp" />
 		<Unit filename="source/System/Assets.cpp" />
