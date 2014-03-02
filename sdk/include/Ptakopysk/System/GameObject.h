@@ -5,6 +5,7 @@
 #include <XeCore/Common/IRtti.h>
 #include <XeCore/Common/MemoryManager.h>
 #include <json/json.h>
+#include <SFML/Graphics/RenderTarget.hpp>
 #include <map>
 #include <string>
 #include "../Serialization/Serialized.h"
@@ -14,10 +15,6 @@ namespace Ptakopysk
 
     class Component;
     class GameManager;
-    namespace sf
-    {
-        class RenderTarget;
-    }
 
     class GameObject
     : public virtual XeCore::Common::IRtti

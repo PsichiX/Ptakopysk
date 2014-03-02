@@ -20,23 +20,26 @@ namespace Ptakopysk
 
         FORCEINLINE static Component* onBuildComponent() { return xnew SpriteRenderer(); }
 
-        FORCEINLINE ::sf::RectangleShape* getShape() { return m_shape; };
-        FORCEINLINE ::sf::Texture* getTexture() { return (::sf::Texture*)m_shape->getTexture(); };
-        FORCEINLINE void setTexture( ::sf::Texture* tex ) { m_shape->setTexture( (const ::sf::Texture*)tex ); };
-        FORCEINLINE ::sf::Vector2f getSize() { return m_shape->getSize(); };
-        void setSize( ::sf::Vector2f size );
-        FORCEINLINE ::sf::Vector2f getOrigin() { return m_shape->getOrigin(); };
-        FORCEINLINE void setOrigin( ::sf::Vector2f origin ) { m_shape->setOrigin( origin ); };
-        ::sf::Vector2f getOriginPercent();
-        void setOriginPercent( ::sf::Vector2f origin );
-        FORCEINLINE ::sf::RenderStates getRenderStates() { return m_renderStates; };
-        FORCEINLINE void setRenderStates( ::sf::RenderStates states ) { m_renderStates = states; };
+        FORCEINLINE sf::RectangleShape* getRenderer() { return m_shape; };
+        FORCEINLINE sf::Texture* getTexture() { return (sf::Texture*)m_shape->getTexture(); };
+        FORCEINLINE void setTexture( sf::Texture* tex ) { m_shape->setTexture( (const sf::Texture*)tex ); };
+        FORCEINLINE sf::Vector2f getSize() { return m_shape->getSize(); };
+        void setSize( sf::Vector2f size );
+        FORCEINLINE sf::Vector2f getOrigin() { return m_shape->getOrigin(); };
+        FORCEINLINE void setOrigin( sf::Vector2f origin ) { m_shape->setOrigin( origin ); };
+        sf::Vector2f getOriginPercent();
+        void setOriginPercent( sf::Vector2f origin );
+        FORCEINLINE sf::Color getColor() { return m_shape->getFillColor(); };
+        FORCEINLINE void setColor( sf::Color col ) { m_shape->setFillColor( col ); };
+        FORCEINLINE sf::RenderStates getRenderStates() { return m_renderStates; };
+        FORCEINLINE void setRenderStates( sf::RenderStates states ) { m_renderStates = states; };
 
-        XeCore::Common::Property< ::sf::Texture*, SpriteRenderer > Texture;
-        XeCore::Common::Property< ::sf::Vector2f, SpriteRenderer > Size;
-        XeCore::Common::Property< ::sf::Vector2f, SpriteRenderer > Origin;
-        XeCore::Common::Property< ::sf::Vector2f, SpriteRenderer > OriginPercent;
-        XeCore::Common::Property< ::sf::RenderStates, SpriteRenderer > RenderStates;
+        XeCore::Common::Property< sf::Texture*, SpriteRenderer > Texture;
+        XeCore::Common::Property< sf::Vector2f, SpriteRenderer > Size;
+        XeCore::Common::Property< sf::Vector2f, SpriteRenderer > Origin;
+        XeCore::Common::Property< sf::Vector2f, SpriteRenderer > OriginPercent;
+        XeCore::Common::Property< sf::Color, SpriteRenderer > Color;
+        XeCore::Common::Property< sf::RenderStates, SpriteRenderer > RenderStates;
 
     protected:
         virtual Json::Value onSerialize( const std::string& property );
@@ -44,11 +47,11 @@ namespace Ptakopysk
 
         virtual void onDuplicate( Component* dst );
         virtual void onUpdate( float dt );
-        virtual void onRender( ::sf::RenderTarget* target );
+        virtual void onRender( sf::RenderTarget* target );
 
     private:
-        ::sf::RectangleShape* m_shape;
-        ::sf::RenderStates m_renderStates;
+        sf::RectangleShape* m_shape;
+        sf::RenderStates m_renderStates;
     };
 
 }

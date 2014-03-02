@@ -16,9 +16,9 @@ namespace Ptakopysk
     , Position( this, &Transform::getPosition, &Transform::setPosition )
     , Rotation( this, &Transform::getRotation, &Transform::setRotation )
     , Scale( this, &Transform::getScale, &Transform::setScale )
-    , m_position( ::sf::Vector2f( 0.0f, 0.0f ) )
+    , m_position( sf::Vector2f( 0.0f, 0.0f ) )
     , m_rotation( 0.0f )
-    , m_scale( ::sf::Vector2f( 1.0f, 1.0f ) )
+    , m_scale( sf::Vector2f( 1.0f, 1.0f ) )
     {
         serializableProperty( "Position" );
         serializableProperty( "Rotation" );
@@ -55,7 +55,7 @@ namespace Ptakopysk
     {
         if( property == "Position" && root.isArray() && root.size() >= 2 )
         {
-            m_position = ::sf::Vector2f(
+            m_position = sf::Vector2f(
                 (float)root[ 0u ].asDouble(),
                 (float)root[ 1u ].asDouble()
             );
@@ -64,7 +64,7 @@ namespace Ptakopysk
             m_rotation = (float)root.asDouble();
         else if( property == "Scale" && root.isArray() && root.size() >= 2 )
         {
-            m_scale = ::sf::Vector2f(
+            m_scale = sf::Vector2f(
                 (float)root[ 0u ].asDouble(),
                 (float)root[ 1u ].asDouble()
             );
@@ -92,7 +92,7 @@ namespace Ptakopysk
         if( body )
         {
             b2Vec2 pos = body->getPosition();
-            setPosition( ::sf::Vector2f( pos.x, pos.y ) );
+            setPosition( sf::Vector2f( pos.x, pos.y ) );
             setRotation( body->getAngle() );
         }
     }

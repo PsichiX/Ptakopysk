@@ -103,8 +103,10 @@
 			<Add directory="../requirements/Box2D_v2.2.1" />
 		</Compiler>
 		<Unit filename="include/Ptakopysk/Components/Body.h" />
+		<Unit filename="include/Ptakopysk/Components/Camera.h" />
 		<Unit filename="include/Ptakopysk/Components/Component.h" />
 		<Unit filename="include/Ptakopysk/Components/SpriteRenderer.h" />
+		<Unit filename="include/Ptakopysk/Components/TextRenderer.h" />
 		<Unit filename="include/Ptakopysk/Components/Transform.h" />
 		<Unit filename="include/Ptakopysk/Serialization/EnumSerializer.h" />
 		<Unit filename="include/Ptakopysk/Serialization/Serialized.h" />
@@ -115,8 +117,10 @@
 		<Unit filename="include/Ptakopysk/System/GameManager.h" />
 		<Unit filename="include/Ptakopysk/System/GameObject.h" />
 		<Unit filename="source/Components/Body.cpp" />
+		<Unit filename="source/Components/Camera.cpp" />
 		<Unit filename="source/Components/Component.cpp" />
 		<Unit filename="source/Components/SpriteRenderer.cpp" />
+		<Unit filename="source/Components/TextRenderer.cpp" />
 		<Unit filename="source/Components/Transform.cpp" />
 		<Unit filename="source/Serialization/EnumSerializer.cpp" />
 		<Unit filename="source/Serialization/Serialized.cpp" />

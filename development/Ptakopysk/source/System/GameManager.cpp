@@ -2,8 +2,12 @@
 #include "../../include/Ptakopysk/Components/Transform.h"
 #include "../../include/Ptakopysk/Components/SpriteRenderer.h"
 #include "../../include/Ptakopysk/Components/Body.h"
+#include "../../include/Ptakopysk/Components/Camera.h"
+#include "../../include/Ptakopysk/Components/TextRenderer.h"
 #include "../../include/Ptakopysk/System/Assets.h"
 #include "../../include/Ptakopysk/Serialization/b2BodyTypeSerializer.h"
+#include "../../include/Ptakopysk/Serialization/BlendModeSerializer.h"
+#include "../../include/Ptakopysk/Serialization/StyleSerializer.h"
 #include <fstream>
 
 namespace Ptakopysk
@@ -114,7 +118,6 @@ namespace Ptakopysk
     GameManager::GameManager( float gravX, float gravY )
     : RTTI_CLASS_DEFINE( GameManager )
     , PhysicsGravity( this, &GameManager::getWorldGravity, &GameManager::setWorldGravity )
-    , PhysicsWorld( this, &GameManager::getPhysicsWorld, 0 )
     , m_world( 0 )
     , m_destructionListener( 0 )
     , m_contactListener( 0 )
@@ -135,9 +138,13 @@ namespace Ptakopysk
     void GameManager::initialize()
     {
         Serialized::registerCustomSerializer( "b2BodyType", xnew b2BodyTypeSerializer() );
+        Serialized::registerCustomSerializer( "BlendMode", xnew BlendModeSerializer() );
+        Serialized::registerCustomSerializer( "Style", xnew StyleSerializer() );
         registerComponentFactory( "Transform", RTTI_CLASS_TYPE( Transform ), Transform::onBuildComponent );
         registerComponentFactory( "SpriteRenderer", RTTI_CLASS_TYPE( SpriteRenderer ), SpriteRenderer::onBuildComponent );
         registerComponentFactory( "Body", RTTI_CLASS_TYPE( Body ), Body::onBuildComponent );
+        registerComponentFactory( "Camera", RTTI_CLASS_TYPE( Camera ), Camera::onBuildComponent );
+        registerComponentFactory( "TextRenderer", RTTI_CLASS_TYPE( TextRenderer ), TextRenderer::onBuildComponent );
     }
 
     void GameManager::cleanup()
@@ -495,6 +502,9 @@ namespace Ptakopysk
 
     void GameManager::processRender( sf::RenderTarget* target )
     {
+        if( !target )
+            return;
+        target->setView( target->getDefaultView() );
         GameObject* go;
         for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
         {
@@ -502,6 +512,7 @@ namespace Ptakopysk
             if( go->isActive() )
                 go->onRender( target );
         }
+        target->setView( target->getDefaultView() );
     }
 
     void GameManager::processPhysics( float dt, int velIters, int posIters )

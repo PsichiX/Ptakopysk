@@ -19,16 +19,16 @@ namespace Ptakopysk
 
         FORCEINLINE static Component* onBuildComponent() { return xnew Transform(); }
 
-        FORCEINLINE ::sf::Vector2f getPosition() { return m_position; };
-        FORCEINLINE void setPosition( ::sf::Vector2f pos ) { m_position = pos; };
+        FORCEINLINE sf::Vector2f getPosition() { return m_position; };
+        FORCEINLINE void setPosition( sf::Vector2f pos ) { m_position = pos; };
         FORCEINLINE float getRotation() { return m_rotation; };
         FORCEINLINE void setRotation( float rot ) { m_rotation = rot; };
-        FORCEINLINE ::sf::Vector2f getScale() { return m_scale; };
-        FORCEINLINE void setScale( ::sf::Vector2f scl ) { m_scale = scl; };
+        FORCEINLINE sf::Vector2f getScale() { return m_scale; };
+        FORCEINLINE void setScale( sf::Vector2f scl ) { m_scale = scl; };
 
-        XeCore::Common::Property< ::sf::Vector2f, Transform > Position;
+        XeCore::Common::Property< sf::Vector2f, Transform > Position;
         XeCore::Common::Property< float, Transform > Rotation;
-        XeCore::Common::Property< ::sf::Vector2f, Transform > Scale;
+        XeCore::Common::Property< sf::Vector2f, Transform > Scale;
 
     protected:
         virtual Json::Value onSerialize( const std::string& property );
@@ -38,9 +38,9 @@ namespace Ptakopysk
         virtual void onUpdate( float dt );
 
     private:
-        ::sf::Vector2f m_position;
+        sf::Vector2f m_position;
         float m_rotation;
-        ::sf::Vector2f m_scale;
+        sf::Vector2f m_scale;
     };
 
 }

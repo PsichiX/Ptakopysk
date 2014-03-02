@@ -30,9 +30,9 @@ namespace Ptakopysk
 
     void EnumSerializer::deserialize( const void* dstValue, const Json::Value& root )
     {
-        if( !dstValue )
+        if( !dstValue || !root.isString() )
             return;
-        if( root.isString() && m_keyValues.count( root.asString() ) )
+        if( m_keyValues.count( root.asString() ) )
             *(int*)dstValue = m_keyValues[ root.asString() ];
         else
             *(int*)dstValue = 0;

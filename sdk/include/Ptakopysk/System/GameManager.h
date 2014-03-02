@@ -81,7 +81,6 @@ namespace Ptakopysk
         void processPhysics( float dt, int velIters = DEFAULT_VEL_ITERS, int posIters = DEFAULT_POS_ITERS );
 
         XeCore::Common::Property< b2Vec2, GameManager > PhysicsGravity;
-        XeCore::Common::Property< b2World*, GameManager > PhysicsWorld;
 
     private:
         struct ComponentFactoryData

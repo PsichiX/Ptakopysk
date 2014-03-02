@@ -18,15 +18,17 @@ namespace Ptakopysk
     , Size( this, &SpriteRenderer::getSize, &SpriteRenderer::setSize )
     , Origin( this, &SpriteRenderer::getOrigin, &SpriteRenderer::setOrigin )
     , OriginPercent( this, &SpriteRenderer::getOriginPercent, &SpriteRenderer::setOriginPercent )
+    , Color( this, &SpriteRenderer::getColor, &SpriteRenderer::setColor )
     , RenderStates( this, &SpriteRenderer::getRenderStates, &SpriteRenderer::setRenderStates )
-    , m_renderStates( ::sf::RenderStates::Default )
+    , m_renderStates( sf::RenderStates::Default )
     {
         serializableProperty( "RenderStates" );
+        serializableProperty( "Color" );
         serializableProperty( "Texture" );
         serializableProperty( "Size" );
         serializableProperty( "OriginPercent" );
         serializableProperty( "Origin" );
-        m_shape = xnew ::sf::RectangleShape();
+        m_shape = xnew sf::RectangleShape();
     }
 
     SpriteRenderer::~SpriteRenderer()
@@ -34,9 +36,9 @@ namespace Ptakopysk
         DELETE_OBJECT( m_shape );
     }
 
-    void SpriteRenderer::setSize( ::sf::Vector2f size )
+    void SpriteRenderer::setSize( sf::Vector2f size )
     {
-        ::sf::Texture* t = getTexture();
+        sf::Texture* t = getTexture();
         if( size.x < 0.0f )
             size.x = t ? t->getSize().x : 0.0f;
         if( size.y < 0.0f )
@@ -44,19 +46,19 @@ namespace Ptakopysk
         m_shape->setSize( size );
     }
 
-    ::sf::Vector2f SpriteRenderer::getOriginPercent()
+    sf::Vector2f SpriteRenderer::getOriginPercent()
     {
-        ::sf::Vector2f o = getOrigin();
-        ::sf::Vector2f s = getSize();
+        sf::Vector2f o = getOrigin();
+        sf::Vector2f s = getSize();
         o.x = s.x > 0.0f ? o.x / s.x : 0.0f;
         o.y = s.y > 0.0f ? o.y / s.y : 0.0f;
         return o;
     }
 
-    void SpriteRenderer::setOriginPercent( ::sf::Vector2f origin )
+    void SpriteRenderer::setOriginPercent( sf::Vector2f origin )
     {
-        ::sf::Vector2f s = getSize();
-        setOrigin( ::sf::Vector2f( s.x * origin.x, s.y * origin.y ) );
+        sf::Vector2f s = getSize();
+        setOrigin( sf::Vector2f( s.x * origin.x, s.y * origin.y ) );
     }
 
     Json::Value SpriteRenderer::onSerialize( const std::string& property )
@@ -65,7 +67,7 @@ namespace Ptakopysk
             return Json::Value( Assets::use().findTexture( getTexture() ) );
         else if( property == "Size" )
         {
-            ::sf::Vector2f s = getSize();
+            sf::Vector2f s = getSize();
             Json::Value v;
             v.append( Json::Value( s.x ) );
             v.append( Json::Value( s.y ) );
@@ -73,7 +75,7 @@ namespace Ptakopysk
         }
         else if( property == "Origin" )
         {
-            ::sf::Vector2f o = getOrigin();
+            sf::Vector2f o = getOrigin();
             Json::Value v;
             v.append( Json::Value( o.x ) );
             v.append( Json::Value( o.y ) );
@@ -81,16 +83,27 @@ namespace Ptakopysk
         }
         else if( property == "OriginPercent" )
         {
-            ::sf::Vector2f o = getOriginPercent();
+            sf::Vector2f o = getOriginPercent();
             Json::Value v;
             v.append( Json::Value( o.x ) );
             v.append( Json::Value( o.y ) );
             return v;
         }
+        else if( property == "Color" )
+        {
+            sf::Color c = getColor();
+            Json::Value v;
+            v.append( Json::Value( c.r ) );
+            v.append( Json::Value( c.g ) );
+            v.append( Json::Value( c.b ) );
+            v.append( Json::Value( c.a ) );
+            return v;
+        }
         else if( property == "RenderStates" )
         {
             Json::Value v;
-            v[ "blendMode" ] = Json::Value( (int)m_renderStates.blendMode );
+            Serialized::ICustomSerializer* s = Serialized::getCustomSerializer( "BlendMode" );
+            v[ "blendMode" ] = s ? s->serialize( &m_renderStates.blendMode ) : Json::Value::null;
             v[ "shader" ] = Json::Value( Assets::use().findShader( m_renderStates.shader ) );
             return v;
         }
@@ -104,30 +117,40 @@ namespace Ptakopysk
             setTexture( Assets::use().getTexture( root.asString() ) );
         else if( property == "Size" && root.isArray() && root.size() >= 2 )
         {
-            setSize( ::sf::Vector2f(
+            setSize( sf::Vector2f(
                 (float)root[ 0u ].asDouble(),
                 (float)root[ 1u ].asDouble()
             ) );
         }
         else if( property == "Origin" && root.isArray() && root.size() >= 2 )
         {
-            setOrigin( ::sf::Vector2f(
+            setOrigin( sf::Vector2f(
                 (float)root[ 0u ].asDouble(),
                 (float)root[ 1u ].asDouble()
             ) );
         }
         else if( property == "OriginPercent" && root.isArray() && root.size() >= 2 )
         {
-            setOriginPercent( ::sf::Vector2f(
+            setOriginPercent( sf::Vector2f(
                 (float)root[ 0u ].asDouble(),
                 (float)root[ 1u ].asDouble()
+            ) );
+        }
+        else if( property == "Color" && root.isArray() && root.size() == 4 )
+        {
+            setColor( sf::Color(
+                root[ 0u ].asUInt(),
+                root[ 1u ].asUInt(),
+                root[ 2u ].asUInt(),
+                root[ 3u ].asUInt()
             ) );
         }
         else if( property == "RenderStates" && root.isObject() )
         {
             Json::Value blendMode = root[ "blendMode" ];
-            if( blendMode.isInt() )
-                m_renderStates.blendMode = (::sf::BlendMode)blendMode.asInt();
+            Serialized::ICustomSerializer* s = Serialized::getCustomSerializer( "BlendMode" );
+            if( s && blendMode.isString() )
+                s->deserialize( &m_renderStates.blendMode, root );
             Json::Value shader = root[ "shader" ];
             if( shader.isString() )
                 m_renderStates.shader = Assets::use().getShader( shader.asString() );
@@ -161,7 +184,7 @@ namespace Ptakopysk
         }
     }
 
-    void SpriteRenderer::onRender( ::sf::RenderTarget* target )
+    void SpriteRenderer::onRender( sf::RenderTarget* target )
     {
         target->draw( *m_shape, m_renderStates );
     }
