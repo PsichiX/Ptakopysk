@@ -24,6 +24,11 @@ namespace Ptakopysk
         RTTI_CLASS_DECLARE( GameManager );
 
     public:
+        struct CompareGameObjects
+        {
+            FORCEINLINE bool operator() ( GameObject* a, GameObject* b ) { return a->getOrder() > b->getOrder(); };
+        };
+
         enum SceneContentType
         {
             None = 0,
@@ -72,6 +77,9 @@ namespace Ptakopysk
         bool hasGameObject( GameObject* go, bool prefab = false );
         bool hasGameObject( const std::string& id, bool prefab = false );
         GameObject* getGameObject( const std::string& id, bool prefab = false );
+        FORCEINLINE unsigned int gameObjectsCount( bool prefab = false ) { return prefab ? m_prefabGameObjects.size() : m_gameObjects.size(); };
+        std::list< GameObject* >::iterator gameObjectAtBegin( bool prefab = false );
+        std::list< GameObject* >::iterator gameObjectAtEnd( bool prefab = false );
         GameObject* instantiatePrefab( const std::string& id );
 
         FORCEINLINE b2Vec2 getWorldGravity() { return m_world->GetGravity(); };
@@ -87,11 +95,6 @@ namespace Ptakopysk
         {
             XeCore::Common::IRtti::Derivation type;
             Component::OnBuildComponentCallback builder;
-        };
-
-        struct CompareGameObjects
-        {
-            FORCEINLINE bool operator() ( GameObject* a, GameObject* b ) { return a->getOrder() > b->getOrder(); };
         };
 
         static std::map< std::string, ComponentFactoryData > s_componentsFactory;

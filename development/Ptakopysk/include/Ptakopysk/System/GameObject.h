@@ -7,6 +7,7 @@
 #include <json/json.h>
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <map>
+#include <list>
 #include <string>
 #include "../Serialization/Serialized.h"
 
@@ -47,6 +48,17 @@ namespace Ptakopysk
         bool hasComponent( XeCore::Common::IRtti::Derivation d );
         Component* getComponent( XeCore::Common::IRtti::Derivation d );
 
+        void addGameObject( GameObject* go );
+        void removeGameObject( GameObject* go, bool del = true );
+        void removeGameObject( const std::string& id, bool del = true );
+        void removeAllGameObjects( bool del = true );
+        bool hasGameObject( GameObject* go );
+        bool hasGameObject( const std::string& id );
+        GameObject* getGameObject( const std::string& id );
+        FORCEINLINE unsigned int gameObjectsCount() { return m_gameObjects.size(); };
+        FORCEINLINE std::list< GameObject* >::iterator gameObjectAtBegin( bool prefab = false ) { return m_gameObjects.begin(); };
+        FORCEINLINE std::list< GameObject* >::iterator gameObjectAtEnd( bool prefab = false ) { return m_gameObjects.end(); };
+
         XeCore::Common::Property< std::string, GameObject > Id;
         XeCore::Common::Property< bool, GameObject > Active;
         XeCore::Common::Property< int, GameObject > Order;
@@ -59,18 +71,21 @@ namespace Ptakopysk
         void onCreate();
         void onDestroy();
         void onDuplicate( GameObject* dst );
-        void onUpdate( float dt );
+        void onUpdate( float dt, bool sort = true );
         void onRender( sf::RenderTarget* target );
         void onCollide( GameObject* other );
 
     private:
-        void setGameManager( GameManager* gm );
+        FORCEINLINE void setGameManager( GameManager* gm ) { m_gameManager = gm; };
+        FORCEINLINE void setParent( GameObject* go ) { m_parent = go; };
 
+        GameManager* m_gameManager;
+        GameObject* m_parent;
         std::string m_id;
         bool m_active;
         int m_order;
         std::map< XeCore::Common::IRtti::Derivation, Component* > m_components;
-        GameManager* m_gameManager;
+        std::list< GameObject* > m_gameObjects;
     };
 
 }

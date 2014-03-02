@@ -372,10 +372,12 @@ namespace Ptakopysk
 
     Json::Value GameManager::gameObjectsToJson( bool prefab )
     {
+        std::list< GameObject* >& cgo = prefab ? m_prefabGameObjects : m_gameObjects;
+        if( cgo.empty() )
+            return Json::Value::null;
         Json::Value root;
         GameObject* go;
         Json::Value item;
-        std::list< GameObject* >& cgo = prefab ? m_prefabGameObjects : m_gameObjects;
         for( std::list< GameObject* >::iterator it = cgo.begin(); it != cgo.end(); it++ )
         {
             go = *it;
@@ -477,6 +479,18 @@ namespace Ptakopysk
         return 0;
     }
 
+    std::list< GameObject* >::iterator GameManager::gameObjectAtBegin( bool prefab )
+    {
+        std::list< GameObject* >& cgo = prefab ? m_prefabGameObjects : m_gameObjects;
+        return cgo.begin();
+    }
+
+    std::list< GameObject* >::iterator GameManager::gameObjectAtEnd( bool prefab )
+    {
+        std::list< GameObject* >& cgo = prefab ? m_prefabGameObjects : m_gameObjects;
+        return cgo.end();
+    }
+
     GameObject* GameManager::instantiatePrefab( const std::string& id )
     {
         GameObject* p = getGameObject( id, true );
@@ -496,7 +510,7 @@ namespace Ptakopysk
         {
             go = *it;
             if( go->isActive() )
-                go->onUpdate( dt );
+                go->onUpdate( dt, sort );
         }
     }
 

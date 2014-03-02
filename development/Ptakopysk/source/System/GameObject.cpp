@@ -18,10 +18,10 @@ namespace Ptakopysk
     , Active( this, &GameObject::isActive, &GameObject::setActive )
     , Order( this, &GameObject::getOrder, &GameObject::setOrder )
     , Owner( this, &GameObject::getGameManager, 0 )
+    , m_gameManager( 0 )
     , m_id( id )
     , m_active( true )
     , m_order( 0 )
-    , m_gameManager( 0 )
     {
         serializableProperty( "Id" );
         serializableProperty( "Active" );
@@ -31,6 +31,7 @@ namespace Ptakopysk
     GameObject::~GameObject()
     {
         removeAllComponents();
+        removeAllGameObjects( true );
     }
 
     void GameObject::fromJson( const Json::Value& root )
@@ -79,6 +80,32 @@ namespace Ptakopysk
                 }
             }
         }
+        Json::Value gameObjects = root[ "gameObjects" ];
+        if( gameObjects.isArray() )
+        {
+            Json::Value item;
+            Json::Value itemPrefab;
+            for( unsigned int i = 0; i < gameObjects.size(); i++ )
+            {
+                item = gameObjects[ i ];
+                itemPrefab = item[ "prefab" ];
+                if( !itemPrefab.isNull() )
+                {
+                    GameObject* go = instantiatePrefab( itemPrefab.asString() );
+                    if( go )
+                    {
+                        go->fromJson( item );
+                        addGameObject( go );
+                    }
+                }
+                else
+                {
+                    GameObject* go = xnew GameObject();
+                    go->fromJson( item );
+                    addGameObject( go );
+                }
+            }
+        }
     }
 
     Json::Value GameObject::toJson()
@@ -95,6 +122,20 @@ namespace Ptakopysk
         }
         if( !components.isNull() )
             root[ "components" ] = components;
+        if( !m_gameObjects.empty() )
+        {
+            Json::Value gameObjects;
+            GameObject* go;
+            Json::Value item;
+            for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            {
+                go = *it;
+                item = go->toJson();
+                if( !item.isNull() )
+                    gameObjects.append( item );
+            }
+            root[ "gameObjects" ] = gameObjects;
+        }
         return root;
     }
 
@@ -152,6 +193,72 @@ namespace Ptakopysk
         return m_components.count( d ) ? m_components[ d ] : 0;
     }
 
+    void GameObject::addGameObject( GameObject* go )
+    {
+        if( !go || hasGameObject( go ) )
+            return;
+        m_gameObjects.push_back( go );
+        go->setParent( this );
+    }
+
+    void GameObject::removeGameObject( GameObject* go, bool del )
+    {
+        if( !hasGameObject( go ) )
+            return;
+        m_gameObjects.remove( go );
+        go->setParent( 0 );
+        if( del )
+            DELETE_OBJECT( go );
+    }
+
+    void GameObject::removeGameObject( const std::string& id, bool del )
+    {
+        GameObject* go = getGameObject( id );
+        if( !go )
+            return;
+        m_gameObjects.remove( go );
+        go->setParent( 0 );
+        if( del )
+            DELETE_OBJECT( go );
+    }
+
+    void GameObject::removeAllGameObjects( bool del )
+    {
+        GameObject* go;
+        for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+        {
+            go = *it;
+            go->setParent( 0 );
+            if( del )
+                DELETE_OBJECT( *it );
+        }
+        m_gameObjects.clear();
+    }
+
+    bool GameObject::hasGameObject( GameObject* go )
+    {
+        for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            if( *it == go )
+                return true;
+        return false;
+    }
+
+    bool GameObject::hasGameObject( const std::string& id )
+    {
+        for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            if( (*it)->getId() == id )
+                return true;
+        return false;
+    }
+
+    GameObject* GameObject::getGameObject( const std::string& id )
+    {
+        for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            if( (*it)->getId() == id )
+                return *it;
+        return 0;
+    }
+
     Json::Value GameObject::onSerialize( const std::string& property )
     {
         if( property == "Id" )
@@ -177,10 +284,14 @@ namespace Ptakopysk
     {
         for( std::map< XeCore::Common::IRtti::Derivation, Component* >::iterator it = m_components.begin(); it != m_components.end(); it++ )
             it->second->onCreate();
+        for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            (*it)->onCreate();
     }
 
     void GameObject::onDestroy()
     {
+        for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            (*it)->onDestroy();
         for( std::map< XeCore::Common::IRtti::Derivation, Component* >::iterator it = m_components.begin(); it != m_components.end(); it++ )
             it->second->onDestroy();
     }
@@ -209,7 +320,7 @@ namespace Ptakopysk
         }
     }
 
-    void GameObject::onUpdate( float dt )
+    void GameObject::onUpdate( float dt, bool sort )
     {
         Component* c;
         for( std::map< XeCore::Common::IRtti::Derivation, Component* >::iterator it = m_components.begin(); it != m_components.end(); it++ )
@@ -218,6 +329,10 @@ namespace Ptakopysk
             if( c->getTypeFlags() & Component::Update )
                 c->onUpdate( dt );
         }
+        if( sort )
+            m_gameObjects.sort( GameManager::CompareGameObjects() );
+        for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            (*it)->onUpdate( dt, sort );
     }
 
     void GameObject::onRender( sf::RenderTarget* target )
@@ -229,6 +344,8 @@ namespace Ptakopysk
             if( c->getTypeFlags() & Component::Render )
                 c->onRender( target );
         }
+        for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            (*it)->onRender( target );
     }
 
     void GameObject::onCollide( GameObject* other )
@@ -240,11 +357,8 @@ namespace Ptakopysk
             if( c->getTypeFlags() & Component::Physics )
                 c->onCollide( other );
         }
-    }
-
-    void GameObject::setGameManager( GameManager* gm )
-    {
-        m_gameManager = gm;
+        for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            (*it)->onCollide( other );
     }
 
 }

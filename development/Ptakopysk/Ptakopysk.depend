@@ -795,17 +795,18 @@
 
 1393670469 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\serialized.inl
 
-1393706190 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gameobject.h
+1393790362 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gameobject.h
 	<XeCore/Common/Property.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
 	<json/json.h>
 	<SFML/Graphics/RenderTarget.hpp>
 	<map>
+	<list>
 	<string>
 	"../Serialization/Serialized.h"
 
-1393709399 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gamemanager.h
+1393790147 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gamemanager.h
 	<XeCore/Common/Property.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -874,7 +875,7 @@
 	<string>
 	<list>
 
-1393763031 source:d:\git\ptakopysk\development\ptakopysk\source\system\gamemanager.cpp
+1393791012 source:d:\git\ptakopysk\development\ptakopysk\source\system\gamemanager.cpp
 	"../../include/Ptakopysk/System/GameManager.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/Components/SpriteRenderer.h"
@@ -917,7 +918,7 @@
 	"Component.h"
 	<SFML/Graphics.hpp>
 
-1393762464 source:d:\git\ptakopysk\development\ptakopysk\source\serialization\bitfieldserializer.cpp
+1393763717 source:d:\git\ptakopysk\development\ptakopysk\source\serialization\bitfieldserializer.cpp
 	"../../include/Ptakopysk/Serialization/BitFieldSerializer.h"
 
 1393760945 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\bitfieldserializer.h
