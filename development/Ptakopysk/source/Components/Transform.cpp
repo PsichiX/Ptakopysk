@@ -12,7 +12,7 @@ namespace Ptakopysk
 
     Transform::Transform()
     : RTTI_CLASS_DEFINE( Transform )
-    , Component( Component::Update )
+    , Component( Component::tUpdate | Component::tTransform )
     , Position( this, &Transform::getPosition, &Transform::setPosition )
     , Rotation( this, &Transform::getRotation, &Transform::setRotation )
     , Scale( this, &Transform::getScale, &Transform::setScale )
@@ -88,13 +88,22 @@ namespace Ptakopysk
 
     void Transform::onUpdate( float dt )
     {
-        Body* body = (Body*)getGameObject()->getComponent( RTTI_CLASS_TYPE( Body ) );
+        Body* body = getGameObject()->getComponent< Body >();
         if( body )
         {
             b2Vec2 pos = body->getPosition();
             setPosition( sf::Vector2f( pos.x, pos.y ) );
             setRotation( body->getAngle() );
         }
+    }
+
+    void Transform::onTransform( const sf::Transform& inTrans, sf::Transform& outTrans )
+    {
+        sf::Transform t;
+        t.translate( m_position );
+        t.rotate( m_rotation );
+        t.scale( m_scale );
+        outTrans = inTrans * t;
     }
 
 }

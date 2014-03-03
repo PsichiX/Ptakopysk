@@ -19,6 +19,7 @@ namespace Ptakopysk
     , Order( this, &GameObject::getOrder, &GameObject::setOrder )
     , Owner( this, &GameObject::getGameManager, 0 )
     , m_gameManager( 0 )
+    , m_parent( 0 )
     , m_id( id )
     , m_active( true )
     , m_order( 0 )
@@ -32,6 +33,16 @@ namespace Ptakopysk
     {
         removeAllComponents();
         removeAllGameObjects( true );
+    }
+
+    GameManager* GameObject::getGameManagerRoot()
+    {
+        if( m_gameManager )
+            return m_gameManager;
+        GameObject* p = m_parent;
+        while( p )
+            p = p->getParent();
+        return p ? p->getGameManager() : 0;
     }
 
     void GameObject::fromJson( const Json::Value& root )
@@ -81,7 +92,8 @@ namespace Ptakopysk
             }
         }
         Json::Value gameObjects = root[ "gameObjects" ];
-        if( gameObjects.isArray() )
+        GameManager* gm = getGameManagerRoot();
+        if( gameObjects.isArray() && gm )
         {
             Json::Value item;
             Json::Value itemPrefab;
@@ -91,18 +103,18 @@ namespace Ptakopysk
                 itemPrefab = item[ "prefab" ];
                 if( !itemPrefab.isNull() )
                 {
-                    GameObject* go = instantiatePrefab( itemPrefab.asString() );
+                    GameObject* go = gm->instantiatePrefab( itemPrefab.asString() );
                     if( go )
                     {
-                        go->fromJson( item );
                         addGameObject( go );
+                        go->fromJson( item );
                     }
                 }
                 else
                 {
                     GameObject* go = xnew GameObject();
-                    go->fromJson( item );
                     addGameObject( go );
+                    go->fromJson( item );
                 }
             }
         }
@@ -186,11 +198,6 @@ namespace Ptakopysk
     bool GameObject::hasComponent( XeCore::Common::IRtti::Derivation d )
     {
         return m_components.count( d );
-    }
-
-    Component* GameObject::getComponent( XeCore::Common::IRtti::Derivation d )
-    {
-        return m_components.count( d ) ? m_components[ d ] : 0;
     }
 
     void GameObject::addGameObject( GameObject* go )
@@ -318,21 +325,30 @@ namespace Ptakopysk
                 dst->addComponent( comp );
             }
         }
+        for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+        {
+            GameObject* go = xnew GameObject();
+            dst->addGameObject( go );
+            (*it)->onDuplicate( go );
+        }
     }
 
-    void GameObject::onUpdate( float dt, bool sort )
+    void GameObject::onUpdate( float dt, const sf::Transform& trans, bool sort )
     {
         Component* c;
+        sf::Transform t = trans;
         for( std::map< XeCore::Common::IRtti::Derivation, Component* >::iterator it = m_components.begin(); it != m_components.end(); it++ )
         {
             c = it->second;
-            if( c->getTypeFlags() & Component::Update )
+            if( c->getTypeFlags() & Component::tUpdate )
                 c->onUpdate( dt );
+            if( c->getTypeFlags() & Component::tTransform )
+                c->onTransform( trans, t );
         }
         if( sort )
             m_gameObjects.sort( GameManager::CompareGameObjects() );
         for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
-            (*it)->onUpdate( dt, sort );
+            (*it)->onUpdate( dt, t, sort );
     }
 
     void GameObject::onRender( sf::RenderTarget* target )
@@ -341,7 +357,7 @@ namespace Ptakopysk
         for( std::map< XeCore::Common::IRtti::Derivation, Component* >::iterator it = m_components.begin(); it != m_components.end(); it++ )
         {
             c = it->second;
-            if( c->getTypeFlags() & Component::Render )
+            if( c->getTypeFlags() & Component::tRender )
                 c->onRender( target );
         }
         for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
@@ -354,7 +370,7 @@ namespace Ptakopysk
         for( std::map< XeCore::Common::IRtti::Derivation, Component* >::iterator it = m_components.begin(); it != m_components.end(); it++ )
         {
             c = it->second;
-            if( c->getTypeFlags() & Component::Physics )
+            if( c->getTypeFlags() & Component::tPhysics )
                 c->onCollide( other );
         }
         for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )

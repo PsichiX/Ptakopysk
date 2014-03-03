@@ -12,7 +12,7 @@ namespace Ptakopysk
 
     Camera::Camera()
     : RTTI_CLASS_DEFINE( Camera )
-    , Component( Component::Update | Component::Render )
+    , Component( Component::tUpdate | Component::tRender )
     , Size( this, &Camera::getSize, &Camera::setSize )
     , Viewport( this, &Camera::getViewport, &Camera::setViewport )
     {
@@ -86,7 +86,7 @@ namespace Ptakopysk
 
     void Camera::onUpdate( float dt )
     {
-        Transform* trans = (Transform*)getGameObject()->getComponent( RTTI_CLASS_TYPE( Transform ) );
+        Transform* trans = getGameObject()->getComponent< Transform >();
         if( trans )
         {
             m_view->setCenter( trans->getPosition() );

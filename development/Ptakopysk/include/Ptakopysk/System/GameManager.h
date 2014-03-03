@@ -84,9 +84,9 @@ namespace Ptakopysk
 
         FORCEINLINE b2Vec2 getWorldGravity() { return m_world->GetGravity(); };
         FORCEINLINE void setWorldGravity( b2Vec2 v ) { m_world->SetGravity( v ); };
-        void processUpdate( float dt, bool sort = true );
-        void processRender( sf::RenderTarget* target );
         void processPhysics( float dt, int velIters = DEFAULT_VEL_ITERS, int posIters = DEFAULT_POS_ITERS );
+        void processUpdate( float dt, bool sort = true );
+        void processRender( sf::RenderTarget* target, const sf::Transform& trans = sf::Transform::Identity );
 
         XeCore::Common::Property< b2Vec2, GameManager > PhysicsGravity;
 

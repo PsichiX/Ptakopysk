@@ -13,7 +13,7 @@ namespace Ptakopysk
 
     TextRenderer::TextRenderer()
     : RTTI_CLASS_DEFINE( TextRenderer )
-    , Component( Component::Update | Component::Render )
+    , Component( Component::tUpdate | Component::tTransform | Component::tRender )
     , Text( this, &TextRenderer::getText, &TextRenderer::setText )
     , Font( this, &TextRenderer::getFont, &TextRenderer::setFont )
     , Size( this, &TextRenderer::getSize, &TextRenderer::setSize )
@@ -135,13 +135,18 @@ namespace Ptakopysk
 
     void TextRenderer::onUpdate( float dt )
     {
-        Transform* trans = (Transform*)getGameObject()->getComponent( RTTI_CLASS_TYPE( Transform ) );
+        Transform* trans = getGameObject()->getComponent< Transform >();
         if( trans )
         {
             m_text->setPosition( trans->getPosition() );
             m_text->setRotation( trans->getRotation() );
             m_text->setScale( trans->getScale() );
         }
+    }
+
+    void TextRenderer::onTransform( const sf::Transform& inTrans, sf::Transform& outTrans )
+    {
+        m_renderStates.transform = inTrans;
     }
 
     void TextRenderer::onRender( sf::RenderTarget* target )

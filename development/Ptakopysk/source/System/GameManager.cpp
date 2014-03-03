@@ -326,15 +326,15 @@ namespace Ptakopysk
                 GameObject* go = instantiatePrefab( itemPrefab.asString() );
                 if( go )
                 {
-                    go->fromJson( item );
                     addGameObject( go, prefab );
+                    go->fromJson( item );
                 }
             }
             else
             {
                 GameObject* go = xnew GameObject();
-                go->fromJson( item );
                 addGameObject( go, prefab );
+                go->fromJson( item );
             }
         }
     }
@@ -501,6 +501,11 @@ namespace Ptakopysk
         return go;
     }
 
+    void GameManager::processPhysics( float dt, int velIters, int posIters )
+    {
+        m_world->Step( dt, velIters, posIters );
+    }
+
     void GameManager::processUpdate( float dt, bool sort )
     {
         if( sort )
@@ -510,11 +515,11 @@ namespace Ptakopysk
         {
             go = *it;
             if( go->isActive() )
-                go->onUpdate( dt, sort );
+                go->onUpdate( dt, sf::Transform::Identity, sort );
         }
     }
 
-    void GameManager::processRender( sf::RenderTarget* target )
+    void GameManager::processRender( sf::RenderTarget* target, const sf::Transform& trans )
     {
         if( !target )
             return;
@@ -527,11 +532,6 @@ namespace Ptakopysk
                 go->onRender( target );
         }
         target->setView( target->getDefaultView() );
-    }
-
-    void GameManager::processPhysics( float dt, int velIters, int posIters )
-    {
-        m_world->Step( dt, velIters, posIters );
     }
 
     GameManager::SceneContentType operator|( GameManager::SceneContentType a, GameManager::SceneContentType b )

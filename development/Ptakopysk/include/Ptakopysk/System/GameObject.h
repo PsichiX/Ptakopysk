@@ -36,6 +36,8 @@ namespace Ptakopysk
         FORCEINLINE int getOrder() { return m_order; };
         FORCEINLINE void setOrder( int order ) { m_order = order; };
         FORCEINLINE GameManager* getGameManager() { return m_gameManager; };
+        FORCEINLINE GameObject* getParent() { return m_parent; };
+        GameManager* getGameManagerRoot();
 
         void fromJson( const Json::Value& root );
         Json::Value toJson();
@@ -46,7 +48,9 @@ namespace Ptakopysk
         void removeAllComponents();
         bool hasComponent( Component* c );
         bool hasComponent( XeCore::Common::IRtti::Derivation d );
-        Component* getComponent( XeCore::Common::IRtti::Derivation d );
+        FORCEINLINE Component* getComponent( XeCore::Common::IRtti::Derivation d ) { return m_components.count( d ) ? m_components[ d ] : 0; };
+        template< typename T >
+        FORCEINLINE T* getComponent() { return (T*)getComponent( RTTI_CLASS_TYPE( T ) ); };
 
         void addGameObject( GameObject* go );
         void removeGameObject( GameObject* go, bool del = true );
@@ -71,7 +75,7 @@ namespace Ptakopysk
         void onCreate();
         void onDestroy();
         void onDuplicate( GameObject* dst );
-        void onUpdate( float dt, bool sort = true );
+        void onUpdate( float dt, const sf::Transform& trans, bool sort = true );
         void onRender( sf::RenderTarget* target );
         void onCollide( GameObject* other );
 

@@ -12,7 +12,7 @@ namespace Ptakopysk
 
     Body::Body()
     : RTTI_CLASS_DEFINE( Body )
-    , Component( Component::Physics )
+    , Component( Component::tPhysics )
     , Vertices( this, &Body::getVertices, &Body::setVertices )
     , Density( this, &Body::getDensity, &Body::setDensity )
     , BodyType( this, &Body::getBodyType, &Body::setBodyType )

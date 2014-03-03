@@ -7,6 +7,7 @@
 #include <json/json.h>
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <map>
+#include <list>
 #include <string>
 #include "../Serialization/Serialized.h"
 
@@ -35,6 +36,8 @@ namespace Ptakopysk
         FORCEINLINE int getOrder() { return m_order; };
         FORCEINLINE void setOrder( int order ) { m_order = order; };
         FORCEINLINE GameManager* getGameManager() { return m_gameManager; };
+        FORCEINLINE GameObject* getParent() { return m_parent; };
+        GameManager* getGameManagerRoot();
 
         void fromJson( const Json::Value& root );
         Json::Value toJson();
@@ -45,7 +48,20 @@ namespace Ptakopysk
         void removeAllComponents();
         bool hasComponent( Component* c );
         bool hasComponent( XeCore::Common::IRtti::Derivation d );
-        Component* getComponent( XeCore::Common::IRtti::Derivation d );
+        FORCEINLINE Component* getComponent( XeCore::Common::IRtti::Derivation d ) { return m_components.count( d ) ? m_components[ d ] : 0; };
+        template< typename T >
+        FORCEINLINE T* getComponent() { return (T*)getComponent( RTTI_CLASS_TYPE( T ) ); };
+
+        void addGameObject( GameObject* go );
+        void removeGameObject( GameObject* go, bool del = true );
+        void removeGameObject( const std::string& id, bool del = true );
+        void removeAllGameObjects( bool del = true );
+        bool hasGameObject( GameObject* go );
+        bool hasGameObject( const std::string& id );
+        GameObject* getGameObject( const std::string& id );
+        FORCEINLINE unsigned int gameObjectsCount() { return m_gameObjects.size(); };
+        FORCEINLINE std::list< GameObject* >::iterator gameObjectAtBegin( bool prefab = false ) { return m_gameObjects.begin(); };
+        FORCEINLINE std::list< GameObject* >::iterator gameObjectAtEnd( bool prefab = false ) { return m_gameObjects.end(); };
 
         XeCore::Common::Property< std::string, GameObject > Id;
         XeCore::Common::Property< bool, GameObject > Active;
@@ -59,18 +75,21 @@ namespace Ptakopysk
         void onCreate();
         void onDestroy();
         void onDuplicate( GameObject* dst );
-        void onUpdate( float dt );
+        void onUpdate( float dt, const sf::Transform& trans, bool sort = true );
         void onRender( sf::RenderTarget* target );
         void onCollide( GameObject* other );
 
     private:
-        void setGameManager( GameManager* gm );
+        FORCEINLINE void setGameManager( GameManager* gm ) { m_gameManager = gm; };
+        FORCEINLINE void setParent( GameObject* go ) { m_parent = go; };
 
+        GameManager* m_gameManager;
+        GameObject* m_parent;
         std::string m_id;
         bool m_active;
         int m_order;
         std::map< XeCore::Common::IRtti::Derivation, Component* > m_components;
-        GameManager* m_gameManager;
+        std::list< GameObject* > m_gameObjects;
     };
 
 }

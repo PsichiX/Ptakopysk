@@ -3,6 +3,7 @@
 
 #include "Component.h"
 #include <SFML/System/Vector2.hpp>
+#include <SFML/Graphics/Transform.hpp>
 
 namespace Ptakopysk
 {
@@ -36,6 +37,7 @@ namespace Ptakopysk
 
         virtual void onDuplicate( Component* dst );
         virtual void onUpdate( float dt );
+        virtual void onTransform( const sf::Transform& inTrans, sf::Transform& outTrans );
 
     private:
         sf::Vector2f m_position;
