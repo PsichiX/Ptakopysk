@@ -8,6 +8,7 @@
 #include "../../include/Ptakopysk/Serialization/b2BodyTypeSerializer.h"
 #include "../../include/Ptakopysk/Serialization/BlendModeSerializer.h"
 #include "../../include/Ptakopysk/Serialization/StyleSerializer.h"
+#include <Box2D/Box2D.h>
 #include <fstream>
 
 namespace Ptakopysk
@@ -91,12 +92,24 @@ namespace Ptakopysk
 
     void ContactListener::BeginContact( b2Contact* contact )
     {
-
+        if( m_owner )
+            m_owner->processContact(
+                true,
+                (GameObject*)contact->GetFixtureA()->GetUserData(),
+                (GameObject*)contact->GetFixtureB()->GetUserData(),
+                contact
+            );
     }
 
     void ContactListener::EndContact( b2Contact* contact )
     {
-
+        if( m_owner )
+            m_owner->processContact(
+                false,
+                (GameObject*)contact->GetFixtureA()->GetUserData(),
+                (GameObject*)contact->GetFixtureB()->GetUserData(),
+                contact
+            );
     }
 
     void ContactListener::PreSolve( b2Contact* contact, const b2Manifold* oldManifold )
@@ -124,7 +137,9 @@ namespace Ptakopysk
     {
         m_world = xnew b2World( b2Vec2( gravX, gravY ) );
         m_destructionListener = xnew DestructionListener( this );
+        m_world->SetDestructionListener( m_destructionListener );
         m_contactListener = xnew ContactListener( this );
+        m_world->SetContactListener( m_contactListener );
     }
 
     GameManager::~GameManager()
@@ -532,6 +547,15 @@ namespace Ptakopysk
                 go->onRender( target );
         }
         target->setView( target->getDefaultView() );
+    }
+
+    void GameManager::processContact( bool beginOrEnd, GameObject* a, GameObject* b, b2Contact* contact )
+    {
+        if( a && b )
+        {
+            a->onCollide( b, beginOrEnd, contact );
+            b->onCollide( a, beginOrEnd, contact );
+        }
     }
 
     GameManager::SceneContentType operator|( GameManager::SceneContentType a, GameManager::SceneContentType b )

@@ -768,16 +768,16 @@
 	"../include/GameObject.h"
 	"../include/Body.h"
 
-1393874012 source:d:\git\ptakopysk\development\ptakopysk\source\components\body.cpp
+1393888019 source:d:\git\ptakopysk\development\ptakopysk\source\components\body.cpp
 	"../../include/Ptakopysk/Components/Body.h"
 	"../../include/Ptakopysk/System/GameObject.h"
 	"../../include/Ptakopysk/System/GameManager.h"
 
-1393667284 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\body.h
+1393888360 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\body.h
 	"Component.h"
 	<Box2D/Box2D.h>
 
-1393874005 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\component.h
+1393889110 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\component.h
 	<XeCore/Common/Property.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -796,7 +796,7 @@
 
 1393670469 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\serialized.inl
 
-1393875295 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gameobject.h
+1393889157 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gameobject.h
 	<XeCore/Common/Property.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -807,7 +807,7 @@
 	<string>
 	"../Serialization/Serialized.h"
 
-1393874149 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gamemanager.h
+1393888848 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gamemanager.h
 	<XeCore/Common/Property.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -877,7 +877,7 @@
 	<string>
 	<list>
 
-1393875877 source:d:\git\ptakopysk\development\ptakopysk\source\system\gamemanager.cpp
+1393889138 source:d:\git\ptakopysk\development\ptakopysk\source\system\gamemanager.cpp
 	"../../include/Ptakopysk/System/GameManager.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/Components/SpriteRenderer.h"
@@ -888,6 +888,7 @@
 	"../../include/Ptakopysk/Serialization/b2BodyTypeSerializer.h"
 	"../../include/Ptakopysk/Serialization/BlendModeSerializer.h"
 	"../../include/Ptakopysk/Serialization/StyleSerializer.h"
+	<Box2D/Box2D.h>
 	<fstream>
 
 1393670381 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\b2bodytypeserializer.h

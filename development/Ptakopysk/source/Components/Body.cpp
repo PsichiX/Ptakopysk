@@ -178,6 +178,7 @@ namespace Ptakopysk
         {
             m_shape->Set( m_verts.data(), m_verts.size() );
             m_fixture = m_body->CreateFixture( m_shape, 1.0f );
+            m_fixture->SetUserData( this );
         }
         m_body->SetUserData( this );
     }

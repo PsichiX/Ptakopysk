@@ -11,6 +11,8 @@
 #include <string>
 #include "../Serialization/Serialized.h"
 
+class b2Contact;
+
 namespace Ptakopysk
 {
 
@@ -77,7 +79,7 @@ namespace Ptakopysk
         void onDuplicate( GameObject* dst );
         void onUpdate( float dt, const sf::Transform& trans, bool sort = true );
         void onRender( sf::RenderTarget* target );
-        void onCollide( GameObject* other );
+        void onCollide( GameObject* other, bool beginOrEnd, b2Contact* contact );
 
     private:
         FORCEINLINE void setGameManager( GameManager* gm ) { m_gameManager = gm; };

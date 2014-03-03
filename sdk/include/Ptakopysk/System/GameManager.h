@@ -87,6 +87,7 @@ namespace Ptakopysk
         void processPhysics( float dt, int velIters = DEFAULT_VEL_ITERS, int posIters = DEFAULT_POS_ITERS );
         void processUpdate( float dt, bool sort = true );
         void processRender( sf::RenderTarget* target, const sf::Transform& trans = sf::Transform::Identity );
+        void processContact( bool beginOrEnd, GameObject* a, GameObject* b, b2Contact* contact );
 
         XeCore::Common::Property< b2Vec2, GameManager > PhysicsGravity;
 

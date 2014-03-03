@@ -364,17 +364,15 @@ namespace Ptakopysk
             (*it)->onRender( target );
     }
 
-    void GameObject::onCollide( GameObject* other )
+    void GameObject::onCollide( GameObject* other, bool beginOrEnd, b2Contact* contact )
     {
         Component* c;
         for( std::map< XeCore::Common::IRtti::Derivation, Component* >::iterator it = m_components.begin(); it != m_components.end(); it++ )
         {
             c = it->second;
             if( c->getTypeFlags() & Component::tPhysics )
-                c->onCollide( other );
+                c->onCollide( other, beginOrEnd, contact );
         }
-        for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
-            (*it)->onCollide( other );
     }
 
 }

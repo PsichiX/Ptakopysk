@@ -9,6 +9,8 @@
 #include <string>
 #include "../Serialization/Serialized.h"
 
+class b2Contact;
+
 namespace Ptakopysk
 {
 
@@ -60,7 +62,7 @@ namespace Ptakopysk
         virtual void onUpdate( float dt ) {};
         virtual void onTransform( const sf::Transform& inTrans, sf::Transform& outTrans ) {};
         virtual void onRender( sf::RenderTarget* target ) {};
-        virtual void onCollide( GameObject* other ) {};
+        virtual void onCollide( GameObject* other, bool beginOrEnd, b2Contact* contact ) {};
 
     private:
         void setGameObject( GameObject* gameObject );
