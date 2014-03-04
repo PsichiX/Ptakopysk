@@ -1,4 +1,5 @@
 #include "../../include/Ptakopysk/Components/Body.h"
+#include "../../include/Ptakopysk/Components/Transform.h"
 #include "../../include/Ptakopysk/System/GameObject.h"
 #include "../../include/Ptakopysk/System/GameManager.h"
 
@@ -172,15 +173,22 @@ namespace Ptakopysk
         if( !getGameObject() )
             return;
         onDestroy();
+        Transform* trans = getGameObject()->getComponent< Transform >();
+        if( trans )
+        {
+            sf::Vector2f pos = trans->getPosition();
+            m_bodyDef.position = b2Vec2( pos.x, pos.y );
+            m_bodyDef.angle = DEGTORAD( trans->getRotation() );
+        }
         m_body = getGameObject()->getGameManager()->getPhysicsWorld()->CreateBody( &m_bodyDef );
         m_shape = xnew b2PolygonShape();
         if( m_verts.size() )
         {
             m_shape->Set( m_verts.data(), m_verts.size() );
             m_fixture = m_body->CreateFixture( m_shape, 1.0f );
-            m_fixture->SetUserData( this );
+            m_fixture->SetUserData( getGameObject() );
         }
-        m_body->SetUserData( this );
+        m_body->SetUserData( getGameObject() );
     }
 
     void Body::onDestroy()
@@ -206,6 +214,12 @@ namespace Ptakopysk
                 m_body->DestroyFixture( m_fixture );
             }
             getGameObject()->getGameManager()->getPhysicsWorld()->DestroyBody( m_body );
+            Transform* trans = getGameObject()->getComponent< Transform >();
+            if( trans )
+            {
+                trans->setPosition( sf::Vector2f( m_bodyDef.position.x, m_bodyDef.position.y ) );
+                trans->setRotation( RADTODEG( m_bodyDef.angle ) );
+            }
         }
         m_body = 0;
         m_fixture = 0;

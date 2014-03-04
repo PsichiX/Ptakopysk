@@ -55,15 +55,19 @@ namespace Ptakopysk
         FORCEINLINE T* getComponent() { return (T*)getComponent( RTTI_CLASS_TYPE( T ) ); };
 
         void addGameObject( GameObject* go );
-        void removeGameObject( GameObject* go, bool del = true );
-        void removeGameObject( const std::string& id, bool del = true );
-        void removeAllGameObjects( bool del = true );
+        void removeGameObject( GameObject* go );
+        void removeGameObject( const std::string& id );
+        void removeAllGameObjects();
         bool hasGameObject( GameObject* go );
         bool hasGameObject( const std::string& id );
         GameObject* getGameObject( const std::string& id );
         FORCEINLINE unsigned int gameObjectsCount() { return m_gameObjects.size(); };
         FORCEINLINE std::list< GameObject* >::iterator gameObjectAtBegin( bool prefab = false ) { return m_gameObjects.begin(); };
         FORCEINLINE std::list< GameObject* >::iterator gameObjectAtEnd( bool prefab = false ) { return m_gameObjects.end(); };
+        void processAdding();
+        void processRemoving();
+        bool isWaitingToAdd( GameObject* go );
+        bool isWaitingToRemove( GameObject* go );
 
         XeCore::Common::Property< std::string, GameObject > Id;
         XeCore::Common::Property< bool, GameObject > Active;
@@ -92,6 +96,8 @@ namespace Ptakopysk
         int m_order;
         std::map< XeCore::Common::IRtti::Derivation, Component* > m_components;
         std::list< GameObject* > m_gameObjects;
+        std::list< GameObject* > m_gameObjectsToCreate;
+        std::list< GameObject* > m_gameObjectsToDestroy;
     };
 
 }

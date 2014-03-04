@@ -32,7 +32,9 @@ namespace Ptakopysk
     GameObject::~GameObject()
     {
         removeAllComponents();
-        removeAllGameObjects( true );
+        removeAllGameObjects();
+        processAdding();
+        processRemoving();
     }
 
     GameManager* GameObject::getGameManagerRoot()
@@ -202,44 +204,38 @@ namespace Ptakopysk
 
     void GameObject::addGameObject( GameObject* go )
     {
-        if( !go || hasGameObject( go ) )
+        if( !go || hasGameObject( go ) || isWaitingToAdd( go ) )
             return;
-        m_gameObjects.push_back( go );
+        m_gameObjectsToCreate.push_back( go );
         go->setParent( this );
     }
 
-    void GameObject::removeGameObject( GameObject* go, bool del )
+    void GameObject::removeGameObject( GameObject* go )
     {
         if( !hasGameObject( go ) )
             return;
-        m_gameObjects.remove( go );
-        go->setParent( 0 );
-        if( del )
-            DELETE_OBJECT( go );
+        m_gameObjectsToDestroy.push_back( go );
+        go->onDestroy();
     }
 
-    void GameObject::removeGameObject( const std::string& id, bool del )
+    void GameObject::removeGameObject( const std::string& id )
     {
         GameObject* go = getGameObject( id );
         if( !go )
             return;
-        m_gameObjects.remove( go );
-        go->setParent( 0 );
-        if( del )
-            DELETE_OBJECT( go );
+        m_gameObjectsToDestroy.push_back( go );
+        go->onDestroy();
     }
 
-    void GameObject::removeAllGameObjects( bool del )
+    void GameObject::removeAllGameObjects()
     {
         GameObject* go;
         for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
         {
             go = *it;
-            go->setParent( 0 );
-            if( del )
-                DELETE_OBJECT( *it );
+            m_gameObjectsToDestroy.push_back( go );
+            go->onDestroy();
         }
-        m_gameObjects.clear();
     }
 
     bool GameObject::hasGameObject( GameObject* go )
@@ -264,6 +260,47 @@ namespace Ptakopysk
             if( (*it)->getId() == id )
                 return *it;
         return 0;
+    }
+
+    void GameObject::processAdding()
+    {
+        GameObject* go;
+        for( std::list< GameObject* >::iterator it = m_gameObjectsToCreate.begin(); it != m_gameObjectsToCreate.end(); it++ )
+        {
+            go = *it;
+            m_gameObjects.push_back( go );
+            go->onCreate();
+        }
+        m_gameObjectsToCreate.clear();
+    }
+
+    void GameObject::processRemoving()
+    {
+        GameObject* go;
+        for( std::list< GameObject* >::iterator it = m_gameObjectsToDestroy.begin(); it != m_gameObjectsToDestroy.end(); it++ )
+        {
+            go = *it;
+            m_gameObjects.remove( go );
+            go->setParent( 0 );
+            DELETE_OBJECT( go );
+        }
+        m_gameObjectsToDestroy.clear();
+    }
+
+    bool GameObject::isWaitingToAdd( GameObject* go )
+    {
+        for( std::list< GameObject* >::iterator it = m_gameObjectsToCreate.begin(); it != m_gameObjectsToCreate.end(); it++ )
+            if( *it == go )
+                return true;
+        return false;
+    }
+
+    bool GameObject::isWaitingToRemove( GameObject* go )
+    {
+        for( std::list< GameObject* >::iterator it = m_gameObjectsToDestroy.begin(); it != m_gameObjectsToDestroy.end(); it++ )
+            if( *it == go )
+                return true;
+        return false;
     }
 
     Json::Value GameObject::onSerialize( const std::string& property )
@@ -345,6 +382,8 @@ namespace Ptakopysk
             if( c->getTypeFlags() & Component::tTransform )
                 c->onTransform( trans, t );
         }
+        processAdding();
+        processRemoving();
         if( sort )
             m_gameObjects.sort( GameManager::CompareGameObjects() );
         for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )

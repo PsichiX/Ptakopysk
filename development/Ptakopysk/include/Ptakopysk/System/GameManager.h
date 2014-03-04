@@ -21,6 +21,9 @@ namespace Ptakopysk
         : public virtual XeCore::Common::IRtti
         , public virtual XeCore::Common::MemoryManager::Manageable
     {
+        friend class DestructionListener;
+        friend class ContactListener;
+
         RTTI_CLASS_DECLARE( GameManager );
 
     public:
@@ -71,9 +74,9 @@ namespace Ptakopysk
 
         void removeScene( SceneContentType contentFlags = All );
         void addGameObject( GameObject* go, bool prefab = false );
-        void removeGameObject( GameObject* go, bool prefab = false, bool del = true );
-        void removeGameObject( const std::string& id, bool prefab = false, bool del = true );
-        void removeAllGameObjects( bool prefab = false, bool del = true );
+        void removeGameObject( GameObject* go, bool prefab = false );
+        void removeGameObject( const std::string& id, bool prefab = false );
+        void removeAllGameObjects( bool prefab = false );
         bool hasGameObject( GameObject* go, bool prefab = false );
         bool hasGameObject( const std::string& id, bool prefab = false );
         GameObject* getGameObject( const std::string& id, bool prefab = false );
@@ -87,7 +90,10 @@ namespace Ptakopysk
         void processPhysics( float dt, int velIters = DEFAULT_VEL_ITERS, int posIters = DEFAULT_POS_ITERS );
         void processUpdate( float dt, bool sort = true );
         void processRender( sf::RenderTarget* target, const sf::Transform& trans = sf::Transform::Identity );
-        void processContact( bool beginOrEnd, GameObject* a, GameObject* b, b2Contact* contact );
+        void processAdding();
+        void processRemoving();
+        bool isWaitingToAdd( GameObject* go );
+        bool isWaitingToRemove( GameObject* go );
 
         XeCore::Common::Property< b2Vec2, GameManager > PhysicsGravity;
 
@@ -98,6 +104,8 @@ namespace Ptakopysk
             Component::OnBuildComponentCallback builder;
         };
 
+        void processContact( bool beginOrEnd, GameObject* a, GameObject* b, b2Contact* contact );
+
         static std::map< std::string, ComponentFactoryData > s_componentsFactory;
 
         b2World* m_world;
@@ -105,6 +113,8 @@ namespace Ptakopysk
         ContactListener* m_contactListener;
         std::list< GameObject* > m_prefabGameObjects;
         std::list< GameObject* > m_gameObjects;
+        std::list< GameObject* > m_gameObjectsToCreate;
+        std::list< GameObject* > m_gameObjectsToDestroy;
     };
 
     GameManager::SceneContentType operator|( GameManager::SceneContentType a, GameManager::SceneContentType b );

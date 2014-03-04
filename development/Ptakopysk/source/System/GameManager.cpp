@@ -145,6 +145,8 @@ namespace Ptakopysk
     GameManager::~GameManager()
     {
         removeScene();
+        processAdding();
+        processRemoving();
         DELETE_OBJECT( m_world );
         DELETE_OBJECT( m_destructionListener );
         DELETE_OBJECT( m_contactListener );
@@ -415,56 +417,73 @@ namespace Ptakopysk
 
     void GameManager::addGameObject( GameObject* go, bool prefab )
     {
-        if( !go || hasGameObject( go, prefab ) )
+        if( !go || hasGameObject( go ) || isWaitingToAdd( go ) )
             return;
-        std::list< GameObject* >& cgo = prefab ? m_prefabGameObjects : m_gameObjects;
+        std::list< GameObject* >& cgo = prefab ? m_prefabGameObjects : m_gameObjectsToCreate;
         cgo.push_back( go );
-        go->setGameManager( this );
         if( !prefab )
-            go->onCreate();
+            go->setGameManager( this );
     }
 
-    void GameManager::removeGameObject( GameObject* go, bool prefab, bool del )
+    void GameManager::removeGameObject( GameObject* go, bool prefab )
     {
         if( !hasGameObject( go, prefab ) )
             return;
-        std::list< GameObject* >& cgo = prefab ? m_prefabGameObjects : m_gameObjects;
-        cgo.remove( go );
-        if( !prefab )
-            go->onDestroy();
-        go->setGameManager( 0 );
-        if( del )
+        if( prefab )
+        {
+            m_prefabGameObjects.remove( go );
+            go->setGameManager( 0 );
             DELETE_OBJECT( go );
+        }
+        else
+        {
+            m_gameObjectsToDestroy.push_back( go );
+            if( !prefab )
+                go->onDestroy();
+        }
     }
 
-    void GameManager::removeGameObject( const std::string& id, bool prefab, bool del )
+    void GameManager::removeGameObject( const std::string& id, bool prefab )
     {
         GameObject* go = getGameObject( id, prefab );
         if( !go )
             return;
-        std::list< GameObject* >& cgo = prefab ? m_prefabGameObjects : m_gameObjects;
-        cgo.remove( go );
-        if( !prefab )
-            go->onDestroy();
-        go->setGameManager( 0 );
-        if( del )
-            DELETE_OBJECT( go );
-    }
-
-    void GameManager::removeAllGameObjects( bool prefab, bool del )
-    {
-        GameObject* go;
-        std::list< GameObject* >& cgo = prefab ? m_prefabGameObjects : m_gameObjects;
-        for( std::list< GameObject* >::iterator it = cgo.begin(); it != cgo.end(); it++ )
+        if( prefab )
         {
-            go = *it;
+            m_prefabGameObjects.remove( go );
+            go->setGameManager( 0 );
+            DELETE_OBJECT( go );
+        }
+        else
+        {
+            m_gameObjectsToDestroy.push_back( go );
             if( !prefab )
                 go->onDestroy();
-            go->setGameManager( 0 );
-            if( del )
-                DELETE_OBJECT( *it );
         }
-        cgo.clear();
+    }
+
+    void GameManager::removeAllGameObjects( bool prefab )
+    {
+        GameObject* go;
+        if( prefab )
+        {
+            for( std::list< GameObject* >::iterator it = m_prefabGameObjects.begin(); it != m_prefabGameObjects.end(); it++ )
+            {
+                go = *it;
+                go->setGameManager( 0 );
+                DELETE_OBJECT( go );
+            }
+            m_prefabGameObjects.clear();
+        }
+        else
+        {
+            for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            {
+                go = *it;
+                m_gameObjectsToDestroy.push_back( go );
+                go->onDestroy();
+            }
+        }
     }
 
     bool GameManager::hasGameObject( GameObject* go, bool prefab )
@@ -523,6 +542,8 @@ namespace Ptakopysk
 
     void GameManager::processUpdate( float dt, bool sort )
     {
+        processAdding();
+        processRemoving();
         if( sort )
             m_gameObjects.sort( CompareGameObjects() );
         GameObject* go;
@@ -547,6 +568,47 @@ namespace Ptakopysk
                 go->onRender( target );
         }
         target->setView( target->getDefaultView() );
+    }
+
+    void GameManager::processAdding()
+    {
+        GameObject* go;
+        for( std::list< GameObject* >::iterator it = m_gameObjectsToCreate.begin(); it != m_gameObjectsToCreate.end(); it++ )
+        {
+            go = *it;
+            m_gameObjects.push_back( go );
+            go->onCreate();
+        }
+        m_gameObjectsToCreate.clear();
+    }
+
+    void GameManager::processRemoving()
+    {
+        GameObject* go;
+        for( std::list< GameObject* >::iterator it = m_gameObjectsToDestroy.begin(); it != m_gameObjectsToDestroy.end(); it++ )
+        {
+            go = *it;
+            m_gameObjects.remove( go );
+            go->setGameManager( 0 );
+            DELETE_OBJECT( go );
+        }
+        m_gameObjectsToDestroy.clear();
+    }
+
+    bool GameManager::isWaitingToAdd( GameObject* go )
+    {
+        for( std::list< GameObject* >::iterator it = m_gameObjectsToCreate.begin(); it != m_gameObjectsToCreate.end(); it++ )
+            if( *it == go )
+                return true;
+        return false;
+    }
+
+    bool GameManager::isWaitingToRemove( GameObject* go )
+    {
+        for( std::list< GameObject* >::iterator it = m_gameObjectsToDestroy.begin(); it != m_gameObjectsToDestroy.end(); it++ )
+            if( *it == go )
+                return true;
+        return false;
     }
 
     void GameManager::processContact( bool beginOrEnd, GameObject* a, GameObject* b, b2Contact* contact )
