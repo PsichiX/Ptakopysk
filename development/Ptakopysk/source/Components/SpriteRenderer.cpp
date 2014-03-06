@@ -1,7 +1,6 @@
 #include "../../include/Ptakopysk/Components/SpriteRenderer.h"
 #include "../../include/Ptakopysk/Components/Transform.h"
 #include "../../include/Ptakopysk/System/GameObject.h"
-#include "../../include/Ptakopysk/System/Assets.h"
 
 namespace Ptakopysk
 {

@@ -824,13 +824,13 @@
 	"../../include/Ptakopysk/System/GameObject.h"
 	"../../include/Ptakopysk/System/GameManager.h"
 
-1393875192 source:d:\git\ptakopysk\development\ptakopysk\source\components\spriterenderer.cpp
+1394068960 source:d:\git\ptakopysk\development\ptakopysk\source\components\spriterenderer.cpp
 	"../../include/Ptakopysk/Components/SpriteRenderer.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/System/GameObject.h"
-	"../../include/Ptakopysk/System/Assets.h"
 
-1393873545 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\spriterenderer.h
+1394069035 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\spriterenderer.h
+	"../System/Assets.h"
 	"Component.h"
 	<SFML/Graphics.hpp>
 
@@ -839,7 +839,7 @@
 	<SFML/System/Vector2.hpp>
 	<SFML/Graphics/Transform.hpp>
 
-1394068398 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\assets.h
+1394068876 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\assets.h
 	<XeCore/Common/Base.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
