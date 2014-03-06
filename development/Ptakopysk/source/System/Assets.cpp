@@ -76,7 +76,12 @@ namespace Ptakopysk
         Json::Value id = root[ "id" ];
         Json::Value path = root[ "path" ];
         if( id.isString() && path.isString() )
+        {
+            Json::Value tags = root[ "tags" ];
+            if( tags.isArray() && tags.size() )
+                parseTags( tags, m_tagsTextures[ id.asString() ] );
             return loadTexture( id.asString(), path.asString() );
+        }
         return 0;
     }
 
@@ -88,7 +93,12 @@ namespace Ptakopysk
         Json::Value vspath = root[ "vspath" ];
         Json::Value fspath = root[ "fspath" ];
         if( id.isString() && vspath.isString() && fspath.isString() )
+        {
+            Json::Value tags = root[ "tags" ];
+            if( tags.isArray() && tags.size() )
+                parseTags( tags, m_tagsShaders[ id.asString() ] );
             return loadShader( id.asString(), vspath.asString(), fspath.asString() );
+        }
         return 0;
     }
 
@@ -99,7 +109,12 @@ namespace Ptakopysk
         Json::Value id = root[ "id" ];
         Json::Value path = root[ "path" ];
         if( id.isString() && path.isString() )
+        {
+            Json::Value tags = root[ "tags" ];
+            if( tags.isArray() && tags.size() )
+                parseTags( tags, m_tagsSounds[ id.asString() ] );
             return loadSound( id.asString(), path.asString() );
+        }
         return 0;
     }
 
@@ -110,7 +125,12 @@ namespace Ptakopysk
         Json::Value id = root[ "id" ];
         Json::Value path = root[ "path" ];
         if( id.isString() && path.isString() )
+        {
+            Json::Value tags = root[ "tags" ];
+            if( tags.isArray() && tags.size() )
+                parseTags( tags, m_tagsMusics[ id.asString() ] );
             return loadMusic( id.asString(), path.asString() );
+        }
         return 0;
     }
 
@@ -121,7 +141,12 @@ namespace Ptakopysk
         Json::Value id = root[ "id" ];
         Json::Value path = root[ "path" ];
         if( id.isString() && path.isString() )
+        {
+            Json::Value tags = root[ "tags" ];
+            if( tags.isArray() && tags.size() )
+                parseTags( tags, m_tagsFonts[ id.asString() ] );
             return loadFont( id.asString(), path.asString() );
+        }
         return 0;
     }
 
@@ -218,6 +243,8 @@ namespace Ptakopysk
         Json::Value root;
         root[ "id" ] = id;
         root[ "path" ] = m_metaTextures[ id ];
+        if( m_tagsTextures.count( id ) )
+            root[ "tags" ] = jsonTags( m_tagsTextures[ id ] );
         return root;
     }
 
@@ -234,6 +261,8 @@ namespace Ptakopysk
         {
             root[ "vspath" ] = p[ 0 ];
             root[ "fspath" ] = p[ 1 ];
+            if( m_tagsShaders.count( id ) )
+                root[ "tags" ] = jsonTags( m_tagsShaders[ id ] );
         }
         else
             root = Json::Value::null;
@@ -248,6 +277,8 @@ namespace Ptakopysk
         Json::Value root;
         root[ "id" ] = id;
         root[ "path" ] = m_metaSounds[ id ];
+        if( m_tagsSounds.count( id ) )
+            root[ "tags" ] = jsonTags( m_tagsSounds[ id ] );
         return root;
     }
 
@@ -258,6 +289,8 @@ namespace Ptakopysk
         Json::Value root;
         root[ "id" ] = id;
         root[ "path" ] = m_metaMusics[ id ];
+        if( m_tagsMusics.count( id ) )
+            root[ "tags" ] = jsonTags( m_tagsMusics[ id ] );
         return root;
     }
 
@@ -268,6 +301,8 @@ namespace Ptakopysk
         Json::Value root;
         root[ "id" ] = id;
         root[ "path" ] = m_metaFonts[ id ];
+        if( m_tagsFonts.count( id ) )
+            root[ "tags" ] = jsonTags( m_tagsFonts[ id ] );
         return root;
     }
 
@@ -500,6 +535,8 @@ namespace Ptakopysk
         }
         if( m_metaTextures.count( id ) )
             m_metaTextures.erase( id );
+        if( m_tagsTextures.count( id ) )
+            m_tagsTextures.erase( id );
     }
 
     void Assets::freeShader( const std::string& id )
@@ -512,6 +549,8 @@ namespace Ptakopysk
         }
         if( m_metaShaders.count( id ) )
             m_metaShaders.erase( id );
+        if( m_tagsShaders.count( id ) )
+            m_tagsShaders.erase( id );
     }
 
     void Assets::freeSound( const std::string& id )
@@ -524,6 +563,8 @@ namespace Ptakopysk
         }
         if( m_metaSounds.count( id ) )
             m_metaSounds.erase( id );
+        if( m_tagsSounds.count( id ) )
+            m_tagsSounds.erase( id );
         if( m_soundsBuffs.count( id ) )
         {
             sf::SoundBuffer* t = m_soundsBuffs[ id ];
@@ -542,6 +583,8 @@ namespace Ptakopysk
         }
         if( m_metaMusics.count( id ) )
             m_metaMusics.erase( id );
+        if( m_tagsMusics.count( id ) )
+            m_tagsMusics.erase( id );
     }
 
     void Assets::freeFont( const std::string& id )
@@ -554,6 +597,8 @@ namespace Ptakopysk
         }
         if( m_metaFonts.count( id ) )
             m_metaFonts.erase( id );
+        if( m_tagsFonts.count( id ) )
+            m_tagsFonts.erase( id );
     }
 
     void Assets::freeAllTextures()
@@ -562,6 +607,7 @@ namespace Ptakopysk
             DELETE_OBJECT( it->second );
         m_textures.clear();
         m_metaTextures.clear();
+        m_tagsTextures.clear();
     }
 
     void Assets::freeAllShaders()
@@ -570,6 +616,7 @@ namespace Ptakopysk
             DELETE_OBJECT( it->second );
         m_shaders.clear();
         m_metaShaders.clear();
+        m_tagsShaders.clear();
     }
 
     void Assets::freeAllSounds()
@@ -581,6 +628,7 @@ namespace Ptakopysk
             DELETE_OBJECT( it->second );
         m_sounds.clear();
         m_metaSounds.clear();
+        m_tagsSounds.clear();
     }
 
     void Assets::freeAllMusics()
@@ -589,6 +637,7 @@ namespace Ptakopysk
             DELETE_OBJECT( it->second );
         m_musics.clear();
         m_metaMusics.clear();
+        m_tagsMusics.clear();
     }
 
     void Assets::freeAllFonts()
@@ -597,6 +646,7 @@ namespace Ptakopysk
             DELETE_OBJECT( it->second );
         m_fonts.clear();
         m_metaFonts.clear();
+        m_tagsFonts.clear();
     }
 
     void Assets::freeAll()
@@ -606,6 +656,22 @@ namespace Ptakopysk
         freeAllSounds();
         freeAllMusics();
         freeAllFonts();
+    }
+
+    void Assets::parseTags( const Json::Value& inRoot, std::vector< std::string >& outArray )
+    {
+        outArray.clear();
+        if( inRoot.isArray() )
+            for( unsigned int i = 0; i < inRoot.size(); i++ )
+                outArray.push_back( inRoot[ i ].asString() );
+    }
+
+    Json::Value Assets::jsonTags( std::vector< std::string >& inArray )
+    {
+        Json::Value root = Json::Value( Json::arrayValue );
+        for( std::vector< std::string >::iterator it = inArray.begin(); it != inArray.end(); it++ )
+            root.append( *it );
+        return root;
     }
 
 }

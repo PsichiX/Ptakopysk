@@ -74,6 +74,12 @@ namespace Ptakopysk
         std::string findMusic( const sf::Music* ptr );
         std::string findFont( const sf::Font* ptr );
 
+        FORCEINLINE std::vector< std::string >* getTextureTags( const std::string& id ) { return m_textures.count( id ) ? &m_tagsTextures[ id ] : 0; };
+        FORCEINLINE std::vector< std::string >* getShaderTags( const std::string& id ) { return m_shaders.count( id ) ? &m_tagsShaders[ id ] : 0; };
+        FORCEINLINE std::vector< std::string >* getSoundTags( const std::string& id ) { return m_sounds.count( id ) ? &m_tagsSounds[ id ] : 0; };
+        FORCEINLINE std::vector< std::string >* getMusicTags( const std::string& id ) { return m_musics.count( id ) ? &m_tagsMusics[ id ] : 0; };
+        FORCEINLINE std::vector< std::string >* getFontTags( const std::string& id ) { return m_fonts.count( id ) ? &m_tagsFonts[ id ] : 0; };
+
         void freeTexture( const std::string& id );
         void freeShader( const std::string& id );
         void freeSound( const std::string& id );
@@ -87,6 +93,9 @@ namespace Ptakopysk
         void freeAll();
 
     private:
+        void parseTags( const Json::Value& inRoot, std::vector< std::string >& outArray );
+        Json::Value jsonTags( std::vector< std::string >& inArray );
+
         std::map< std::string, sf::Texture* > m_textures;
         std::map< std::string, sf::Shader* > m_shaders;
         std::map< std::string, sf::Sound* > m_sounds;
@@ -98,6 +107,11 @@ namespace Ptakopysk
         std::map< std::string, std::string > m_metaSounds;
         std::map< std::string, std::string > m_metaMusics;
         std::map< std::string, std::string > m_metaFonts;
+        std::map< std::string, std::vector< std::string > > m_tagsTextures;
+        std::map< std::string, std::vector< std::string > > m_tagsShaders;
+        std::map< std::string, std::vector< std::string > > m_tagsSounds;
+        std::map< std::string, std::vector< std::string > > m_tagsMusics;
+        std::map< std::string, std::vector< std::string > > m_tagsFonts;
     };
 
 }

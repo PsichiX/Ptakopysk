@@ -23,7 +23,7 @@
 	</File>
 	<File name="source\Components\Transform.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="3025" topLine="80" />
+			<Cursor1 position="1895" topLine="44" />
 		</Cursor>
 	</File>
 	<File name="source\Serialization\BitFieldSerializer.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -38,7 +38,7 @@
 	</File>
 	<File name="source\System\Assets.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="40" topLine="0" />
+			<Cursor1 position="20395" topLine="656" />
 		</Cursor>
 	</File>
 	<File name="source\System\Events.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -83,7 +83,7 @@
 	</File>
 	<File name="include\Ptakopysk\Components\Transform.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1501" topLine="23" />
+			<Cursor1 position="34" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="include\Ptakopysk\Serialization\BitFieldSerializer.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -103,7 +103,7 @@
 	</File>
 	<File name="include\Ptakopysk\System\Assets.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="3988" topLine="84" />
+			<Cursor1 position="4496" topLine="77" />
 		</Cursor>
 	</File>
 	<File name="include\Ptakopysk\System\GameManager.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">

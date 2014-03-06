@@ -174,3 +174,7 @@ fi
 if [ ${CP_SFML[1]} = 1 ]; then
   cp ./development/requirements/SFML-2.1/bin/*.dll ./sdk/bin/
 fi
+
+# templates
+mkdir -p ./sdk/templates/
+cp ./templates/* ./sdk/templates/
