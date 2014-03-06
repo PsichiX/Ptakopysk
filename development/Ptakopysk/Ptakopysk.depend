@@ -839,7 +839,7 @@
 	<SFML/System/Vector2.hpp>
 	<SFML/Graphics/Transform.hpp>
 
-1394061403 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\assets.h
+1394068398 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\assets.h
 	<XeCore/Common/Base.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -863,7 +863,7 @@
 1393674234 source:d:\git\ptakopysk\development\ptakopysk\source\serialization\serialized.cpp
 	"../../include/Ptakopysk/Serialization/Serialized.h"
 
-1394061349 source:d:\git\ptakopysk\development\ptakopysk\source\system\assets.cpp
+1394068332 source:d:\git\ptakopysk\development\ptakopysk\source\system\assets.cpp
 	"../../include/Ptakopysk/System/Assets.h"
 	<XeCore/Common/String.h>
 
@@ -903,7 +903,7 @@
 	<XeCore/Common/Logger.h>
 	<sstream>
 
-1393875177 source:d:\git\ptakopysk\development\ptakopysk\source\components\camera.cpp
+1394064634 source:d:\git\ptakopysk\development\ptakopysk\source\components\camera.cpp
 	"../../include/Ptakopysk/Components/Camera.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/System/GameObject.h"

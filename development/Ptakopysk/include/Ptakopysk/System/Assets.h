@@ -68,6 +68,8 @@ namespace Ptakopysk
         sf::Music* getMusic( const std::string& id );
         sf::Font* getFont( const std::string& id );
 
+        FORCEINLINE sf::Texture* getDefaultTexture() { return m_defaultTexture; };
+
         std::string findTexture( const sf::Texture* ptr );
         std::string findShader( const sf::Shader* ptr );
         std::string findSound( const sf::Sound* ptr );
@@ -112,6 +114,7 @@ namespace Ptakopysk
         std::map< std::string, std::vector< std::string > > m_tagsSounds;
         std::map< std::string, std::vector< std::string > > m_tagsMusics;
         std::map< std::string, std::vector< std::string > > m_tagsFonts;
+        sf::Texture* m_defaultTexture;
     };
 
 }

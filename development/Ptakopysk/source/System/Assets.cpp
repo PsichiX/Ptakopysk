@@ -11,11 +11,14 @@ namespace Ptakopysk
     Assets::Assets()
     : RTTI_CLASS_DEFINE( Assets )
     {
+        m_defaultTexture = xnew sf::Texture();
+        m_defaultTexture->create( 1, 1 );
     }
 
     Assets::~Assets()
     {
         freeAll();
+        DELETE_OBJECT( m_defaultTexture );
     }
 
     void Assets::jsonToAssets( const Json::Value& root )
