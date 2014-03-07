@@ -1,7 +1,6 @@
 #ifndef __PTAKOPYSK__SPRITE_RENDERER__
 #define __PTAKOPYSK__SPRITE_RENDERER__
 
-#include "../System/Assets.h"
 #include "Component.h"
 #include <SFML/Graphics.hpp>
 
@@ -22,8 +21,8 @@ namespace Ptakopysk
         FORCEINLINE static Component* onBuildComponent() { return xnew SpriteRenderer(); }
 
         FORCEINLINE sf::RectangleShape* getRenderer() { return m_shape; };
-        FORCEINLINE sf::Texture* getTexture() { return (sf::Texture*)m_shape->getTexture(); };
-        FORCEINLINE void setTexture( sf::Texture* tex ) { m_shape->setTexture( (const sf::Texture*)( tex ? Assets::use().getDefaultTexture() : tex ) ); };
+        sf::Texture* getTexture();
+        void setTexture( sf::Texture* tex );
         FORCEINLINE sf::Vector2f getSize() { return m_shape->getSize(); };
         void setSize( sf::Vector2f size );
         FORCEINLINE sf::Vector2f getOrigin() { return m_shape->getOrigin(); };

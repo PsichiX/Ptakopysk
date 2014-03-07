@@ -824,13 +824,13 @@
 	"../../include/Ptakopysk/System/GameObject.h"
 	"../../include/Ptakopysk/System/GameManager.h"
 
-1394068960 source:d:\git\ptakopysk\development\ptakopysk\source\components\spriterenderer.cpp
+1394224796 source:d:\git\ptakopysk\development\ptakopysk\source\components\spriterenderer.cpp
 	"../../include/Ptakopysk/Components/SpriteRenderer.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/System/GameObject.h"
+	"../../include/Ptakopysk/System/Assets.h"
 
-1394069035 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\spriterenderer.h
-	"../System/Assets.h"
+1394222705 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\spriterenderer.h
 	"Component.h"
 	<SFML/Graphics.hpp>
 
@@ -839,7 +839,7 @@
 	<SFML/System/Vector2.hpp>
 	<SFML/Graphics/Transform.hpp>
 
-1394068876 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\assets.h
+1394150908 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\assets.h
 	<XeCore/Common/Base.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -863,7 +863,7 @@
 1393674234 source:d:\git\ptakopysk\development\ptakopysk\source\serialization\serialized.cpp
 	"../../include/Ptakopysk/Serialization/Serialized.h"
 
-1394068332 source:d:\git\ptakopysk\development\ptakopysk\source\system\assets.cpp
+1394151074 source:d:\git\ptakopysk\development\ptakopysk\source\system\assets.cpp
 	"../../include/Ptakopysk/System/Assets.h"
 	<XeCore/Common/String.h>
 

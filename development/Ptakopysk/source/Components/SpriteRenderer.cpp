@@ -1,6 +1,7 @@
 #include "../../include/Ptakopysk/Components/SpriteRenderer.h"
 #include "../../include/Ptakopysk/Components/Transform.h"
 #include "../../include/Ptakopysk/System/GameObject.h"
+#include "../../include/Ptakopysk/System/Assets.h"
 
 namespace Ptakopysk
 {
@@ -28,11 +29,29 @@ namespace Ptakopysk
         serializableProperty( "OriginPercent" );
         serializableProperty( "Origin" );
         m_shape = xnew sf::RectangleShape();
+        setTexture( 0 );
     }
 
     SpriteRenderer::~SpriteRenderer()
     {
         DELETE_OBJECT( m_shape );
+    }
+
+    sf::Texture* SpriteRenderer::getTexture()
+    {
+        sf::Texture* t = (sf::Texture*)m_shape->getTexture();
+        return t == Assets::use().getDefaultTexture() ? 0 : t;
+    }
+
+    void SpriteRenderer::setTexture( sf::Texture* tex )
+    {
+        sf::Texture* t = tex ? tex : Assets::use().getDefaultTexture();
+        m_shape->setTexture( t );
+        if( t )
+        {
+            sf::Vector2u s = t->getSize();
+            m_shape->setTextureRect( sf::IntRect( 0, 0, s.x, s.y ) );
+        }
     }
 
     void SpriteRenderer::setSize( sf::Vector2f size )
@@ -114,21 +133,21 @@ namespace Ptakopysk
     {
         if( property == "Texture" && root.isString() )
             setTexture( Assets::use().getTexture( root.asString() ) );
-        else if( property == "Size" && root.isArray() && root.size() >= 2 )
+        else if( property == "Size" && root.isArray() && root.size() == 2 )
         {
             setSize( sf::Vector2f(
                 (float)root[ 0u ].asDouble(),
                 (float)root[ 1u ].asDouble()
             ) );
         }
-        else if( property == "Origin" && root.isArray() && root.size() >= 2 )
+        else if( property == "Origin" && root.isArray() && root.size() == 2 )
         {
             setOrigin( sf::Vector2f(
                 (float)root[ 0u ].asDouble(),
                 (float)root[ 1u ].asDouble()
             ) );
         }
-        else if( property == "OriginPercent" && root.isArray() && root.size() >= 2 )
+        else if( property == "OriginPercent" && root.isArray() && root.size() == 2 )
         {
             setOriginPercent( sf::Vector2f(
                 (float)root[ 0u ].asDouble(),
