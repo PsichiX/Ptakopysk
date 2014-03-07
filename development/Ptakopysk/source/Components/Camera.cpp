@@ -14,9 +14,15 @@ namespace Ptakopysk
     : RTTI_CLASS_DEFINE( Camera )
     , Component( Component::tUpdate | Component::tRender )
     , Size( this, &Camera::getSize, &Camera::setSize )
+    , Zoom( this, &Camera::getZoom, &Camera::setZoom )
+    , ZoomOut( this, &Camera::getZoomOut, &Camera::setZoomOut )
     , Viewport( this, &Camera::getViewport, &Camera::setViewport )
+    , m_zoom( 1.0f )
+    , m_zoomInv( 1.0f )
     {
         serializableProperty( "Size" );
+        serializableProperty( "ZoomOut" );
+        serializableProperty( "Zoom" );
         serializableProperty( "Viewport" );
         m_view = xnew sf::View();
     }
@@ -24,6 +30,29 @@ namespace Ptakopysk
     Camera::~Camera()
     {
         DELETE_OBJECT( m_view );
+    }
+
+    void Camera::setSize( sf::Vector2f v )
+    {
+        m_size = v;
+        m_view->setSize( v );
+        m_view->zoom( m_zoomInv );
+    }
+
+    void Camera::setZoom( float v )
+    {
+        m_zoom = v;
+        m_zoomInv = v == 0.0f ? 0.0f : 1.0f / v;
+        m_view->setSize( m_size );
+        m_view->zoom( m_zoomInv );
+    }
+
+    void Camera::setZoomOut( float v )
+    {
+        m_zoomInv = v;
+        m_zoom = v == 0.0f ? 0.0f : 1.0f / v;
+        m_view->setSize( m_size );
+        m_view->zoom( m_zoomInv );
     }
 
     Json::Value Camera::onSerialize( const std::string& property )
@@ -36,6 +65,10 @@ namespace Ptakopysk
             v.append( Json::Value( s.y ) );
             return v;
         }
+        else if( property == "Zoom" )
+            return Json::Value( m_zoom );
+        else if( property == "ZoomOut" )
+            return Json::Value( m_zoomInv );
         else if( property == "Viewport" )
         {
             sf::FloatRect r = getViewport();
@@ -59,6 +92,10 @@ namespace Ptakopysk
                 (float)root[ 1u ].asDouble()
             ) );
         }
+        else if( property == "Zoom" && root.isNumeric() )
+            setZoom( (float)root.asDouble() );
+        else if( property == "ZoomOut" && root.isNumeric() )
+            setZoomOut( (float)root.asDouble() );
         else if( property == "Viewport" && root.isArray() && root.size() == 4 )
         {
             setViewport( sf::FloatRect(
@@ -81,6 +118,8 @@ namespace Ptakopysk
             return;
         Camera* c = (Camera*)dst;
         c->setSize( getSize() );
+        c->setZoomOut( getZoomOut() );
+        c->setZoom( getZoom() );
         c->setViewport( getViewport() );
     }
 

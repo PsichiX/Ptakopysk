@@ -808,7 +808,7 @@
 	<string>
 	"../Serialization/Serialized.h"
 
-1393971985 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gamemanager.h
+1394235381 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gamemanager.h
 	<XeCore/Common/Property.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -903,12 +903,12 @@
 	<XeCore/Common/Logger.h>
 	<sstream>
 
-1394064634 source:d:\git\ptakopysk\development\ptakopysk\source\components\camera.cpp
+1394235034 source:d:\git\ptakopysk\development\ptakopysk\source\components\camera.cpp
 	"../../include/Ptakopysk/Components/Camera.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/System/GameObject.h"
 
-1393874718 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\camera.h
+1394234691 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\camera.h
 	"Component.h"
 	<SFML/Graphics/View.hpp>
 

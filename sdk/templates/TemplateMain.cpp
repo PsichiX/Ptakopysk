@@ -32,7 +32,7 @@ int main()
     /// game manager
     GameManager* gameManager = xnew GameManager();
     /// deserialize JSON to scene
-    gameManager->jsonToScene( gameManager->loadJson( "assets/scenes/game.json" ) );
+    gameManager->jsonToScene( GameManager::loadJson( "assets/scenes/game.json" ) );
 
     /// main loop
     srand( time( 0 ) );
@@ -68,7 +68,7 @@ int main()
     }
 
     /// serialize scene to JSON
-    gameManager->saveJson( "assets/scenes/_game.json", gameManager->sceneToJson() );
+    GameManager::saveJson( "assets/scenes/_game.json", gameManager->sceneToJson() );
 
     DELETE_OBJECT( window );
     DELETE_OBJECT( gameManager );

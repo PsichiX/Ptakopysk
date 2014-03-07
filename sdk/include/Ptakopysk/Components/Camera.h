@@ -20,13 +20,18 @@ namespace Ptakopysk
         FORCEINLINE static Component* onBuildComponent() { return xnew Camera(); }
 
         FORCEINLINE sf::View* getView() { return m_view; };
-        FORCEINLINE sf::Vector2f getSize() { return m_view->getSize(); };
-        FORCEINLINE void setSize( sf::Vector2f v ) { m_view->setSize( v ); };
+        FORCEINLINE sf::Vector2f getSize() { return m_size; };
+        void setSize( sf::Vector2f v );
         FORCEINLINE sf::FloatRect getViewport() { return m_view->getViewport(); };
         FORCEINLINE void setViewport( sf::FloatRect v ) { m_view->setViewport( v ); };
-        FORCEINLINE void applyZoom( float v ) { m_view->zoom( v ); };
+        FORCEINLINE float getZoom() { return m_zoom; };
+        void setZoom( float v );
+        FORCEINLINE float getZoomOut() { return m_zoomInv; };
+        void setZoomOut( float v );
 
         XeCore::Common::Property< sf::Vector2f, Camera > Size;
+        XeCore::Common::Property< float, Camera > Zoom;
+        XeCore::Common::Property< float, Camera > ZoomOut;
         XeCore::Common::Property< sf::FloatRect, Camera > Viewport;
 
     protected:
@@ -39,6 +44,9 @@ namespace Ptakopysk
 
     private:
         sf::View* m_view;
+        sf::Vector2f m_size;
+        float m_zoom;
+        float m_zoomInv;
     };
 
 }
