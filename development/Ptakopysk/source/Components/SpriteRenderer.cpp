@@ -168,7 +168,7 @@ namespace Ptakopysk
             Json::Value blendMode = root[ "blendMode" ];
             Serialized::ICustomSerializer* s = Serialized::getCustomSerializer( "BlendMode" );
             if( s && blendMode.isString() )
-                s->deserialize( &m_renderStates.blendMode, root );
+                s->deserialize( &m_renderStates.blendMode, blendMode );
             Json::Value shader = root[ "shader" ];
             if( shader.isString() )
                 m_renderStates.shader = Assets::use().getShader( shader.asString() );
