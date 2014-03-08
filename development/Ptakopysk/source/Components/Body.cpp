@@ -81,15 +81,7 @@ namespace Ptakopysk
         else if( property == "Density" )
             return Json::Value( m_density );
         else if( property == "BodyType" )
-        {
-            Serialized::ICustomSerializer* s = Serialized::getCustomSerializer( "b2BodyType" );
-            if( s )
-            {
-                b2BodyType bt = getBodyType();
-                return s->serialize( &bt );
-            }
-            return Json::Value::null;
-        }
+            return Serialized::serializeCustom< b2BodyType >( "b2BodyType", getBodyType() );
         else if( property == "LinearVelocity" )
         {
             b2Vec2 p = getLinearVelocity();
@@ -139,15 +131,7 @@ namespace Ptakopysk
         else if( property == "Density" && root.isNumeric() )
             setDensity( (float)root.asDouble() );
         else if( property == "BodyType" && root.isString() )
-        {
-            Serialized::ICustomSerializer* s = Serialized::getCustomSerializer( "b2BodyType" );
-            if( s )
-            {
-                b2BodyType bt = getBodyType();
-                s->deserialize( &bt, root );
-                setBodyType( bt );
-            }
-        }
+            setBodyType( Serialized::deserializeCustom< b2BodyType >( "b2BodyType", root ) );
         else if( property == "LinearVelocity" && root.isArray() && root.size() == 2 )
             setLinearVelocity( b2Vec2( (float)root[ 0u ].asDouble(), (float)root[ 1u ].asDouble() ) );
         else if( property == "AngularVelocity" && root.isNumeric() )

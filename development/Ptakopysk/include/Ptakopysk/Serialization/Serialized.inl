@@ -3,6 +3,37 @@
 
 namespace Ptakopysk
 {
+    template< typename T >
+    Json::Value Serialized::serializeCustom( const std::string& id, const T* srcValue )
+    {
+        Serialized::ICustomSerializer* s = Serialized::getCustomSerializer( id );
+        return s ? s->serialize( srcValue ) : Json::Value::null;
+    }
+
+    template< typename T >
+    Json::Value Serialized::serializeCustom( const std::string& id, const T& srcValue )
+    {
+        Serialized::ICustomSerializer* s = Serialized::getCustomSerializer( id );
+        return s ? s->serialize( &srcValue ) : Json::Value::null;
+    }
+
+    template< typename T >
+    void Serialized::deserializeCustom( const std::string& id, const T* dstValue, const Json::Value& root )
+    {
+        Serialized::ICustomSerializer* s = Serialized::getCustomSerializer( id );
+        if( s )
+            s->deserialize( dstValue, root );
+    }
+
+    template< typename T >
+    T Serialized::deserializeCustom( const std::string& id, const Json::Value& root )
+    {
+        Serialized::ICustomSerializer* s = Serialized::getCustomSerializer( id );
+        T v;
+        if( s )
+            s->deserialize( &v, root );
+        return v;
+    }
 
     void Serialized::serializableProperty( const std::string& name )
     {

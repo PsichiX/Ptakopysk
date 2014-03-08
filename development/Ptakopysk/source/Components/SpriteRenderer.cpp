@@ -120,8 +120,7 @@ namespace Ptakopysk
         else if( property == "RenderStates" )
         {
             Json::Value v;
-            Serialized::ICustomSerializer* s = Serialized::getCustomSerializer( "BlendMode" );
-            v[ "blendMode" ] = s ? s->serialize( &m_renderStates.blendMode ) : Json::Value::null;
+            v[ "blendMode" ] = Serialized::serializeCustom< sf::BlendMode >( "BlendMode", m_renderStates.blendMode );
             v[ "shader" ] = Json::Value( Assets::use().findShader( m_renderStates.shader ) );
             return v;
         }
@@ -166,9 +165,8 @@ namespace Ptakopysk
         else if( property == "RenderStates" && root.isObject() )
         {
             Json::Value blendMode = root[ "blendMode" ];
-            Serialized::ICustomSerializer* s = Serialized::getCustomSerializer( "BlendMode" );
-            if( s && blendMode.isString() )
-                s->deserialize( &m_renderStates.blendMode, blendMode );
+            if( blendMode.isString() )
+                m_renderStates.blendMode = Serialized::deserializeCustom< sf::BlendMode >( "BlendMode", blendMode );
             Json::Value shader = root[ "shader" ];
             if( shader.isString() )
                 m_renderStates.shader = Assets::use().getShader( shader.asString() );

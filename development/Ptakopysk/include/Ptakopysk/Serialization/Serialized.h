@@ -35,6 +35,14 @@ namespace Ptakopysk
         static void unregisterCustomSerializer( ICustomSerializer* serializer, bool del = true );
         static void unregisterAllCustomSerializers( bool del = true );
         static ICustomSerializer* getCustomSerializer( const std::string& id );
+        template< typename T >
+        FORCEINLINE static Json::Value serializeCustom( const std::string& id, const T* srcValue );
+        template< typename T >
+        FORCEINLINE static Json::Value serializeCustom( const std::string& id, const T& srcValue );
+        template< typename T >
+        FORCEINLINE static void deserializeCustom( const std::string& id, const T* dstValue, const Json::Value& root );
+        template< typename T >
+        FORCEINLINE static T deserializeCustom( const std::string& id, const Json::Value& root );
 
         FORCEINLINE void serializableProperty( const std::string& name );
         FORCEINLINE void notSerializableProperty( const std::string& name );

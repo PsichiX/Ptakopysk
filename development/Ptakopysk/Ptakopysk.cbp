@@ -119,6 +119,8 @@
 		<Unit filename="include/Ptakopysk/System/Events.h" />
 		<Unit filename="include/Ptakopysk/System/GameManager.h" />
 		<Unit filename="include/Ptakopysk/System/GameObject.h" />
+		<Unit filename="include/Ptakopysk/System/Math.h" />
+		<Unit filename="include/Ptakopysk/System/Math.inl" />
 		<Unit filename="source/Components/Body.cpp" />
 		<Unit filename="source/Components/Camera.cpp" />
 		<Unit filename="source/Components/Component.cpp" />
