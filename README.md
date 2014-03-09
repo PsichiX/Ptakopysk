@@ -7,7 +7,7 @@ Ptakopysk
 ###How-to:###
 All you will want to do with this library in your project is:
 - use this template to make main.cpp: [TemplateMain.cpp](https://github.com/PsichiX/Ptakopysk/blob/master/templates/TemplateMain.cpp)
-- extend your game prototype by adding components made by yourself, based on these templates: [TemplateComponent.h](https://github.com/PsichiX/Ptakopysk/blob/master/templates/TemplateComponent.h), [TemplateComponent.h](https://github.com/PsichiX/Ptakopysk/blob/master/templates/TemplateComponent.cpp)
+- extend your game prototype by adding components made by yourself, based on these templates: [TemplateComponent.h](https://github.com/PsichiX/Ptakopysk/blob/master/templates/TemplateComponent.h), [TemplateComponent.cpp](https://github.com/PsichiX/Ptakopysk/blob/master/templates/TemplateComponent.cpp)
 
 ---------
 ###Using 3rd-party libraries:###
