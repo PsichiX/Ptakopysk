@@ -121,6 +121,8 @@
 		<Unit filename="include/Ptakopysk/System/GameObject.h" />
 		<Unit filename="include/Ptakopysk/System/Math.h" />
 		<Unit filename="include/Ptakopysk/System/Math.inl" />
+		<Unit filename="include/Ptakopysk/System/Tween.h" />
+		<Unit filename="include/Ptakopysk/System/Tween.inl" />
 		<Unit filename="source/Components/Body.cpp" />
 		<Unit filename="source/Components/Camera.cpp" />
 		<Unit filename="source/Components/Component.cpp" />

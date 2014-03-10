@@ -54,14 +54,17 @@ namespace Ptakopysk
 
                 typedef float ( *BasicEasingFunc )( float );
 
+                template< typename T, BasicEasingFunc F >
+                struct EasingFunc { typedef T ( *Type )( float, T, T, float ); };
+
                 template< BasicEasingFunc F >
                 FORCEINLINE float ease( float t, float b, float c, float d );
 
                 template< BasicEasingFunc F >
-                FORCEINLINE sf::Vector2f ease( float t, const sf::Vector2f& b, const sf::Vector2f& c, float d );
+                FORCEINLINE sf::Vector2f ease( float t, sf::Vector2f b, sf::Vector2f c, float d );
 
                 template< BasicEasingFunc F >
-                FORCEINLINE sf::Vector3f ease( float t, const sf::Vector3f& b, const sf::Vector3f& c, float d );
+                FORCEINLINE sf::Vector3f ease( float t, sf::Vector3f b, sf::Vector3f c, float d );
 
                 BASIC_EASING_FUNCS_GROUP_DECL( linear );
                 BASIC_EASING_FUNCS_GROUP_DECL( quadratic );
