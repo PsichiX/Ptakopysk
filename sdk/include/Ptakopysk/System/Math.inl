@@ -84,7 +84,7 @@ namespace Ptakopysk
                 }
 
                 template< BasicEasingFunc F >
-                sf::Vector2f ease( float t, const sf::Vector2f& b, const sf::Vector2f& c, float d )
+                sf::Vector2f ease( float t, sf::Vector2f b, sf::Vector2f c, float d )
                 {
                     t = F( d == 0.0f ? 1.0f : t / d );
                     return sf::Vector2f(
@@ -94,7 +94,7 @@ namespace Ptakopysk
                 }
 
                 template< BasicEasingFunc F >
-                sf::Vector3f ease( float t, const sf::Vector3f& b, const sf::Vector3f& c, float d )
+                sf::Vector3f ease( float t, sf::Vector3f b, sf::Vector3f c, float d )
                 {
                     t = F( d == 0.0f ? 1.0f : t / d );
                     return sf::Vector3f(

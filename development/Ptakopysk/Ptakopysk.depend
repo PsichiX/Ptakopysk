@@ -839,7 +839,7 @@
 	<SFML/System/Vector2.hpp>
 	<SFML/Graphics/Transform.hpp>
 
-1394150908 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\assets.h
+1394491716 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\assets.h
 	<XeCore/Common/Base.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -935,4 +935,29 @@
 1393761708 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\styleserializer.h
 	"BitFieldSerializer.h"
 	<SFML/Graphics/Text.hpp>
+
+1394498386 source:d:\git\ptakopysk\development\ptakopysk\source\system\tween.cpp
+	"../../include/Ptakopysk/System/Tween.h"
+	<algorithm>
+
+1394495509 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\tween.h
+	<XeCore/Common/Base.h>
+	<XeCore/Common/IRtti.h>
+	<XeCore/Common/MemoryManager.h>
+	<XeCore/Common/Singleton.h>
+	<XeCore/Common/Property.h>
+	"Math.h"
+	<list>
+	"Tween.inl"
+
+1394495320 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\math.h
+	<XeCore/Common/Base.h>
+	<SFML/System/Vector2.hpp>
+	<SFML/System/Vector3.hpp>
+	"Math.inl"
+
+1394491405 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\math.inl
+
+1394499644 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\tween.inl
+	<XeCore/Common/Base.h>
 

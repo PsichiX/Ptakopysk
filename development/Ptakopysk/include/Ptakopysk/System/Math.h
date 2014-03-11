@@ -54,9 +54,6 @@ namespace Ptakopysk
 
                 typedef float ( *BasicEasingFunc )( float );
 
-                template< typename T, BasicEasingFunc F >
-                struct EasingFunc { typedef T ( *Type )( float, T, T, float ); };
-
                 template< BasicEasingFunc F >
                 FORCEINLINE float ease( float t, float b, float c, float d );
 
@@ -87,7 +84,7 @@ namespace Ptakopysk
             EASING_FUNCS_SECTION_DECL( Quintic );
             EASING_FUNCS_SECTION_DECL( Sine );
             EASING_FUNCS_SECTION_DECL( Circural );
-            EASING_FUNCS_SECTION_DECL( Expotential );
+            EASING_FUNCS_SECTION_DECL( Exponential );
             EASING_FUNCS_SECTION_DECL( Elastic );
             EASING_FUNCS_SECTION_DECL( Back );
             EASING_FUNCS_SECTION_DECL( Bounce );

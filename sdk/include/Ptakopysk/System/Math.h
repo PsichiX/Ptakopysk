@@ -58,10 +58,10 @@ namespace Ptakopysk
                 FORCEINLINE float ease( float t, float b, float c, float d );
 
                 template< BasicEasingFunc F >
-                FORCEINLINE sf::Vector2f ease( float t, const sf::Vector2f& b, const sf::Vector2f& c, float d );
+                FORCEINLINE sf::Vector2f ease( float t, sf::Vector2f b, sf::Vector2f c, float d );
 
                 template< BasicEasingFunc F >
-                FORCEINLINE sf::Vector3f ease( float t, const sf::Vector3f& b, const sf::Vector3f& c, float d );
+                FORCEINLINE sf::Vector3f ease( float t, sf::Vector3f b, sf::Vector3f c, float d );
 
                 BASIC_EASING_FUNCS_GROUP_DECL( linear );
                 BASIC_EASING_FUNCS_GROUP_DECL( quadratic );
@@ -84,7 +84,7 @@ namespace Ptakopysk
             EASING_FUNCS_SECTION_DECL( Quintic );
             EASING_FUNCS_SECTION_DECL( Sine );
             EASING_FUNCS_SECTION_DECL( Circural );
-            EASING_FUNCS_SECTION_DECL( Expotential );
+            EASING_FUNCS_SECTION_DECL( Exponential );
             EASING_FUNCS_SECTION_DECL( Elastic );
             EASING_FUNCS_SECTION_DECL( Back );
             EASING_FUNCS_SECTION_DECL( Bounce );

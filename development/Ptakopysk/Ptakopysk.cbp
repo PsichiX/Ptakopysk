@@ -136,6 +136,7 @@
 		<Unit filename="source/System/Events.cpp" />
 		<Unit filename="source/System/GameManager.cpp" />
 		<Unit filename="source/System/GameObject.cpp" />
+		<Unit filename="source/System/Tween.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

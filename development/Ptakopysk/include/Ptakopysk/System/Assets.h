@@ -22,7 +22,7 @@ namespace Ptakopysk
 
     public:
         Assets();
-        ~Assets();
+        virtual ~Assets();
 
         void jsonToAssets( const Json::Value& root );
         void jsonToTextures( const Json::Value& root );
