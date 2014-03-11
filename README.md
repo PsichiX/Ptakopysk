@@ -10,6 +10,10 @@ All you will want to do with this library in your project is:
 - extend your game prototype by adding components made by yourself, based on these templates: [TemplateComponent.h](https://github.com/PsichiX/Ptakopysk/blob/master/templates/TemplateComponent.h), [TemplateComponent.cpp](https://github.com/PsichiX/Ptakopysk/blob/master/templates/TemplateComponent.cpp)
 
 ---------
+###Examples:###
+- [Floppy Disk](https://github.com/PsichiX/FloppyDisk)
+
+---------
 ###Using 3rd-party libraries:###
 * **Xenon Core 3** - base code structure
 * **SFML 2.1** - graphics & audio
