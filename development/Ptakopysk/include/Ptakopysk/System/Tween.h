@@ -33,7 +33,7 @@ namespace Ptakopysk
     : public ITween
     {
     public:
-        FORCEINLINE Tween( XeCore::Common::Property< PT, OT >& property, PT to, float duration );
+        FORCEINLINE Tween( XeCore::Common::Property< PT, OT >& property, PT to, float duration, float startTime = 0.0f );
         FORCEINLINE virtual ~Tween() {};
 
         FORCEINLINE virtual int getState() { return m_state; };

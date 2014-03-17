@@ -7,11 +7,11 @@ namespace Ptakopysk
 {
 
     template< typename PT, typename OT, PT(*EF)(float,PT,PT,float) >
-    Tween< PT, OT, EF >::Tween( XeCore::Common::Property< PT, OT >& property, PT to, float duration )
+    Tween< PT, OT, EF >::Tween( XeCore::Common::Property< PT, OT >& property, PT to, float duration, float startTime )
     : m_property( property )
     , m_to( to )
     , m_duration( duration )
-    , m_time( 0.0f )
+    , m_time( startTime )
     , m_state( -1 )
     {
     }
@@ -23,7 +23,6 @@ namespace Ptakopysk
             return;
         m_from = m_property;
         m_state = 0;
-        m_time = 0.0f;
     }
 
     template< typename PT, typename OT, PT(*EF)(float,PT,PT,float) >
