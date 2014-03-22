@@ -1,0 +1,103 @@
+{
+	"assets": {
+		"fonts": [
+			{
+				"id": "font",
+				"path": "CONTF.ttf"
+			}
+		],
+		"textures": [
+			{
+				"id": "logo",
+				"path": "logo.png"
+			}
+		]
+	},
+	"prefabs": [
+		{
+			"properties": {
+				"Id": "main-camera",
+				"Order": 1000
+			},
+			"components": [
+				{
+					"type": "Transform"
+				},
+				{
+					"type": "Camera",
+					"properties": {
+						"Size": [ 1024, 576 ]
+					}
+				}
+			]
+		},
+		{
+			"properties": {
+				"Id": "logo"
+			},
+			"components": [
+				{
+					"type": "Transform"
+				},
+				{
+					"type": "TemplateComponent"
+				},
+				{
+					"type": "SpriteRenderer",
+					"properties": {
+						"Texture": "logo",
+						"Size": [ -1, -1 ],
+						"OriginPercent": [ 0.5, 0.5 ]
+					}
+				}
+			]
+		},
+		{
+			"properties": {
+				"Id": "template"
+			},
+			"components": [
+				{
+					"type": "Transform"
+				},
+				{
+					"type": "TemplateComponent"
+				},
+				{
+					"type": "TextRenderer",
+					"properties": {
+						"Text": "Hello world!",
+						"Font": "font",
+						"Color": [ 0, 0, 0, 255 ],
+						"Size": 32
+					}
+				}
+			]
+		}
+	],
+	"scene": [
+		{
+			"prefab": "main-camera"
+		},
+		{
+			"prefab": "logo"
+		},
+		{
+			"prefab": "template",
+			"components": [
+				{
+					"type": "Transform",
+					"properties": {
+						"Position": [ -256, -144 ]
+					}
+				},
+				{
+					"type": "TemplateComponent",
+					"properties": {
+						"Value": 10
+					}
+				}
+			]
+		}
+	]
+}

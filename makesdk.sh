@@ -177,4 +177,12 @@ fi
 
 # templates
 mkdir -p ./sdk/templates/
-cp ./templates/* ./sdk/templates/
+cp ./templates/*.h ./sdk/templates/
+cp ./templates/*.cpp ./sdk/templates/
+cp ./templates/*.cbp ./sdk/templates/
+mkdir -p ./sdk/templates/bin/
+cp ./templates/bin/*.exe ./sdk/templates/bin/
+cp ./templates/bin/*.dll ./sdk/templates/bin/
+cp ./templates/bin/*.png ./sdk/templates/bin/
+cp ./templates/bin/*.ttf ./sdk/templates/bin/
+cp ./templates/bin/template_game.json ./sdk/templates/bin/

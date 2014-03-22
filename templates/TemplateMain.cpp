@@ -3,13 +3,14 @@
 #include <Ptakopysk/System/GameManager.h>
 #include <XeCore/Common/Logger.h>
 #include <XeCore/Common/Concurrent/Thread.h>
+#include "TemplateComponent.h"
 
 using namespace Ptakopysk;
 
 const std::string APP_NAME = "Template Application";
 const int WINDOW_WIDTH = 1024;
 const int WINDOW_HEIGHT = 574;
-const sf::Color WINDOW_COLOR = sf::Color( 128, 128, 128, 255 );
+const sf::Color WINDOW_COLOR = sf::Color( 255, 255, 255, 255 );
 
 void onEvent( Events::Event* ev )
 {
@@ -21,6 +22,7 @@ int main()
     LOG_SETUP( "log.log" );
     Events::use().setCallback( &onEvent );
     GameManager::initialize();
+    GameManager::registerComponentFactory( "TemplateComponent", RTTI_CLASS_TYPE( TemplateComponent ), TemplateComponent::onBuildComponent );
 
     /// scene
     sf::RenderWindow* window = xnew sf::RenderWindow(
@@ -32,7 +34,7 @@ int main()
     /// game manager
     GameManager* gameManager = xnew GameManager();
     /// deserialize JSON to scene
-    gameManager->jsonToScene( GameManager::loadJson( "assets/scenes/game.json" ) );
+    gameManager->jsonToScene( GameManager::loadJson( "template_game.json" ) );
 
     /// main loop
     srand( time( 0 ) );
@@ -68,7 +70,7 @@ int main()
     }
 
     /// serialize scene to JSON
-    GameManager::saveJson( "assets/scenes/_game.json", gameManager->sceneToJson() );
+    GameManager::saveJson( "_template_game.json", gameManager->sceneToJson() );
 
     DELETE_OBJECT( window );
     DELETE_OBJECT( gameManager );
