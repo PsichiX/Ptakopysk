@@ -8,6 +8,7 @@
 #include <list>
 #include <string>
 #include <Box2D/Box2D.h>
+#include <SFML/Graphics/RenderWindow.hpp>
 #include "GameObject.h"
 #include "../Components/Component.h"
 
@@ -44,7 +45,7 @@ namespace Ptakopysk
         static const int DEFAULT_VEL_ITERS = 6;
         static const int DEFAULT_POS_ITERS = 2;
 
-        GameManager( float gravX = 0.0f, float gravY = 0.0f );
+        GameManager();
         ~GameManager();
 
         static void initialize();
@@ -87,15 +88,19 @@ namespace Ptakopysk
 
         FORCEINLINE b2Vec2 getWorldGravity() { return m_world->GetGravity(); };
         FORCEINLINE void setWorldGravity( b2Vec2 v ) { m_world->SetGravity( v ); };
+        FORCEINLINE sf::RenderWindow* getRenderWindow() { return m_renderWindow; };
+        FORCEINLINE void setRenderWindow( sf::RenderWindow* v ) { m_renderWindow = v; };
+
         void processPhysics( float dt, int velIters = DEFAULT_VEL_ITERS, int posIters = DEFAULT_POS_ITERS );
         void processUpdate( float dt, bool sort = true );
-        void processRender( sf::RenderTarget* target, const sf::Transform& trans = sf::Transform::Identity );
+        void processRender( sf::RenderTarget* target = 0, const sf::Transform& trans = sf::Transform::Identity );
         void processAdding();
         void processRemoving();
         bool isWaitingToAdd( GameObject* go );
         bool isWaitingToRemove( GameObject* go );
 
         XeCore::Common::Property< b2Vec2, GameManager > PhysicsGravity;
+        XeCore::Common::Property< sf::RenderWindow*, GameManager > RenderWindow;
 
     private:
         struct ComponentFactoryData
@@ -109,6 +114,7 @@ namespace Ptakopysk
         static std::map< std::string, ComponentFactoryData > s_componentsFactory;
 
         b2World* m_world;
+        sf::RenderWindow* m_renderWindow;
         DestructionListener* m_destructionListener;
         ContactListener* m_contactListener;
         std::list< GameObject* > m_prefabGameObjects;

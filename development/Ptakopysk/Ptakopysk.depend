@@ -808,7 +808,7 @@
 	<string>
 	"../Serialization/Serialized.h"
 
-1394235381 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gamemanager.h
+1395611205 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gamemanager.h
 	<XeCore/Common/Property.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -816,6 +816,7 @@
 	<list>
 	<string>
 	<Box2D/Box2D.h>
+	<SFML/Graphics/RenderWindow.hpp>
 	"GameObject.h"
 	"../Components/Component.h"
 
@@ -878,7 +879,7 @@
 	<string>
 	<list>
 
-1393972002 source:d:\git\ptakopysk\development\ptakopysk\source\system\gamemanager.cpp
+1395611308 source:d:\git\ptakopysk\development\ptakopysk\source\system\gamemanager.cpp
 	"../../include/Ptakopysk/System/GameManager.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/Components/SpriteRenderer.h"
@@ -889,6 +890,7 @@
 	"../../include/Ptakopysk/Serialization/b2BodyTypeSerializer.h"
 	"../../include/Ptakopysk/Serialization/BlendModeSerializer.h"
 	"../../include/Ptakopysk/Serialization/StyleSerializer.h"
+	<XeCore/Common/Logger.h>
 	<Box2D/Box2D.h>
 	<fstream>
 
@@ -940,7 +942,7 @@
 	"../../include/Ptakopysk/System/Tween.h"
 	<algorithm>
 
-1395016212 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\tween.h
+1395618919 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\tween.h
 	<XeCore/Common/Base.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -958,6 +960,6 @@
 
 1394500285 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\math.inl
 
-1395016212 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\tween.inl
+1395618993 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\tween.inl
 	<XeCore/Common/Base.h>
 

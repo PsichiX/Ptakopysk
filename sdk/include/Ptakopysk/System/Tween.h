@@ -51,6 +51,7 @@ namespace Ptakopysk
         float m_duration;
         float m_time;
         int m_state; // -1: not started; 0: in progress; 1: complete.
+        bool m_tweening;
     };
 
     class Tweener

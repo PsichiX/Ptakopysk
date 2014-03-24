@@ -8,6 +8,7 @@
 #include "../../include/Ptakopysk/Serialization/b2BodyTypeSerializer.h"
 #include "../../include/Ptakopysk/Serialization/BlendModeSerializer.h"
 #include "../../include/Ptakopysk/Serialization/StyleSerializer.h"
+#include <XeCore/Common/Logger.h>
 #include <Box2D/Box2D.h>
 #include <fstream>
 
@@ -128,14 +129,16 @@ namespace Ptakopysk
 
     std::map< std::string, GameManager::ComponentFactoryData > GameManager::s_componentsFactory = std::map< std::string, GameManager::ComponentFactoryData >();
 
-    GameManager::GameManager( float gravX, float gravY )
+    GameManager::GameManager()
     : RTTI_CLASS_DEFINE( GameManager )
     , PhysicsGravity( this, &GameManager::getWorldGravity, &GameManager::setWorldGravity )
+    , RenderWindow( this, &GameManager::getRenderWindow, &GameManager::setRenderWindow )
     , m_world( 0 )
+    , m_renderWindow( 0 )
     , m_destructionListener( 0 )
     , m_contactListener( 0 )
     {
-        m_world = xnew b2World( b2Vec2( gravX, gravY ) );
+        m_world = xnew b2World( b2Vec2() );
         m_destructionListener = xnew DestructionListener( this );
         m_world->SetDestructionListener( m_destructionListener );
         m_contactListener = xnew ContactListener( this );
@@ -558,7 +561,12 @@ namespace Ptakopysk
     void GameManager::processRender( sf::RenderTarget* target, const sf::Transform& trans )
     {
         if( !target )
+            target = m_renderWindow;
+        if( !target )
+        {
+            XWARNING( "Cannot process render without target!" );
             return;
+        }
         target->setView( target->getDefaultView() );
         GameObject* go;
         for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )

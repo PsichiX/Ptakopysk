@@ -13,6 +13,7 @@ namespace Ptakopysk
     , m_duration( duration )
     , m_time( startTime )
     , m_state( -1 )
+    , m_tweening( false )
     {
     }
 
@@ -21,7 +22,6 @@ namespace Ptakopysk
     {
         if( m_state == 0 )
             return;
-        m_from = m_property;
         m_state = 0;
     }
 
@@ -39,8 +39,16 @@ namespace Ptakopysk
         m_time += dt;
         if( m_time >= m_duration )
             m_state = 1;
-        m_time = m_time < m_duration ? ( m_time > 0.0f ? m_time : 0.0f ) : m_duration;
-        m_property = EF( m_time, m_from, m_to, m_duration );
+        if( m_time >= 0.0f )
+        {
+            float t = m_time < m_duration ? ( m_time > 0.0f ? m_time : 0.0f ) : m_duration;
+            if( !m_tweening )
+            {
+                m_tweening = true;
+                m_from = m_property;
+            }
+            m_property = EF( t, m_from, m_to, m_duration );
+        }
     }
 
     template< typename PT, typename OT, PT(*EF)(float,PT,PT,float) >
