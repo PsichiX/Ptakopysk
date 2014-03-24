@@ -1,0 +1,119 @@
+{
+	"assets": {
+		"fonts": [
+			{
+				"id": "font",
+				"path": "CONTF.ttf"
+			}
+		],
+		"textures": [
+			{
+				"id": "logo",
+				"path": "logo.png"
+			}
+		],
+		"shaders": [
+			{
+				"id": "heart",
+				"vspath": "heart.vs",
+				"fspath": "heart.fs"
+			}
+		]
+	},
+	"scene": [
+		{
+			"properties": {
+				"Id": "main-camera",
+				"Order": 1000
+			},
+			"components": [
+				{
+					"type": "Transform"
+				},
+				{
+					"type": "Camera",
+					"properties": {
+						"Size": [ 512, 512 ]
+					}
+				}
+			]
+		},
+		{
+			"properties": {
+				"Id": "heart"
+			},
+			"components": [
+				{
+					"type": "Transform"
+				},
+				{
+					"type": "SpriteRenderer",
+					"properties": {
+						"Size": [ 512, 512 ],
+						"OriginPercent": [ 0.5, 0.5 ],
+						"RenderStates": {
+							"shader": "heart"
+						}
+					}
+				},
+				{
+					"type": "HeartControler",
+					"properties": {
+						"Size": 1.25,
+						"PingSize": 1,
+						"PongSize": 1.25,
+						"Duration": 1.5,
+						"PingDuration": 0.5,
+						"PongDuration": 0.5,
+						"Timer": 1.5
+					}
+				}
+			]
+		},
+		{
+			"properties": {
+				"Id": "text"
+			},
+			"components": [
+				{
+					"type": "Transform",
+					"properties": {
+						"Position": [ -120, 150 ]
+					}
+				},
+				{
+					"type": "TextRenderer",
+					"properties": {
+						"Text": "Math isn't heartless",
+						"Font": "font",
+						"Color": [ 0, 0, 0, 255 ],
+						"Style": [ "Bold", "Italic" ]
+					}
+				}
+			]
+		},
+		{
+			"properties": {
+				"Id": "logo"
+			},
+			"components": [
+				{
+					"type": "Transform",
+					"properties": {
+						"Position": [ 256, 256 ],
+						"Scale": [ 0.5, 0.5 ]
+					}
+				},
+				{
+					"type": "SpriteRenderer",
+					"properties": {
+						"Texture": "logo",
+						"Size": [ -1, -1 ],
+						"OriginPercent": [ 1, 1 ],
+						"Color": [ 255, 255, 255, 192 ]
+					}
+				}
+			]
+		}
+	]
+}
