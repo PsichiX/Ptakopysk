@@ -20,9 +20,11 @@ namespace Ptakopysk
     , OriginPercent( this, &SpriteRenderer::getOriginPercent, &SpriteRenderer::setOriginPercent )
     , Color( this, &SpriteRenderer::getColor, &SpriteRenderer::setColor )
     , RenderStates( this, &SpriteRenderer::getRenderStates, &SpriteRenderer::setRenderStates )
+    , Material( this, &SpriteRenderer::getMaterial, &SpriteRenderer::setMaterial )
     , m_renderStates( sf::RenderStates::Default )
     {
         serializableProperty( "RenderStates" );
+        serializableProperty( "Material" );
         serializableProperty( "Color" );
         serializableProperty( "Texture" );
         serializableProperty( "Size" );
@@ -124,6 +126,8 @@ namespace Ptakopysk
             v[ "shader" ] = Json::Value( Assets::use().findShader( m_renderStates.shader ) );
             return v;
         }
+        else if( property == "Material" )
+            return m_material.serialize();
         else
             return Component::onSerialize( property );
     }
@@ -171,6 +175,8 @@ namespace Ptakopysk
             if( shader.isString() )
                 m_renderStates.shader = Assets::use().getShader( shader.asString() );
         }
+        else if( property == "Material" && root.isObject() )
+            m_material.deserialize( root );
         else
             Component::onDeserialize( property, root );
     }
@@ -187,6 +193,7 @@ namespace Ptakopysk
         c->setSize( getSize() );
         c->setOrigin( getOrigin() );
         c->setRenderStates( getRenderStates() );
+        c->setMaterial( getMaterial() );
     }
 
     void SpriteRenderer::onUpdate( float dt )
@@ -207,6 +214,8 @@ namespace Ptakopysk
 
     void SpriteRenderer::onRender( sf::RenderTarget* target )
     {
+        if( m_renderStates.shader )
+            m_material.apply( (sf::Shader*)m_renderStates.shader );
         target->draw( *m_shape, m_renderStates );
     }
 

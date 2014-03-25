@@ -12,7 +12,6 @@ const std::string APP_NAME = "Math Is Not Heartless";
 const int WINDOW_WIDTH = 512;
 const int WINDOW_HEIGHT = 512;
 const sf::Color WINDOW_COLOR = sf::Color( 255, 255, 255, 255 );
-//const sf::Color WINDOW_COLOR = sf::Color( 128, 128, 128, 255 );
 
 void onEvent( Events::Event* ev )
 {
@@ -21,7 +20,6 @@ void onEvent( Events::Event* ev )
 int main()
 {
     /// initialization
-    //LOG_SETUP( "log.log" );
     Events::use().setCallback( &onEvent );
     GameManager::initialize();
     GameManager::registerComponentFactory( "HeartControler", RTTI_CLASS_TYPE( HeartControler ), HeartControler::onBuildComponent );

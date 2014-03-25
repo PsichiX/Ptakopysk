@@ -825,15 +825,16 @@
 	"../../include/Ptakopysk/System/GameObject.h"
 	"../../include/Ptakopysk/System/GameManager.h"
 
-1394303215 source:d:\git\ptakopysk\development\ptakopysk\source\components\spriterenderer.cpp
+1395786875 source:d:\git\ptakopysk\development\ptakopysk\source\components\spriterenderer.cpp
 	"../../include/Ptakopysk/Components/SpriteRenderer.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/System/GameObject.h"
 	"../../include/Ptakopysk/System/Assets.h"
 
-1394222705 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\spriterenderer.h
+1395783703 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\spriterenderer.h
 	"Component.h"
 	<SFML/Graphics.hpp>
+	"../System/RenderMaterial.h"
 
 1393873152 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\transform.h
 	"Component.h"
@@ -962,4 +963,23 @@
 
 1395618993 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\tween.inl
 	<XeCore/Common/Base.h>
+
+1395784389 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\rendermaterial.h
+	<XeCore/Common/Base.h>
+	<XeCore/Common/IRtti.h>
+	<XeCore/Common/MemoryManager.h>
+	<SFML/System/Vector2.hpp>
+	<SFML/System/Vector3.hpp>
+	<SFML/Graphics/Color.hpp>
+	<SFML/Graphics/Transform.hpp>
+	<SFML/Graphics/Texture.hpp>
+	<SFML/Graphics/Shader.hpp>
+	<json/json.h>
+	<string>
+	<map>
+	<vector>
+
+1395786387 source:d:\git\ptakopysk\development\ptakopysk\source\system\rendermaterial.cpp
+	"../../include/Ptakopysk/System/RenderMaterial.h"
+	"../../include/Ptakopysk/System/Assets.h"
 

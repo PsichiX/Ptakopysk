@@ -20,9 +20,11 @@ namespace Ptakopysk
     , Style( this, &TextRenderer::getStyle, &TextRenderer::setStyle )
     , Color( this, &TextRenderer::getColor, &TextRenderer::setColor )
     , RenderStates( this, &TextRenderer::getRenderStates, &TextRenderer::setRenderStates )
+    , Material( this, &TextRenderer::getMaterial, &TextRenderer::setMaterial )
     , m_renderStates( sf::RenderStates::Default )
     {
         serializableProperty( "RenderStates" );
+        serializableProperty( "Material" );
         serializableProperty( "Font" );
         serializableProperty( "Size" );
         serializableProperty( "Style" );
@@ -71,6 +73,8 @@ namespace Ptakopysk
             v[ "shader" ] = Json::Value( Assets::use().findShader( m_renderStates.shader ) );
             return v;
         }
+        else if( property == "Material" )
+            return m_material.serialize();
         else
             return Component::onSerialize( property );
     }
@@ -111,6 +115,8 @@ namespace Ptakopysk
             if( shader.isString() )
                 m_renderStates.shader = Assets::use().getShader( shader.asString() );
         }
+        else if( property == "Material" && root.isObject() )
+            m_material.deserialize( root );
         else
             Component::onDeserialize( property, root );
     }
@@ -129,6 +135,7 @@ namespace Ptakopysk
         c->setStyle( getStyle() );
         c->setColor( getColor() );
         c->setRenderStates( getRenderStates() );
+        c->setMaterial( getMaterial() );
     }
 
     void TextRenderer::onUpdate( float dt )
@@ -149,6 +156,8 @@ namespace Ptakopysk
 
     void TextRenderer::onRender( sf::RenderTarget* target )
     {
+        if( m_renderStates.shader )
+            m_material.apply( (sf::Shader*)m_renderStates.shader );
         target->draw( *m_text, m_renderStates );
     }
 

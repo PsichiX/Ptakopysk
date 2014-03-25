@@ -121,6 +121,7 @@
 		<Unit filename="include/Ptakopysk/System/GameObject.h" />
 		<Unit filename="include/Ptakopysk/System/Math.h" />
 		<Unit filename="include/Ptakopysk/System/Math.inl" />
+		<Unit filename="include/Ptakopysk/System/RenderMaterial.h" />
 		<Unit filename="include/Ptakopysk/System/Tween.h" />
 		<Unit filename="include/Ptakopysk/System/Tween.inl" />
 		<Unit filename="source/Components/Body.cpp" />
@@ -136,6 +137,7 @@
 		<Unit filename="source/System/Events.cpp" />
 		<Unit filename="source/System/GameManager.cpp" />
 		<Unit filename="source/System/GameObject.cpp" />
+		<Unit filename="source/System/RenderMaterial.cpp" />
 		<Unit filename="source/System/Tween.cpp" />
 		<Extensions>
 			<code_completion />

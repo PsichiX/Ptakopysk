@@ -48,11 +48,7 @@ void HeartControler::setSize( float v )
         return;
     SpriteRenderer* spr = getGameObject()->getComponent< SpriteRenderer >();
 	if( spr )
-	{
-	    sf::Shader* shader = (sf::Shader*)spr->getRenderStates().shader;
-        if( shader )
-            shader->setParameter( "uSize", m_size );
-	}
+	    spr->getMaterial().set( "uSize", m_size );
 }
 
 void HeartControler::onCreate()

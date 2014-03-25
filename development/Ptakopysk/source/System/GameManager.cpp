@@ -138,7 +138,7 @@ namespace Ptakopysk
     , m_destructionListener( 0 )
     , m_contactListener( 0 )
     {
-        m_world = xnew b2World( b2Vec2() );
+        m_world = xnew b2World( b2Vec2( 0.0f, 0.0f ) );
         m_destructionListener = xnew DestructionListener( this );
         m_world->SetDestructionListener( m_destructionListener );
         m_contactListener = xnew ContactListener( this );

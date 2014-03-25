@@ -3,6 +3,7 @@
 
 #include "Component.h"
 #include <SFML/Graphics.hpp>
+#include "../System/RenderMaterial.h"
 
 namespace Ptakopysk
 {
@@ -33,6 +34,8 @@ namespace Ptakopysk
         FORCEINLINE void setColor( sf::Color col ) { m_shape->setFillColor( col ); };
         FORCEINLINE sf::RenderStates getRenderStates() { return m_renderStates; };
         FORCEINLINE void setRenderStates( sf::RenderStates states ) { m_renderStates = states; };
+        FORCEINLINE RenderMaterial& getMaterial() { return m_material; };
+        FORCEINLINE void setMaterial( RenderMaterial& v ) { m_material.copyFrom( v ); };
 
         XeCore::Common::Property< sf::Texture*, SpriteRenderer > Texture;
         XeCore::Common::Property< sf::Vector2f, SpriteRenderer > Size;
@@ -40,6 +43,7 @@ namespace Ptakopysk
         XeCore::Common::Property< sf::Vector2f, SpriteRenderer > OriginPercent;
         XeCore::Common::Property< sf::Color, SpriteRenderer > Color;
         XeCore::Common::Property< sf::RenderStates, SpriteRenderer > RenderStates;
+        XeCore::Common::Property< RenderMaterial&, SpriteRenderer > Material;
 
     protected:
         virtual Json::Value onSerialize( const std::string& property );
@@ -53,6 +57,7 @@ namespace Ptakopysk
     private:
         sf::RectangleShape* m_shape;
         sf::RenderStates m_renderStates;
+        RenderMaterial m_material;
     };
 
 }
