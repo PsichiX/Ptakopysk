@@ -33,7 +33,7 @@
 				{
 					"type": "Camera",
 					"properties": {
-						"Size": [ 512, 512 ]
+						"Size": [ -1, -1 ]
 					}
 				}
 			]

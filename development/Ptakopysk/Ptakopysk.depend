@@ -912,7 +912,7 @@
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/System/GameObject.h"
 
-1394234691 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\camera.h
+1395872249 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\camera.h
 	"Component.h"
 	<SFML/Graphics/View.hpp>
 

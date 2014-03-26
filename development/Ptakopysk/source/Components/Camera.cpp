@@ -1,6 +1,8 @@
 #include "../../include/Ptakopysk/Components/Camera.h"
 #include "../../include/Ptakopysk/Components/Transform.h"
 #include "../../include/Ptakopysk/System/GameObject.h"
+#include "../../include/Ptakopysk/System/GameManager.h"
+#include <SFML/Graphics/RenderWindow.hpp>
 
 namespace Ptakopysk
 {
@@ -34,6 +36,18 @@ namespace Ptakopysk
 
     void Camera::setSize( sf::Vector2f v )
     {
+        GameManager* gm = getGameObject() ? getGameObject()->getGameManagerRoot() : 0;
+        if( gm )
+        {
+            sf::RenderWindow* wnd = gm->getRenderWindow();
+            if( wnd )
+            {
+                if( v.x < 0.0f )
+                    v.x = (float)wnd->getSize().x;
+                if( v.y < 0.0f )
+                    v.y = (float)wnd->getSize().y;
+            }
+        }
         m_size = v;
         m_view->setSize( v );
         m_view->zoom( m_zoomInv );
@@ -107,6 +121,13 @@ namespace Ptakopysk
         }
         else
             Component::onDeserialize( property, root );
+    }
+
+    void Camera::onCreate()
+    {
+        if( !getGameObject() )
+            return;
+        setSize( m_size );
     }
 
     void Camera::onDuplicate( Component* dst )
