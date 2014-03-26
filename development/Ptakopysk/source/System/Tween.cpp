@@ -4,6 +4,41 @@
 namespace Ptakopysk
 {
 
+    TweenSequence::TweenSequence()
+    : m_state( -1 )
+    {
+    }
+
+    void TweenSequence::add( const ITween* t )
+    {
+        if( !t || m_state != -1 )
+            return;
+        m_tweens.push_back( t );
+    }
+
+    void TweenSequence::onStart()
+    {
+        if( m_state == 0 )
+            return;
+        m_state = 0;
+    }
+
+    void TweenSequence::onStop()
+    {
+        m_state = -1;
+    }
+
+    void TweenSequence::onUpdate( float dt )
+    {
+        if( m_state != 0 )
+            return;
+    }
+
+    dword TweenSequence::getPropertyID()
+    {
+        return (dword)this;
+    }
+
     RTTI_CLASS_DERIVATIONS( Tweener,
                             RTTI_DERIVATIONS_END
                             )

@@ -54,6 +54,27 @@ namespace Ptakopysk
         bool m_tweening;
     };
 
+    class TweenSequence
+    : public ITween
+    {
+    public:
+        TweenSequence();
+        virtual ~ITween() {};
+
+        FORCEINLINE virtual int getState() { return m_state; };
+        void add( const ITween* t );
+
+    protected:
+        virtual void onStart();
+        virtual void onStop();
+        virtual void onUpdate( float dt );
+        virtual dword getPropertyID();
+
+    private:
+        std::vector< ITween* > m_tweens;
+        int m_state; // -1: not started; 0: in progress; 1: complete.
+    };
+
     class Tweener
     : public virtual XeCore::Common::IRtti
     , public virtual XeCore::Common::MemoryManager::Manageable
