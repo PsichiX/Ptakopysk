@@ -12,6 +12,7 @@ All you will want to do with this library in your project is:
 ---------
 ###Examples:###
 - [Floppy Disk](https://github.com/PsichiX/FloppyDisk)
+- [Math isn't heartless](https://github.com/PsichiX/Ptakopysk/tree/master/examples/MathIsNotHeartless)
 
 ---------
 ###Using 3rd-party libraries:###
