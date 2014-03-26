@@ -17,6 +17,9 @@ namespace XeCore
         public:
             Property( OT* obj, _Getter getter, _Setter setter);
 
+            FORCEINLINE PT get();
+            FORCEINLINE void set( PT value );
+
             FORCEINLINE operator PT ();
             FORCEINLINE void operator= ( PT value );
 

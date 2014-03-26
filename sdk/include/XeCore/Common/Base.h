@@ -4,6 +4,7 @@
 #include <stdarg.h>
 #define _USE_MATH_DEFINES
 #include <cmath>
+#include <algorithm>
 
 #ifndef FORCEINLINE
 #if (__GNUC__ >= 3)
@@ -12,7 +13,7 @@
 #define FORCEINLINE __inline
 #endif
 #endif
-#define CLAMP(v,mn,mx)			std::min( mx, std::max( mn, v ) )
+#define CLAMP(v,mn,mx)			std::max( mn, std::min( mx, v ) )
 #define REPEAT(c)				for( unsigned int __c_o_u_n_t_e_r__ = 0; __c_o_u_n_t_e_r__ < ( c ); __c_o_u_n_t_e_r__++ )
 #define LERP(f,mn,mx)			( ( ( f ) * ( mx ) ) + ( ( 1.0f - ( f ) ) * ( mn ) ) )
 #define DELETE_OBJECT(o)		{ if( o ){ delete o; o = 0; } }

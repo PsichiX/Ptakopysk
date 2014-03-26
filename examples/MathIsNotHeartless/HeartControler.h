@@ -1,5 +1,5 @@
-#ifndef __TEMPLATE_COMPONENT__
-#define __TEMPLATE_COMPONENT__
+#ifndef __HEART_CONTROLER__
+#define __HEART_CONTROLER__
 
 #include <Ptakopysk/Components/Component.h>
 

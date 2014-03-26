@@ -14,16 +14,28 @@ namespace XeCore
         }
 
         template< typename PT, typename OT >
-        Property< PT, OT >::operator PT ()
+        PT Property< PT, OT >::get()
         {
             return m_obj && m_getter ? ( *m_obj.*m_getter )() : PT();
         };
 
         template< typename PT, typename OT >
-        void Property< PT, OT >::operator= ( PT value )
+        void Property< PT, OT >::set( PT value )
         {
             if( m_obj && m_setter )
                 ( *m_obj.*m_setter )( value );
+        };
+
+        template< typename PT, typename OT >
+        Property< PT, OT >::operator PT ()
+        {
+            return get();
+        };
+
+        template< typename PT, typename OT >
+        void Property< PT, OT >::operator= ( PT value )
+        {
+            set( value );
         };
     }
 }
