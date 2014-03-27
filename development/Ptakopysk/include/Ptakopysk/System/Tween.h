@@ -8,6 +8,7 @@
 #include <XeCore/Common/Property.h>
 #include "Math.h"
 #include <list>
+#include <vector>
 
 namespace Ptakopysk
 {
@@ -20,6 +21,10 @@ namespace Ptakopysk
         virtual ~ITween() {};
 
         virtual int getState() = 0;
+        virtual float getDuration() = 0;
+        virtual void setDuration( float v ) = 0;
+        virtual float getTime() = 0;
+        virtual void setTime( float v ) = 0;
 
     protected:
         virtual void onStart() = 0;
@@ -37,6 +42,10 @@ namespace Ptakopysk
         FORCEINLINE virtual ~Tween() {};
 
         FORCEINLINE virtual int getState() { return m_state; };
+        FORCEINLINE virtual float getDuration() { return m_duration; };
+        FORCEINLINE virtual void setDuration( float v );
+        FORCEINLINE virtual float getTime() { return m_time; };
+        FORCEINLINE virtual void setTime( float v );
 
     protected:
         FORCEINLINE virtual void onStart();
@@ -59,10 +68,14 @@ namespace Ptakopysk
     {
     public:
         TweenSequence();
-        virtual ~ITween() {};
+        virtual ~TweenSequence();
 
         FORCEINLINE virtual int getState() { return m_state; };
-        void add( const ITween* t );
+        FORCEINLINE virtual float getDuration() { return m_duration; };
+        virtual void setDuration( float v );
+        FORCEINLINE virtual float getTime() { return 0.0f; };
+        virtual void setTime( float v );
+        TweenSequence* add( ITween* t );
 
     protected:
         virtual void onStart();
@@ -72,7 +85,9 @@ namespace Ptakopysk
 
     private:
         std::vector< ITween* > m_tweens;
+        std::vector< dword > m_working;
         int m_state; // -1: not started; 0: in progress; 1: complete.
+        float m_duration;
     };
 
     class Tweener

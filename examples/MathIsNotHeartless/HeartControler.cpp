@@ -122,11 +122,10 @@ void HeartControler::onUpdate( float dt )
     {
         m_timer = 0.0f;
         Tweener::use().killTweensOf( Size );
-        Tweener::use().startTween(
+        Tweener::use().startTween( (xnew TweenSequence())->add(
             xnew Tween< float, HeartControler, Math::Easing::Back::inOut >( Size, m_pingSize, m_pingDuration )
-        );
-        Tweener::use().startTween(
-            xnew Tween< float, HeartControler, Math::Easing::Back::inOut >( Size, m_pongSize, m_pongDuration, -m_pingDuration )
-        );
+        )->add(
+            xnew Tween< float, HeartControler, Math::Easing::Back::inOut >( Size, m_pongSize, m_pongDuration )
+        ) );
     }
 }

@@ -18,6 +18,22 @@ namespace Ptakopysk
     }
 
     template< typename PT, typename OT, PT(*EF)(float,PT,PT,float) >
+    void Tween< PT, OT, EF >::setDuration( float v )
+    {
+        if( m_state == 0 )
+            return;
+        m_duration = v;
+    }
+
+    template< typename PT, typename OT, PT(*EF)(float,PT,PT,float) >
+    void Tween< PT, OT, EF >::setTime( float v )
+    {
+        if( m_state == 0 )
+            return;
+        m_time = v;
+    }
+
+    template< typename PT, typename OT, PT(*EF)(float,PT,PT,float) >
     void Tween< PT, OT, EF >::onStart()
     {
         if( m_state == 0 )
@@ -62,16 +78,16 @@ namespace Ptakopysk
     {
         dword id = (dword)&p;
         ITween* t;
-        for( std::list< ITween* >::iterator it = m_tweens.begin(); it != m_tweens.end(); )
+        std::list< ITween* >::iterator it = std::find( m_tweens.begin(), m_tweens.end(), (ITween*)id );
+        while( it != m_tweens.end() )
         {
             t = *it;
             if( t->getPropertyID() == id )
             {
                 DELETE_OBJECT( t );
-                it = m_tweens.erase( it );
+                m_tweens.erase( it );
             }
-            else
-                it++;
+            it = std::find( m_tweens.begin(), m_tweens.end(), (ITween*)id );
         }
     }
 

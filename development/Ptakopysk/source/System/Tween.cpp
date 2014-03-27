@@ -6,14 +6,31 @@ namespace Ptakopysk
 
     TweenSequence::TweenSequence()
     : m_state( -1 )
+    , m_duration( 0.0f )
     {
     }
 
-    void TweenSequence::add( const ITween* t )
+    TweenSequence::~TweenSequence()
+    {
+        onStop();
+    }
+
+    void TweenSequence::setDuration( float v )
+    {
+    }
+
+    void TweenSequence::setTime( float v )
+    {
+    }
+
+    TweenSequence* TweenSequence::add( ITween* t )
     {
         if( !t || m_state != -1 )
-            return;
+            return this;
+        t->setTime( t->getTime() - m_duration );
+        m_duration += t->getDuration();
         m_tweens.push_back( t );
+        return this;
     }
 
     void TweenSequence::onStart()
@@ -21,10 +38,17 @@ namespace Ptakopysk
         if( m_state == 0 )
             return;
         m_state = 0;
+        for( std::vector< ITween* >::iterator it = m_tweens.begin(); it != m_tweens.end(); it++ )
+            m_working.push_back( Tweener::use().startTween( *it ) );
+        m_tweens.clear();
     }
 
     void TweenSequence::onStop()
     {
+        m_tweens.clear();
+        for( std::vector< dword >::iterator it = m_working.begin(); it != m_working.end(); it++ )
+            Tweener::use().killTween( *it );
+        m_working.clear();
         m_state = -1;
     }
 
@@ -32,6 +56,15 @@ namespace Ptakopysk
     {
         if( m_state != 0 )
             return;
+        for( std::vector< dword >::iterator it = m_working.begin(); it != m_working.end(); )
+        {
+            if( Tweener::use().hasTween( *it ) )
+                it++;
+            else
+                it = m_working.erase( it );
+        }
+        if( m_working.empty() )
+            m_state = 1;
     }
 
     dword TweenSequence::getPropertyID()
@@ -73,18 +106,21 @@ namespace Ptakopysk
         {
             ITween* tf = *it;
             DELETE_OBJECT( tf );
+            m_tweens.erase( it );
         }
     }
 
     void Tweener::killAllTweens()
     {
+        std::list< ITween* >::iterator it;
         ITween* t;
-        for( std::list< ITween* >::iterator it = m_tweens.begin(); it != m_tweens.end(); it++ )
+        while( !m_tweens.empty() )
         {
+            it = m_tweens.begin();
             t = *it;
             DELETE_OBJECT( t );
+            m_tweens.erase( it );
         }
-        m_tweens.clear();
     }
 
     void Tweener::processTweens( float dt )
