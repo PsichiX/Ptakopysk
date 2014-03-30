@@ -7,6 +7,7 @@ namespace Ptakopysk
     TweenSequence::TweenSequence()
     : m_state( -1 )
     , m_duration( 0.0f )
+    , m_time( 0.0f )
     {
     }
 
@@ -21,6 +22,16 @@ namespace Ptakopysk
 
     void TweenSequence::setTime( float v )
     {
+        if( m_state == 0 )
+            return;
+        float r = v - m_time;
+        ITween* t;
+        for( std::vector< ITween* >::iterator it = m_tweens.begin(); it != m_tweens.end(); it++ )
+        {
+            t = *it;
+            t->setTime( t->getTime() + r );
+        }
+        m_time = v;
     }
 
     TweenSequence* TweenSequence::add( ITween* t )
@@ -72,6 +83,84 @@ namespace Ptakopysk
         return (dword)this;
     }
 
+    TweenBlock::TweenBlock()
+    : m_state( -1 )
+    , m_duration( 0.0f )
+    , m_time( 0.0f )
+    {
+    }
+
+    TweenBlock::~TweenBlock()
+    {
+        onStop();
+    }
+
+    void TweenBlock::setDuration( float v )
+    {
+    }
+
+    void TweenBlock::setTime( float v )
+    {
+        if( m_state == 0 )
+            return;
+        float r = v - m_time;
+        ITween* t;
+        for( std::vector< ITween* >::iterator it = m_tweens.begin(); it != m_tweens.end(); it++ )
+        {
+            t = *it;
+            t->setTime( t->getTime() + r );
+        }
+        m_time = v;
+    }
+
+    TweenBlock* TweenBlock::add( ITween* t )
+    {
+        if( !t || m_state != -1 )
+            return this;
+        m_duration = std::max( m_duration, t->getDuration() );
+        m_tweens.push_back( t );
+        return this;
+    }
+
+    void TweenBlock::onStart()
+    {
+        if( m_state == 0 )
+            return;
+        m_state = 0;
+        for( std::vector< ITween* >::iterator it = m_tweens.begin(); it != m_tweens.end(); it++ )
+            m_working.push_back( Tweener::use().startTween( *it ) );
+        m_tweens.clear();
+    }
+
+    void TweenBlock::onStop()
+    {
+        m_tweens.clear();
+        for( std::vector< dword >::iterator it = m_working.begin(); it != m_working.end(); it++ )
+            Tweener::use().killTween( *it );
+        m_working.clear();
+        m_state = -1;
+    }
+
+    void TweenBlock::onUpdate( float dt )
+    {
+        if( m_state != 0 )
+            return;
+        for( std::vector< dword >::iterator it = m_working.begin(); it != m_working.end(); )
+        {
+            if( Tweener::use().hasTween( *it ) )
+                it++;
+            else
+                it = m_working.erase( it );
+        }
+        if( m_working.empty() )
+            m_state = 1;
+    }
+
+    dword TweenBlock::getPropertyID()
+    {
+        return (dword)this;
+    }
+
     RTTI_CLASS_DERIVATIONS( Tweener,
                             RTTI_DERIVATIONS_END
                             )
@@ -91,9 +180,9 @@ namespace Ptakopysk
         return std::find( m_tweens.begin(), m_tweens.end(), (ITween*)id ) != m_tweens.end();
     }
 
-    dword Tweener::startTween( const ITween* t )
+    dword Tweener::startTween( ITween* t )
     {
-        if( hasTween( (dword)t ) )
+        if( !t || hasTween( (dword)t ) )
             return 0;
         m_tweens.push_back( (ITween*)t );
         return (dword)t;

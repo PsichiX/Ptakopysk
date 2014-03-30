@@ -73,7 +73,7 @@ namespace Ptakopysk
         FORCEINLINE virtual int getState() { return m_state; };
         FORCEINLINE virtual float getDuration() { return m_duration; };
         virtual void setDuration( float v );
-        FORCEINLINE virtual float getTime() { return 0.0f; };
+        FORCEINLINE virtual float getTime() { return m_time; };
         virtual void setTime( float v );
         TweenSequence* add( ITween* t );
 
@@ -88,6 +88,35 @@ namespace Ptakopysk
         std::vector< dword > m_working;
         int m_state; // -1: not started; 0: in progress; 1: complete.
         float m_duration;
+        float m_time;
+    };
+
+    class TweenBlock
+    : public ITween
+    {
+    public:
+        TweenBlock();
+        virtual ~TweenBlock();
+
+        FORCEINLINE virtual int getState() { return m_state; };
+        FORCEINLINE virtual float getDuration() { return m_duration; };
+        virtual void setDuration( float v );
+        FORCEINLINE virtual float getTime() { return m_time; };
+        virtual void setTime( float v );
+        TweenBlock* add( ITween* t );
+
+    protected:
+        virtual void onStart();
+        virtual void onStop();
+        virtual void onUpdate( float dt );
+        virtual dword getPropertyID();
+
+    private:
+        std::vector< ITween* > m_tweens;
+        std::vector< dword > m_working;
+        int m_state; // -1: not started; 0: in progress; 1: complete.
+        float m_duration;
+        float m_time;
     };
 
     class Tweener
@@ -102,7 +131,7 @@ namespace Ptakopysk
         virtual ~Tweener();
 
         bool hasTween( dword id );
-        dword startTween( const ITween* t );
+        dword startTween( ITween* t );
         void killTween( dword id );
         template< typename PT, typename OT >
         void killTweensOf( const XeCore::Common::Property< PT, OT >& p );

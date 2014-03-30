@@ -79,6 +79,7 @@ int main()
     Assets::destroy();
     Events::destroy();
     Tweener::destroy();
+    GameManager::cleanup();
 
     return 0;
 }
