@@ -153,6 +153,12 @@ namespace Ptakopysk
         return root;
     }
 
+    void GameObject::duplicate( GameObject* from )
+    {
+        if( from )
+            from->onDuplicate( this );
+    }
+
     void GameObject::addComponent( Component* c )
     {
         if( !c || m_components.count( c->getType() ) )
@@ -204,7 +210,7 @@ namespace Ptakopysk
 
     void GameObject::addGameObject( GameObject* go )
     {
-        if( !go || hasGameObject( go ) || isWaitingToAdd( go ) )
+        if( !go || go->getType() != RTTI_CLASS_TYPE( GameObject ) || hasGameObject( go ) || isWaitingToAdd( go ) )
             return;
         m_gameObjectsToCreate.push_back( go );
         go->setParent( this );
@@ -372,45 +378,73 @@ namespace Ptakopysk
 
     void GameObject::onUpdate( float dt, const sf::Transform& trans, bool sort )
     {
-        Component* c;
-        sf::Transform t = trans;
-        for( std::map< XeCore::Common::IRtti::Derivation, Component* >::iterator it = m_components.begin(); it != m_components.end(); it++ )
+        if( m_active )
         {
-            c = it->second;
-            if( c->getTypeFlags() & Component::tUpdate )
-                c->onUpdate( dt );
-            if( c->getTypeFlags() & Component::tTransform )
-                c->onTransform( trans, t );
+            Component* c;
+            sf::Transform t = trans;
+            for( std::map< XeCore::Common::IRtti::Derivation, Component* >::iterator it = m_components.begin(); it != m_components.end(); it++ )
+            {
+                c = it->second;
+                if( c->isActive() )
+                {
+                    if( c->getTypeFlags() & Component::tUpdate )
+                        c->onUpdate( dt );
+                    if( c->getTypeFlags() & Component::tTransform )
+                        c->onTransform( trans, t );
+                }
+            }
+            processAdding();
+            processRemoving();
+            if( sort )
+                m_gameObjects.sort( GameManager::CompareGameObjects() );
+            for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+                (*it)->onUpdate( dt, t, sort );
         }
-        processAdding();
-        processRemoving();
-        if( sort )
-            m_gameObjects.sort( GameManager::CompareGameObjects() );
-        for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
-            (*it)->onUpdate( dt, t, sort );
+    }
+
+    void GameObject::onEvent( const sf::Event& event )
+    {
+        if( m_active )
+        {
+            Component* c;
+            for( std::map< XeCore::Common::IRtti::Derivation, Component* >::iterator it = m_components.begin(); it != m_components.end(); it++ )
+            {
+                c = it->second;
+                if( c->isActive() && c->getTypeFlags() & Component::tEvents )
+                    c->onEvent( event );
+            }
+            for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+                (*it)->onEvent( event );
+        }
     }
 
     void GameObject::onRender( sf::RenderTarget* target )
     {
-        Component* c;
-        for( std::map< XeCore::Common::IRtti::Derivation, Component* >::iterator it = m_components.begin(); it != m_components.end(); it++ )
+        if( m_active )
         {
-            c = it->second;
-            if( c->getTypeFlags() & Component::tRender )
-                c->onRender( target );
+            Component* c;
+            for( std::map< XeCore::Common::IRtti::Derivation, Component* >::iterator it = m_components.begin(); it != m_components.end(); it++ )
+            {
+                c = it->second;
+                if( c->isActive() && c->getTypeFlags() & Component::tRender )
+                    c->onRender( target );
+            }
+            for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+                (*it)->onRender( target );
         }
-        for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
-            (*it)->onRender( target );
     }
 
     void GameObject::onCollide( GameObject* other, bool beginOrEnd, b2Contact* contact )
     {
-        Component* c;
-        for( std::map< XeCore::Common::IRtti::Derivation, Component* >::iterator it = m_components.begin(); it != m_components.end(); it++ )
+        if( m_active )
         {
-            c = it->second;
-            if( c->getTypeFlags() & Component::tPhysics )
-                c->onCollide( other, beginOrEnd, contact );
+            Component* c;
+            for( std::map< XeCore::Common::IRtti::Derivation, Component* >::iterator it = m_components.begin(); it != m_components.end(); it++ )
+            {
+                c = it->second;
+                if( c->isActive() && c->getTypeFlags() & Component::tPhysics )
+                    c->onCollide( other, beginOrEnd, contact );
+            }
         }
     }
 

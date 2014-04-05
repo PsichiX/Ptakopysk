@@ -91,6 +91,7 @@ namespace Ptakopysk
         FORCEINLINE sf::RenderWindow* getRenderWindow() { return m_renderWindow; };
         FORCEINLINE void setRenderWindow( sf::RenderWindow* v ) { m_renderWindow = v; };
 
+        void processEvents( const sf::Event& event );
         void processPhysics( float dt, int velIters = DEFAULT_VEL_ITERS, int posIters = DEFAULT_POS_ITERS );
         void processUpdate( float dt, bool sort = true );
         void processRender( sf::RenderTarget* target = 0, const sf::Transform& trans = sf::Transform::Identity );

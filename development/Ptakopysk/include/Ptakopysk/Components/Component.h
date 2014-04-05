@@ -6,6 +6,7 @@
 #include <XeCore/Common/MemoryManager.h>
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Transform.hpp>
+#include <SFML/Window/Event.hpp>
 #include <string>
 #include "../Serialization/Serialized.h"
 
@@ -28,10 +29,11 @@ namespace Ptakopysk
         enum Type
         {
             tNone = 0,
-            tUpdate = 1 << 0,
-            tRender = 1 << 1,
-            tPhysics = 1 << 2,
-            tTransform = 1 << 3,
+            tEvents = 1 << 0,
+            tUpdate = 1 << 1,
+            tRender = 1 << 2,
+            tPhysics = 1 << 3,
+            tTransform = 1 << 4,
             tAll = -1
         };
 
@@ -59,6 +61,7 @@ namespace Ptakopysk
         virtual void onCreate() {};
         virtual void onDestroy() {};
         virtual void onDuplicate( Component* dst );
+        virtual void onEvent( const sf::Event& event ) {};
         virtual void onUpdate( float dt ) {};
         virtual void onTransform( const sf::Transform& inTrans, sf::Transform& outTrans ) {};
         virtual void onRender( sf::RenderTarget* target ) {};

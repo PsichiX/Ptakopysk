@@ -6,6 +6,7 @@
 #include <XeCore/Common/MemoryManager.h>
 #include <json/json.h>
 #include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Window/Event.hpp>
 #include <map>
 #include <list>
 #include <string>
@@ -43,6 +44,7 @@ namespace Ptakopysk
 
         void fromJson( const Json::Value& root );
         Json::Value toJson();
+        void duplicate( GameObject* from );
 
         void addComponent( Component* c );
         void removeComponent( Component* c );
@@ -81,6 +83,7 @@ namespace Ptakopysk
         void onCreate();
         void onDestroy();
         void onDuplicate( GameObject* dst );
+        void onEvent( const sf::Event& event );
         void onUpdate( float dt, const sf::Transform& trans, bool sort = true );
         void onRender( sf::RenderTarget* target );
         void onCollide( GameObject* other, bool beginOrEnd, b2Contact* contact );

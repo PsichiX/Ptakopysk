@@ -67,6 +67,7 @@ namespace Ptakopysk
     {
         if( m_state != 0 )
             return;
+        m_time += dt;
         for( std::vector< dword >::iterator it = m_working.begin(); it != m_working.end(); )
         {
             if( Tweener::use().hasTween( *it ) )
@@ -145,6 +146,7 @@ namespace Ptakopysk
     {
         if( m_state != 0 )
             return;
+        m_time += dt;
         for( std::vector< dword >::iterator it = m_working.begin(); it != m_working.end(); )
         {
             if( Tweener::use().hasTween( *it ) )
@@ -210,6 +212,12 @@ namespace Ptakopysk
             DELETE_OBJECT( t );
             m_tweens.erase( it );
         }
+    }
+
+    ITween* Tweener::getTween( dword id )
+    {
+        std::list< ITween* >::iterator it = std::find( m_tweens.begin(), m_tweens.end(), (ITween*)id );
+        return it == m_tweens.end() ? 0 : *it;
     }
 
     void Tweener::processTweens( float dt )

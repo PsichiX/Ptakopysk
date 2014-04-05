@@ -420,7 +420,7 @@ namespace Ptakopysk
 
     void GameManager::addGameObject( GameObject* go, bool prefab )
     {
-        if( !go || hasGameObject( go ) || isWaitingToAdd( go ) )
+        if( !go || go->getType() != RTTI_CLASS_TYPE( GameObject ) || hasGameObject( go ) || isWaitingToAdd( go ) )
             return;
         std::list< GameObject* >& cgo = prefab ? m_prefabGameObjects : m_gameObjectsToCreate;
         cgo.push_back( go );
@@ -538,6 +538,12 @@ namespace Ptakopysk
         return go;
     }
 
+    void GameManager::processEvents( const sf::Event& event )
+    {
+        for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            (*it)->onEvent( event );
+    }
+
     void GameManager::processPhysics( float dt, int velIters, int posIters )
     {
         m_world->Step( dt, velIters, posIters );
@@ -549,13 +555,8 @@ namespace Ptakopysk
         processRemoving();
         if( sort )
             m_gameObjects.sort( CompareGameObjects() );
-        GameObject* go;
         for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
-        {
-            go = *it;
-            if( go->isActive() )
-                go->onUpdate( dt, sf::Transform::Identity, sort );
-        }
+            (*it)->onUpdate( dt, sf::Transform::Identity, sort );
     }
 
     void GameManager::processRender( sf::RenderTarget* target, const sf::Transform& trans )
@@ -568,13 +569,8 @@ namespace Ptakopysk
             return;
         }
         target->setView( target->getDefaultView() );
-        GameObject* go;
         for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
-        {
-            go = *it;
-            if( go->isActive() )
-                go->onRender( target );
-        }
+            (*it)->onRender( target );
         target->setView( target->getDefaultView() );
     }
 

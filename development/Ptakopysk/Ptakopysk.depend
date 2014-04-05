@@ -779,12 +779,13 @@
 	"Component.h"
 	<Box2D/Box2D.h>
 
-1393892710 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\component.h
+1396634620 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\component.h
 	<XeCore/Common/Property.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
 	<SFML/Graphics/RenderTarget.hpp>
 	<SFML/Graphics/Transform.hpp>
+	<SFML/Window/Event.hpp>
 	<string>
 	"../Serialization/Serialized.h"
 
@@ -798,18 +799,19 @@
 
 1394306355 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\serialized.inl
 
-1393975660 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gameobject.h
+1396644831 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gameobject.h
 	<XeCore/Common/Property.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
 	<json/json.h>
 	<SFML/Graphics/RenderTarget.hpp>
+	<SFML/Window/Event.hpp>
 	<map>
 	<list>
 	<string>
 	"../Serialization/Serialized.h"
 
-1395879372 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gamemanager.h
+1396634307 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gamemanager.h
 	<XeCore/Common/Property.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -881,7 +883,7 @@
 	<string>
 	<list>
 
-1395879372 source:d:\git\ptakopysk\development\ptakopysk\source\system\gamemanager.cpp
+1396651960 source:d:\git\ptakopysk\development\ptakopysk\source\system\gamemanager.cpp
 	"../../include/Ptakopysk/System/GameManager.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/Components/SpriteRenderer.h"
@@ -900,7 +902,7 @@
 	"EnumSerializer.h"
 	<Box2D/Box2D.h>
 
-1393975706 source:d:\git\ptakopysk\development\ptakopysk\source\system\gameobject.cpp
+1396651909 source:d:\git\ptakopysk\development\ptakopysk\source\system\gameobject.cpp
 	"../../include/Ptakopysk/System/GameObject.h"
 	"../../include/Ptakopysk/System/GameManager.h"
 	"../../include/Ptakopysk/Components/Component.h"
@@ -943,11 +945,11 @@
 	"BitFieldSerializer.h"
 	<SFML/Graphics/Text.hpp>
 
-1396214526 source:d:\git\ptakopysk\development\ptakopysk\source\system\tween.cpp
+1396564550 source:d:\git\ptakopysk\development\ptakopysk\source\system\tween.cpp
 	"../../include/Ptakopysk/System/Tween.h"
 	<algorithm>
 
-1396213446 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\tween.h
+1396564414 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\tween.h
 	<XeCore/Common/Base.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>

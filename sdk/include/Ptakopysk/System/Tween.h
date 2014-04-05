@@ -136,6 +136,7 @@ namespace Ptakopysk
         template< typename PT, typename OT >
         void killTweensOf( const XeCore::Common::Property< PT, OT >& p );
         void killAllTweens();
+        ITween* getTween( dword id );
 
         void processTweens( float dt );
 
