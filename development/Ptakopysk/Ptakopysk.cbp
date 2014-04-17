@@ -114,6 +114,7 @@
 		<Unit filename="include/Ptakopysk/Serialization/Serialized.h" />
 		<Unit filename="include/Ptakopysk/Serialization/Serialized.inl" />
 		<Unit filename="include/Ptakopysk/Serialization/StyleSerializer.h" />
+		<Unit filename="include/Ptakopysk/Serialization/TransformModeSerializer.h" />
 		<Unit filename="include/Ptakopysk/Serialization/b2BodyTypeSerializer.h" />
 		<Unit filename="include/Ptakopysk/System/Assets.h" />
 		<Unit filename="include/Ptakopysk/System/Events.h" />

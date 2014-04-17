@@ -15,6 +15,13 @@ namespace Ptakopysk
         RTTI_CLASS_DECLARE( Transform );
 
     public:
+        enum ModeType
+        {
+            mHierarchy,
+            mParent,
+            mGlobal
+        };
+
         Transform();
         virtual ~Transform();
 
@@ -26,10 +33,13 @@ namespace Ptakopysk
         FORCEINLINE void setRotation( float rot ) { m_rotation = rot; };
         FORCEINLINE sf::Vector2f getScale() { return m_scale; };
         FORCEINLINE void setScale( sf::Vector2f scl ) { m_scale = scl; };
+        FORCEINLINE ModeType getMode() { return m_mode; };
+        FORCEINLINE void setMode( ModeType mode ) { m_mode = mode; };
 
         XeCore::Common::Property< sf::Vector2f, Transform > Position;
         XeCore::Common::Property< float, Transform > Rotation;
         XeCore::Common::Property< sf::Vector2f, Transform > Scale;
+        XeCore::Common::Property< ModeType, Transform > Mode;
 
     protected:
         virtual Json::Value onSerialize( const std::string& property );
@@ -43,6 +53,7 @@ namespace Ptakopysk
         sf::Vector2f m_position;
         float m_rotation;
         sf::Vector2f m_scale;
+        ModeType m_mode;
     };
 
 }

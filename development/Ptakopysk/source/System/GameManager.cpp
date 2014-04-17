@@ -8,6 +8,7 @@
 #include "../../include/Ptakopysk/Serialization/b2BodyTypeSerializer.h"
 #include "../../include/Ptakopysk/Serialization/BlendModeSerializer.h"
 #include "../../include/Ptakopysk/Serialization/StyleSerializer.h"
+#include "../../include/Ptakopysk/Serialization/TransformModeSerializer.h"
 #include <XeCore/Common/Logger.h>
 #include <Box2D/Box2D.h>
 #include <fstream>
@@ -160,6 +161,7 @@ namespace Ptakopysk
         Serialized::registerCustomSerializer( "b2BodyType", xnew b2BodyTypeSerializer() );
         Serialized::registerCustomSerializer( "BlendMode", xnew BlendModeSerializer() );
         Serialized::registerCustomSerializer( "Style", xnew StyleSerializer() );
+        Serialized::registerCustomSerializer( "Transform::ModeType", xnew TransformModeSerializer() );
         registerComponentFactory( "Transform", RTTI_CLASS_TYPE( Transform ), Transform::onBuildComponent );
         registerComponentFactory( "SpriteRenderer", RTTI_CLASS_TYPE( SpriteRenderer ), SpriteRenderer::onBuildComponent );
         registerComponentFactory( "Body", RTTI_CLASS_TYPE( Body ), Body::onBuildComponent );

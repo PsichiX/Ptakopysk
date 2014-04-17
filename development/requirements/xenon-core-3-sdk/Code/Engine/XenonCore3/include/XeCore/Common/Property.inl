@@ -27,6 +27,12 @@ namespace XeCore
         };
 
         template< typename PT, typename OT >
+        OT* Property< PT, OT >::data()
+        {
+            return m_obj;
+        }
+
+        template< typename PT, typename OT >
         Property< PT, OT >::operator PT ()
         {
             return get();

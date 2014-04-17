@@ -186,3 +186,4 @@ cp ./templates/bin/*.dll ./sdk/templates/bin/
 cp ./templates/bin/*.png ./sdk/templates/bin/
 cp ./templates/bin/*.ttf ./sdk/templates/bin/
 cp ./templates/bin/template_game.json ./sdk/templates/bin/
+cp ./templates/make_new_project.sh ./sdk/templates/

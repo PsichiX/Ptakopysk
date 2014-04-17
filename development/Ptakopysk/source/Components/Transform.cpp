@@ -16,13 +16,16 @@ namespace Ptakopysk
     , Position( this, &Transform::getPosition, &Transform::setPosition )
     , Rotation( this, &Transform::getRotation, &Transform::setRotation )
     , Scale( this, &Transform::getScale, &Transform::setScale )
+    , Mode( this, &Transform::getMode, &Transform::setMode )
     , m_position( sf::Vector2f( 0.0f, 0.0f ) )
     , m_rotation( 0.0f )
     , m_scale( sf::Vector2f( 1.0f, 1.0f ) )
+    , m_mode( mHierarchy )
     {
         serializableProperty( "Position" );
         serializableProperty( "Rotation" );
         serializableProperty( "Scale" );
+        serializableProperty( "Mode" );
     }
 
     Transform::~Transform()
@@ -47,6 +50,8 @@ namespace Ptakopysk
             v.append( Json::Value( m_scale.y ) );
             return v;
         }
+        else if( property == "Mode" )
+            return Serialized::serializeCustom< ModeType >( "Transform::ModeType", m_mode );
         else
             return Component::onSerialize( property );
     }
@@ -69,6 +74,8 @@ namespace Ptakopysk
                 (float)root[ 1u ].asDouble()
             );
         }
+        else if( property == "Mode" && root.isString() )
+            m_mode = Serialized::deserializeCustom< ModeType >( "Transform::ModeType", root );
         else
             Component::onDeserialize( property, root );
     }
@@ -84,6 +91,7 @@ namespace Ptakopysk
         c->setPosition( getPosition() );
         c->setRotation( getRotation() );
         c->setScale( getScale() );
+        c->setMode( getMode() );
     }
 
     void Transform::onUpdate( float dt )
@@ -100,10 +108,17 @@ namespace Ptakopysk
     void Transform::onTransform( const sf::Transform& inTrans, sf::Transform& outTrans )
     {
         sf::Transform t;
-        t.translate( m_position );
-        t.rotate( m_rotation );
-        t.scale( m_scale );
-        outTrans = inTrans * t;
+        if( m_mode == mHierarchy )
+        {
+            t.translate( m_position );
+            t.rotate( m_rotation );
+            t.scale( m_scale );
+            outTrans = inTrans * t;
+        }
+        else if( m_mode == mParent )
+            outTrans = inTrans;
+        else
+            outTrans = t;
     }
 
 }
