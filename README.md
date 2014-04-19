@@ -5,9 +5,13 @@ Ptakopysk
 
 ---------
 ###How-to:###
-All you will want to do with this library in your project is:
-- use this template to make main.cpp: [TemplateMain.cpp](https://github.com/PsichiX/Ptakopysk/blob/master/templates/TemplateMain.cpp)
-- extend your game prototype by adding components made by yourself, based on these templates: [TemplateComponent.h](https://github.com/PsichiX/Ptakopysk/blob/master/templates/TemplateComponent.h), [TemplateComponent.cpp](https://github.com/PsichiX/Ptakopysk/blob/master/templates/TemplateComponent.cpp)
+All you will want to do with this library in your project is just to use project generator script:
+- **cd \<sdk\>/templates/**
+- **./make_new_project.sh -o "path/to/project/directory/" -p "ProjectName"**
+
+Or use templates directly:
+- **main:** [TemplateMain.cpp](https://github.com/PsichiX/Ptakopysk/blob/master/templates/TemplateMain.cpp)
+- **components:** [TemplateComponent.h](https://github.com/PsichiX/Ptakopysk/blob/master/templates/TemplateComponent.h), [TemplateComponent.cpp](https://github.com/PsichiX/Ptakopysk/blob/master/templates/TemplateComponent.cpp)
 
 ---------
 ###Examples:###
@@ -16,10 +20,10 @@ All you will want to do with this library in your project is:
 
 ---------
 ###Using 3rd-party libraries:###
-* **Xenon Core 3** - base code structure
-* **SFML 2.1** - graphics & audio
-* **Box2D** - physics
-* **JsonCpp** - serialization
+- **Xenon Core 3** - base code structure
+- **SFML 2.1** - graphics & audio
+- **Box2D** - physics
+- **JsonCpp** - serialization
 
 ---------
 ###About used environment:###
