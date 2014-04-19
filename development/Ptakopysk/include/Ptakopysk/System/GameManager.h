@@ -111,6 +111,8 @@ namespace Ptakopysk
         };
 
         void processContact( bool beginOrEnd, GameObject* a, GameObject* b, b2Contact* contact );
+        void processJointGoodbye( GameObject* o, b2Joint* joint );
+        void processFixtureGoodbye( GameObject* o, b2Fixture* fixture );
 
         static std::map< std::string, ComponentFactoryData > s_componentsFactory;
 

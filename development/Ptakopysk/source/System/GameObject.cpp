@@ -448,4 +448,32 @@ namespace Ptakopysk
         }
     }
 
+    void GameObject::onJointGoodbye( b2Joint* joint )
+    {
+        if( m_active )
+        {
+            Component* c;
+            for( std::map< XeCore::Common::IRtti::Derivation, Component* >::iterator it = m_components.begin(); it != m_components.end(); it++ )
+            {
+                c = it->second;
+                if( c->isActive() && c->getTypeFlags() & Component::tPhysics )
+                    c->onJointGoodbye( joint );
+            }
+        }
+    }
+
+    void GameObject::onFixtureGoodbye( b2Fixture* fixture )
+    {
+        if( m_active )
+        {
+            Component* c;
+            for( std::map< XeCore::Common::IRtti::Derivation, Component* >::iterator it = m_components.begin(); it != m_components.end(); it++ )
+            {
+                c = it->second;
+                if( c->isActive() && c->getTypeFlags() & Component::tPhysics )
+                    c->onFixtureGoodbye( fixture );
+            }
+        }
+    }
+
 }

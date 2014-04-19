@@ -50,12 +50,14 @@ namespace Ptakopysk
 
     void DestructionListener::SayGoodbye( b2Joint* joint )
     {
-
+        if( m_owner )
+            m_owner->processJointGoodbye( (GameObject*)joint->GetUserData(), joint );
     }
 
     void DestructionListener::SayGoodbye( b2Fixture* fixture )
     {
-
+        if( m_owner )
+            m_owner->processFixtureGoodbye( (GameObject*)fixture->GetUserData(), fixture );
     }
 
     class ContactListener
@@ -624,6 +626,18 @@ namespace Ptakopysk
             a->onCollide( b, beginOrEnd, contact );
             b->onCollide( a, beginOrEnd, contact );
         }
+    }
+
+    void GameManager::processJointGoodbye( GameObject* o, b2Joint* joint )
+    {
+        if( o )
+            o->onJointGoodbye( joint );
+    }
+
+    void GameManager::processFixtureGoodbye( GameObject* o, b2Fixture* fixture )
+    {
+        if( o )
+            o->onFixtureGoodbye( fixture );
     }
 
     GameManager::SceneContentType operator|( GameManager::SceneContentType a, GameManager::SceneContentType b )

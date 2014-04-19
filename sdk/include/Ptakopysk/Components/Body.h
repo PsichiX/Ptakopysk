@@ -69,6 +69,7 @@ namespace Ptakopysk
         virtual void onCreate();
         virtual void onDestroy();
         virtual void onDuplicate( Component* dst );
+        virtual void onFixtureGoodbye( b2Fixture* fixture );
 
     private:
         float m_density;

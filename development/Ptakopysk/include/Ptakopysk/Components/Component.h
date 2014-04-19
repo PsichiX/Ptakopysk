@@ -11,6 +11,8 @@
 #include "../Serialization/Serialized.h"
 
 class b2Contact;
+class b2Joint;
+class b2Fixture;
 
 namespace Ptakopysk
 {
@@ -66,6 +68,8 @@ namespace Ptakopysk
         virtual void onTransform( const sf::Transform& inTrans, sf::Transform& outTrans ) {};
         virtual void onRender( sf::RenderTarget* target ) {};
         virtual void onCollide( GameObject* other, bool beginOrEnd, b2Contact* contact ) {};
+        virtual void onJointGoodbye( b2Joint* joint ) {};
+        virtual void onFixtureGoodbye( b2Fixture* fixture ) {};
 
     private:
         void setGameObject( GameObject* gameObject );

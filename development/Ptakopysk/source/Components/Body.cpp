@@ -231,4 +231,10 @@ namespace Ptakopysk
         c->setGravityScale( getGravityScale() );
     }
 
+    void Body::onFixtureGoodbye( b2Fixture* fixture )
+    {
+        if( fixture == m_fixture && getGameObject() )
+            getGameObject()->removeComponent( this );
+    }
+
 }

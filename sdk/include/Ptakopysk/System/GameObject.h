@@ -13,6 +13,8 @@
 #include "../Serialization/Serialized.h"
 
 class b2Contact;
+class b2Joint;
+class b2Fixture;
 
 namespace Ptakopysk
 {
@@ -49,9 +51,13 @@ namespace Ptakopysk
         void addComponent( Component* c );
         void removeComponent( Component* c );
         void removeComponent( XeCore::Common::IRtti::Derivation d );
+        template< typename T >
+        FORCEINLINE void removeComponent() { removeComponent( RTTI_CLASS_TYPE( T ) ); };
         void removeAllComponents();
         bool hasComponent( Component* c );
         bool hasComponent( XeCore::Common::IRtti::Derivation d );
+        template< typename T >
+        FORCEINLINE bool hasComponent() { return hasComponent( RTTI_CLASS_TYPE( T ) ); };
         FORCEINLINE Component* getComponent( XeCore::Common::IRtti::Derivation d ) { return m_components.count( d ) ? m_components[ d ] : 0; };
         template< typename T >
         FORCEINLINE T* getComponent() { return (T*)getComponent( RTTI_CLASS_TYPE( T ) ); };
@@ -87,6 +93,8 @@ namespace Ptakopysk
         void onUpdate( float dt, const sf::Transform& trans, bool sort = true );
         void onRender( sf::RenderTarget* target );
         void onCollide( GameObject* other, bool beginOrEnd, b2Contact* contact );
+        void onJointGoodbye( b2Joint* joint );
+        void onFixtureGoodbye( b2Fixture* fixture );
 
     private:
         FORCEINLINE void setGameManager( GameManager* gm ) { m_gameManager = gm; };
