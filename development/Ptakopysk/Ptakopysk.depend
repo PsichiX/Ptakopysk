@@ -811,7 +811,7 @@
 	<string>
 	"../Serialization/Serialized.h"
 
-1397851803 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gamemanager.h
+1398006416 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gamemanager.h
 	<XeCore/Common/Property.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -883,7 +883,7 @@
 	<string>
 	<list>
 
-1397851867 source:d:\git\ptakopysk\development\ptakopysk\source\system\gamemanager.cpp
+1398006460 source:d:\git\ptakopysk\development\ptakopysk\source\system\gamemanager.cpp
 	"../../include/Ptakopysk/System/GameManager.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/Components/SpriteRenderer.h"
@@ -898,6 +898,7 @@
 	<XeCore/Common/Logger.h>
 	<Box2D/Box2D.h>
 	<fstream>
+	<BinaryJson/BinaryJson.h>
 
 1393673981 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\b2bodytypeserializer.h
 	"EnumSerializer.h"
@@ -1005,4 +1006,24 @@
 1397943227 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\revolutejoint.h
 	"Component.h"
 	<Box2D/Box2D.h>
+
+1398000314 source:d:\git\ptakopysk\development\ptakopysk\source\serialization\binaryjson.cpp
+	"../../include/Ptakopysk/Serialization/BinaryJson.h"
+
+1398000293 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\binaryjson.h
+	<XeCore/Common/Buffer.h>
+	<json/json.h>
+
+1396794538 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\buffer.h
+	"Base.h"
+	"Buffer.inl"
+
+1396794538 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\buffer.inl
+	<cstring>
+	<algorithm>
+	"MemoryManager.h"
+
+1398005445 d:\git\ptakopysk\development\requirements\binaryjson\include\binaryjson\binaryjson.h
+	<XeCore/Common/Buffer.h>
+	<json/json.h>
 

@@ -66,8 +66,8 @@ namespace Ptakopysk
 
         FORCEINLINE b2World* getPhysicsWorld() { return m_world; };
 
-        static Json::Value loadJson( const std::string& path );
-        static bool saveJson( const std::string& path, const Json::Value& root );
+        static Json::Value loadJson( const std::string& path, bool binary = false, dword binaryKeyHash = 0 );
+        static bool saveJson( const std::string& path, const Json::Value& root, bool binary = false, dword binaryKeyHash = 0 );
         void jsonToScene( const Json::Value& root, SceneContentType contentFlags = All );
         void jsonToGameObjects( const Json::Value& root, bool prefab = false );
         Json::Value sceneToJson( SceneContentType contentFlags = All );

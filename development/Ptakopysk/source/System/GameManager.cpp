@@ -12,6 +12,7 @@
 #include <XeCore/Common/Logger.h>
 #include <Box2D/Box2D.h>
 #include <fstream>
+#include <BinaryJson/BinaryJson.h>
 
 namespace Ptakopysk
 {
@@ -283,7 +284,7 @@ namespace Ptakopysk
         return 0;
     }
 
-    Json::Value GameManager::loadJson( const std::string& path )
+    Json::Value GameManager::loadJson( const std::string& path, bool binary, dword binaryKeyHash )
     {
         std::ifstream file( path.c_str(), std::ifstream::in | std::ifstream::binary );
         if( !file )
@@ -291,24 +292,46 @@ namespace Ptakopysk
         file.seekg( 0, std::ifstream::end );
         unsigned int fsize = file.tellg();
         file.seekg( 0, std::ifstream::beg );
-        std::string content;
-        content.resize( fsize + 1, 0 );
-        file.read( (char*)content.c_str(), fsize );
-        file.close();
         Json::Value root;
+        std::string content;
+        if( binary )
+        {
+            BinaryJson::Buffer buffer;
+            buffer.resize( fsize );
+            file.read( (char*)buffer.data(), fsize );
+            BinaryJson::binaryToJson( &buffer, root, binaryKeyHash );
+        }
+        else
+        {
+            content.resize( fsize + 1, 0 );
+            file.read( (char*)content.c_str(), fsize );
+        }
+        file.close();
         Json::Reader reader;
         reader.parse( content, root );
         return root;
     }
 
-    bool GameManager::saveJson( const std::string& path, const Json::Value& root )
+    bool GameManager::saveJson( const std::string& path, const Json::Value& root, bool binary, dword binaryKeyHash )
     {
         std::ofstream file( path.c_str(), std::ifstream::out | std::ifstream::binary );
         if( !file )
             return false;
-        Json::StyledWriter writer;
-        std::string content = writer.write( root );
-        file.write( content.c_str(), content.length() );
+        if( binary )
+        {
+            BinaryJson::Buffer buffer;
+            buffer.setAutoResize();
+            BinaryJson::jsonToBinary( (Json::Value&)root, &buffer, binaryKeyHash );
+            unsigned int pos = buffer.position();
+            buffer.reposition();
+            file.write( (char*)buffer.data(), pos );
+        }
+        else
+        {
+            Json::StyledWriter writer;
+            std::string content = writer.write( root );
+            file.write( content.c_str(), content.length() );
+        }
         file.close();
         return true;
     }

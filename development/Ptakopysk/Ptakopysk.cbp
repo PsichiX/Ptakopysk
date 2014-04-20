@@ -20,6 +20,7 @@
 				<Linker>
 					<Add library="..\requirements\xenon-core-3-sdk\Code\Engine\XenonCore3\libs\libXenonCore3-d.a" />
 					<Add library="..\requirements\JsonCpp\bin\Debug\libJsonCpp.a" />
+					<Add library="..\requirements\BinaryJson\libs\libBinaryJson-d.a" />
 					<Add library="..\requirements\Box2D\bin\Debug\libBox2D.a" />
 					<Add library="..\requirements\SFML-2.1\lib\libsfml-audio-s-d.a" />
 					<Add library="..\requirements\SFML-2.1\lib\libsfml-graphics-s-d.a" />
@@ -42,6 +43,7 @@
 					<Add option="-s" />
 					<Add library="..\requirements\xenon-core-3-sdk\Code\Engine\XenonCore3\libs\libXenonCore3.a" />
 					<Add library="..\requirements\JsonCpp\bin\Release\libJsonCpp.a" />
+					<Add library="..\requirements\BinaryJson\libs\libBinaryJson.a" />
 					<Add library="..\requirements\Box2D\bin\Release\libBox2D.a" />
 					<Add library="..\requirements\SFML-2.1\lib\libsfml-audio-s.a" />
 					<Add library="..\requirements\SFML-2.1\lib\libsfml-graphics-s.a" />
@@ -64,6 +66,7 @@
 				<Linker>
 					<Add library="..\requirements\xenon-core-3-sdk\Code\Engine\XenonCore3\libs\libXenonCore3-d.a" />
 					<Add library="..\requirements\JsonCpp\bin\Debug\libJsonCpp.a" />
+					<Add library="..\requirements\BinaryJson\libs\libBinaryJson-d.a" />
 					<Add library="..\requirements\Box2D\bin\Debug\libBox2D.a" />
 					<Add library="..\requirements\SFML-2.1\lib\libsfml-audio-s-d.a" />
 					<Add library="..\requirements\SFML-2.1\lib\libsfml-graphics-s-d.a" />
@@ -87,6 +90,7 @@
 					<Add option="-s" />
 					<Add library="..\requirements\xenon-core-3-sdk\Code\Engine\XenonCore3\libs\libXenonCore3.a" />
 					<Add library="..\requirements\JsonCpp\bin\Release\libJsonCpp.a" />
+					<Add library="..\requirements\BinaryJson\libs\libBinaryJson.a" />
 					<Add library="..\requirements\Box2D\bin\Release\libBox2D.a" />
 					<Add library="..\requirements\SFML-2.1\lib\libsfml-audio-s.a" />
 					<Add library="..\requirements\SFML-2.1\lib\libsfml-graphics-s.a" />
@@ -100,6 +104,7 @@
 			<Add directory="../requirements/xenon-core-3-sdk/Code/Engine/XenonCore3/include" />
 			<Add directory="../requirements/SFML-2.1/include" />
 			<Add directory="../requirements/jsoncpp-src-0.5.0/include" />
+			<Add directory="../requirements/BinaryJson/include" />
 			<Add directory="../requirements/Box2D_v2.2.1" />
 		</Compiler>
 		<Unit filename="include/Ptakopysk/Components/Body.h" />

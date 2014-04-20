@@ -120,7 +120,7 @@ if [ ${TEST_ONLY} = 1 ]; then
   exit 0
 fi
 
-# dont overwrite
+# do not overwrite
 if [ ${OVERWRITE} = 0 ]; then
   rm -r ./sdk/
 fi
@@ -138,6 +138,7 @@ if [ ${CP_BOX2D[0]} = 1 ]; then
 fi
 if [ ${CP_JSONCPP[0]} = 1 ]; then
   cp -r ./development/requirements/jsoncpp-src-0.5.0/include/* ./sdk/include/
+  cp -r ./development/requirements/BinaryJson/include/* ./sdk/include/
 fi
 if [ ${CP_SFML[0]} = 1 ]; then
   cp -r ./development/requirements/SFML-2.1/include/* ./sdk/include/
@@ -158,6 +159,7 @@ fi
 if [ ${CP_JSONCPP[1]} = 1 ]; then
   cp ./development/requirements/JsonCpp/bin/Debug/libJsonCpp.a ./sdk/lib/libJsonCpp-d.a
   cp ./development/requirements/JsonCpp/bin/Release/libJsonCpp.a ./sdk/lib/libJsonCpp.a
+  cp ./development/requirements/BinaryJson/libs/* ./sdk/lib/
 fi
 if [ ${CP_SFML[1]} = 1 ]; then
   cp ./development/requirements/SFML-2.1/lib/*.a ./sdk/lib/
