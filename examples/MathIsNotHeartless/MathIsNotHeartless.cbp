@@ -23,6 +23,7 @@
 					<Add library="libsfml-system-s-d.a" />
 					<Add library="libBox2D-d.a" />
 					<Add library="libJsonCpp-d.a" />
+					<Add library="libBinaryJson-d.a" />
 					<Add library="libXenonCore3-d.a" />
 				</Linker>
 			</Target>
@@ -44,6 +45,7 @@
 					<Add library="libsfml-system-s.a" />
 					<Add library="libBox2D.a" />
 					<Add library="libJsonCpp.a" />
+					<Add library="libBinaryJson-d.a" />
 					<Add library="libXenonCore3.a" />
 				</Linker>
 			</Target>
