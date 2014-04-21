@@ -8,6 +8,7 @@ Ptakopysk
 All you will want to do with this library in your project is just to use project generator script:
 - **cd \<sdk\>/templates/**
 - **./make_new_project.sh -o "path/to/project/directory/" -p "ProjectName"**
+- Pro-tip: You may also want to change location of include and library files in Code::Blocks project.
 
 Or use templates directly:
 - **main:** [TemplateMain.cpp](https://github.com/PsichiX/Ptakopysk/blob/master/templates/TemplateMain.cpp)
