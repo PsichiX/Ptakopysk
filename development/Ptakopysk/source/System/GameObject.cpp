@@ -43,8 +43,12 @@ namespace Ptakopysk
             return m_gameManager;
         GameObject* p = m_parent;
         while( p )
+        {
+            if( p->m_gameManager )
+                return p->m_gameManager;
             p = p->getParent();
-        return p ? p->getGameManager() : 0;
+        }
+        return 0;
     }
 
     void GameObject::fromJson( const Json::Value& root )

@@ -135,37 +135,45 @@ namespace Ptakopysk
             return;
         GameObject* p = getGameObject()->getParent();
         GameManager* gm = getGameObject()->getGameManagerRoot();
-        GameObject* a = p ? p->getGameObject( m_bindingA ) : 0;
+        GameObject* a = m_bindingA == getGameObject()->getId() ? getGameObject() : 0;
+        if( !a && p && m_bindingA == p->getId() ) a = p;
+        if( !a && p ) a = p->getGameObject( m_bindingA );
         if( !a ) a = getGameObject()->getGameObject( m_bindingA );
         if( !a && gm ) a = gm->getGameObject( m_bindingA );
         if( !a )
         {
-            LOGNL( "Cannot find GameObject: '%s' for binding!", m_bindingA.c_str() );
+            LOGNL( "Cannot find GameObject: '%s' for binding A!", m_bindingA.c_str() );
             return;
         }
         Body* ba = a->getComponent< Body >();
         if( !ba )
         {
-            LOGNL( "GameObject: '%s' binding does not have Body component!", m_bindingA.c_str() );
+            LOGNL( "GameObject: '%s' binding A does not have Body component!", m_bindingA.c_str() );
             return;
         }
-        GameObject* b = p ? p->getGameObject( m_bindingB ) : 0;
-        if( !b ) b = getGameObject()->getGameObject( m_bindingB );
+        GameObject* b = m_bindingB == getGameObject()->getId() ? getGameObject() : 0;
+        if( !b && p && m_bindingB == p->getId() ) b = p;
+        if( !b && p ) b = p->getGameObject( m_bindingB );
         if( !b && gm ) b = gm->getGameObject( m_bindingB );
         if( !b )
         {
-            LOGNL( "Cannot find GameObject: '%s' for binding!", m_bindingB.c_str() );
+            LOGNL( "Cannot find GameObject: '%s' for binding B!", m_bindingB.c_str() );
             return;
         }
         Body* bb = b->getComponent< Body >();
         if( !bb )
         {
-            LOGNL( "GameObject: '%s' binding does not have Body component!", m_bindingB.c_str() );
+            LOGNL( "GameObject: '%s' binding B does not have Body component!", m_bindingB.c_str() );
+            return;
+        }
+        if( ba == bb )
+        {
+            LOGNL( "GameObjects bindings A and B are the same!" );
             return;
         }
         m_jointDef.bodyA = ba->getBody();
         m_jointDef.bodyB = bb->getBody();
-        m_joint = (b2RevoluteJoint*)getGameObject()->getGameManager()->getPhysicsWorld()->CreateJoint( &m_jointDef );
+        m_joint = (b2RevoluteJoint*)getGameObject()->getGameManagerRoot()->getPhysicsWorld()->CreateJoint( &m_jointDef );
         m_joint->SetUserData( getGameObject() );
     }
 
@@ -181,7 +189,7 @@ namespace Ptakopysk
             m_jointDef.enableMotor = m_joint->IsMotorEnabled();
             m_jointDef.motorSpeed = m_joint->GetMotorSpeed();
             m_jointDef.maxMotorTorque = m_joint->GetMaxMotorTorque();
-            getGameObject()->getGameManager()->getPhysicsWorld()->DestroyJoint( m_joint );
+            getGameObject()->getGameManagerRoot()->getPhysicsWorld()->DestroyJoint( m_joint );
         }
         m_joint = 0;
     }
@@ -210,8 +218,12 @@ namespace Ptakopysk
 
     void RevoluteJoint::onJointGoodbye( b2Joint* joint )
     {
-        if( joint == m_joint && getGameObject() )
-            getGameObject()->removeComponent( this );
+        if( joint == m_joint )
+        {
+            m_joint = 0;
+            if( getGameObject() )
+                getGameObject()->removeComponent( this );
+        }
     }
 
 }

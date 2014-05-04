@@ -61,6 +61,8 @@ namespace Ptakopysk
         FORCEINLINE Component* getComponent( XeCore::Common::IRtti::Derivation d ) { return m_components.count( d ) ? m_components[ d ] : 0; };
         template< typename T >
         FORCEINLINE T* getComponent() { return (T*)getComponent( RTTI_CLASS_TYPE( T ) ); };
+        template< typename T >
+        T* getOrCreateComponent();
 
         void addGameObject( GameObject* go );
         void removeGameObject( GameObject* go );
@@ -112,5 +114,7 @@ namespace Ptakopysk
     };
 
 }
+
+#include "GameObject.inl"
 
 #endif

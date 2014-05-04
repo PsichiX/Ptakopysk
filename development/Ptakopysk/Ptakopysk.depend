@@ -769,7 +769,7 @@
 	"../include/GameObject.h"
 	"../include/Body.h"
 
-1399214907 source:d:\git\ptakopysk\development\ptakopysk\source\components\body.cpp
+1399238397 source:d:\git\ptakopysk\development\ptakopysk\source\components\body.cpp
 	"../../include/Ptakopysk/Components/Body.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/System/GameObject.h"
@@ -799,7 +799,7 @@
 
 1394306355 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\serialized.inl
 
-1397943463 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gameobject.h
+1399232210 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gameobject.h
 	<XeCore/Common/Property.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -810,6 +810,7 @@
 	<list>
 	<string>
 	"../Serialization/Serialized.h"
+	"GameObject.inl"
 
 1398006416 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gamemanager.h
 	<XeCore/Common/Property.h>
@@ -883,7 +884,7 @@
 	<string>
 	<list>
 
-1398006460 source:d:\git\ptakopysk\development\ptakopysk\source\system\gamemanager.cpp
+1399216431 source:d:\git\ptakopysk\development\ptakopysk\source\system\gamemanager.cpp
 	"../../include/Ptakopysk/System/GameManager.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/Components/SpriteRenderer.h"
@@ -892,6 +893,7 @@
 	"../../include/Ptakopysk/Components/TextRenderer.h"
 	"../../include/Ptakopysk/System/Assets.h"
 	"../../include/Ptakopysk/Serialization/b2BodyTypeSerializer.h"
+	"../../include/Ptakopysk/Serialization/b2FilterSerializer.h"
 	"../../include/Ptakopysk/Serialization/BlendModeSerializer.h"
 	"../../include/Ptakopysk/Serialization/StyleSerializer.h"
 	"../../include/Ptakopysk/Serialization/TransformModeSerializer.h"
@@ -904,7 +906,7 @@
 	"EnumSerializer.h"
 	<Box2D/Box2D.h>
 
-1397851546 source:d:\git\ptakopysk\development\ptakopysk\source\system\gameobject.cpp
+1399236418 source:d:\git\ptakopysk\development\ptakopysk\source\system\gameobject.cpp
 	"../../include/Ptakopysk/System/GameObject.h"
 	"../../include/Ptakopysk/System/GameManager.h"
 	"../../include/Ptakopysk/Components/Component.h"
@@ -996,7 +998,7 @@
 	"EnumSerializer.h"
 	"../Components/Transform.h"
 
-1397943303 source:d:\git\ptakopysk\development\ptakopysk\source\components\revolutejoint.cpp
+1399241502 source:d:\git\ptakopysk\development\ptakopysk\source\components\revolutejoint.cpp
 	"../../include/Ptakopysk/Components/RevoluteJoint.h"
 	"../../include/Ptakopysk/Components/Body.h"
 	"../../include/Ptakopysk/System/GameObject.h"
@@ -1033,4 +1035,7 @@
 1399214448 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\b2filterserializer.h
 	"Serialized.h"
 	<Box2D/Box2D.h>
+
+1399232342 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gameobject.inl
+	"../Components/Component.h"
 

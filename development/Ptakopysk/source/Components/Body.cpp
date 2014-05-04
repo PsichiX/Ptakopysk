@@ -177,7 +177,7 @@ namespace Ptakopysk
             m_bodyDef.position = b2Vec2( pos.x, pos.y );
             m_bodyDef.angle = DEGTORAD( trans->getRotation() );
         }
-        m_body = getGameObject()->getGameManager()->getPhysicsWorld()->CreateBody( &m_bodyDef );
+        m_body = getGameObject()->getGameManagerRoot()->getPhysicsWorld()->CreateBody( &m_bodyDef );
         m_shape = m_verts.size() ? (b2Shape*)xnew b2PolygonShape() : (b2Shape*)xnew b2CircleShape();
         m_shape->m_radius = m_radius;
         if( m_shape->GetType() == b2Shape::e_polygon )
@@ -210,7 +210,7 @@ namespace Ptakopysk
                 m_filter = m_fixture->GetFilterData();
                 m_body->DestroyFixture( m_fixture );
             }
-            getGameObject()->getGameManager()->getPhysicsWorld()->DestroyBody( m_body );
+            getGameObject()->getGameManagerRoot()->getPhysicsWorld()->DestroyBody( m_body );
             Transform* trans = getGameObject()->getComponent< Transform >();
             if( trans )
             {
@@ -250,8 +250,12 @@ namespace Ptakopysk
 
     void Body::onFixtureGoodbye( b2Fixture* fixture )
     {
-        if( fixture == m_fixture && getGameObject() )
-            getGameObject()->removeComponent( this );
+        if( fixture == m_fixture )
+        {
+            m_fixture = 0;
+            if( getGameObject() )
+                getGameObject()->removeComponent( this );
+        }
     }
 
 }
