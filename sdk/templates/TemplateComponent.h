@@ -18,11 +18,12 @@ public:
 
 	FORCEINLINE static Component* onBuildComponent() { return xnew TemplateComponent(); }
 
+	//<TEMPLATE
 	FORCEINLINE float getValue() { return m_value; };
 	FORCEINLINE void setValue( float v ) { m_value = v; };
 	
 	XeCore::Common::Property< float, TemplateComponent > Value;
-
+	//TEMPLATE>
 protected:
 	virtual Json::Value onSerialize( const std::string& property );
 	virtual void onDeserialize( const std::string& property, const Json::Value& root );
@@ -31,7 +32,9 @@ protected:
 	virtual void onUpdate( float dt );
 	
 private:
+	//<TEMPLATE
 	float m_value;
+	//TEMPLATE>
 };
 
 #endif

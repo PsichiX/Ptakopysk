@@ -13,10 +13,14 @@ RTTI_CLASS_DERIVATIONS( TemplateComponent,
 TemplateComponent::TemplateComponent()
 : RTTI_CLASS_DEFINE( TemplateComponent )
 , Component( Component::tUpdate )
+//<TEMPLATE
 , Value( this, &TemplateComponent::getValue, &TemplateComponent::setValue )
 , m_value( 0.0f )
+//TEMPLATE>
 {
+	//<TEMPLATE
 	serializableProperty( "Value" );
+	//TEMPLATE>
 }
 
 TemplateComponent::~TemplateComponent()
@@ -25,17 +29,21 @@ TemplateComponent::~TemplateComponent()
 
 Json::Value TemplateComponent::onSerialize( const std::string& property )
 {
+	//<TEMPLATE
 	if( property == "Value" )
 		return Json::Value( m_value );
 	else
+	//TEMPLATE>
 		return Component::onSerialize( property );
 }
 
 void TemplateComponent::onDeserialize( const std::string& property, const Json::Value& root )
 {
+	//<TEMPLATE
 	if( property == "Value" && root.isNumeric() )
 		m_value = (float)root.asDouble();
 	else
+	//TEMPLATE>
 		Component::onDeserialize( property, root );
 }
 
@@ -47,11 +55,14 @@ void TemplateComponent::onDuplicate( Component* dst )
 	if( !XeCore::Common::IRtti::isDerived< TemplateComponent >( dst ) )
 		return;
 	TemplateComponent* c = (TemplateComponent*)dst;
+	//<TEMPLATE
 	c->setValue( getValue() );
+	//TEMPLATE>
 }
 
 void TemplateComponent::onUpdate( float dt )
 {
+	//<TEMPLATE
 	m_value += dt;
 	TextRenderer* text = getGameObject()->getComponent< TextRenderer >();
 	SpriteRenderer* spr = getGameObject()->getComponent< SpriteRenderer >();
@@ -64,4 +75,5 @@ void TemplateComponent::onUpdate( float dt )
 	}
 	else if( spr && trans )
         trans->Rotation = m_value * 90.0f;
+	//TEMPLATE>
 }
