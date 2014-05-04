@@ -37,6 +37,7 @@ int main()
 
     /// game manager
     GameManager* gameManager = xnew GameManager();
+	gameManager->RenderWindow = window;
     /// deserialize JSON to scene
     gameManager->jsonToScene( GameManager::loadJson( "template_game.json" ) );
     //GameManager::saveJson( "template_game.bin", GameManager::loadJson( "template_game.json" ), true, MAXDWORD );

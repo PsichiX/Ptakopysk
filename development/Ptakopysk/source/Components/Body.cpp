@@ -15,6 +15,7 @@ namespace Ptakopysk
     : RTTI_CLASS_DEFINE( Body )
     , Component( Component::tPhysics )
     , Vertices( this, &Body::getVertices, &Body::setVertices )
+    , Radius( this, &Body::getRadius, &Body::setRadius )
     , Density( this, &Body::getDensity, &Body::setDensity )
     , BodyType( this, &Body::getBodyType, &Body::setBodyType )
     , LinearVelocity( this, &Body::getLinearVelocity, &Body::setLinearVelocity )
@@ -29,7 +30,9 @@ namespace Ptakopysk
     , m_body( 0 )
     , m_fixture( 0 )
     , m_shape( 0 )
+    , m_radius( 0.0f )
     {
+        serializableProperty( "Radius" );
         serializableProperty( "Vertices" );
         serializableProperty( "Density" );
         serializableProperty( "BodyType" );
@@ -78,6 +81,8 @@ namespace Ptakopysk
             }
             return v;
         }
+        else if( property == "Radius" )
+            return Json::Value( getRadius() );
         else if( property == "Density" )
             return Json::Value( m_density );
         else if( property == "BodyType" )
@@ -128,6 +133,8 @@ namespace Ptakopysk
             }
             setVertices( v );
         }
+        else if( property == "Radius" && root.isNumeric() )
+            setRadius( (float)root.asDouble() );
         else if( property == "Density" && root.isNumeric() )
             setDensity( (float)root.asDouble() );
         else if( property == "BodyType" && root.isString() )
@@ -165,13 +172,12 @@ namespace Ptakopysk
             m_bodyDef.angle = DEGTORAD( trans->getRotation() );
         }
         m_body = getGameObject()->getGameManager()->getPhysicsWorld()->CreateBody( &m_bodyDef );
-        m_shape = xnew b2PolygonShape();
-        if( m_verts.size() )
-        {
-            m_shape->Set( m_verts.data(), m_verts.size() );
-            m_fixture = m_body->CreateFixture( m_shape, 1.0f );
-            m_fixture->SetUserData( getGameObject() );
-        }
+        m_shape = m_verts.size() ? (b2Shape*)xnew b2PolygonShape() : (b2Shape*)xnew b2CircleShape();
+        m_shape->m_radius = m_radius;
+        if( m_shape->GetType() == b2Shape::e_polygon )
+            ((b2PolygonShape*)m_shape)->Set( m_verts.data(), m_verts.size() );
+        m_fixture = m_body->CreateFixture( m_shape, m_density );
+        m_fixture->SetUserData( getGameObject() );
         m_body->SetUserData( getGameObject() );
     }
 
@@ -207,6 +213,8 @@ namespace Ptakopysk
         }
         m_body = 0;
         m_fixture = 0;
+        if( m_shape )
+            m_radius = m_shape->m_radius;
         DELETE_OBJECT( m_shape );
     }
 
@@ -218,6 +226,7 @@ namespace Ptakopysk
         if( !XeCore::Common::IRtti::isDerived< Body >( dst ) )
             return;
         Body* c = (Body*)dst;
+        c->setRadius( getRadius() );
         c->setVertices( getVertices() );
         c->setDensity( getDensity() );
         c->setBodyType( getBodyType() );

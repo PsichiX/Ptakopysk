@@ -23,14 +23,17 @@ namespace Ptakopysk
         FORCEINLINE static Component* onBuildComponent() { return xnew Body(); }
 
         FORCEINLINE b2Body* getBody() { return m_body; };
-        FORCEINLINE b2PolygonShape* getShape() { return m_shape; };
+        FORCEINLINE b2Shape* getShape() { return m_shape; };
         FORCEINLINE VerticesData& getVertices() { return m_verts; };
         void setVertices( VerticesData& verts );
         void applyVertices();
+        FORCEINLINE float getRadius() { return m_shape ? m_shape->m_radius : m_radius; };
+        FORCEINLINE void setRadius( float v ) { m_radius = v; if( m_shape ) m_shape->m_radius = v; };
         FORCEINLINE float getDensity() { return m_density; };
         FORCEINLINE void setDensity( float v ) { m_density = v; if( m_fixture ) m_fixture->SetDensity( v ); };
         FORCEINLINE b2BodyType getBodyType() { return m_body ? m_body->GetType() : m_bodyDef.type; };
         FORCEINLINE void setBodyType( b2BodyType v ) { if( m_body ) m_body->SetType( v ); else m_bodyDef.type = v; };
+        FORCEINLINE bool isCircleShape() { return m_shape ? m_shape->GetType() == b2Shape::e_circle : !m_verts.size(); };
         FORCEINLINE b2Vec2 getLinearVelocity() { return m_body ? m_body->GetLinearVelocity() : m_bodyDef.linearVelocity; };
         FORCEINLINE void setLinearVelocity( b2Vec2 v ) { if( m_body ) m_body->SetLinearVelocity( v ); else m_bodyDef.linearVelocity = v; };
         FORCEINLINE float getAngularVelocity() { return m_body ? m_body->GetAngularVelocity() : m_bodyDef.angularVelocity; };
@@ -51,6 +54,7 @@ namespace Ptakopysk
         FORCEINLINE float getAngle() { return RADTODEG( m_body ? m_body->GetAngle() : m_bodyDef.angle ); };
 
         XeCore::Common::Property< VerticesData&, Body > Vertices;
+        XeCore::Common::Property< float, Body > Radius;
         XeCore::Common::Property< float, Body > Density;
         XeCore::Common::Property< b2BodyType, Body > BodyType;
         XeCore::Common::Property< b2Vec2, Body > LinearVelocity;
@@ -75,9 +79,10 @@ namespace Ptakopysk
         float m_density;
         b2Body* m_body;
         b2Fixture* m_fixture;
-        b2PolygonShape* m_shape;
+        b2Shape* m_shape;
         b2BodyDef m_bodyDef;
         VerticesData m_verts;
+        float m_radius;
     };
 
 }
