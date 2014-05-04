@@ -251,12 +251,12 @@ namespace Ptakopysk
         Json::Value textures = root[ "textures" ];
         if( textures.isObject() )
         {
-            Json::Value::Members m = properties.getMemberNames();
+            Json::Value::Members m = textures.getMemberNames();
             Json::Value mv;
             Json::Value item;
             for( Json::Value::Members::iterator it = m.begin(); it != m.end(); it++ )
             {
-                mv = properties[ *it ];
+                mv = textures[ *it ];
                 if( mv.isString() )
                 {
                     sf::Texture* t = Assets::use().getTexture( mv.asString() );
