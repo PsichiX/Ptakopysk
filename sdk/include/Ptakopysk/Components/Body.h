@@ -50,6 +50,8 @@ namespace Ptakopysk
         FORCEINLINE void setBullet( bool v ) { if( m_body ) m_body->SetBullet( v ); else m_bodyDef.bullet = v; };
         FORCEINLINE float getGravityScale() { return m_body ? m_body->GetGravityScale() : m_bodyDef.gravityScale; };
         FORCEINLINE void setGravityScale( float v ) { if( m_body ) m_body->SetGravityScale( v ); else m_bodyDef.gravityScale = v; };
+        FORCEINLINE b2Filter getFilter() { return m_fixture ? m_fixture->GetFilterData() : m_filter; };
+        FORCEINLINE void setFilter( b2Filter v ) { if( m_fixture ) m_fixture->SetFilterData( v ); else m_filter = v; };
         FORCEINLINE b2Vec2 getPosition() { return m_body ? m_body->GetPosition() : m_bodyDef.position; };
         FORCEINLINE float getAngle() { return RADTODEG( m_body ? m_body->GetAngle() : m_bodyDef.angle ); };
 
@@ -65,6 +67,7 @@ namespace Ptakopysk
         XeCore::Common::Property< bool, Body > IsFixedRotation;
         XeCore::Common::Property< bool, Body > IsBullet;
         XeCore::Common::Property< float, Body > GravityScale;
+        XeCore::Common::Property< b2Filter, Body > Filter;
 
     protected:
         virtual Json::Value onSerialize( const std::string& property );
@@ -83,6 +86,7 @@ namespace Ptakopysk
         b2BodyDef m_bodyDef;
         VerticesData m_verts;
         float m_radius;
+        b2Filter m_filter;
     };
 
 }

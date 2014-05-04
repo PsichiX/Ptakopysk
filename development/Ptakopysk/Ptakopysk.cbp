@@ -122,6 +122,7 @@
 		<Unit filename="include/Ptakopysk/Serialization/StyleSerializer.h" />
 		<Unit filename="include/Ptakopysk/Serialization/TransformModeSerializer.h" />
 		<Unit filename="include/Ptakopysk/Serialization/b2BodyTypeSerializer.h" />
+		<Unit filename="include/Ptakopysk/Serialization/b2FilterSerializer.h" />
 		<Unit filename="include/Ptakopysk/System/Assets.h" />
 		<Unit filename="include/Ptakopysk/System/Events.h" />
 		<Unit filename="include/Ptakopysk/System/GameManager.h" />
@@ -141,6 +142,7 @@
 		<Unit filename="source/Serialization/BitFieldSerializer.cpp" />
 		<Unit filename="source/Serialization/EnumSerializer.cpp" />
 		<Unit filename="source/Serialization/Serialized.cpp" />
+		<Unit filename="source/Serialization/b2FilterSerializer.cpp" />
 		<Unit filename="source/System/Assets.cpp" />
 		<Unit filename="source/System/Events.cpp" />
 		<Unit filename="source/System/GameManager.cpp" />

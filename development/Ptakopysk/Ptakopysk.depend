@@ -769,13 +769,13 @@
 	"../include/GameObject.h"
 	"../include/Body.h"
 
-1399169257 source:d:\git\ptakopysk\development\ptakopysk\source\components\body.cpp
+1399214907 source:d:\git\ptakopysk\development\ptakopysk\source\components\body.cpp
 	"../../include/Ptakopysk/Components/Body.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/System/GameObject.h"
 	"../../include/Ptakopysk/System/GameManager.h"
 
-1399168301 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\body.h
+1399214893 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\body.h
 	"Component.h"
 	<Box2D/Box2D.h>
 
@@ -1026,4 +1026,11 @@
 1398005445 d:\git\ptakopysk\development\requirements\binaryjson\include\binaryjson\binaryjson.h
 	<XeCore/Common/Buffer.h>
 	<json/json.h>
+
+1399215268 source:d:\git\ptakopysk\development\ptakopysk\source\serialization\b2filterserializer.cpp
+	"../../include/Ptakopysk/Serialization/b2FilterSerializer.h"
+
+1399214448 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\b2filterserializer.h
+	"Serialized.h"
+	<Box2D/Box2D.h>
 

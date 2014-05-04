@@ -26,6 +26,7 @@ namespace Ptakopysk
     , IsFixedRotation( this, &Body::isFixedRotation, &Body::setFixedRotation )
     , IsBullet( this, &Body::isBullet, &Body::setBullet )
     , GravityScale( this, &Body::getGravityScale, &Body::setGravityScale )
+    , Filter( this, &Body::getFilter, &Body::setFilter )
     , m_density( 1.0f )
     , m_body( 0 )
     , m_fixture( 0 )
@@ -44,6 +45,7 @@ namespace Ptakopysk
         serializableProperty( "IsFixedRotation" );
         serializableProperty( "IsBullet" );
         serializableProperty( "GravityScale" );
+        serializableProperty( "Filter" );
     }
 
     Body::~Body()
@@ -109,6 +111,8 @@ namespace Ptakopysk
             return Json::Value( isBullet() );
         else if( property == "GravityScale" )
             return Json::Value( getGravityScale() );
+        else if( property == "Filter" )
+            return Serialized::serializeCustom< b2Filter >( "b2Filter", getFilter() );
         else
             return Component::onSerialize( property );
     }
@@ -155,6 +159,8 @@ namespace Ptakopysk
             setBullet( root.asBool() );
         else if( property == "GravityScale" && root.isNumeric() )
             setGravityScale( (float)root.asDouble() );
+        else if( property == "Filter" && root.isObject() )
+            setFilter( Serialized::deserializeCustom< b2Filter >( "b2Filter", root ) );
         else
             Component::onDeserialize( property, root );
     }
@@ -201,6 +207,7 @@ namespace Ptakopysk
             if( m_fixture )
             {
                 m_density = m_fixture->GetDensity();
+                m_filter = m_fixture->GetFilterData();
                 m_body->DestroyFixture( m_fixture );
             }
             getGameObject()->getGameManager()->getPhysicsWorld()->DestroyBody( m_body );
@@ -238,6 +245,7 @@ namespace Ptakopysk
         c->setFixedRotation( isFixedRotation() );
         c->setBullet( isBullet() );
         c->setGravityScale( getGravityScale() );
+        c->setFilter( getFilter() );
     }
 
     void Body::onFixtureGoodbye( b2Fixture* fixture )

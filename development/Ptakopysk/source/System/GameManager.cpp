@@ -6,6 +6,7 @@
 #include "../../include/Ptakopysk/Components/TextRenderer.h"
 #include "../../include/Ptakopysk/System/Assets.h"
 #include "../../include/Ptakopysk/Serialization/b2BodyTypeSerializer.h"
+#include "../../include/Ptakopysk/Serialization/b2FilterSerializer.h"
 #include "../../include/Ptakopysk/Serialization/BlendModeSerializer.h"
 #include "../../include/Ptakopysk/Serialization/StyleSerializer.h"
 #include "../../include/Ptakopysk/Serialization/TransformModeSerializer.h"
@@ -162,6 +163,7 @@ namespace Ptakopysk
     void GameManager::initialize()
     {
         Serialized::registerCustomSerializer( "b2BodyType", xnew b2BodyTypeSerializer() );
+        Serialized::registerCustomSerializer( "b2Filter", xnew b2FilterSerializer() );
         Serialized::registerCustomSerializer( "BlendMode", xnew BlendModeSerializer() );
         Serialized::registerCustomSerializer( "Style", xnew StyleSerializer() );
         Serialized::registerCustomSerializer( "Transform::ModeType", xnew TransformModeSerializer() );
