@@ -17,6 +17,9 @@ namespace Ptakopysk
     , Vertices( this, &Body::getVertices, &Body::setVertices )
     , Radius( this, &Body::getRadius, &Body::setRadius )
     , Density( this, &Body::getDensity, &Body::setDensity )
+    , Friction( this, &Body::getFriction, &Body::setFriction )
+    , Restitution( this, &Body::getRestitution, &Body::setRestitution )
+    , Filter( this, &Body::getFilter, &Body::setFilter )
     , BodyType( this, &Body::getBodyType, &Body::setBodyType )
     , LinearVelocity( this, &Body::getLinearVelocity, &Body::setLinearVelocity )
     , AngularVelocity( this, &Body::getAngularVelocity, &Body::setAngularVelocity )
@@ -26,16 +29,17 @@ namespace Ptakopysk
     , IsFixedRotation( this, &Body::isFixedRotation, &Body::setFixedRotation )
     , IsBullet( this, &Body::isBullet, &Body::setBullet )
     , GravityScale( this, &Body::getGravityScale, &Body::setGravityScale )
-    , Filter( this, &Body::getFilter, &Body::setFilter )
-    , m_density( 1.0f )
+    , m_radius( 0.0f )
     , m_body( 0 )
     , m_fixture( 0 )
     , m_shape( 0 )
-    , m_radius( 0.0f )
     {
         serializableProperty( "Radius" );
         serializableProperty( "Vertices" );
         serializableProperty( "Density" );
+        serializableProperty( "Friction" );
+        serializableProperty( "Restitution" );
+        serializableProperty( "Filter" );
         serializableProperty( "BodyType" );
         serializableProperty( "LinearVelocity" );
         serializableProperty( "AngularVelocity" );
@@ -45,7 +49,6 @@ namespace Ptakopysk
         serializableProperty( "IsFixedRotation" );
         serializableProperty( "IsBullet" );
         serializableProperty( "GravityScale" );
-        serializableProperty( "Filter" );
     }
 
     Body::~Body()
@@ -86,7 +89,13 @@ namespace Ptakopysk
         else if( property == "Radius" )
             return Json::Value( getRadius() );
         else if( property == "Density" )
-            return Json::Value( m_density );
+            return Json::Value( getDensity() );
+        else if( property == "Friction" )
+            return Json::Value( getFriction() );
+        else if( property == "Restitution" )
+            return Json::Value( getRestitution() );
+        else if( property == "Filter" )
+            return Serialized::serializeCustom< b2Filter >( "b2Filter", getFilter() );
         else if( property == "BodyType" )
             return Serialized::serializeCustom< b2BodyType >( "b2BodyType", getBodyType() );
         else if( property == "LinearVelocity" )
@@ -111,8 +120,6 @@ namespace Ptakopysk
             return Json::Value( isBullet() );
         else if( property == "GravityScale" )
             return Json::Value( getGravityScale() );
-        else if( property == "Filter" )
-            return Serialized::serializeCustom< b2Filter >( "b2Filter", getFilter() );
         else
             return Component::onSerialize( property );
     }
@@ -141,6 +148,12 @@ namespace Ptakopysk
             setRadius( (float)root.asDouble() );
         else if( property == "Density" && root.isNumeric() )
             setDensity( (float)root.asDouble() );
+        else if( property == "Friction" && root.isNumeric() )
+            setFriction( (float)root.asDouble() );
+        else if( property == "Restitution" && root.isNumeric() )
+            setRestitution( (float)root.asDouble() );
+        else if( property == "Filter" && root.isObject() )
+            setFilter( Serialized::deserializeCustom< b2Filter >( "b2Filter", root ) );
         else if( property == "BodyType" && root.isString() )
             setBodyType( Serialized::deserializeCustom< b2BodyType >( "b2BodyType", root ) );
         else if( property == "LinearVelocity" && root.isArray() && root.size() == 2 )
@@ -159,8 +172,6 @@ namespace Ptakopysk
             setBullet( root.asBool() );
         else if( property == "GravityScale" && root.isNumeric() )
             setGravityScale( (float)root.asDouble() );
-        else if( property == "Filter" && root.isObject() )
-            setFilter( Serialized::deserializeCustom< b2Filter >( "b2Filter", root ) );
         else
             Component::onDeserialize( property, root );
     }
@@ -178,21 +189,31 @@ namespace Ptakopysk
             m_bodyDef.angle = DEGTORAD( trans->getRotation() );
         }
         m_body = getGameObject()->getGameManagerRoot()->getPhysicsWorld()->CreateBody( &m_bodyDef );
+        m_body->SetUserData( getGameObject() );
         m_shape = m_verts.size() ? (b2Shape*)xnew b2PolygonShape() : (b2Shape*)xnew b2CircleShape();
         m_shape->m_radius = m_radius;
         if( m_shape->GetType() == b2Shape::e_polygon )
             ((b2PolygonShape*)m_shape)->Set( m_verts.data(), m_verts.size() );
-        m_fixture = m_body->CreateFixture( m_shape, m_density );
+        m_fixtureDef.shape = m_shape;
+        m_fixture = m_body->CreateFixture( &m_fixtureDef );
         m_fixture->SetUserData( getGameObject() );
-        m_body->SetUserData( getGameObject() );
     }
 
     void Body::onDestroy()
     {
         if( !getGameObject() )
             return;
+        if( m_fixture )
+        {
+            m_fixtureDef.shape = 0;
+            m_fixtureDef.density = m_fixture->GetDensity();
+            m_fixtureDef.friction = m_fixture->GetFriction();
+            m_fixtureDef.restitution = m_fixture->GetRestitution();
+            m_fixtureDef.filter = m_fixture->GetFilterData();
+        }
         if( m_body )
         {
+            m_body->DestroyFixture( m_fixture );
             m_bodyDef.type = m_body->GetType();
             m_bodyDef.linearVelocity = m_body->GetLinearVelocity();
             m_bodyDef.angularVelocity = m_body->GetAngularVelocity();
@@ -204,12 +225,6 @@ namespace Ptakopysk
             m_bodyDef.gravityScale = m_body->GetGravityScale();
             m_bodyDef.position = m_body->GetPosition();
             m_bodyDef.angle = m_body->GetAngle();
-            if( m_fixture )
-            {
-                m_density = m_fixture->GetDensity();
-                m_filter = m_fixture->GetFilterData();
-                m_body->DestroyFixture( m_fixture );
-            }
             getGameObject()->getGameManagerRoot()->getPhysicsWorld()->DestroyBody( m_body );
             Transform* trans = getGameObject()->getComponent< Transform >();
             if( trans )
@@ -236,6 +251,9 @@ namespace Ptakopysk
         c->setRadius( getRadius() );
         c->setVertices( getVertices() );
         c->setDensity( getDensity() );
+        c->setFriction( getFriction() );
+        c->setRestitution( getRestitution() );
+        c->setFilter( getFilter() );
         c->setBodyType( getBodyType() );
         c->setLinearVelocity( getLinearVelocity() );
         c->setAngularVelocity( getAngularVelocity() );
@@ -245,7 +263,6 @@ namespace Ptakopysk
         c->setFixedRotation( isFixedRotation() );
         c->setBullet( isBullet() );
         c->setGravityScale( getGravityScale() );
-        c->setFilter( getFilter() );
     }
 
     void Body::onFixtureGoodbye( b2Fixture* fixture )

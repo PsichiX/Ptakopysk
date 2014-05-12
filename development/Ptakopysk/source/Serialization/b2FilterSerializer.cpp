@@ -26,11 +26,11 @@ namespace Ptakopysk
         Json::Value category = root[ "category" ];
         Json::Value mask = root[ "mask" ];
         Json::Value group = root[ "group" ];
-        if( category.isUInt() )
+        if( category.isNumeric() )
             filter.categoryBits = (uint16)category.asUInt();
-        if( mask.isUInt() )
+        if( mask.isNumeric() )
             filter.maskBits = (uint16)mask.asUInt();
-        if( group.isInt() )
+        if( group.isNumeric() )
             filter.groupIndex = (int16)group.asInt();
         *(b2Filter*)dstValue = filter;
     }

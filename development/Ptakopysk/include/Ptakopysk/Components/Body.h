@@ -29,8 +29,14 @@ namespace Ptakopysk
         void applyVertices();
         FORCEINLINE float getRadius() { return m_shape ? m_shape->m_radius : m_radius; };
         FORCEINLINE void setRadius( float v ) { m_radius = v; if( m_shape ) m_shape->m_radius = v; };
-        FORCEINLINE float getDensity() { return m_density; };
-        FORCEINLINE void setDensity( float v ) { m_density = v; if( m_fixture ) m_fixture->SetDensity( v ); };
+        FORCEINLINE float getDensity() { return m_fixture ? m_fixture->GetDensity() : m_fixtureDef.density; };
+        FORCEINLINE void setDensity( float v ) { if( m_fixture ) m_fixture->SetDensity( v ); else m_fixtureDef.density = v; };
+        FORCEINLINE float getFriction() { return  m_fixture ? m_fixture->GetFriction() : m_fixtureDef.friction; };
+        FORCEINLINE void setFriction( float v ) { if( m_fixture ) m_fixture->SetFriction( v ); else m_fixtureDef.friction = v; };
+        FORCEINLINE float getRestitution() { return  m_fixture ? m_fixture->GetRestitution() : m_fixtureDef.restitution; };
+        FORCEINLINE void setRestitution( float v ) { if( m_fixture ) m_fixture->SetRestitution( v ); else m_fixtureDef.restitution = v; };
+        FORCEINLINE b2Filter getFilter() { return m_fixture ? m_fixture->GetFilterData() : m_fixtureDef.filter; };
+        FORCEINLINE void setFilter( b2Filter v ) { if( m_fixture ) m_fixture->SetFilterData( v ); else m_fixtureDef.filter = v; };
         FORCEINLINE b2BodyType getBodyType() { return m_body ? m_body->GetType() : m_bodyDef.type; };
         FORCEINLINE void setBodyType( b2BodyType v ) { if( m_body ) m_body->SetType( v ); else m_bodyDef.type = v; };
         FORCEINLINE bool isCircleShape() { return m_shape ? m_shape->GetType() == b2Shape::e_circle : !m_verts.size(); };
@@ -50,14 +56,15 @@ namespace Ptakopysk
         FORCEINLINE void setBullet( bool v ) { if( m_body ) m_body->SetBullet( v ); else m_bodyDef.bullet = v; };
         FORCEINLINE float getGravityScale() { return m_body ? m_body->GetGravityScale() : m_bodyDef.gravityScale; };
         FORCEINLINE void setGravityScale( float v ) { if( m_body ) m_body->SetGravityScale( v ); else m_bodyDef.gravityScale = v; };
-        FORCEINLINE b2Filter getFilter() { return m_fixture ? m_fixture->GetFilterData() : m_filter; };
-        FORCEINLINE void setFilter( b2Filter v ) { if( m_fixture ) m_fixture->SetFilterData( v ); else m_filter = v; };
         FORCEINLINE b2Vec2 getPosition() { return m_body ? m_body->GetPosition() : m_bodyDef.position; };
         FORCEINLINE float getAngle() { return RADTODEG( m_body ? m_body->GetAngle() : m_bodyDef.angle ); };
 
         XeCore::Common::Property< VerticesData&, Body > Vertices;
         XeCore::Common::Property< float, Body > Radius;
         XeCore::Common::Property< float, Body > Density;
+        XeCore::Common::Property< float, Body > Friction;
+        XeCore::Common::Property< float, Body > Restitution;
+        XeCore::Common::Property< b2Filter, Body > Filter;
         XeCore::Common::Property< b2BodyType, Body > BodyType;
         XeCore::Common::Property< b2Vec2, Body > LinearVelocity;
         XeCore::Common::Property< float, Body > AngularVelocity;
@@ -67,7 +74,6 @@ namespace Ptakopysk
         XeCore::Common::Property< bool, Body > IsFixedRotation;
         XeCore::Common::Property< bool, Body > IsBullet;
         XeCore::Common::Property< float, Body > GravityScale;
-        XeCore::Common::Property< b2Filter, Body > Filter;
 
     protected:
         virtual Json::Value onSerialize( const std::string& property );
@@ -79,14 +85,13 @@ namespace Ptakopysk
         virtual void onFixtureGoodbye( b2Fixture* fixture );
 
     private:
-        float m_density;
+        float m_radius;
+        b2BodyDef m_bodyDef;
+        b2FixtureDef m_fixtureDef;
+        VerticesData m_verts;
         b2Body* m_body;
         b2Fixture* m_fixture;
         b2Shape* m_shape;
-        b2BodyDef m_bodyDef;
-        VerticesData m_verts;
-        float m_radius;
-        b2Filter m_filter;
     };
 
 }
