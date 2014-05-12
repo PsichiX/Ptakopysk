@@ -82,8 +82,8 @@ namespace Ptakopysk
         bool hasGameObject( const std::string& id, bool prefab = false );
         GameObject* getGameObject( const std::string& id, bool prefab = false );
         FORCEINLINE unsigned int gameObjectsCount( bool prefab = false ) { return prefab ? m_prefabGameObjects.size() : m_gameObjects.size(); };
-        std::list< GameObject* >::iterator gameObjectAtBegin( bool prefab = false );
-        std::list< GameObject* >::iterator gameObjectAtEnd( bool prefab = false );
+        GameObject::List::iterator gameObjectAtBegin( bool prefab = false );
+        GameObject::List::iterator gameObjectAtEnd( bool prefab = false );
         GameObject* instantiatePrefab( const std::string& id );
 
         FORCEINLINE b2Vec2 getWorldGravity() { return m_world->GetGravity(); };
@@ -120,10 +120,10 @@ namespace Ptakopysk
         sf::RenderWindow* m_renderWindow;
         DestructionListener* m_destructionListener;
         ContactListener* m_contactListener;
-        std::list< GameObject* > m_prefabGameObjects;
-        std::list< GameObject* > m_gameObjects;
-        std::list< GameObject* > m_gameObjectsToCreate;
-        std::list< GameObject* > m_gameObjectsToDestroy;
+        GameObject::List m_prefabGameObjects;
+        GameObject::List m_gameObjects;
+        GameObject::List m_gameObjectsToCreate;
+        GameObject::List m_gameObjectsToDestroy;
     };
 
     GameManager::SceneContentType operator|( GameManager::SceneContentType a, GameManager::SceneContentType b );

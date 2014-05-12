@@ -145,7 +145,7 @@ namespace Ptakopysk
             Json::Value gameObjects;
             GameObject* go;
             Json::Value item;
-            for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            for( List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
             {
                 go = *it;
                 item = go->toJson();
@@ -240,7 +240,7 @@ namespace Ptakopysk
     void GameObject::removeAllGameObjects()
     {
         GameObject* go;
-        for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+        for( List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
         {
             go = *it;
             m_gameObjectsToDestroy.push_back( go );
@@ -250,7 +250,7 @@ namespace Ptakopysk
 
     bool GameObject::hasGameObject( GameObject* go )
     {
-        for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+        for( List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
             if( *it == go )
                 return true;
         return false;
@@ -258,7 +258,7 @@ namespace Ptakopysk
 
     bool GameObject::hasGameObject( const std::string& id )
     {
-        for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+        for( List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
             if( (*it)->getId() == id )
                 return true;
         return false;
@@ -266,7 +266,7 @@ namespace Ptakopysk
 
     GameObject* GameObject::getGameObject( const std::string& id )
     {
-        for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+        for( List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
             if( (*it)->getId() == id )
                 return *it;
         return 0;
@@ -275,7 +275,7 @@ namespace Ptakopysk
     void GameObject::processAdding()
     {
         GameObject* go;
-        for( std::list< GameObject* >::iterator it = m_gameObjectsToCreate.begin(); it != m_gameObjectsToCreate.end(); it++ )
+        for( List::iterator it = m_gameObjectsToCreate.begin(); it != m_gameObjectsToCreate.end(); it++ )
         {
             go = *it;
             m_gameObjects.push_back( go );
@@ -287,7 +287,7 @@ namespace Ptakopysk
     void GameObject::processRemoving()
     {
         GameObject* go;
-        for( std::list< GameObject* >::iterator it = m_gameObjectsToDestroy.begin(); it != m_gameObjectsToDestroy.end(); it++ )
+        for( List::iterator it = m_gameObjectsToDestroy.begin(); it != m_gameObjectsToDestroy.end(); it++ )
         {
             go = *it;
             m_gameObjects.remove( go );
@@ -299,7 +299,7 @@ namespace Ptakopysk
 
     bool GameObject::isWaitingToAdd( GameObject* go )
     {
-        for( std::list< GameObject* >::iterator it = m_gameObjectsToCreate.begin(); it != m_gameObjectsToCreate.end(); it++ )
+        for( List::iterator it = m_gameObjectsToCreate.begin(); it != m_gameObjectsToCreate.end(); it++ )
             if( *it == go )
                 return true;
         return false;
@@ -307,7 +307,7 @@ namespace Ptakopysk
 
     bool GameObject::isWaitingToRemove( GameObject* go )
     {
-        for( std::list< GameObject* >::iterator it = m_gameObjectsToDestroy.begin(); it != m_gameObjectsToDestroy.end(); it++ )
+        for( List::iterator it = m_gameObjectsToDestroy.begin(); it != m_gameObjectsToDestroy.end(); it++ )
             if( *it == go )
                 return true;
         return false;
@@ -338,13 +338,13 @@ namespace Ptakopysk
     {
         for( std::map< XeCore::Common::IRtti::Derivation, Component* >::iterator it = m_components.begin(); it != m_components.end(); it++ )
             it->second->onCreate();
-        for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+        for( List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
             (*it)->onCreate();
     }
 
     void GameObject::onDestroy()
     {
-        for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+        for( List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
             (*it)->onDestroy();
         for( std::map< XeCore::Common::IRtti::Derivation, Component* >::iterator it = m_components.begin(); it != m_components.end(); it++ )
             it->second->onDestroy();
@@ -372,7 +372,7 @@ namespace Ptakopysk
                 dst->addComponent( comp );
             }
         }
-        for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+        for( List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
         {
             GameObject* go = xnew GameObject();
             dst->addGameObject( go );
@@ -401,7 +401,7 @@ namespace Ptakopysk
             processRemoving();
             if( sort )
                 m_gameObjects.sort( GameManager::CompareGameObjects() );
-            for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            for( List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
                 (*it)->onUpdate( dt, t, sort );
         }
     }
@@ -417,7 +417,7 @@ namespace Ptakopysk
                 if( c->isActive() && c->getTypeFlags() & Component::tEvents )
                     c->onEvent( event );
             }
-            for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            for( List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
                 (*it)->onEvent( event );
         }
     }
@@ -433,7 +433,7 @@ namespace Ptakopysk
                 if( c->isActive() && c->getTypeFlags() & Component::tRender )
                     c->onRender( target );
             }
-            for( std::list< GameObject* >::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            for( List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
                 (*it)->onRender( target );
         }
     }

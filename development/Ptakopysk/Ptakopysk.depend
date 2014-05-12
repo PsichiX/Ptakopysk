@@ -769,7 +769,7 @@
 	"../include/GameObject.h"
 	"../include/Body.h"
 
-1399811283 source:d:\git\ptakopysk\development\ptakopysk\source\components\body.cpp
+1399927340 source:d:\git\ptakopysk\development\ptakopysk\source\components\body.cpp
 	"../../include/Ptakopysk/Components/Body.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/System/GameObject.h"
@@ -799,7 +799,7 @@
 
 1394306355 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\serialized.inl
 
-1399232210 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gameobject.h
+1399932893 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gameobject.h
 	<XeCore/Common/Property.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -812,7 +812,7 @@
 	"../Serialization/Serialized.h"
 	"GameObject.inl"
 
-1398006416 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gamemanager.h
+1399932891 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gamemanager.h
 	<XeCore/Common/Property.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>

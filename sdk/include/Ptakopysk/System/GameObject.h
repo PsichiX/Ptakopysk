@@ -31,6 +31,8 @@ namespace Ptakopysk
         friend class GameManager;
 
     public:
+        typedef std::list< GameObject* > List;
+
         GameObject( const std::string& id = "" );
         virtual ~GameObject();
 
@@ -72,8 +74,8 @@ namespace Ptakopysk
         bool hasGameObject( const std::string& id );
         GameObject* getGameObject( const std::string& id );
         FORCEINLINE unsigned int gameObjectsCount() { return m_gameObjects.size(); };
-        FORCEINLINE std::list< GameObject* >::iterator gameObjectAtBegin( bool prefab = false ) { return m_gameObjects.begin(); };
-        FORCEINLINE std::list< GameObject* >::iterator gameObjectAtEnd( bool prefab = false ) { return m_gameObjects.end(); };
+        FORCEINLINE List::iterator gameObjectAtBegin() { return m_gameObjects.begin(); };
+        FORCEINLINE List::iterator gameObjectAtEnd() { return m_gameObjects.end(); };
         void processAdding();
         void processRemoving();
         bool isWaitingToAdd( GameObject* go );
@@ -108,9 +110,9 @@ namespace Ptakopysk
         bool m_active;
         int m_order;
         std::map< XeCore::Common::IRtti::Derivation, Component* > m_components;
-        std::list< GameObject* > m_gameObjects;
-        std::list< GameObject* > m_gameObjectsToCreate;
-        std::list< GameObject* > m_gameObjectsToDestroy;
+        List m_gameObjects;
+        List m_gameObjectsToCreate;
+        List m_gameObjectsToDestroy;
     };
 
 }
