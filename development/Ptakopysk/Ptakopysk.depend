@@ -799,7 +799,7 @@
 
 1394306355 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\serialized.inl
 
-1399932893 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gameobject.h
+1399935583 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gameobject.h
 	<XeCore/Common/Property.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -884,7 +884,7 @@
 	<string>
 	<list>
 
-1399216431 source:d:\git\ptakopysk\development\ptakopysk\source\system\gamemanager.cpp
+1399932890 source:d:\git\ptakopysk\development\ptakopysk\source\system\gamemanager.cpp
 	"../../include/Ptakopysk/System/GameManager.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/Components/SpriteRenderer.h"
@@ -906,7 +906,7 @@
 	"EnumSerializer.h"
 	<Box2D/Box2D.h>
 
-1399236418 source:d:\git\ptakopysk\development\ptakopysk\source\system\gameobject.cpp
+1399935764 source:d:\git\ptakopysk\development\ptakopysk\source\system\gameobject.cpp
 	"../../include/Ptakopysk/System/GameObject.h"
 	"../../include/Ptakopysk/System/GameManager.h"
 	"../../include/Ptakopysk/Components/Component.h"

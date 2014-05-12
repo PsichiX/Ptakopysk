@@ -42,6 +42,8 @@ namespace Ptakopysk
         FORCEINLINE void setActive( bool mode = true ) { m_active = mode; };
         FORCEINLINE int getOrder() { return m_order; };
         FORCEINLINE void setOrder( int order ) { m_order = order; };
+        FORCEINLINE const Json::Value& getMetaData() { return m_metaData; };
+        FORCEINLINE void setMetaData( const Json::Value& meta ) { m_metaData = meta; };
         FORCEINLINE GameManager* getGameManager() { return m_gameManager; };
         FORCEINLINE GameObject* getParent() { return m_parent; };
         GameManager* getGameManagerRoot();
@@ -84,6 +86,7 @@ namespace Ptakopysk
         XeCore::Common::Property< std::string, GameObject > Id;
         XeCore::Common::Property< bool, GameObject > Active;
         XeCore::Common::Property< int, GameObject > Order;
+        XeCore::Common::Property< const Json::Value&, GameObject > MetaData;
         XeCore::Common::Property< GameManager*, GameObject > Owner;
 
     protected:
@@ -109,6 +112,7 @@ namespace Ptakopysk
         std::string m_id;
         bool m_active;
         int m_order;
+        Json::Value m_metaData;
         std::map< XeCore::Common::IRtti::Derivation, Component* > m_components;
         List m_gameObjects;
         List m_gameObjectsToCreate;

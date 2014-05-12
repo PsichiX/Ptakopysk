@@ -17,16 +17,19 @@ namespace Ptakopysk
     , Id( this, &GameObject::getId, &GameObject::setId )
     , Active( this, &GameObject::isActive, &GameObject::setActive )
     , Order( this, &GameObject::getOrder, &GameObject::setOrder )
+    , MetaData( this, &GameObject::getMetaData, &GameObject::setMetaData )
     , Owner( this, &GameObject::getGameManager, 0 )
     , m_gameManager( 0 )
     , m_parent( 0 )
     , m_id( id )
     , m_active( true )
     , m_order( 0 )
+    , m_metaData( Json::Value::null )
     {
         serializableProperty( "Id" );
         serializableProperty( "Active" );
         serializableProperty( "Order" );
+        serializableProperty( "MetaData" );
     }
 
     GameObject::~GameObject()
@@ -321,6 +324,8 @@ namespace Ptakopysk
             return Json::Value( m_active );
         else if( property == "Order" )
             return Json::Value( m_order );
+        else if( property == "MetaData" )
+            return m_metaData;
         return Json::Value::null;
     }
 
@@ -332,6 +337,8 @@ namespace Ptakopysk
             m_active = root.asBool();
         else if( property == "Order" && root.isInt() )
             m_order = root.asInt();
+        else if( property == "MetaData" )
+            m_metaData = root;
     }
 
     void GameObject::onCreate()
@@ -357,6 +364,7 @@ namespace Ptakopysk
         dst->setId( m_id );
         dst->setActive( m_active );
         dst->setOrder( m_order );
+        dst->setMetaData( m_metaData );
         XeCore::Common::IRtti::Derivation type;
         Component* comp;
         for( std::map< XeCore::Common::IRtti::Derivation, Component* >::iterator it = m_components.begin(); it != m_components.end(); it++ )
