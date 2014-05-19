@@ -128,18 +128,12 @@ namespace Ptakopysk
 
     void RevoluteJoint::onCreate()
     {
-        if( !getGameObject() )
+        if( !getGameObject() || getGameObject()->isPrefab() )
             return;
         onDestroy();
         if( m_bindingA.empty() || m_bindingB.empty() )
             return;
-        GameObject* p = getGameObject()->getParent();
-        GameManager* gm = getGameObject()->getGameManagerRoot();
-        GameObject* a = m_bindingA == getGameObject()->getId() ? getGameObject() : 0;
-        if( !a && p && m_bindingA == p->getId() ) a = p;
-        if( !a && p ) a = p->getGameObject( m_bindingA );
-        if( !a ) a = getGameObject()->getGameObject( m_bindingA );
-        if( !a && gm ) a = gm->getGameObject( m_bindingA );
+        GameObject* a = getGameObject()->findGameObject( m_bindingA );
         if( !a )
         {
             LOGNL( "Cannot find GameObject: '%s' for binding A!", m_bindingA.c_str() );
@@ -151,10 +145,7 @@ namespace Ptakopysk
             LOGNL( "GameObject: '%s' binding A does not have Body component!", m_bindingA.c_str() );
             return;
         }
-        GameObject* b = m_bindingB == getGameObject()->getId() ? getGameObject() : 0;
-        if( !b && p && m_bindingB == p->getId() ) b = p;
-        if( !b && p ) b = p->getGameObject( m_bindingB );
-        if( !b && gm ) b = gm->getGameObject( m_bindingB );
+        GameObject* b = getGameObject()->findGameObject( m_bindingB );
         if( !b )
         {
             LOGNL( "Cannot find GameObject: '%s' for binding B!", m_bindingB.c_str() );
@@ -179,7 +170,7 @@ namespace Ptakopysk
 
     void RevoluteJoint::onDestroy()
     {
-        if( !getGameObject() )
+        if( !getGameObject() || getGameObject()->isPrefab() )
             return;
         if( m_joint )
         {

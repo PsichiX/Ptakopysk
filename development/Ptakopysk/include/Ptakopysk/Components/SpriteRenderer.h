@@ -36,6 +36,8 @@ namespace Ptakopysk
         FORCEINLINE void setRenderStates( sf::RenderStates states ) { m_renderStates = states; };
         FORCEINLINE RenderMaterial& getMaterial() { return m_material; };
         FORCEINLINE void setMaterial( RenderMaterial& v ) { m_material.copyFrom( v ); };
+        FORCEINLINE bool getMaterialValidation() { return m_materialValidation; };
+        FORCEINLINE void setMaterialValidation( bool v ) { m_materialValidation = v; };
 
         XeCore::Common::Property< sf::Texture*, SpriteRenderer > Texture;
         XeCore::Common::Property< sf::Vector2f, SpriteRenderer > Size;
@@ -44,6 +46,7 @@ namespace Ptakopysk
         XeCore::Common::Property< sf::Color, SpriteRenderer > Color;
         XeCore::Common::Property< sf::RenderStates, SpriteRenderer > RenderStates;
         XeCore::Common::Property< RenderMaterial&, SpriteRenderer > Material;
+        XeCore::Common::Property< bool, SpriteRenderer > MaterialValidation;
 
     protected:
         virtual Json::Value onSerialize( const std::string& property );
@@ -58,6 +61,7 @@ namespace Ptakopysk
         sf::RectangleShape* m_shape;
         sf::RenderStates m_renderStates;
         RenderMaterial m_material;
+        bool m_materialValidation;
     };
 
 }

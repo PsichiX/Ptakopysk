@@ -95,12 +95,24 @@ namespace Ptakopysk
         Json::Value id = root[ "id" ];
         Json::Value vspath = root[ "vspath" ];
         Json::Value fspath = root[ "fspath" ];
+        Json::Value uniforms = root[ "uniforms" ];
+        Json::Value item;
+        std::vector< std::string > u;
+        if( uniforms.isArray() && uniforms.size() > 0 )
+        {
+            for( unsigned int i = 0; i < uniforms.size(); i++ )
+            {
+                item = uniforms[ i ];
+                if( item.isString() )
+                    u.push_back( item.asString() );
+            }
+        }
         if( id.isString() && vspath.isString() && fspath.isString() )
         {
             Json::Value tags = root[ "tags" ];
             if( tags.isArray() && tags.size() )
                 parseTags( tags, m_tagsShaders[ id.asString() ] );
-            return loadShader( id.asString(), vspath.asString(), fspath.asString() );
+            return loadShader( id.asString(), vspath.asString(), fspath.asString(), u.data(), u.size() );
         }
         return 0;
     }
@@ -257,19 +269,28 @@ namespace Ptakopysk
             return Json::Value::null;
         Json::Value root;
         root[ "id" ] = id;
-        XeCore::Common::String paths = m_metaShaders[ id ];
-        unsigned int pc = 0;
-        XeCore::Common::String* p = paths.explode( "|", pc, false );
-        if( p && pc == 2 )
+        XeCore::Common::String meta = m_metaShaders[ id ];
+        unsigned int mc = 0;
+        XeCore::Common::String* m = meta.explode( "|", mc, false );
+        if( m && mc == 2 )
         {
-            root[ "vspath" ] = p[ 0 ];
-            root[ "fspath" ] = p[ 1 ];
+            root[ "vspath" ] = m[ 0 ];
+            root[ "fspath" ] = m[ 1 ];
             if( m_tagsShaders.count( id ) )
                 root[ "tags" ] = jsonTags( m_tagsShaders[ id ] );
+            if( m_uniformsShaders.count( id ) )
+            {
+                std::vector< std::string > u = m_uniformsShaders[ id ];
+                Json::Value uniforms;
+                for( unsigned int i = 0; i < u.size(); i++ )
+                    uniforms.append( u[ i ] );
+                if( uniforms.isArray() )
+                    root[ "uniforms" ] = uniforms;
+            }
         }
         else
             root = Json::Value::null;
-        DELETE_ARRAY( p );
+        DELETE_ARRAY( m );
         return root;
     }
 
@@ -382,7 +403,7 @@ namespace Ptakopysk
         return t;
     }
 
-    sf::Shader* Assets::loadShader( const std::string& id, const std::string& vspath, const std::string& fspath )
+    sf::Shader* Assets::loadShader( const std::string& id, const std::string& vspath, const std::string& fspath, const std::string* uniforms, unsigned int uniformsCount )
     {
         sf::Shader* t = getShader( id );
         if( !t )
@@ -395,6 +416,9 @@ namespace Ptakopysk
             }
             m_shaders[ id ] = t;
             m_metaShaders[ id ] = vspath + "|" + fspath;
+            m_uniformsShaders[ id ].clear();
+            for( unsigned int i = 0; i < uniformsCount; i++ )
+                m_uniformsShaders[ id ].push_back( uniforms[ i ] );
         }
         return t;
     }
@@ -554,6 +578,8 @@ namespace Ptakopysk
             m_metaShaders.erase( id );
         if( m_tagsShaders.count( id ) )
             m_tagsShaders.erase( id );
+        if( m_uniformsShaders.count( id ) )
+            m_uniformsShaders.erase( id );
     }
 
     void Assets::freeSound( const std::string& id )
@@ -620,6 +646,7 @@ namespace Ptakopysk
         m_shaders.clear();
         m_metaShaders.clear();
         m_tagsShaders.clear();
+        m_uniformsShaders.clear();
     }
 
     void Assets::freeAllSounds()

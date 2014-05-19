@@ -21,6 +21,7 @@ namespace Ptakopysk
     , Owner( this, &GameObject::getGameManager, 0 )
     , m_gameManager( 0 )
     , m_parent( 0 )
+    , m_prefab( false )
     , m_id( id )
     , m_active( true )
     , m_order( 0 )
@@ -36,8 +37,14 @@ namespace Ptakopysk
     {
         removeAllComponents();
         removeAllGameObjects();
-        processAdding();
         processRemoving();
+        GameObject* go;
+        for( List::iterator it = m_gameObjectsToCreate.begin(); it != m_gameObjectsToCreate.end(); it++ )
+        {
+            go = *it;
+            DELETE_OBJECT( go );
+        }
+        m_gameObjectsToCreate.clear();
     }
 
     GameManager* GameObject::getGameManagerRoot()
@@ -92,8 +99,8 @@ namespace Ptakopysk
                             comp = GameManager::buildComponent( typeId );
                             if( comp )
                             {
-                                comp->fromJson( item );
                                 addComponent( comp );
+                                comp->fromJson( item );
                             }
                         }
                     }
@@ -221,6 +228,7 @@ namespace Ptakopysk
             return;
         m_gameObjectsToCreate.push_back( go );
         go->setParent( this );
+        go->setPrefab( m_prefab );
     }
 
     void GameObject::removeGameObject( GameObject* go )
@@ -275,6 +283,11 @@ namespace Ptakopysk
         return 0;
     }
 
+    GameObject* GameObject::findGameObject( const std::string& path )
+    {
+        return findGameObjectInPartOfPath( path, 0 );
+    }
+
     void GameObject::processAdding()
     {
         GameObject* go;
@@ -295,6 +308,7 @@ namespace Ptakopysk
             go = *it;
             m_gameObjects.remove( go );
             go->setParent( 0 );
+            go->setPrefab( false );
             DELETE_OBJECT( go );
         }
         m_gameObjectsToDestroy.clear();
@@ -379,6 +393,12 @@ namespace Ptakopysk
                 it->second->onDuplicate( comp );
                 dst->addComponent( comp );
             }
+        }
+        for( List::iterator it = m_gameObjectsToCreate.begin(); it != m_gameObjectsToCreate.end(); it++ )
+        {
+            GameObject* go = xnew GameObject();
+            dst->addGameObject( go );
+            (*it)->onDuplicate( go );
         }
         for( List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
         {
@@ -486,6 +506,77 @@ namespace Ptakopysk
                     c->onFixtureGoodbye( fixture );
             }
         }
+    }
+
+    void GameObject::setPrefab( bool mode )
+    {
+        m_prefab = mode;
+        for( List::iterator it = m_gameObjectsToCreate.begin(); it != m_gameObjectsToCreate.end(); it++ )
+            (*it)->setPrefab( mode );
+        for( List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            (*it)->setPrefab( mode );
+        for( List::iterator it = m_gameObjectsToDestroy.begin(); it != m_gameObjectsToDestroy.end(); it++ )
+            (*it)->setPrefab( mode );
+    }
+
+    GameObject* GameObject::findGameObjectInPartOfPath( const std::string& path, unsigned int from )
+    {
+        unsigned int p = path.find( '/', from );
+        bool isRoot = from == 0 && p == 0 && p - from < 1;
+        while( p - from < 1 && p != std::string::npos )
+        {
+            from++;
+            p = path.find( '/', from );
+        }
+        if( isRoot )
+        {
+            GameManager* gm = getGameManagerRoot();
+            if( gm )
+                gm->findGameObject( std::string( path, p + 1, -1 ) );
+            else
+                return 0;
+        }
+        else
+        {
+            std::string part = std::string( path, from, p );
+            if( part.empty() )
+                return 0;
+            else if( part == "." )
+            {
+                if( p == std::string::npos )
+                    return this;
+                else
+                    return findGameObjectInPartOfPath( path, p + 1 );
+            }
+            else if( part == ".." )
+            {
+                if( p == std::string::npos )
+                {
+                    if( getParent() )
+                        return getParent();
+                    else
+                        return 0;
+                }
+                else
+                {
+                    if( getParent() )
+                        return getParent()->findGameObjectInPartOfPath( path, p + 1 );
+                    else if( getGameManager() )
+                        return getGameManager()->findGameObject( std::string( path, p + 1, -1 ) );
+                    else
+                        return 0;
+                }
+            }
+            else
+            {
+                GameObject* go = getGameObject( part );
+                if( go )
+                    return go->findGameObjectInPartOfPath( path, p + 1 );
+                else
+                    return 0;
+            }
+        }
+        return 0;
     }
 
 }

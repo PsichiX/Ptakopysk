@@ -13,7 +13,7 @@ namespace Ptakopysk
 
     Body::Body()
     : RTTI_CLASS_DEFINE( Body )
-    , Component( Component::tPhysics )
+    , Component( Component::tUpdate | Component::tPhysics )
     , Vertices( this, &Body::getVertices, &Body::setVertices )
     , Radius( this, &Body::getRadius, &Body::setRadius )
     , Density( this, &Body::getDensity, &Body::setDensity )
@@ -152,8 +152,14 @@ namespace Ptakopysk
             setFriction( (float)root.asDouble() );
         else if( property == "Restitution" && root.isNumeric() )
             setRestitution( (float)root.asDouble() );
-        else if( property == "Filter" && root.isObject() )
-            setFilter( Serialized::deserializeCustom< b2Filter >( "b2Filter", root ) );
+        else if( property == "Filter" )
+        {
+            GameManager* gm = getGameObject() ? getGameObject()->getGameManagerRoot() : 0;
+            if( root.isObject() )
+                setFilter( Serialized::deserializeCustom< b2Filter >( "b2Filter", root ) );
+            else if( root.isString() && gm && gm->accessFilters().count( root.asString() ) )
+                setFilter( gm->accessFilters()[ root.asString() ] );
+        }
         else if( property == "BodyType" && root.isString() )
             setBodyType( Serialized::deserializeCustom< b2BodyType >( "b2BodyType", root ) );
         else if( property == "LinearVelocity" && root.isArray() && root.size() == 2 )
@@ -178,7 +184,7 @@ namespace Ptakopysk
 
     void Body::onCreate()
     {
-        if( !getGameObject() )
+        if( !getGameObject() || getGameObject()->isPrefab() )
             return;
         onDestroy();
         Transform* trans = getGameObject()->getComponent< Transform >();
@@ -201,7 +207,7 @@ namespace Ptakopysk
 
     void Body::onDestroy()
     {
-        if( !getGameObject() )
+        if( !getGameObject() || getGameObject()->isPrefab() )
             return;
         if( m_fixture )
         {
@@ -238,6 +244,17 @@ namespace Ptakopysk
         if( m_shape )
             m_radius = m_shape->m_radius;
         DELETE_OBJECT( m_shape );
+    }
+
+    void Body::onUpdate( float dt )
+    {
+        Transform* trans = getGameObject()->getComponent< Transform >();
+        if( trans )
+        {
+            b2Vec2 pos = getPosition();
+            trans->setPosition( sf::Vector2f( pos.x, pos.y ) );
+            trans->setRotation( RADTODEG( getAngle() ) );
+        }
     }
 
     void Body::onDuplicate( Component* dst )

@@ -140,18 +140,18 @@ namespace Ptakopysk
 
     void TextRenderer::onUpdate( float dt )
     {
-        Transform* trans = getGameObject()->getComponent< Transform >();
+        /*Transform* trans = getGameObject()->getComponent< Transform >();
         if( trans )
         {
             m_text->setPosition( trans->getPosition() );
             m_text->setRotation( trans->getRotation() );
             m_text->setScale( trans->getScale() );
-        }
+        }*/
     }
 
     void TextRenderer::onTransform( const sf::Transform& inTrans, sf::Transform& outTrans )
     {
-        m_renderStates.transform = inTrans;
+        m_renderStates.transform = outTrans;
     }
 
     void TextRenderer::onRender( sf::RenderTarget* target )

@@ -125,7 +125,7 @@ namespace Ptakopysk
 
     void Camera::onCreate()
     {
-        if( !getGameObject() )
+        if( !getGameObject() || getGameObject()->isPrefab() )
             return;
         setSize( m_size );
     }

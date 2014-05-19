@@ -35,6 +35,9 @@ namespace Ptakopysk
         FORCEINLINE void setScale( sf::Vector2f scl ) { m_scale = scl; };
         FORCEINLINE ModeType getMode() { return m_mode; };
         FORCEINLINE void setMode( ModeType mode ) { m_mode = mode; };
+        FORCEINLINE const sf::Transform& getTransform() { return m_transform; };
+        FORCEINLINE const sf::Transform& getTransformGlobal() { return m_transformGlobal; };
+        void recomputeTransform();
 
         XeCore::Common::Property< sf::Vector2f, Transform > Position;
         XeCore::Common::Property< float, Transform > Rotation;
@@ -46,7 +49,6 @@ namespace Ptakopysk
         virtual void onDeserialize( const std::string& property, const Json::Value& root );
 
         virtual void onDuplicate( Component* dst );
-        virtual void onUpdate( float dt );
         virtual void onTransform( const sf::Transform& inTrans, sf::Transform& outTrans );
 
     private:
@@ -54,6 +56,8 @@ namespace Ptakopysk
         float m_rotation;
         sf::Vector2f m_scale;
         ModeType m_mode;
+        sf::Transform m_transform;
+        sf::Transform m_transformGlobal;
     };
 
 }

@@ -39,8 +39,11 @@ namespace Ptakopysk
             Assets = 1 << 0,
             PrefabGameObjects = 1 << 1,
             GameObjects = 1 << 2,
+            PhysicsSettings = 1 << 3,
             All = -1
         };
+
+        typedef std::map< std::string, b2Filter > FiltersMap;
 
         static const int DEFAULT_VEL_ITERS = 6;
         static const int DEFAULT_POS_ITERS = 2;
@@ -81,6 +84,7 @@ namespace Ptakopysk
         bool hasGameObject( GameObject* go, bool prefab = false );
         bool hasGameObject( const std::string& id, bool prefab = false );
         GameObject* getGameObject( const std::string& id, bool prefab = false );
+        GameObject* findGameObject( const std::string& path );
         FORCEINLINE unsigned int gameObjectsCount( bool prefab = false ) { return prefab ? m_prefabGameObjects.size() : m_gameObjects.size(); };
         GameObject::List::iterator gameObjectAtBegin( bool prefab = false );
         GameObject::List::iterator gameObjectAtEnd( bool prefab = false );
@@ -90,6 +94,7 @@ namespace Ptakopysk
         FORCEINLINE void setWorldGravity( b2Vec2 v ) { m_world->SetGravity( v ); };
         FORCEINLINE sf::RenderWindow* getRenderWindow() { return m_renderWindow; };
         FORCEINLINE void setRenderWindow( sf::RenderWindow* v ) { m_renderWindow = v; };
+        FORCEINLINE FiltersMap& accessFilters() { return m_filters; }
 
         void processEvents( const sf::Event& event );
         void processPhysics( float dt, int velIters = DEFAULT_VEL_ITERS, int posIters = DEFAULT_POS_ITERS );
@@ -124,6 +129,7 @@ namespace Ptakopysk
         GameObject::List m_gameObjects;
         GameObject::List m_gameObjectsToCreate;
         GameObject::List m_gameObjectsToDestroy;
+        FiltersMap m_filters;
     };
 
     GameManager::SceneContentType operator|( GameManager::SceneContentType a, GameManager::SceneContentType b );

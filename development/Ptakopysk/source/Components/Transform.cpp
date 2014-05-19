@@ -1,5 +1,4 @@
 #include "../../include/Ptakopysk/Components/Transform.h"
-#include "../../include/Ptakopysk/Components/Body.h"
 #include "../../include/Ptakopysk/System/GameObject.h"
 
 namespace Ptakopysk
@@ -12,7 +11,7 @@ namespace Ptakopysk
 
     Transform::Transform()
     : RTTI_CLASS_DEFINE( Transform )
-    , Component( Component::tUpdate | Component::tTransform )
+    , Component( Component::tTransform )
     , Position( this, &Transform::getPosition, &Transform::setPosition )
     , Rotation( this, &Transform::getRotation, &Transform::setRotation )
     , Scale( this, &Transform::getScale, &Transform::setScale )
@@ -30,6 +29,21 @@ namespace Ptakopysk
 
     Transform::~Transform()
     {
+    }
+
+    void Transform::recomputeTransform()
+    {
+        if( getGameObject() )
+        {
+            if( getGameObject()->getParent() )
+            {
+                Transform* trans = getGameObject()->getParent()->getComponent< Transform >();
+                if( trans )
+                    trans->recomputeTransform();
+            }
+        }
+        sf::Transform t;
+        onTransform( t, t );
     }
 
     Json::Value Transform::onSerialize( const std::string& property )
@@ -94,17 +108,6 @@ namespace Ptakopysk
         c->setMode( getMode() );
     }
 
-    void Transform::onUpdate( float dt )
-    {
-        Body* body = getGameObject()->getComponent< Body >();
-        if( body )
-        {
-            b2Vec2 pos = body->getPosition();
-            setPosition( sf::Vector2f( pos.x, pos.y ) );
-            setRotation( body->getAngle() );
-        }
-    }
-
     void Transform::onTransform( const sf::Transform& inTrans, sf::Transform& outTrans )
     {
         sf::Transform t;
@@ -118,7 +121,14 @@ namespace Ptakopysk
         else if( m_mode == mParent )
             outTrans = inTrans;
         else
+        {
+            t.translate( m_position );
+            t.rotate( m_rotation );
+            t.scale( m_scale );
             outTrans = t;
+        }
+        m_transform = t;
+        m_transformGlobal = outTrans;
     }
 
 }

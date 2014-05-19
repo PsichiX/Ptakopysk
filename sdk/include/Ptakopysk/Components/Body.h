@@ -57,7 +57,7 @@ namespace Ptakopysk
         FORCEINLINE float getGravityScale() { return m_body ? m_body->GetGravityScale() : m_bodyDef.gravityScale; };
         FORCEINLINE void setGravityScale( float v ) { if( m_body ) m_body->SetGravityScale( v ); else m_bodyDef.gravityScale = v; };
         FORCEINLINE b2Vec2 getPosition() { return m_body ? m_body->GetPosition() : m_bodyDef.position; };
-        FORCEINLINE float getAngle() { return RADTODEG( m_body ? m_body->GetAngle() : m_bodyDef.angle ); };
+        FORCEINLINE float getAngle() { return m_body ? m_body->GetAngle() : m_bodyDef.angle; };
 
         XeCore::Common::Property< VerticesData&, Body > Vertices;
         XeCore::Common::Property< float, Body > Radius;
@@ -81,6 +81,7 @@ namespace Ptakopysk
 
         virtual void onCreate();
         virtual void onDestroy();
+        virtual void onUpdate( float dt );
         virtual void onDuplicate( Component* dst );
         virtual void onFixtureGoodbye( b2Fixture* fixture );
 

@@ -162,14 +162,17 @@ namespace Ptakopysk
             m_textures[ name ] = (sf::Texture*)v;
     }
 
-    void RenderMaterial::apply( sf::Shader* shader )
+    void RenderMaterial::apply( sf::Shader* shader, bool propsValidation )
     {
         if( !shader )
             return;
+        std::vector< std::string >* u = propsValidation ? Assets::use().getShaderUniforms( Assets::use().findShader( shader ) ) : 0;
         std::string n;
         for( Properties::iterator it = m_properties.begin(); it != m_properties.end(); it++ )
         {
             n.assign( it->first );
+            if( u && std::find( u->begin(), u->end(), n ) == u->end() )
+                continue;
             std::vector< float >& d = it->second;
             int s = d.size();
             if( s == 1 )

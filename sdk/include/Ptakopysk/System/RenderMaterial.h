@@ -56,7 +56,7 @@ namespace Ptakopysk
         FORCEINLINE void remove( const std::string& name ) { if( has( name ) ) m_properties.erase( name ); };
         FORCEINLINE void removeTexture( const std::string& name ) { if( hasTexture( name ) ) m_textures.erase( name ); };
         FORCEINLINE void clear() { m_properties.clear(); m_textures.clear(); };
-        void apply( sf::Shader* shader );
+        void apply( sf::Shader* shader, bool propsValidation = false );
         void copyFrom( RenderMaterial& mat );
         FORCEINLINE Properties& rawProperties() { return m_properties; };
         FORCEINLINE Textures& rawTextures() { return m_textures; };

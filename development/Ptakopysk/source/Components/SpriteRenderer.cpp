@@ -21,10 +21,13 @@ namespace Ptakopysk
     , Color( this, &SpriteRenderer::getColor, &SpriteRenderer::setColor )
     , RenderStates( this, &SpriteRenderer::getRenderStates, &SpriteRenderer::setRenderStates )
     , Material( this, &SpriteRenderer::getMaterial, &SpriteRenderer::setMaterial )
+    , MaterialValidation( this, &SpriteRenderer::getMaterialValidation, &SpriteRenderer::setMaterialValidation )
     , m_renderStates( sf::RenderStates::Default )
+    , m_materialValidation( false )
     {
         serializableProperty( "RenderStates" );
         serializableProperty( "Material" );
+        serializableProperty( "MaterialValidation" );
         serializableProperty( "Color" );
         serializableProperty( "Texture" );
         serializableProperty( "Size" );
@@ -128,6 +131,8 @@ namespace Ptakopysk
         }
         else if( property == "Material" )
             return m_material.serialize();
+        else if( property == "MaterialValidation" )
+            return Json::Value( m_materialValidation );
         else
             return Component::onSerialize( property );
     }
@@ -177,6 +182,8 @@ namespace Ptakopysk
         }
         else if( property == "Material" && root.isObject() )
             m_material.deserialize( root );
+        else if( property == "MaterialValidation" && root.isBool() )
+            m_materialValidation = root.asBool();
         else
             Component::onDeserialize( property, root );
     }
@@ -189,33 +196,34 @@ namespace Ptakopysk
         if( !XeCore::Common::IRtti::isDerived< SpriteRenderer >( dst ) )
             return;
         SpriteRenderer* c = (SpriteRenderer*)dst;
+        c->setMaterial( getMaterial() );
+        c->setMaterialValidation( getMaterialValidation() );
         c->setTexture( getTexture() );
         c->setSize( getSize() );
         c->setOrigin( getOrigin() );
         c->setRenderStates( getRenderStates() );
-        c->setMaterial( getMaterial() );
     }
 
     void SpriteRenderer::onUpdate( float dt )
     {
-        Transform* trans = getGameObject()->getComponent< Transform >();
+        /*Transform* trans = getGameObject()->getComponent< Transform >();
         if( trans )
         {
             m_shape->setPosition( trans->getPosition() );
             m_shape->setRotation( trans->getRotation() );
             m_shape->setScale( trans->getScale() );
-        }
+        }*/
     }
 
     void SpriteRenderer::onTransform( const sf::Transform& inTrans, sf::Transform& outTrans )
     {
-        m_renderStates.transform = inTrans;
+        m_renderStates.transform = outTrans;
     }
 
     void SpriteRenderer::onRender( sf::RenderTarget* target )
     {
         if( m_renderStates.shader )
-            m_material.apply( (sf::Shader*)m_renderStates.shader );
+            m_material.apply( (sf::Shader*)m_renderStates.shader, m_materialValidation );
         target->draw( *m_shape, m_renderStates );
     }
 

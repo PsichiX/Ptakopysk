@@ -36,6 +36,7 @@ namespace Ptakopysk
         GameObject( const std::string& id = "" );
         virtual ~GameObject();
 
+        FORCEINLINE bool isPrefab() { return m_prefab; };
         FORCEINLINE std::string getId() { return m_id; };
         FORCEINLINE void setId( std::string id ) { m_id = id; };
         FORCEINLINE bool isActive() { return m_active; };
@@ -75,6 +76,7 @@ namespace Ptakopysk
         bool hasGameObject( GameObject* go );
         bool hasGameObject( const std::string& id );
         GameObject* getGameObject( const std::string& id );
+        GameObject* findGameObject( const std::string& path );
         FORCEINLINE unsigned int gameObjectsCount() { return m_gameObjects.size(); };
         FORCEINLINE List::iterator gameObjectAtBegin() { return m_gameObjects.begin(); };
         FORCEINLINE List::iterator gameObjectAtEnd() { return m_gameObjects.end(); };
@@ -106,9 +108,12 @@ namespace Ptakopysk
     private:
         FORCEINLINE void setGameManager( GameManager* gm ) { m_gameManager = gm; };
         FORCEINLINE void setParent( GameObject* go ) { m_parent = go; };
+        void setPrefab( bool mode );
+        GameObject* findGameObjectInPartOfPath( const std::string& path, unsigned int from );
 
         GameManager* m_gameManager;
         GameObject* m_parent;
+        bool m_prefab;
         std::string m_id;
         bool m_active;
         int m_order;

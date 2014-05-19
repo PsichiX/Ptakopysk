@@ -1,9 +1,10 @@
 #include "../../include/Ptakopysk/System/GameManager.h"
 #include "../../include/Ptakopysk/Components/Transform.h"
 #include "../../include/Ptakopysk/Components/SpriteRenderer.h"
-#include "../../include/Ptakopysk/Components/Body.h"
-#include "../../include/Ptakopysk/Components/Camera.h"
 #include "../../include/Ptakopysk/Components/TextRenderer.h"
+#include "../../include/Ptakopysk/Components/Camera.h"
+#include "../../include/Ptakopysk/Components/Body.h"
+#include "../../include/Ptakopysk/Components/RevoluteJoint.h"
 #include "../../include/Ptakopysk/System/Assets.h"
 #include "../../include/Ptakopysk/Serialization/b2BodyTypeSerializer.h"
 #include "../../include/Ptakopysk/Serialization/b2FilterSerializer.h"
@@ -153,8 +154,14 @@ namespace Ptakopysk
     GameManager::~GameManager()
     {
         removeScene();
-        processAdding();
         processRemoving();
+        GameObject* go;
+        for( GameObject::List::iterator it = m_gameObjectsToCreate.begin(); it != m_gameObjectsToCreate.end(); it++ )
+        {
+            go = *it;
+            DELETE_OBJECT( go );
+        }
+        m_gameObjectsToCreate.clear();
         DELETE_OBJECT( m_world );
         DELETE_OBJECT( m_destructionListener );
         DELETE_OBJECT( m_contactListener );
@@ -169,9 +176,10 @@ namespace Ptakopysk
         Serialized::registerCustomSerializer( "Transform::ModeType", xnew TransformModeSerializer() );
         registerComponentFactory( "Transform", RTTI_CLASS_TYPE( Transform ), Transform::onBuildComponent );
         registerComponentFactory( "SpriteRenderer", RTTI_CLASS_TYPE( SpriteRenderer ), SpriteRenderer::onBuildComponent );
-        registerComponentFactory( "Body", RTTI_CLASS_TYPE( Body ), Body::onBuildComponent );
-        registerComponentFactory( "Camera", RTTI_CLASS_TYPE( Camera ), Camera::onBuildComponent );
         registerComponentFactory( "TextRenderer", RTTI_CLASS_TYPE( TextRenderer ), TextRenderer::onBuildComponent );
+        registerComponentFactory( "Camera", RTTI_CLASS_TYPE( Camera ), Camera::onBuildComponent );
+        registerComponentFactory( "Body", RTTI_CLASS_TYPE( Body ), Body::onBuildComponent );
+        registerComponentFactory( "RevoluteJoint", RTTI_CLASS_TYPE( RevoluteJoint ), RevoluteJoint::onBuildComponent );
     }
 
     void GameManager::cleanup()
@@ -343,11 +351,27 @@ namespace Ptakopysk
         if( contentFlags == GameManager::None || !root.isObject() )
             return;
         Json::Value physics = root[ "physics" ];
-        if( !physics.isNull() )
+        if( contentFlags & GameManager::PhysicsSettings && !physics.isNull() )
         {
             Json::Value gravity = physics[ "gravity" ];
             if( gravity.isArray() && gravity.size() == 2 )
                 setWorldGravity( b2Vec2( (float)gravity[ 0u ].asDouble(), (float)gravity[ 1u ].asDouble() ) );
+            Json::Value filters = physics[ "filters" ];
+            if( filters.isObject() && filters.size() > 0 )
+            {
+                Json::Value::Members m = filters.getMemberNames();
+                Json::Value item;
+                std::string name;
+                for( Json::Value::Members::iterator it = m.begin(); it != m.end(); it++ )
+                {
+                    name = *it;
+                    if( m_filters.count( name ) )
+                        continue;
+                    item = filters[ name ];
+                    if( item.isObject() )
+                        m_filters[ name ] = Serialized::deserializeCustom< b2Filter >( "b2Filter", item );
+                }
+            }
         }
         Json::Value assets = root[ "assets" ];
         if( contentFlags & GameManager::Assets && !assets.isNull() )
@@ -391,13 +415,21 @@ namespace Ptakopysk
     Json::Value GameManager::sceneToJson( SceneContentType contentFlags )
     {
         Json::Value root;
-        Json::Value physics;
-        Json::Value physicsGravity;
-        b2Vec2 grav = getWorldGravity();
-        physicsGravity.append( Json::Value( grav.x ) );
-        physicsGravity.append( Json::Value( grav.y ) );
-        physics[ "gravity" ] = physicsGravity;
-        root[ "physics" ] = physics;
+        if( contentFlags & GameManager::PhysicsSettings )
+        {
+            Json::Value physics;
+            Json::Value physicsGravity;
+            b2Vec2 grav = getWorldGravity();
+            physicsGravity.append( Json::Value( grav.x ) );
+            physicsGravity.append( Json::Value( grav.y ) );
+            physics[ "gravity" ] = physicsGravity;
+            Json::Value physicsFilters;
+            for( FiltersMap::iterator it = m_filters.begin(); it != m_filters.end(); it++ )
+                physicsFilters[ it->first ] = Serialized::serializeCustom< b2Filter >( "b2Filter", it->second );
+            if( physicsFilters.isObject() )
+                physics[ "filters" ] = physicsFilters;
+            root[ "physics" ] = physics;
+        }
         if( contentFlags & GameManager::Assets )
         {
             Json::Value assets = Assets::use().assetsToJson();
@@ -445,6 +477,8 @@ namespace Ptakopysk
             removeAllGameObjects( false );
         if( contentFlags & GameManager::GameObjects )
             removeAllGameObjects( true );
+        if( contentFlags & GameManager::PhysicsSettings )
+            m_filters.clear();
     }
 
     void GameManager::addGameObject( GameObject* go, bool prefab )
@@ -453,8 +487,8 @@ namespace Ptakopysk
             return;
         GameObject::List& cgo = prefab ? m_prefabGameObjects : m_gameObjectsToCreate;
         cgo.push_back( go );
-        if( !prefab )
-            go->setGameManager( this );
+        go->setGameManager( this );
+        go->setPrefab( prefab );
     }
 
     void GameManager::removeGameObject( GameObject* go, bool prefab )
@@ -465,6 +499,7 @@ namespace Ptakopysk
         {
             m_prefabGameObjects.remove( go );
             go->setGameManager( 0 );
+            go->setPrefab( false );
             DELETE_OBJECT( go );
         }
         else
@@ -484,6 +519,7 @@ namespace Ptakopysk
         {
             m_prefabGameObjects.remove( go );
             go->setGameManager( 0 );
+            go->setPrefab( false );
             DELETE_OBJECT( go );
         }
         else
@@ -503,6 +539,7 @@ namespace Ptakopysk
             {
                 go = *it;
                 go->setGameManager( 0 );
+                go->setPrefab( false );
                 DELETE_OBJECT( go );
             }
             m_prefabGameObjects.clear();
@@ -543,6 +580,32 @@ namespace Ptakopysk
             if( (*it)->getId() == id )
                 return *it;
         return 0;
+    }
+
+    GameObject* GameManager::findGameObject( const std::string& path )
+    {
+        unsigned int from = 0;
+        unsigned int p = path.find( '/', from );
+        while( p - from < 1 && p != std::string::npos )
+        {
+            from++;
+            p = path.find( '/', from );
+        }
+        std::string part = std::string( path, from, p );
+        if( part.empty() )
+            return 0;
+        else if( part == "." )
+            return findGameObject( std::string( path, p + 1, std::string::npos ) );
+        else if( part == ".." )
+            return 0;
+        else
+        {
+            GameObject* go = getGameObject( part );
+            if( go )
+                return go->findGameObject( std::string( path, p + 1, std::string::npos ) );
+            else
+                return 0;
+        }
     }
 
     GameObject::List::iterator GameManager::gameObjectAtBegin( bool prefab )
@@ -623,6 +686,7 @@ namespace Ptakopysk
             go = *it;
             m_gameObjects.remove( go );
             go->setGameManager( 0 );
+            go->setPrefab( false );
             DELETE_OBJECT( go );
         }
         m_gameObjectsToDestroy.clear();
