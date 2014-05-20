@@ -7,7 +7,6 @@
 #include <json/json.h>
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Window/Event.hpp>
-#include <map>
 #include <list>
 #include <string>
 #include "../Serialization/Serialized.h"
@@ -63,7 +62,7 @@ namespace Ptakopysk
         bool hasComponent( XeCore::Common::IRtti::Derivation d );
         template< typename T >
         FORCEINLINE bool hasComponent() { return hasComponent( RTTI_CLASS_TYPE( T ) ); };
-        FORCEINLINE Component* getComponent( XeCore::Common::IRtti::Derivation d ) { return m_components.count( d ) ? m_components[ d ] : 0; };
+        Component* getComponent( XeCore::Common::IRtti::Derivation d );
         template< typename T >
         FORCEINLINE T* getComponent() { return (T*)getComponent( RTTI_CLASS_TYPE( T ) ); };
         template< typename T >
@@ -106,6 +105,16 @@ namespace Ptakopysk
         void onFixtureGoodbye( b2Fixture* fixture );
 
     private:
+        struct ComponentDataPair
+        {
+            XeCore::Common::IRtti::Derivation first;
+            Component* second;
+
+            ComponentDataPair( XeCore::Common::IRtti::Derivation f, Component* s ) : first( f ), second( s ) {};
+        };
+        //typedef std::pair< XeCore::Common::IRtti::Derivation, Component* > ComponentDataPair;
+        typedef std::vector< ComponentDataPair > Components;
+
         FORCEINLINE void setGameManager( GameManager* gm ) { m_gameManager = gm; };
         FORCEINLINE void setParent( GameObject* go ) { m_parent = go; };
         void setPrefab( bool mode );
@@ -118,7 +127,7 @@ namespace Ptakopysk
         bool m_active;
         int m_order;
         Json::Value m_metaData;
-        std::map< XeCore::Common::IRtti::Derivation, Component* > m_components;
+        Components m_components;
         List m_gameObjects;
         List m_gameObjectsToCreate;
         List m_gameObjectsToDestroy;

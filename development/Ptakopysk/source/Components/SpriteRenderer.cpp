@@ -13,7 +13,7 @@ namespace Ptakopysk
 
     SpriteRenderer::SpriteRenderer()
     : RTTI_CLASS_DEFINE( SpriteRenderer )
-    , Component( Component::tUpdate | Component::tTransform | Component::tRender )
+    , Component( Component::tTransform | Component::tRender )
     , Texture( this, &SpriteRenderer::getTexture, &SpriteRenderer::setTexture )
     , Size( this, &SpriteRenderer::getSize, &SpriteRenderer::setSize )
     , Origin( this, &SpriteRenderer::getOrigin, &SpriteRenderer::setOrigin )
@@ -204,20 +204,9 @@ namespace Ptakopysk
         c->setRenderStates( getRenderStates() );
     }
 
-    void SpriteRenderer::onUpdate( float dt )
-    {
-        /*Transform* trans = getGameObject()->getComponent< Transform >();
-        if( trans )
-        {
-            m_shape->setPosition( trans->getPosition() );
-            m_shape->setRotation( trans->getRotation() );
-            m_shape->setScale( trans->getScale() );
-        }*/
-    }
-
     void SpriteRenderer::onTransform( const sf::Transform& inTrans, sf::Transform& outTrans )
     {
-        m_renderStates.transform = outTrans;
+        m_renderStates.transform = inTrans;
     }
 
     void SpriteRenderer::onRender( sf::RenderTarget* target )

@@ -284,7 +284,7 @@ namespace Ptakopysk
                 Json::Value uniforms;
                 for( unsigned int i = 0; i < u.size(); i++ )
                     uniforms.append( u[ i ] );
-                if( uniforms.isArray() )
+                if( !uniforms.isNull() )
                     root[ "uniforms" ] = uniforms;
             }
         }

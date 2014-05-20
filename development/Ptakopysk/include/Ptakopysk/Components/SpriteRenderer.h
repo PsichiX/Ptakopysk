@@ -53,7 +53,6 @@ namespace Ptakopysk
         virtual void onDeserialize( const std::string& property, const Json::Value& root );
 
         virtual void onDuplicate( Component* dst );
-        virtual void onUpdate( float dt );
         virtual void onTransform( const sf::Transform& inTrans, sf::Transform& outTrans );
         virtual void onRender( sf::RenderTarget* target );
 

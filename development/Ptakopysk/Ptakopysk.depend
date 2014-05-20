@@ -501,11 +501,11 @@
 	<string>
 	"Serialized.h"
 
-1396794538 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\property.h
+1400482278 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\property.h
 	"Base.h"
 	"Property.inl"
 
-1396794538 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\property.inl
+1400482278 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\property.inl
 
 1393670444 d:\git\ptakopysk\development\ptakopysk\include\serialized.h
 	<XeCore/Common/IRtti.h>
@@ -769,17 +769,17 @@
 	"../include/GameObject.h"
 	"../include/Body.h"
 
-1400446148 source:d:\git\ptakopysk\development\ptakopysk\source\components\body.cpp
+1400482344 source:d:\git\ptakopysk\development\ptakopysk\source\components\body.cpp
 	"../../include/Ptakopysk/Components/Body.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/System/GameObject.h"
 	"../../include/Ptakopysk/System/GameManager.h"
 
-1400016457 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\body.h
+1400482344 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\body.h
 	"Component.h"
 	<Box2D/Box2D.h>
 
-1397851599 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\component.h
+1400482278 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\component.h
 	<XeCore/Common/Property.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -799,20 +799,19 @@
 
 1394306355 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\serialized.inl
 
-1400397562 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gameobject.h
+1400537226 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gameobject.h
 	<XeCore/Common/Property.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
 	<json/json.h>
 	<SFML/Graphics/RenderTarget.hpp>
 	<SFML/Window/Event.hpp>
-	<map>
 	<list>
 	<string>
 	"../Serialization/Serialized.h"
 	"GameObject.inl"
 
-1400363058 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gamemanager.h
+1400482344 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gamemanager.h
 	<XeCore/Common/Property.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -829,23 +828,23 @@
 	"../../include/Ptakopysk/System/GameObject.h"
 	"../../include/Ptakopysk/System/GameManager.h"
 
-1400447779 source:d:\git\ptakopysk\development\ptakopysk\source\components\spriterenderer.cpp
+1400535197 source:d:\git\ptakopysk\development\ptakopysk\source\components\spriterenderer.cpp
 	"../../include/Ptakopysk/Components/SpriteRenderer.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/System/GameObject.h"
 	"../../include/Ptakopysk/System/Assets.h"
 
-1400422257 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\spriterenderer.h
+1400535486 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\spriterenderer.h
 	"Component.h"
 	<SFML/Graphics.hpp>
 	"../System/RenderMaterial.h"
 
-1400400143 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\transform.h
+1400482344 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\transform.h
 	"Component.h"
 	<SFML/System/Vector2.hpp>
 	<SFML/Graphics/Transform.hpp>
 
-1400421349 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\assets.h
+1400482344 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\assets.h
 	<XeCore/Common/Base.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -855,7 +854,7 @@
 	<json/json.h>
 	<map>
 
-1400417619 source:d:\git\ptakopysk\development\ptakopysk\source\components\transform.cpp
+1400482344 source:d:\git\ptakopysk\development\ptakopysk\source\components\transform.cpp
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/System/GameObject.h"
 
@@ -868,7 +867,7 @@
 1393677834 source:d:\git\ptakopysk\development\ptakopysk\source\serialization\serialized.cpp
 	"../../include/Ptakopysk/Serialization/Serialized.h"
 
-1400421415 source:d:\git\ptakopysk\development\ptakopysk\source\system\assets.cpp
+1400482344 source:d:\git\ptakopysk\development\ptakopysk\source\system\assets.cpp
 	"../../include/Ptakopysk/System/Assets.h"
 	<XeCore/Common/String.h>
 
@@ -883,7 +882,7 @@
 	<string>
 	<list>
 
-1400397532 source:d:\git\ptakopysk\development\ptakopysk\source\system\gamemanager.cpp
+1400482344 source:d:\git\ptakopysk\development\ptakopysk\source\system\gamemanager.cpp
 	"../../include/Ptakopysk/System/GameManager.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/Components/SpriteRenderer.h"
@@ -906,14 +905,14 @@
 	"EnumSerializer.h"
 	<Box2D/Box2D.h>
 
-1400445166 source:d:\git\ptakopysk\development\ptakopysk\source\system\gameobject.cpp
+1400533869 source:d:\git\ptakopysk\development\ptakopysk\source\system\gameobject.cpp
 	"../../include/Ptakopysk/System/GameObject.h"
 	"../../include/Ptakopysk/System/GameManager.h"
 	"../../include/Ptakopysk/Components/Component.h"
 	<XeCore/Common/Logger.h>
 	<sstream>
 
-1400399179 source:d:\git\ptakopysk\development\ptakopysk\source\components\camera.cpp
+1400482344 source:d:\git\ptakopysk\development\ptakopysk\source\components\camera.cpp
 	"../../include/Ptakopysk/Components/Camera.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/System/GameObject.h"
@@ -924,13 +923,13 @@
 	"Component.h"
 	<SFML/Graphics/View.hpp>
 
-1400447788 source:d:\git\ptakopysk\development\ptakopysk\source\components\textrenderer.cpp
+1400535208 source:d:\git\ptakopysk\development\ptakopysk\source\components\textrenderer.cpp
 	"../../include/Ptakopysk/Components/TextRenderer.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/System/GameObject.h"
 	"../../include/Ptakopysk/System/Assets.h"
 
-1395879372 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\textrenderer.h
+1400535497 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\textrenderer.h
 	"Component.h"
 	<SFML/Graphics.hpp>
 	"../System/RenderMaterial.h"
@@ -949,11 +948,11 @@
 	"BitFieldSerializer.h"
 	<SFML/Graphics/Text.hpp>
 
-1396655678 source:d:\git\ptakopysk\development\ptakopysk\source\system\tween.cpp
+1400482278 source:d:\git\ptakopysk\development\ptakopysk\source\system\tween.cpp
 	"../../include/Ptakopysk/System/Tween.h"
 	<algorithm>
 
-1396564414 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\tween.h
+1400482278 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\tween.h
 	<XeCore/Common/Base.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -975,7 +974,7 @@
 1396213424 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\tween.inl
 	<XeCore/Common/Base.h>
 
-1400421711 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\rendermaterial.h
+1400482344 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\rendermaterial.h
 	<XeCore/Common/Base.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -990,22 +989,22 @@
 	<map>
 	<vector>
 
-1400421952 source:d:\git\ptakopysk\development\ptakopysk\source\system\rendermaterial.cpp
+1400482344 source:d:\git\ptakopysk\development\ptakopysk\source\system\rendermaterial.cpp
 	"../../include/Ptakopysk/System/RenderMaterial.h"
 	"../../include/Ptakopysk/System/Assets.h"
 
-1397761153 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\transformmodeserializer.h
+1400482278 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\transformmodeserializer.h
 	"EnumSerializer.h"
 	"../Components/Transform.h"
 
-1400446352 source:d:\git\ptakopysk\development\ptakopysk\source\components\revolutejoint.cpp
+1400482344 source:d:\git\ptakopysk\development\ptakopysk\source\components\revolutejoint.cpp
 	"../../include/Ptakopysk/Components/RevoluteJoint.h"
 	"../../include/Ptakopysk/Components/Body.h"
 	"../../include/Ptakopysk/System/GameObject.h"
 	"../../include/Ptakopysk/System/GameManager.h"
 	<XeCore/Common/Logger.h>
 
-1400016636 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\revolutejoint.h
+1400482278 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\revolutejoint.h
 	"Component.h"
 	<Box2D/Box2D.h>
 
@@ -1025,17 +1024,17 @@
 	<algorithm>
 	"MemoryManager.h"
 
-1398005445 d:\git\ptakopysk\development\requirements\binaryjson\include\binaryjson\binaryjson.h
+1400482278 d:\git\ptakopysk\development\requirements\binaryjson\include\binaryjson\binaryjson.h
 	<XeCore/Common/Buffer.h>
 	<json/json.h>
 
-1400364274 source:d:\git\ptakopysk\development\ptakopysk\source\serialization\b2filterserializer.cpp
+1400482278 source:d:\git\ptakopysk\development\ptakopysk\source\serialization\b2filterserializer.cpp
 	"../../include/Ptakopysk/Serialization/b2FilterSerializer.h"
 
-1399214448 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\b2filterserializer.h
+1400482278 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\b2filterserializer.h
 	"Serialized.h"
 	<Box2D/Box2D.h>
 
-1399232342 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gameobject.inl
+1400482278 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gameobject.inl
 	"../Components/Component.h"
 

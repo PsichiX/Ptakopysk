@@ -142,7 +142,7 @@ namespace Ptakopysk
         serialize( root[ "properties" ] );
         Json::Value components;
         Json::Value comp;
-        for( std::map< XeCore::Common::IRtti::Derivation, Component* >::iterator it = m_components.begin(); it != m_components.end(); it++ )
+        for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
         {
             comp = it->second->toJson();
             if( !comp.isNull() )
@@ -175,35 +175,48 @@ namespace Ptakopysk
 
     void GameObject::addComponent( Component* c )
     {
-        if( !c || m_components.count( c->getType() ) )
+        if( !c || hasComponent( c->getType() ) )
             return;
-        m_components[ c->getType() ] = c;
+        m_components.push_back( std::make_pair( c->getType(), c ) );
         c->setGameObject( this );
     }
 
     void GameObject::removeComponent( Component* c )
     {
-        if( !c || m_components.count( c->getType() ) )
+        if( !c )
             return;
-        m_components.erase( c->getType() );
-        c->setGameObject( 0 );
-        DELETE_OBJECT( c );
+        for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
+        {
+            if( it->second == c )
+            {
+                c->setGameObject( 0 );
+                DELETE_OBJECT( c );
+                m_components.erase( it );
+                return;
+            }
+        }
     }
 
     void GameObject::removeComponent( XeCore::Common::IRtti::Derivation d )
     {
-        if( !m_components.count( d ) )
-            return;
-        Component* c = m_components[ d ];
-        m_components.erase( d );
-        c->setGameObject( 0 );
-        DELETE_OBJECT( c );
+        Component* c;
+        for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
+        {
+            if( it->first == d )
+            {
+                c = it->second;
+                c->setGameObject( 0 );
+                DELETE_OBJECT( c );
+                m_components.erase( it );
+                return;
+            }
+        }
     }
 
     void GameObject::removeAllComponents()
     {
         Component* c;
-        for( std::map< XeCore::Common::IRtti::Derivation, Component* >::iterator it = m_components.begin(); it != m_components.end(); it++ )
+        for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
         {
             c = it->second;
             c->setGameObject( 0 );
@@ -214,12 +227,34 @@ namespace Ptakopysk
 
     bool GameObject::hasComponent( Component* c )
     {
-        return c && m_components.count( c->getType() );
+        if( !c )
+            return false;
+        for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
+        {
+            if( it->second == c )
+                return true;
+        }
+        return false;
     }
 
     bool GameObject::hasComponent( XeCore::Common::IRtti::Derivation d )
     {
-        return m_components.count( d );
+        for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
+        {
+            if( it->first == d )
+                return true;
+        }
+        return false;
+    }
+
+    Component* GameObject::getComponent( XeCore::Common::IRtti::Derivation d )
+    {
+        for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
+        {
+            if( it->first == d )
+                return it->second;
+        }
+        return 0;
     }
 
     void GameObject::addGameObject( GameObject* go )
@@ -357,7 +392,7 @@ namespace Ptakopysk
 
     void GameObject::onCreate()
     {
-        for( std::map< XeCore::Common::IRtti::Derivation, Component* >::iterator it = m_components.begin(); it != m_components.end(); it++ )
+        for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
             it->second->onCreate();
         for( List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
             (*it)->onCreate();
@@ -367,7 +402,7 @@ namespace Ptakopysk
     {
         for( List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
             (*it)->onDestroy();
-        for( std::map< XeCore::Common::IRtti::Derivation, Component* >::iterator it = m_components.begin(); it != m_components.end(); it++ )
+        for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
             it->second->onDestroy();
     }
 
@@ -381,7 +416,7 @@ namespace Ptakopysk
         dst->setMetaData( m_metaData );
         XeCore::Common::IRtti::Derivation type;
         Component* comp;
-        for( std::map< XeCore::Common::IRtti::Derivation, Component* >::iterator it = m_components.begin(); it != m_components.end(); it++ )
+        for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
         {
             type = it->first;
             comp = dst->getComponent( type );
@@ -414,7 +449,7 @@ namespace Ptakopysk
         {
             Component* c;
             sf::Transform t = trans;
-            for( std::map< XeCore::Common::IRtti::Derivation, Component* >::iterator it = m_components.begin(); it != m_components.end(); it++ )
+            for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
             {
                 c = it->second;
                 if( c->isActive() )
@@ -422,7 +457,7 @@ namespace Ptakopysk
                     if( c->getTypeFlags() & Component::tUpdate )
                         c->onUpdate( dt );
                     if( c->getTypeFlags() & Component::tTransform )
-                        c->onTransform( trans, t );
+                        c->onTransform( t, t );
                 }
             }
             processAdding();
@@ -439,7 +474,7 @@ namespace Ptakopysk
         if( m_active )
         {
             Component* c;
-            for( std::map< XeCore::Common::IRtti::Derivation, Component* >::iterator it = m_components.begin(); it != m_components.end(); it++ )
+            for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
             {
                 c = it->second;
                 if( c->isActive() && c->getTypeFlags() & Component::tEvents )
@@ -455,7 +490,7 @@ namespace Ptakopysk
         if( m_active )
         {
             Component* c;
-            for( std::map< XeCore::Common::IRtti::Derivation, Component* >::iterator it = m_components.begin(); it != m_components.end(); it++ )
+            for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
             {
                 c = it->second;
                 if( c->isActive() && c->getTypeFlags() & Component::tRender )
@@ -471,7 +506,7 @@ namespace Ptakopysk
         if( m_active )
         {
             Component* c;
-            for( std::map< XeCore::Common::IRtti::Derivation, Component* >::iterator it = m_components.begin(); it != m_components.end(); it++ )
+            for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
             {
                 c = it->second;
                 if( c->isActive() && c->getTypeFlags() & Component::tPhysics )
@@ -485,7 +520,7 @@ namespace Ptakopysk
         if( m_active )
         {
             Component* c;
-            for( std::map< XeCore::Common::IRtti::Derivation, Component* >::iterator it = m_components.begin(); it != m_components.end(); it++ )
+            for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
             {
                 c = it->second;
                 if( c->isActive() && c->getTypeFlags() & Component::tPhysics )
@@ -499,7 +534,7 @@ namespace Ptakopysk
         if( m_active )
         {
             Component* c;
-            for( std::map< XeCore::Common::IRtti::Derivation, Component* >::iterator it = m_components.begin(); it != m_components.end(); it++ )
+            for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
             {
                 c = it->second;
                 if( c->isActive() && c->getTypeFlags() & Component::tPhysics )
