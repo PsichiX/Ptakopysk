@@ -105,15 +105,8 @@ namespace Ptakopysk
         void onFixtureGoodbye( b2Fixture* fixture );
 
     private:
-        struct ComponentDataPair
-        {
-            XeCore::Common::IRtti::Derivation first;
-            Component* second;
-
-            ComponentDataPair( XeCore::Common::IRtti::Derivation f, Component* s ) : first( f ), second( s ) {};
-        };
-        //typedef std::pair< XeCore::Common::IRtti::Derivation, Component* > ComponentDataPair;
-        typedef std::vector< ComponentDataPair > Components;
+        typedef std::pair< XeCore::Common::IRtti::Derivation, Component* > ComponentDataPair;
+        typedef std::list< ComponentDataPair > Components;
 
         FORCEINLINE void setGameManager( GameManager* gm ) { m_gameManager = gm; };
         FORCEINLINE void setParent( GameObject* go ) { m_parent = go; };

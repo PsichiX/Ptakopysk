@@ -106,7 +106,7 @@ namespace Ptakopysk
 
     private:
         typedef std::pair< XeCore::Common::IRtti::Derivation, Component* > ComponentDataPair;
-        typedef std::vector< ComponentDataPair > Components;
+        typedef std::list< ComponentDataPair > Components;
 
         FORCEINLINE void setGameManager( GameManager* gm ) { m_gameManager = gm; };
         FORCEINLINE void setParent( GameObject* go ) { m_parent = go; };

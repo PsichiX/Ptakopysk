@@ -779,7 +779,7 @@
 	"Component.h"
 	<Box2D/Box2D.h>
 
-1400482278 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\component.h
+1400622494 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\component.h
 	<XeCore/Common/Property.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -799,7 +799,7 @@
 
 1394306355 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\serialized.inl
 
-1400537226 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gameobject.h
+1400624990 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gameobject.h
 	<XeCore/Common/Property.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -811,7 +811,7 @@
 	"../Serialization/Serialized.h"
 	"GameObject.inl"
 
-1400482344 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gamemanager.h
+1400620734 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gamemanager.h
 	<XeCore/Common/Property.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -867,7 +867,7 @@
 1393677834 source:d:\git\ptakopysk\development\ptakopysk\source\serialization\serialized.cpp
 	"../../include/Ptakopysk/Serialization/Serialized.h"
 
-1400482344 source:d:\git\ptakopysk\development\ptakopysk\source\system\assets.cpp
+1400537349 source:d:\git\ptakopysk\development\ptakopysk\source\system\assets.cpp
 	"../../include/Ptakopysk/System/Assets.h"
 	<XeCore/Common/String.h>
 
@@ -882,7 +882,7 @@
 	<string>
 	<list>
 
-1400482344 source:d:\git\ptakopysk\development\ptakopysk\source\system\gamemanager.cpp
+1400624963 source:d:\git\ptakopysk\development\ptakopysk\source\system\gamemanager.cpp
 	"../../include/Ptakopysk/System/GameManager.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/Components/SpriteRenderer.h"
@@ -905,7 +905,7 @@
 	"EnumSerializer.h"
 	<Box2D/Box2D.h>
 
-1400533869 source:d:\git\ptakopysk\development\ptakopysk\source\system\gameobject.cpp
+1400625317 source:d:\git\ptakopysk\development\ptakopysk\source\system\gameobject.cpp
 	"../../include/Ptakopysk/System/GameObject.h"
 	"../../include/Ptakopysk/System/GameManager.h"
 	"../../include/Ptakopysk/Components/Component.h"
