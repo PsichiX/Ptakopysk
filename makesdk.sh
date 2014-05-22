@@ -129,6 +129,7 @@ mkdir -p ./sdk/
 cp ./LICENSE ./sdk/LICENSE
 
 # include
+echo "Copying includes..."
 mkdir -p ./sdk/include/
 if [ ${CP_PTAKOPYSK[0]} = 1 ]; then
   cp -r ./development/Ptakopysk/include/* ./sdk/include/
@@ -148,6 +149,7 @@ if [ ${CP_XECORE[0]} = 1 ]; then
 fi
 
 # lib
+echo "Copying libs..."
 mkdir -p ./sdk/lib/
 if [ ${CP_PTAKOPYSK[1]} = 1 ]; then
   cp ./development/Ptakopysk/bin/*.a ./sdk/lib/
@@ -169,15 +171,14 @@ if [ ${CP_XECORE[1]} = 1 ]; then
 fi
 
 # bin
+echo "Copying binaries..."
 mkdir -p ./sdk/bin/
-if [ ${CP_PTAKOPYSK[1]} = 1 ]; then
-  cp ./development/Ptakopysk/bin/*.dll ./sdk/bin/
-fi
 if [ ${CP_SFML[1]} = 1 ]; then
   cp ./development/requirements/SFML-2.1/bin/*.dll ./sdk/bin/
 fi
 
 # templates
+echo "Copying templates..."
 mkdir -p ./sdk/templates/
 cp ./templates/*.h ./sdk/templates/
 cp ./templates/*.cpp ./sdk/templates/

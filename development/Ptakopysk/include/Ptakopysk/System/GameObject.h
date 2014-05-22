@@ -35,6 +35,7 @@ namespace Ptakopysk
         GameObject( const std::string& id = "" );
         virtual ~GameObject();
 
+        FORCEINLINE bool isDestroying() { return m_isDestroying; };
         FORCEINLINE bool isPrefab() { return m_prefab; };
         FORCEINLINE std::string getId() { return m_id; };
         FORCEINLINE void setId( std::string id ) { m_id = id; };
@@ -53,11 +54,11 @@ namespace Ptakopysk
         void duplicate( GameObject* from );
 
         void addComponent( Component* c );
-        void removeComponent( Component* c );
-        void removeComponent( XeCore::Common::IRtti::Derivation d );
+        void removeComponent( Component* c, bool delayed = false );
+        void removeComponent( XeCore::Common::IRtti::Derivation d, bool delayed = false );
         template< typename T >
-        FORCEINLINE void removeComponent() { removeComponent( RTTI_CLASS_TYPE( T ) ); };
-        void removeAllComponents();
+        FORCEINLINE void removeComponent( bool delayed = false ) { removeComponent( RTTI_CLASS_TYPE( T ) ); };
+        void removeAllComponents( bool delayed = false );
         bool hasComponent( Component* c );
         bool hasComponent( XeCore::Common::IRtti::Derivation d );
         template< typename T >
@@ -67,6 +68,11 @@ namespace Ptakopysk
         FORCEINLINE T* getComponent() { return (T*)getComponent( RTTI_CLASS_TYPE( T ) ); };
         template< typename T >
         T* getOrCreateComponent();
+        void processRemovingDelayedComponents();
+        bool isWaitingToRemoveDelayedComponent( Component* c );
+        bool isWaitingToRemoveDelayedComponent( XeCore::Common::IRtti::Derivation d );
+        template< typename T >
+        FORCEINLINE bool isWaitingToRemoveDelayedComponent() { return isWaitingToRemoveDelayedComponent( RTTI_CLASS_TYPE( T ) ); };
 
         void addGameObject( GameObject* go );
         void removeGameObject( GameObject* go );
@@ -111,6 +117,7 @@ namespace Ptakopysk
         FORCEINLINE void setGameManager( GameManager* gm ) { m_gameManager = gm; };
         FORCEINLINE void setParent( GameObject* go ) { m_parent = go; };
         void setPrefab( bool mode );
+        void setDestroying( bool mode );
         GameObject* findGameObjectInPartOfPath( const std::string& path, unsigned int from );
 
         GameManager* m_gameManager;
@@ -119,8 +126,10 @@ namespace Ptakopysk
         std::string m_id;
         bool m_active;
         int m_order;
+        bool m_isDestroying;
         Json::Value m_metaData;
         Components m_components;
+        Components m_componentsToDestroyDelayed;
         List m_gameObjects;
         List m_gameObjectsToCreate;
         List m_gameObjectsToDestroy;

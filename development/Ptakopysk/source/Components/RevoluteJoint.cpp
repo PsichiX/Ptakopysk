@@ -213,7 +213,7 @@ namespace Ptakopysk
         {
             m_joint = 0;
             if( getGameObject() )
-                getGameObject()->removeComponent( this );
+                getGameObject()->removeComponent( this, true );
         }
     }
 

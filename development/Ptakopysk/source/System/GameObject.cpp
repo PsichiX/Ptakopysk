@@ -25,6 +25,7 @@ namespace Ptakopysk
     , m_id( id )
     , m_active( true )
     , m_order( 0 )
+    , m_isDestroying( false )
     , m_metaData( Json::Value::null )
     {
         serializableProperty( "Id" );
@@ -37,6 +38,7 @@ namespace Ptakopysk
     {
         removeAllComponents();
         removeAllGameObjects();
+        processRemovingDelayedComponents();
         processRemoving();
         GameObject* go;
         for( List::iterator it = m_gameObjectsToCreate.begin(); it != m_gameObjectsToCreate.end(); it++ )
@@ -181,7 +183,7 @@ namespace Ptakopysk
         c->setGameObject( this );
     }
 
-    void GameObject::removeComponent( Component* c )
+    void GameObject::removeComponent( Component* c, bool delayed )
     {
         if( !c )
             return;
@@ -189,15 +191,20 @@ namespace Ptakopysk
         {
             if( it->second == c )
             {
-                c->setGameObject( 0 );
-                DELETE_OBJECT( c );
-                m_components.erase( it );
+                if( delayed )
+                    m_componentsToDestroyDelayed.push_back( std::make_pair( c->getType(), c ) );
+                else
+                {
+                    c->setGameObject( 0 );
+                    DELETE_OBJECT( c );
+                    m_components.erase( it );
+                }
                 return;
             }
         }
     }
 
-    void GameObject::removeComponent( XeCore::Common::IRtti::Derivation d )
+    void GameObject::removeComponent( XeCore::Common::IRtti::Derivation d, bool delayed )
     {
         Component* c;
         for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
@@ -205,24 +212,37 @@ namespace Ptakopysk
             if( it->first == d )
             {
                 c = it->second;
-                c->setGameObject( 0 );
-                DELETE_OBJECT( c );
-                m_components.erase( it );
+                if( delayed )
+                    m_componentsToDestroyDelayed.push_back( std::make_pair( c->getType(), c ) );
+                else
+                {
+                    c->setGameObject( 0 );
+                    DELETE_OBJECT( c );
+                    m_components.erase( it );
+                }
                 return;
             }
         }
     }
 
-    void GameObject::removeAllComponents()
+    void GameObject::removeAllComponents( bool delayed )
     {
-        Component* c;
-        for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
+        if( delayed )
         {
-            c = it->second;
-            c->setGameObject( 0 );
-            DELETE_OBJECT( c );
+            for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
+                m_componentsToDestroyDelayed.push_back( *it );
         }
-        m_components.clear();
+        else
+        {
+            Component* c;
+            for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
+            {
+                c = it->second;
+                c->setGameObject( 0 );
+                DELETE_OBJECT( c );
+            }
+            m_components.clear();
+        }
     }
 
     bool GameObject::hasComponent( Component* c )
@@ -257,6 +277,37 @@ namespace Ptakopysk
         return 0;
     }
 
+    void GameObject::processRemovingDelayedComponents()
+    {
+        Component* c;
+        for( Components::iterator it = m_componentsToDestroyDelayed.begin(); it != m_componentsToDestroyDelayed.end(); it++ )
+        {
+            if( std::find( m_components.begin(), m_components.end(), *it ) == m_components.end() )
+                continue;
+            c = it->second;
+            m_components.remove( *it );
+            c->setGameObject( 0 );
+            DELETE_OBJECT( c );
+        }
+        m_componentsToDestroyDelayed.clear();
+    }
+
+    bool GameObject::isWaitingToRemoveDelayedComponent( Component* c )
+    {
+        for( Components::iterator it = m_componentsToDestroyDelayed.begin(); it != m_componentsToDestroyDelayed.end(); it++ )
+            if( it->second == c )
+                return true;
+        return false;
+    }
+
+    bool GameObject::isWaitingToRemoveDelayedComponent( XeCore::Common::IRtti::Derivation d )
+    {
+        for( Components::iterator it = m_componentsToDestroyDelayed.begin(); it != m_componentsToDestroyDelayed.end(); it++ )
+            if( it->first == d )
+                return true;
+        return false;
+    }
+
     void GameObject::addGameObject( GameObject* go )
     {
         if( !go || go->getType() != RTTI_CLASS_TYPE( GameObject ) || hasGameObject( go ) || isWaitingToAdd( go ) )
@@ -264,6 +315,7 @@ namespace Ptakopysk
         m_gameObjectsToCreate.push_back( go );
         go->setParent( this );
         go->setPrefab( m_prefab );
+        go->setDestroying( m_isDestroying );
     }
 
     void GameObject::removeGameObject( GameObject* go )
@@ -271,6 +323,7 @@ namespace Ptakopysk
         if( !hasGameObject( go ) )
             return;
         m_gameObjectsToDestroy.push_back( go );
+        go->setDestroying( true );
         go->onDestroy();
     }
 
@@ -280,6 +333,7 @@ namespace Ptakopysk
         if( !go )
             return;
         m_gameObjectsToDestroy.push_back( go );
+        go->setDestroying( true );
         go->onDestroy();
     }
 
@@ -290,6 +344,7 @@ namespace Ptakopysk
         {
             go = *it;
             m_gameObjectsToDestroy.push_back( go );
+            go->setDestroying( true );
             go->onDestroy();
         }
     }
@@ -341,6 +396,8 @@ namespace Ptakopysk
         for( List::iterator it = m_gameObjectsToDestroy.begin(); it != m_gameObjectsToDestroy.end(); it++ )
         {
             go = *it;
+            if( std::find( m_gameObjects.begin(), m_gameObjects.end(), go ) == m_gameObjects.end() )
+                continue;
             m_gameObjects.remove( go );
             go->setParent( 0 );
             go->setPrefab( false );
@@ -447,6 +504,7 @@ namespace Ptakopysk
     {
         if( m_active )
         {
+            processRemovingDelayedComponents();
             Component* c;
             sf::Transform t = trans;
             for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
@@ -552,6 +610,17 @@ namespace Ptakopysk
             (*it)->setPrefab( mode );
         for( List::iterator it = m_gameObjectsToDestroy.begin(); it != m_gameObjectsToDestroy.end(); it++ )
             (*it)->setPrefab( mode );
+    }
+
+    void GameObject::setDestroying( bool mode )
+    {
+        m_isDestroying = mode;
+        for( List::iterator it = m_gameObjectsToCreate.begin(); it != m_gameObjectsToCreate.end(); it++ )
+            (*it)->setDestroying( mode );
+        for( List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            (*it)->setDestroying( mode );
+        for( List::iterator it = m_gameObjectsToDestroy.begin(); it != m_gameObjectsToDestroy.end(); it++ )
+            (*it)->setDestroying( mode );
     }
 
     GameObject* GameObject::findGameObjectInPartOfPath( const std::string& path, unsigned int from )

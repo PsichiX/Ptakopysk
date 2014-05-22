@@ -288,7 +288,7 @@ namespace Ptakopysk
         {
             m_fixture = 0;
             if( getGameObject() )
-                getGameObject()->removeComponent( this );
+                getGameObject()->removeComponent( this, true );
         }
     }
 

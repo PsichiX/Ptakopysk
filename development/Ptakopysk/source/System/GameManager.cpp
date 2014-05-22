@@ -489,6 +489,7 @@ namespace Ptakopysk
         cgo.push_back( go );
         go->setGameManager( this );
         go->setPrefab( prefab );
+        go->setDestroying( false );
     }
 
     void GameManager::removeGameObject( GameObject* go, bool prefab )
@@ -506,7 +507,10 @@ namespace Ptakopysk
         {
             m_gameObjectsToDestroy.push_back( go );
             if( !prefab )
+            {
+                go->setDestroying( true );
                 go->onDestroy();
+            }
         }
     }
 
@@ -526,7 +530,10 @@ namespace Ptakopysk
         {
             m_gameObjectsToDestroy.push_back( go );
             if( !prefab )
+            {
+                go->setDestroying( true );
                 go->onDestroy();
+            }
         }
     }
 
@@ -550,6 +557,7 @@ namespace Ptakopysk
             {
                 go = *it;
                 m_gameObjectsToDestroy.push_back( go );
+                go->setDestroying( true );
                 go->onDestroy();
             }
         }
@@ -684,6 +692,8 @@ namespace Ptakopysk
         for( GameObject::List::iterator it = m_gameObjectsToDestroy.begin(); it != m_gameObjectsToDestroy.end(); it++ )
         {
             go = *it;
+            if( std::find( m_gameObjects.begin(), m_gameObjects.end(), go ) == m_gameObjects.end() )
+                continue;
             m_gameObjects.remove( go );
             go->setGameManager( 0 );
             go->setPrefab( false );
