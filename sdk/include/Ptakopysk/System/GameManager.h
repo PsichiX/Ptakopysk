@@ -45,8 +45,8 @@ namespace Ptakopysk
 
         typedef std::map< std::string, b2Filter > FiltersMap;
 
-        static const int DEFAULT_VEL_ITERS = 6;
-        static const int DEFAULT_POS_ITERS = 2;
+        static const int DEFAULT_VEL_ITERS = 8;
+        static const int DEFAULT_POS_ITERS = 3;
 
         GameManager();
         ~GameManager();

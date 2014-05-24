@@ -23,17 +23,17 @@ namespace XeCore
             void        update();
             void        stop();
             time_t      ticks();
-            float       millis();
+            float       seconds();
             time_t      deltaTicks();
-            float       deltaMillis();
+            float       deltaSeconds();
 
         private:
             time_t      m_ticksStart;
-            float       m_millisStart;
+            float       m_secondsStart;
             time_t      m_ticksLast;
-            float       m_millisLast;
+            float       m_secondsLast;
             time_t      m_ticksCurr;
-            float       m_millisCurr;
+            float       m_secondsCurr;
             bool        m_running;
         };
 	}

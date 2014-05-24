@@ -19,7 +19,7 @@ namespace XeCore
 
             FORCEINLINE PT get();
             FORCEINLINE void set( PT value );
-            FORCEINLINE OT* data();
+            FORCEINLINE OT* object();
 
             FORCEINLINE operator PT ();
             FORCEINLINE void operator= ( PT value );

@@ -3,6 +3,7 @@
 #include <Ptakopysk/System/GameManager.h>
 #include <XeCore/Common/Logger.h>
 #include <XeCore/Common/Concurrent/Thread.h>
+#include <XeCore/Common/Timer.h>
 //<TEMPLATE
 #include "TemplateComponent.h"
 //TEMPLATE>
@@ -45,8 +46,10 @@ int main()
 
     /// main loop
     srand( time( 0 ) );
-    sf::Clock timer;
-    sf::Clock deltaTimer;
+    XeCore::Common::Timer timer;
+    timer.start();
+    const float fixedStep = 1.0f / 30.0f;
+    float fixedStepAccum = 0.0f;
     while( window->isOpen() )
     {
         sf::Event event;
@@ -63,18 +66,29 @@ int main()
             }
         }
         /// timers update
-        float dt = deltaTimer.getElapsedTime().asSeconds();
-        deltaTimer.restart();
+        timer.update();
+        float dt = timer.deltaSeconds();
+        fixedStepAccum += dt;
+        bool processFixedStep = false;
+        while( fixedStepAccum > fixedStep )
+        {
+            processFixedStep = true;
+            fixedStepAccum -= fixedStep;
+        }
 
         /// process frame
         Events::use().dispatch();
-        gameManager->processPhysics( dt );
-        gameManager->processUpdate( dt );
+        if( processFixedStep )
+        {
+            gameManager->processPhysics( fixedStep );
+            gameManager->processUpdate( fixedStep );
+        }
         window->clear( WINDOW_COLOR );
         gameManager->processRender( window );
         window->display();
-        XeCore::Common::Concurrent::Thread::sleep( 1000 / 30 );
+        XeCore::Common::Concurrent::Thread::sleep( 1000 / 60 );
     }
+    timer.stop();
 
     /// serialize scene to JSON
     GameManager::saveJson( "_template_game.json", gameManager->sceneToJson() );
