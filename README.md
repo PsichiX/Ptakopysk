@@ -18,6 +18,7 @@ Or use templates directly:
 ###Examples:###
 - [Floppy Disk](https://github.com/PsichiX/FloppyDisk)
 - [Math isn't heartless](https://github.com/PsichiX/Ptakopysk/tree/master/examples/MathIsNotHeartless)
+- [Progress ring shader](https://github.com/PsichiX/Ptakopysk/tree/master/examples/ProgressCircleShader)
 
 ---------
 ###Using 3rd-party libraries:###
