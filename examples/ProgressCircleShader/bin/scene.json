@@ -1,0 +1,183 @@
+{
+	"assets": {
+		"fonts": [
+			{
+				"id": "font",
+				"path": "CONTF.ttf"
+			}
+		],
+		"textures": [
+			{
+				"id": "logo",
+				"path": "logo.png"
+			}
+		],
+		"shaders": [
+			{
+				"id": "progressCircle0",
+				"vspath": "shaders/progressCircle.vs",
+				"fspath": "shaders/progressCircle0.fs"
+			},
+			{
+				"id": "progressCircle1",
+				"vspath": "shaders/progressCircle.vs",
+				"fspath": "shaders/progressCircle1.fs"
+			},
+			{
+				"id": "progressCircle2",
+				"vspath": "shaders/progressCircle.vs",
+				"fspath": "shaders/progressCircle2.fs"
+			},
+			{
+				"id": "progressCircle3",
+				"vspath": "shaders/progressCircle.vs",
+				"fspath": "shaders/progressCircle3.fs"
+			},
+			{
+				"id": "progressCircle4",
+				"vspath": "shaders/progressCircle.vs",
+				"fspath": "shaders/progressCircle4.fs"
+			},
+			{
+				"id": "progressCircle5",
+				"vspath": "shaders/progressCircle.vs",
+				"fspath": "shaders/progressCircle5.fs"
+			},
+			{
+				"id": "progressCircle6",
+				"vspath": "shaders/progressCircle.vs",
+				"fspath": "shaders/progressCircle6.fs"
+			},
+			{
+				"id": "progressCircle",
+				"vspath": "shaders/progressCircle.vs",
+				"fspath": "shaders/progressCircle.fs"
+			}
+		]
+	},
+	"prefabs": [
+		{
+			"properties": {
+				"Id": "main-camera",
+				"Order": 1000
+			},
+			"components": [
+				{
+					"type": "Transform"
+				},
+				{
+					"type": "Camera",
+					"properties": {
+						"Size": [ -1, -1 ]
+					}
+				}
+			]
+		},
+		{
+			"properties": {
+				"Id": "logo"
+			},
+			"components": [
+				{
+					"type": "Transform",
+					"properties": {
+						"Scale": [ 0.5, 0.5 ],
+						"Position": [ 256, 256 ]
+					}
+				},
+				{
+					"type": "SpriteRenderer",
+					"properties": {
+						"Texture": "logo",
+						"Size": [ -1, -1 ],
+						"OriginPercent": [ 1, 1 ]
+					}
+				}
+			]
+		},
+		{
+			"properties": {
+				"Id": "progress"
+			},
+			"components": [
+				{
+					"type": "Transform"
+				},
+				{
+					"type": "SpriteRenderer",
+					"properties": {
+						"Size": [ 256, 256 ],
+						"OriginPercent": [ 0.5, 0.5 ],
+						"RenderStates": {
+							"shader": "progressCircle0"
+						}
+					}
+				},
+				{
+					"type": "Controler"
+				}
+			]
+		},
+		{
+			"properties": {
+				"Id": "status"
+			},
+			"components": [
+				{
+					"type": "Transform",
+					"properties": {
+						"Position": [ -250, 215 ]
+					}
+				},
+				{
+					"type": "TextRenderer",
+					"properties": {
+						"Text": "",
+						"Font": "font",
+						"Color": [ 255, 255, 255, 255 ],
+						"Size": 32
+					}
+				}
+			]
+		},
+		{
+			"properties": {
+				"Id": "info"
+			},
+			"components": [
+				{
+					"type": "Transform",
+					"properties": {
+						"Position": [ -250, -250 ]
+					}
+				},
+				{
+					"type": "TextRenderer",
+					"properties": {
+						"Text": "Left/Right arrows: change steps",
+						"Font": "font",
+						"Color": [ 255, 255, 255, 255 ],
+						"Size": 32
+					}
+				}
+			]
+		}
+	],
+	"scene": [
+		{
+			"prefab": "main-camera"
+		},
+		{
+			"prefab": "info"
+		},
+		{
+			"prefab": "status"
+		},
+		{
+			"prefab": "progress"
+		},
+		{
+			"prefab": "logo"
+		}
+	]
+}
