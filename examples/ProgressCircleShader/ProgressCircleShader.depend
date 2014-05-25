@@ -790,7 +790,7 @@
 1401048688 d:\git\ptakopysk\examples\progresscircleshader\controler.h
 	<Ptakopysk/Components/Component.h>
 
-1401046181 source:d:\git\ptakopysk\examples\progresscircleshader\main.cpp
+1401057635 source:d:\git\ptakopysk\examples\progresscircleshader\main.cpp
 	<Ptakopysk/System/Assets.h>
 	<Ptakopysk/System/Events.h>
 	<Ptakopysk/System/GameManager.h>

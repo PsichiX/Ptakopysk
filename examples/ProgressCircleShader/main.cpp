@@ -8,7 +8,7 @@
 
 using namespace Ptakopysk;
 
-const std::string APP_NAME = "ProgressCircleShader";
+const std::string APP_NAME = "Progress Circle Shader";
 const int WINDOW_WIDTH = 512;
 const int WINDOW_HEIGHT = 512;
 const sf::Color WINDOW_COLOR = sf::Color( 0, 0, 0, 255 );
