@@ -9,7 +9,7 @@ void main()
 	// so we just have to make dot-product with swapped vector channels inside dot-product operation.
 	float dn = dot( nc, vec2( 0.0, 1.0 ) );
 	// here we moved stretching operation to separated variable.
-	float d1 = ( -dc + 1.0 ) * 0.5;	
+	float d1 = ( -dc + 1.0 ) * 0.5;
 	// now we have to calculate boolean value of our ring's left side.
 	float n1 = ceil( dn );
 	// and finally to cut the left half of ring just multiply stretched gradient alpha by boolean left side of ring.

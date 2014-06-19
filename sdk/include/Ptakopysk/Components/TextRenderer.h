@@ -51,7 +51,7 @@ namespace Ptakopysk
 
         virtual void onDuplicate( Component* dst );
         virtual void onTransform( const sf::Transform& inTrans, sf::Transform& outTrans );
-        virtual void onRender( sf::RenderTarget* target );
+        virtual void onRender( sf::RenderTarget*& target );
 
     private:
         sf::Text* m_text;

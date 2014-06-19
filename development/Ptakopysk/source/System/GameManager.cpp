@@ -669,9 +669,12 @@ namespace Ptakopysk
             return;
         }
         target->setView( target->getDefaultView() );
+        sf::RenderTarget*& currentTarget = target;
         for( GameObject::List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
-            (*it)->onRender( target );
+            (*it)->onRender( currentTarget );
         target->setView( target->getDefaultView() );
+        if( Camera::s_currentRT )
+            Camera::s_currentRT->display();
     }
 
     void GameManager::processAdding()

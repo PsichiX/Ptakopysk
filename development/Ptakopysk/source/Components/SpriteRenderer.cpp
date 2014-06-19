@@ -209,7 +209,7 @@ namespace Ptakopysk
         m_renderStates.transform = inTrans;
     }
 
-    void SpriteRenderer::onRender( sf::RenderTarget* target )
+    void SpriteRenderer::onRender( sf::RenderTarget*& target )
     {
         if( m_renderStates.shader )
             m_material.apply( (sf::Shader*)m_renderStates.shader, m_materialValidation );

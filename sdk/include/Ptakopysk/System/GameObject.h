@@ -105,7 +105,7 @@ namespace Ptakopysk
         void onDuplicate( GameObject* dst );
         void onEvent( const sf::Event& event );
         void onUpdate( float dt, const sf::Transform& trans, bool sort = true );
-        void onRender( sf::RenderTarget* target );
+        void onRender( sf::RenderTarget*& target );
         void onCollide( GameObject* other, bool beginOrEnd, b2Contact* contact );
         void onJointGoodbye( b2Joint* joint );
         void onFixtureGoodbye( b2Fixture* fixture );

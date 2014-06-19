@@ -1,5 +1,6 @@
 #include <Ptakopysk/System/Assets.h>
 #include <Ptakopysk/System/Events.h>
+#include <Ptakopysk/System/Tween.h>
 #include <Ptakopysk/System/GameManager.h>
 #include <XeCore/Common/Logger.h>
 #include <XeCore/Common/Concurrent/Thread.h>
@@ -56,14 +57,9 @@ int main()
         while( window->pollEvent( event ) )
         {
             if( event.type == sf::Event::Closed )
-            {
                 window->close();
-            }
-            else if( event.type == sf::Event::KeyPressed )
-            {
-                if( event.key.code == sf::Keyboard::Escape )
-                    window->close();
-            }
+            else if( event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape )
+				window->close();
         }
         /// timers update
         timer.update();
@@ -80,7 +76,8 @@ int main()
         Events::use().dispatch();
         if( processFixedStep )
         {
-            gameManager->processPhysics( fixedStep );
+            Tweener::use().processTweens( fixedStep );
+			gameManager->processPhysics( fixedStep );
             gameManager->processUpdate( fixedStep );
         }
         window->clear( WINDOW_COLOR );
@@ -97,6 +94,8 @@ int main()
     DELETE_OBJECT( gameManager );
     Assets::destroy();
     Events::destroy();
-
+	Tweener::destroy();
+    GameManager::cleanup();
+	
     return 0;
 }

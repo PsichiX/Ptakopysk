@@ -50,11 +50,14 @@ int main()
         while( window->pollEvent( event ) )
         {
             if( event.type == sf::Event::Closed )
+            {
                 window->close();
-            else if( event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape )
-                window->close();
-            else
-                gameManager->processEvents( event );
+            }
+            else if( event.type == sf::Event::KeyPressed )
+            {
+                if( event.key.code == sf::Keyboard::Escape )
+                    window->close();
+            }
         }
         /// timers update
         timer.update();

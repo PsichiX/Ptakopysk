@@ -32,8 +32,7 @@ for arg in ${@}; do
 done
 
 # files structure
-mkdir "${OUTPUT_PATH}"
-mkdir "${OUTPUT_PATH}/bin"
+mkdir -p "${OUTPUT_PATH}/bin"
 
 # manage file tempates
 sed "s|TemplateApp|${PROJECT_NAME}|" < "TemplateApp.cbp" > "${OUTPUT_PATH}/${PROJECT_NAME}.cbp_"

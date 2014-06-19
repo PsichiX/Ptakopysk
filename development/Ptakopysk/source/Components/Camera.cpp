@@ -12,6 +12,8 @@ namespace Ptakopysk
                             RTTI_DERIVATIONS_END
                             )
 
+    sf::RenderTexture* Camera::s_currentRT = 0;
+
     Camera::Camera()
     : RTTI_CLASS_DEFINE( Camera )
     , Component( Component::tUpdate | Component::tRender )
@@ -19,13 +21,18 @@ namespace Ptakopysk
     , Zoom( this, &Camera::getZoom, &Camera::setZoom )
     , ZoomOut( this, &Camera::getZoomOut, &Camera::setZoomOut )
     , Viewport( this, &Camera::getViewport, &Camera::setViewport )
+    , TargetTexture( this, &Camera::getTargetTexture, &Camera::setTargetTexture )
+    , ApplyViewToRenderTexture( this, &Camera::isApplyViewToRenderTexture, &Camera::setApplyViewToRenderTexture )
     , m_zoom( 1.0f )
     , m_zoomInv( 1.0f )
+    , m_renderTexture( 0 )
+    , m_applyViewToRT( false )
     {
         serializableProperty( "Size" );
         serializableProperty( "ZoomOut" );
         serializableProperty( "Zoom" );
         serializableProperty( "Viewport" );
+        serializableProperty( "ApplyViewToRenderTexture" );
         m_view = xnew sf::View();
     }
 
@@ -93,6 +100,8 @@ namespace Ptakopysk
             v.append( Json::Value( r.height ) );
             return v;
         }
+        else if( property == "ApplyViewToRenderTexture" )
+            return Json::Value( m_applyViewToRT );
         else
             return Component::onSerialize( property );
     }
@@ -119,6 +128,8 @@ namespace Ptakopysk
                 (float)root[ 3u ].asDouble()
             ) );
         }
+        else if( property == "ApplyViewToRenderTexture" && root.isBool() )
+            setApplyViewToRenderTexture( root.asBool() );
         else
             Component::onDeserialize( property, root );
     }
@@ -142,6 +153,7 @@ namespace Ptakopysk
         c->setZoomOut( getZoomOut() );
         c->setZoom( getZoom() );
         c->setViewport( getViewport() );
+        c->setApplyViewToRenderTexture( isApplyViewToRenderTexture() );
     }
 
     void Camera::onUpdate( float dt )
@@ -154,9 +166,22 @@ namespace Ptakopysk
         }
     }
 
-    void Camera::onRender( sf::RenderTarget* target )
+    void Camera::onRender( sf::RenderTarget*& target )
     {
-        target->setView( *m_view );
+        if( s_currentRT )
+            s_currentRT->display();
+        if( m_renderTexture )
+        {
+            s_currentRT = m_renderTexture;
+            target = m_renderTexture;
+            if( m_applyViewToRT )
+                target->setView( *m_view );
+        }
+        else
+        {
+            s_currentRT = 0;
+            target->setView( *m_view );
+        }
     }
 
 }

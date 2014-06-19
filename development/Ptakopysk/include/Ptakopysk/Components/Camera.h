@@ -3,6 +3,7 @@
 
 #include "Component.h"
 #include <SFML/Graphics/View.hpp>
+#include <SFML/Graphics/RenderTexture.hpp>
 
 namespace Ptakopysk
 {
@@ -11,6 +12,8 @@ namespace Ptakopysk
     , public virtual XeCore::Common::MemoryManager::Manageable
     , public Component
     {
+        friend class GameManager;
+
         RTTI_CLASS_DECLARE( Camera );
 
     public:
@@ -28,11 +31,17 @@ namespace Ptakopysk
         void setZoom( float v );
         FORCEINLINE float getZoomOut() { return m_zoomInv; };
         void setZoomOut( float v );
+        FORCEINLINE sf::RenderTexture* getTargetTexture() { return m_renderTexture; };
+        FORCEINLINE void setTargetTexture( sf::RenderTexture* v ) { m_renderTexture = v; };
+        FORCEINLINE bool isApplyViewToRenderTexture() { return m_applyViewToRT; };
+        FORCEINLINE void setApplyViewToRenderTexture( bool v ) { m_applyViewToRT = v; };
 
         XeCore::Common::Property< sf::Vector2f, Camera > Size;
         XeCore::Common::Property< float, Camera > Zoom;
         XeCore::Common::Property< float, Camera > ZoomOut;
         XeCore::Common::Property< sf::FloatRect, Camera > Viewport;
+        XeCore::Common::Property< sf::RenderTexture*, Camera > TargetTexture;
+        XeCore::Common::Property< bool, Camera > ApplyViewToRenderTexture;
 
     protected:
         virtual Json::Value onSerialize( const std::string& property );
@@ -41,13 +50,17 @@ namespace Ptakopysk
         virtual void onCreate();
         virtual void onDuplicate( Component* dst );
         virtual void onUpdate( float dt );
-        virtual void onRender( sf::RenderTarget* target );
+        virtual void onRender( sf::RenderTarget*& target );
 
     private:
+        static sf::RenderTexture* s_currentRT;
+
         sf::View* m_view;
         sf::Vector2f m_size;
         float m_zoom;
         float m_zoomInv;
+        sf::RenderTexture* m_renderTexture;
+        bool m_applyViewToRT;
     };
 
 }

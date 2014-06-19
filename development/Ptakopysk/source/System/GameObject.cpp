@@ -543,10 +543,18 @@ namespace Ptakopysk
         }
     }
 
-    void GameObject::onRender( sf::RenderTarget* target )
+    void GameObject::onRender( sf::RenderTarget*& target )
     {
         if( m_active )
         {
+            List::iterator it = m_gameObjects.begin();
+            while( it != m_gameObjects.end() )
+            {
+                if( (*it)->getOrder() <= 0 )
+                    break;
+                (*it)->onRender( target );
+                it++;
+            }
             Component* c;
             for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
             {
@@ -554,8 +562,13 @@ namespace Ptakopysk
                 if( c->isActive() && c->getTypeFlags() & Component::tRender )
                     c->onRender( target );
             }
-            for( List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            while( it != m_gameObjects.end() )
+            {
                 (*it)->onRender( target );
+                it++;
+            }
+            //for( List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            //    (*it)->onRender( target );
         }
     }
 

@@ -34,7 +34,7 @@ done
 COMPONENT_NAME_UPPER="$(tr '[:lower:]' '[:upper:]' <<< ${COMPONENT_NAME})"
 
 # files structure
-mkdir "${OUTPUT_PATH}"
+mkdir -p "${OUTPUT_PATH}"
 
 # manage file tempates
 sed "s|TemplateComponent|${COMPONENT_NAME}|" < "TemplateComponent.h" > "${OUTPUT_PATH}/${COMPONENT_NAME}.h"
