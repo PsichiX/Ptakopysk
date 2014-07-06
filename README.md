@@ -5,7 +5,13 @@ Ptakopysk
 
 ---------
 ###How-to:###
-All you will want to do with this library in your project is just to use project generator script:
+All you will want to do with this library in your project is just use Zasuvka Ptakopyska IDE:
+- Open IDE executable: **\<sdk\>/IDE/ZasuvkaPtakopyska.exe**
+- In **Settings** page check if **Code::Blocks** and **bash.exe** paths are valid.
+- **Create** new or **open** existing project.
+- **Edit** code, **build** and **run**!
+
+Or use project generator script:
 - **cd \<sdk\>/templates/**
 - **./make_new_project.sh -o "path/to/project/directory/" -p "ProjectName"**
 - Pro-tip: You may also want to change location of include and library files in Code::Blocks project.
