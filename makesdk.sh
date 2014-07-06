@@ -191,3 +191,10 @@ cp ./templates/bin/*.ttf ./sdk/templates/bin/
 cp ./templates/bin/template_game.json ./sdk/templates/bin/
 cp ./templates/make_new_project.sh ./sdk/templates/
 cp ./templates/make_new_component.sh ./sdk/templates/
+
+# IDE
+echo "Copying IDE..."
+mkdir -p ./sdk/IDE/resources/icons/
+cp -r ./development/ZasuvkaPtakopyska/ZasuvkaPtakopyska/bin/Release/resources/icons/* ./sdk/IDE/resources/icons/
+cp -r ./development/ZasuvkaPtakopyska/ZasuvkaPtakopyska/bin/Release/*.dll ./sdk/IDE/
+cp -r ./development/ZasuvkaPtakopyska/ZasuvkaPtakopyska/bin/Release/ZasuvkaPtakopyska.exe ./sdk/IDE/
