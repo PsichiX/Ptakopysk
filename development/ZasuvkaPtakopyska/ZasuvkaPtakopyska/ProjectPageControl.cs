@@ -216,11 +216,21 @@ namespace ZasuvkaPtakopyska
             MainForm mainForm = FindForm() as MainForm;
             if (mainForm != null)
             {
-                m_projectModel.UpdateToCbp(mainForm.SettingsModel);
+                m_projectModel.ApplyToCbp(mainForm.SettingsModel);
 
                 mainForm.InitializeGameEditorPages();
                 mainForm.SelectTabPage(MainForm.TAB_NAME_BUILD);
                 mainForm.AppTitleExtended = m_projectModel.Name;
+            }
+        }
+
+        public void SaveProject()
+        {
+            MainForm mainForm = FindForm() as MainForm;
+            if (mainForm != null && m_projectModel != null)
+            {
+                if(m_projectModel.ApplyToCbp(mainForm.SettingsModel))
+                    MetroMessageBox.Show(FindForm(), "Project \"" + m_projectModel.Name + "\" saved!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -276,6 +286,8 @@ namespace ZasuvkaPtakopyska
 
         private void m_specificSaveProjectTile_Click(object sender, EventArgs e)
         {
+            if (m_projectModel != null)
+                SaveProject();
         }
 
         private void m_specificExportProjectTile_Click(object sender, EventArgs e)

@@ -5,6 +5,7 @@ using MetroFramework.Controls;
 using System.Drawing;
 using System.IO;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace ZasuvkaPtakopyska
 {
@@ -40,6 +41,7 @@ namespace ZasuvkaPtakopyska
 
         private MetroPanel m_mainPanel;
         private MetroTabControl m_mainPanelTabs;
+        private WebBrowser m_welcomePage;
         private ProjectPageControl m_projectPage;
         private BuildPageControl m_buildPage;
         private ScenePageControl m_scenePage;
@@ -51,8 +53,9 @@ namespace ZasuvkaPtakopyska
 
         private string m_appTitleExtended;
         private FileSystemWatcher m_fileSystemWatcher;
-        volatile private bool m_isActive = false;
+        private volatile bool m_isActive = false;
         private List<Action> m_actionsQueue = new List<Action>();
+        private bool m_settingsValidated = false;
 
         #endregion
 
@@ -88,6 +91,7 @@ namespace ZasuvkaPtakopyska
             MetroSkinManager.SetManagerOwner(this);
             MetroSkinManager.ApplyMetroStyle(this);
             Load += new EventHandler(MainForm_Load);
+            FormClosing += new FormClosingEventHandler(MainForm_FormClosing);
             Activated += new EventHandler(MainForm_Activated);
             Deactivate += new EventHandler(MainForm_Deactivate);
             Padding = new Padding(1, 0, 1, 20);
@@ -310,11 +314,11 @@ namespace ZasuvkaPtakopyska
 
         private void InitializeWelcomePage()
         {
-            WebBrowser page = new WebBrowser();
-            page.Dock = DockStyle.Fill;
-            page.Navigate(new Uri("http://psichix.github.io/Ptakopysk/"));
+            m_welcomePage = new WebBrowser();
+            m_welcomePage.Dock = DockStyle.Fill;
+            m_welcomePage.Navigate(new Uri("http://psichix.github.io/Ptakopysk/"));
 
-            AddTabPage(page, TAB_NAME_WELCOME);
+            AddTabPage(m_welcomePage, TAB_NAME_WELCOME);
         }
 
         private void InitializeProjectPage()
@@ -369,6 +373,76 @@ namespace ZasuvkaPtakopyska
             m_settingsPage.RefreshContent();
         }
 
+        private bool ValidateSettings()
+        {
+            m_settingsValidated = false;
+            if (SettingsModel == null)
+            {
+                MetroFramework.MetroMessageBox.Show(this, "Settings are not loaded!", "Settings Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            if (!SettingsModel.ValidateSdkPath())
+            {
+                DialogResult result = MetroFramework.MetroMessageBox.Show(this, "Make sure that SDK Location is correctly pointing at SDK directory!\nDo you want to download Ptakopysk SDK?", "Invalid Settings", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                if (result == DialogResult.Yes)
+                {
+                    string json = File.ReadAllText("resources/settings/InstallationSettings.json");
+                    InstallationSettings install = JsonConvert.DeserializeObject<InstallationSettings>(json);
+                    if (m_welcomePage != null && install != null)
+                    {
+                        m_welcomePage.Navigate(install.PtakopyskDownloadUri);
+                        SelectTabPage(TAB_NAME_WELCOME);
+                    }
+                    else
+                        SelectTabPage(TAB_NAME_SETTINGS);
+                }
+                else
+                    SelectTabPage(TAB_NAME_SETTINGS);
+                return false;
+            }
+            if (!SettingsModel.ValidateCodeBlocksIdePath())
+            {
+                DialogResult result = MetroFramework.MetroMessageBox.Show(this, "Make sure that Code::Blocks IDE with MinGW Location is correctly pointing at Code::Blocks IDE with MinGW directory!\nDo you want to download Code::Blocks IDE?", "Invalid Settings", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                if (result == DialogResult.Yes)
+                {
+                    string json = File.ReadAllText("resources/settings/InstallationSettings.json");
+                    InstallationSettings install = JsonConvert.DeserializeObject<InstallationSettings>(json);
+                    if (m_welcomePage != null && install != null)
+                    {
+                        m_welcomePage.Navigate(install.CodeBlocksDownloadUri);
+                        SelectTabPage(TAB_NAME_WELCOME);
+                    }
+                    else
+                        SelectTabPage(TAB_NAME_SETTINGS);
+                }
+                else
+                    SelectTabPage(TAB_NAME_SETTINGS);
+                return false;
+            }
+            if (!SettingsModel.ValidateBashBinPath())
+            {
+                DialogResult result = MetroFramework.MetroMessageBox.Show(this, "Make sure that Bash Executable Location is correctly pointing at Bash Executable file!\nDo you want to download Msys GIT with Bash?", "Invalid Settings", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                if (result == DialogResult.Yes)
+                {
+                    string json = File.ReadAllText("resources/settings/InstallationSettings.json");
+                    InstallationSettings install = JsonConvert.DeserializeObject<InstallationSettings>(json);
+                    if (m_welcomePage != null && install != null)
+                    {
+                        m_welcomePage.Navigate(install.MsysGitBashDownloadUri);
+                        SelectTabPage(TAB_NAME_WELCOME);
+                    }
+                    else
+                        SelectTabPage(TAB_NAME_SETTINGS);
+                }
+                else
+                    SelectTabPage(TAB_NAME_SETTINGS);
+                return false;
+            }
+            m_settingsValidated = true;
+            return true;
+        }
+
         private void OnAction(Action action)
         {
             if (action == null)
@@ -397,6 +471,20 @@ namespace ZasuvkaPtakopyska
         private void MainForm_Load(object sender, EventArgs e)
         {
             MetroSkinManager.RefreshStyles();
+
+            if (SettingsModel != null)
+                WindowState = SettingsModel.WindowState;
+
+            ValidateSettings();
+
+            if (m_mainPanelTabs != null)
+                m_mainPanelTabs.Selected += new TabControlEventHandler(m_mainPanelTabs_Selected);
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (SettingsModel != null)
+                SettingsModel.WindowState = WindowState;
         }
 
         private void MainForm_Deactivate(object sender, EventArgs e)
@@ -410,6 +498,17 @@ namespace ZasuvkaPtakopyska
             PerformPendingActions();
         }
 
+        private void m_mainPanelTabs_Selected(object sender, TabControlEventArgs e)
+        {
+            if (!m_settingsValidated && e.Action == TabControlAction.Selected && e.TabPage.Text == TAB_NAME_PROJECT)
+            {
+                bool lastValid = m_settingsValidated;
+                bool valid = ValidateSettings();
+                if (!lastValid && valid && m_settingsPage != null)
+                    m_settingsPage.SaveSettingsModel();
+            }
+        }
+
         private void m_fileSystemWatcher_Changed(object sender, FileSystemEventArgs e)
         {
             if (ProjectModel != null)
@@ -421,20 +520,14 @@ namespace ZasuvkaPtakopyska
 
         private void m_fileSystemWatcher_Created(object sender, FileSystemEventArgs e)
         {
-            //Console.WriteLine(">>> APP IS FOCUSED: " + Focused);
-            //Console.WriteLine(">>> FILE CREATED: " + e.FullPath);
         }
 
         private void m_fileSystemWatcher_Deleted(object sender, FileSystemEventArgs e)
         {
-            //Console.WriteLine(">>> APP IS FOCUSED: " + Focused);
-            //Console.WriteLine(">>> FILE DELETED: " + e.FullPath);
         }
 
         private void m_fileSystemWatcher_Renamed(object sender, RenamedEventArgs e)
         {
-            //Console.WriteLine(">>> APP IS FOCUSED: " + Focused);
-            //Console.WriteLine(">>> FILE RENAMED FROM: " + e.OldFullPath + " TO: " + e.FullPath);
         }
 
         #endregion

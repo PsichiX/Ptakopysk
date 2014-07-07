@@ -14,7 +14,7 @@ namespace ZasuvkaPtakopyska
     {
         #region Private Static Data.
 
-        private static readonly string SETTINGS_FILE_PATH = "Settings.json";
+        private static readonly string SETTINGS_FILE_PATH = "UserSettings.json";
         private static readonly int DEFAULT_SEPARATOR = 24;
         private static readonly int DEFAULT_SELECT_TILE_WIDTH = 48;
         
@@ -67,12 +67,14 @@ namespace ZasuvkaPtakopyska
             MetroLabel label;
             MetroTextBox textBox;
             MetroTileIcon button;
+
+            Width = 400;
             
             label = new MetroLabel();
             MetroSkinManager.ApplyMetroStyle(label);
             label.Size = new Size();
             label.AutoSize = true;
-            label.Text = "SDK Location:";
+            label.Text = "Ptakopysk SDK Location:";
             label.Location = new Point(DEFAULT_SEPARATOR, DEFAULT_SEPARATOR);
             Controls.Add(label);
 
@@ -101,7 +103,7 @@ namespace ZasuvkaPtakopyska
             MetroSkinManager.ApplyMetroStyle(label);
             label.Size = new Size();
             label.AutoSize = true;
-            label.Text = "Code::Blocks IDE Location:";
+            label.Text = "Code::Blocks IDE with MinGW Location:";
             label.Location = new Point(DEFAULT_SEPARATOR, textBox.Bottom + DEFAULT_SEPARATOR);
             Controls.Add(label);
 
@@ -130,7 +132,7 @@ namespace ZasuvkaPtakopyska
             MetroSkinManager.ApplyMetroStyle(label);
             label.Size = new Size();
             label.AutoSize = true;
-            label.Text = "Bash executable Location:";
+            label.Text = "Bash Executable Location:";
             label.Location = new Point(DEFAULT_SEPARATOR, textBox.Bottom + DEFAULT_SEPARATOR);
             Controls.Add(label);
 
@@ -263,7 +265,8 @@ namespace ZasuvkaPtakopyska
             
             FolderBrowserDialog dialog = new FolderBrowserDialog();
             dialog.ShowNewFolderButton = true;
-            dialog.SelectedPath = Path.GetFullPath(textBox.Text);
+            if (!String.IsNullOrEmpty(textBox.Text))
+                dialog.SelectedPath = Path.GetFullPath(textBox.Text);
             DialogResult result = dialog.ShowDialog();
             if (result == DialogResult.OK)
             {
@@ -288,7 +291,8 @@ namespace ZasuvkaPtakopyska
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.CheckPathExists = true;
             dialog.RestoreDirectory = true;
-            dialog.FileName = Path.GetFullPath(textBox.Text);
+            if (!String.IsNullOrEmpty(textBox.Text))
+                dialog.FileName = Path.GetFullPath(textBox.Text);
             dialog.Filter = "Executable file (*.exe)|*.exe";
             DialogResult result = dialog.ShowDialog();
             if (result == DialogResult.OK)

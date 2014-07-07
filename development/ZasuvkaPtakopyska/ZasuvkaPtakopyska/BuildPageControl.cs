@@ -244,12 +244,7 @@ namespace ZasuvkaPtakopyska
             info.WorkingDirectory = Path.GetFullPath(mainForm.ProjectModel.WorkingDirectory + @"\" + mainForm.ProjectModel.BuildTargets[index][2]);
             info.FileName = Path.GetFullPath(exe);
             info.UseShellExecute = false;
-            info.RedirectStandardOutput = true;
             proc.StartInfo = info;
-            proc.EnableRaisingEvents = true;
-            proc.Exited += new EventHandler(proc_Exited);
-            m_runningProcess = proc;
-            m_progressSpinner.Visible = true;
             proc.Start();
         }
         
@@ -297,7 +292,9 @@ namespace ZasuvkaPtakopyska
 
         private void proc_Exited(object sender, EventArgs e)
         {
-            m_progressSpinner.doOnUIThread(() => m_progressSpinner.Visible = false);
+            m_progressSpinner.doOnUIThread(() => {
+                m_progressSpinner.Visible = false;
+            });
             if (m_runningProcess != null)
             {
                 string log = m_runningProcess.StandardOutput.ReadToEnd();

@@ -196,5 +196,7 @@ cp ./templates/make_new_component.sh ./sdk/templates/
 echo "Copying IDE..."
 mkdir -p ./sdk/IDE/resources/icons/
 cp -r ./development/ZasuvkaPtakopyska/ZasuvkaPtakopyska/bin/Release/resources/icons/* ./sdk/IDE/resources/icons/
+mkdir -p ./sdk/IDE/resources/settings/
+cp -r ./development/ZasuvkaPtakopyska/ZasuvkaPtakopyska/bin/Release/resources/settings/* ./sdk/IDE/resources/settings/
 cp -r ./development/ZasuvkaPtakopyska/ZasuvkaPtakopyska/bin/Release/*.dll ./sdk/IDE/
 cp -r ./development/ZasuvkaPtakopyska/ZasuvkaPtakopyska/bin/Release/ZasuvkaPtakopyska.exe ./sdk/IDE/

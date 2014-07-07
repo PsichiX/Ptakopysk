@@ -116,21 +116,21 @@ namespace ZasuvkaPtakopyska
             }
         }
 
-        public void UpdateToCbp(SettingsModel settings)
+        public bool ApplyToCbp(SettingsModel settings)
         {
             if (settings == null)
-                return;
+                return false;
 
             if (String.IsNullOrEmpty(WorkingDirectory))
                 WorkingDirectory = "";
 
             string sdkPath = Path.GetFullPath(settings.SdkPath);
             if (!Directory.Exists(sdkPath))
-                return;
+                return false;
             
             string cbpFilePath = Path.GetFullPath(WorkingDirectory + @"\" + CbpPath);
             if (!File.Exists(cbpFilePath))
-                return;
+                return false;
 
             string xml = File.ReadAllText(cbpFilePath);
             XmlDocument doc = new XmlDocument();
@@ -150,6 +150,7 @@ namespace ZasuvkaPtakopyska
                             attr.Value = sdkPath + @"\lib";
             
             doc.Save(cbpFilePath);
+            return true;
         }
 
         #endregion

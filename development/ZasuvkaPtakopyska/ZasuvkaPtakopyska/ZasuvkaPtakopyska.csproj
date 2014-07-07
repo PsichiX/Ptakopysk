@@ -36,20 +36,23 @@
   <ItemGroup>
     <Reference Include="MetroFramework, Version=1.3.0.0, Culture=neutral, PublicKeyToken=5f91a84759bf584a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\build\AnyCpu\NET40\MetroFramework.dll</HintPath>
+      <HintPath>..\..\requirements\MetroFramework\NET40\MetroFramework.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\SDKs\Json50r8\Bin\Net40\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\requirements\Newtonsoft.Json\Net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="sfmlnet-audio-2">
-      <HintPath>..\..\..\..\..\SDKs\SFML.Net-2.1-32bits\SFML.Net-2.1\lib\sfmlnet-audio-2.dll</HintPath>
+    <Reference Include="sfmlnet-audio-2, Version=2.1.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\requirements\SFML.Net\Managed\sfmlnet-audio-2.dll</HintPath>
     </Reference>
-    <Reference Include="sfmlnet-graphics-2">
-      <HintPath>..\..\..\..\..\SDKs\SFML.Net-2.1-32bits\SFML.Net-2.1\lib\sfmlnet-graphics-2.dll</HintPath>
+    <Reference Include="sfmlnet-graphics-2, Version=2.1.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\requirements\SFML.Net\Managed\sfmlnet-graphics-2.dll</HintPath>
     </Reference>
-    <Reference Include="sfmlnet-window-2">
-      <HintPath>..\..\..\..\..\SDKs\SFML.Net-2.1-32bits\SFML.Net-2.1\lib\sfmlnet-window-2.dll</HintPath>
+    <Reference Include="sfmlnet-window-2, Version=2.1.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\requirements\SFML.Net\Managed\sfmlnet-window-2.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -67,6 +70,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ControlExtension.cs" />
+    <Compile Include="InstallationSettings.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -127,9 +131,13 @@
   </Target>
   <Target Name="AfterBuild">
     <ItemGroup>
-      <ResourceFiles Include="$(ProjectDir).\resources\icons\*" />
+      <ResourcesIconsFiles Include="$(ProjectDir).\resources\icons\*" />
+      <ResourcesSettingsFiles Include="$(ProjectDir).\resources\settings\*" />
+      <DependenciesSfmlNativeFiles Include="$(ProjectDir)..\..\requirements\SFML.Net\Native\*" />
     </ItemGroup>
     <MakeDir Directories="$(TargetDir).\resources\icons" />
-    <Copy SourceFiles="@(ResourceFiles)" DestinationFolder="$(TargetDir).\resources\icons" />
+    <Copy SourceFiles="@(ResourcesIconsFiles)" DestinationFolder="$(TargetDir).\resources\icons" />
+    <Copy SourceFiles="@(ResourcesSettingsFiles)" DestinationFolder="$(TargetDir).\resources\settings" />
+    <Copy SourceFiles="@(DependenciesSfmlNativeFiles)" DestinationFolder="$(TargetDir)" />
   </Target>
 </Project>
