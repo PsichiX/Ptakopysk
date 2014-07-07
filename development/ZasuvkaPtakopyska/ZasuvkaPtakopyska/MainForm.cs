@@ -192,6 +192,8 @@ namespace ZasuvkaPtakopyska
                 m_buildPage.Dispose();
                 m_buildPage = null;
             }
+            if (m_projectManagerPanel != null)
+                m_projectManagerPanel.RebuildList();
         }
 
         public bool DoAction(Action action, bool forcedUnique = false, bool forceExecute = false)
@@ -201,7 +203,7 @@ namespace ZasuvkaPtakopyska
 
             if (m_isActive || forceExecute)
             {
-                OnAction(action);
+                this.doOnUIThread(() => this.OnAction(action));
                 return true;
             }
             else
@@ -227,8 +229,8 @@ namespace ZasuvkaPtakopyska
 
             lock (m_actionsQueue)
             {
-                foreach(Action action in m_actionsQueue)
-                    OnAction(action);
+                foreach (Action action in m_actionsQueue)
+                    this.doOnUIThread(() => this.OnAction(action));
                 m_actionsQueue.Clear();
             }
         }

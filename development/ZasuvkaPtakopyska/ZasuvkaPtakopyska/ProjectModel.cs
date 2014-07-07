@@ -80,7 +80,8 @@ namespace ZasuvkaPtakopyska
                 {
                     foreach (XmlAttribute attr in node.Attributes)
                         if (attr.LocalName == "filename")
-                            Files.Add(WorkingDirectory + @"\" + attr.Value);
+                            if (!Files.Contains(WorkingDirectory + @"\" + attr.Value))
+                                Files.Add(WorkingDirectory + @"\" + attr.Value);
                 }
             }
             
@@ -148,6 +149,22 @@ namespace ZasuvkaPtakopyska
                     foreach (XmlAttribute attr in node.Attributes)
                         if (attr.LocalName == "directory")
                             attr.Value = sdkPath + @"\lib";
+
+            XmlNode project = doc.SelectSingleNode("CodeBlocks_project_file/Project");
+            for(int i = project.ChildNodes.Count - 1; i >= 0; --i)
+            {
+                XmlNode node = project.ChildNodes[i];
+                if (node.LocalName == "Unit")
+                    project.RemoveChild(node);
+            }
+            foreach (string item in Files)
+            {
+                XmlNode node = doc.CreateElement("Unit");
+                XmlAttribute attr = doc.CreateAttribute("filename");
+                attr.Value = Utils.GetRelativePath(item, WorkingDirectory + @"\");
+                node.Attributes.Append(attr);
+                project.AppendChild(node);
+            }
             
             doc.Save(cbpFilePath);
             return true;
