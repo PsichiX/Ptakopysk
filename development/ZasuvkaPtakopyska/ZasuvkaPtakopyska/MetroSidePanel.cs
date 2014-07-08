@@ -9,9 +9,16 @@ namespace ZasuvkaPtakopyska
 {
     public partial class MetroSidePanel : MetroUserControl
     {
+        #region Public Static Data.
+        
+        public static readonly int ROLLED_PART_SIZE = 24;
+
+        #endregion
+
+
+
         #region Private Static Data.
 
-        private static readonly int ROLLED_PART_SIZE = 24;
         private static readonly int ROLLING_DURATION = 15;
         private static readonly TransitionType ROLLING_TRANSITION = TransitionType.EaseInExpo;
 
@@ -22,10 +29,14 @@ namespace ZasuvkaPtakopyska
         #region Private Data.
 
         private MetroTile m_titleBar;
+        private MetroTileIcon m_dockTile;
+        private Image m_dockImage;
+        private Image m_undockImage;
         private MetroPanel m_content;
         private DockStyle m_side = DockStyle.None;
         private bool m_rolled = false;
         private Padding m_offsetPadding;
+        private bool m_docked = false;
         private MoveAnimation m_moveAnim;
         private Control m_lastParent;
 
@@ -38,10 +49,35 @@ namespace ZasuvkaPtakopyska
         public override string Text { get { return m_titleBar.Text; } set { m_titleBar.Text = value; } }
         public MetroPanel Content { get { return m_content; } }
         public DockStyle Side { get { return m_side; } set { m_side = value; Apply(); } }
-        public bool IsRolled { get { return m_rolled; } set { m_rolled = value; if (m_rolled) Roll(); else Unroll(); } }
+        public bool IsRolled { get { return m_rolled; } set { m_rolled = value; if (!m_docked && m_rolled) Roll(); else Unroll(); } }
         public bool AnimatedRolling { get; set; }
         public Padding OffsetPadding { get { return m_offsetPadding; } set { m_offsetPadding = value; Apply(); } }
+        public bool IsDocked
+        {
+            get { return m_docked; }
+            set
+            {
+                m_docked = value;
+                m_dockTile.Image = m_docked ? m_undockImage : m_dockImage;
+                if (m_docked)
+                    IsRolled = false;
+                Apply();
+                if (m_docked && Docked != null)
+                    Docked(this, new EventArgs());
+                else if (!m_docked && Undocked != null)
+                    Undocked(this, new EventArgs());
+            }
+        }
 
+        #endregion
+
+
+
+        #region Public Events.
+
+        public event EventHandler Docked;
+        public event EventHandler Undocked;
+        
         #endregion
 
 
@@ -59,16 +95,35 @@ namespace ZasuvkaPtakopyska
             m_content.Dock = DockStyle.Fill;
             Controls.Add(m_content);
 
+            MetroPanel titlePanel = new MetroPanel();
+            MetroSkinManager.ApplyMetroStyle(titlePanel);
+            titlePanel.Height = 20;
+            titlePanel.Dock = DockStyle.Top;
+            Controls.Add(titlePanel);
+
             m_titleBar = new MetroTile();
             MetroSkinManager.ApplyMetroStyle(m_titleBar);
             m_titleBar.Text = "SidePanelControler";
-            m_titleBar.Height = 20;
-            m_titleBar.Dock = DockStyle.Top;
+            m_titleBar.Height = titlePanel.Height;
             m_titleBar.Click += new EventHandler(m_titleBar_Click);
-            Controls.Add(m_titleBar);
+            titlePanel.Controls.Add(m_titleBar);
+
+            m_dockImage = Bitmap.FromFile("resources/icons/appbar.pin.png");
+            m_undockImage = Bitmap.FromFile("resources/icons/appbar.pin.remove.png");
+            m_dockTile = new MetroTileIcon();
+            MetroSkinManager.ApplyMetroStyle(m_dockTile);
+            m_dockTile.Size = new Size(titlePanel.Height, titlePanel.Height);
+            m_dockTile.Image = m_dockImage;
+            m_dockTile.ImageAlign = ContentAlignment.MiddleCenter;
+            m_dockTile.IsImageScaled = true;
+            m_dockTile.ImageScale = new PointF(0.5f, 0.5f);
+            m_dockTile.Click += new EventHandler(m_dockTile_Click);
+            titlePanel.Controls.Add(m_dockTile);
 
             Load += new EventHandler(SidePanelControl_Load);
             ParentChanged += new EventHandler(SidePanelControl_ParentChanged);
+
+            Apply();
         }
 
         #endregion
@@ -81,12 +136,26 @@ namespace ZasuvkaPtakopyska
         {
             m_moveAnim.Cancel();
             Location = CalculateTargetLocation(m_rolled, Location);
+            
             if (m_side == DockStyle.Left)
                 m_titleBar.TextAlign = ContentAlignment.MiddleRight;
             else if (m_side == DockStyle.Right)
                 m_titleBar.TextAlign = ContentAlignment.MiddleLeft;
             else if (m_side == DockStyle.Bottom)
                 m_titleBar.TextAlign = ContentAlignment.TopCenter;
+
+            if (m_side == DockStyle.Left)
+            {
+                m_dockTile.Left = 0;
+                m_titleBar.Left = m_dockTile.Width + 4;
+                m_titleBar.Width = Width - Padding.Horizontal - m_dockTile.Width - 4;
+            }
+            else
+            {
+                m_dockTile.Left = Width - Padding.Horizontal - m_dockTile.Width;
+                m_titleBar.Left = 0;
+                m_titleBar.Width = Width - Padding.Horizontal - m_dockTile.Width - 4;
+            }
         }
 
         public void Fit()
@@ -193,7 +262,15 @@ namespace ZasuvkaPtakopyska
 
         private void m_titleBar_Click(object sender, EventArgs e)
         {
-            Toggle();
+            if (m_docked)
+                Unroll();
+            else
+                Toggle();
+        }
+
+        private void m_dockTile_Click(object sender, EventArgs e)
+        {
+            IsDocked = !IsDocked;
         }
 
         #endregion

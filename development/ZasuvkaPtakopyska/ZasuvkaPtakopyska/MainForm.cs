@@ -252,7 +252,11 @@ namespace ZasuvkaPtakopyska
             // tabs.
             m_mainPanelTabs = new MetroTabControl();
             MetroSkinManager.ApplyMetroStyle(m_mainPanelTabs);
-            m_mainPanelTabs.Dock = DockStyle.Fill;
+            m_mainPanelTabs.Left = m_mainPanel.Padding.Left;
+            m_mainPanelTabs.Top = m_mainPanel.Padding.Top;
+            m_mainPanelTabs.Width = m_mainPanel.Width - m_mainPanel.Padding.Horizontal;
+            m_mainPanelTabs.Height = m_mainPanel.Height - m_mainPanel.Padding.Vertical;
+            m_mainPanelTabs.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
             m_mainPanel.Controls.Add(m_mainPanelTabs);
 
             // initial pages.
@@ -277,6 +281,8 @@ namespace ZasuvkaPtakopyska
             m_leftPanel.OffsetPadding = new Padding(0, 38, 0, 24);
             m_leftPanel.Width = 250;
             m_leftPanel.Height = m_mainPanel.Height;
+            m_leftPanel.Docked += new EventHandler(sidePanel_DockUndock);
+            m_leftPanel.Undocked += new EventHandler(sidePanel_DockUndock);
             m_mainPanel.Controls.Add(m_leftPanel);
             m_leftPanel.BringToFront();
             
@@ -445,6 +451,17 @@ namespace ZasuvkaPtakopyska
             return true;
         }
 
+        private void UpdateTabsLayout()
+        {
+            int left = m_leftPanel != null && m_leftPanel.IsDocked ? m_leftPanel.Width - MetroSidePanel.ROLLED_PART_SIZE : 0;
+            int right = m_rightPanel != null && m_rightPanel.IsDocked ? m_rightPanel.Width - MetroSidePanel.ROLLED_PART_SIZE : 0;
+            int bottom = m_bottomPanel != null && m_bottomPanel.IsDocked ? m_bottomPanel.Height - MetroSidePanel.ROLLED_PART_SIZE : 0;
+            m_mainPanelTabs.Left = m_mainPanel.Padding.Left + left;
+            m_mainPanelTabs.Top = m_mainPanel.Padding.Top;
+            m_mainPanelTabs.Width = m_mainPanel.Width - m_mainPanel.Padding.Horizontal - left - right;
+            m_mainPanelTabs.Height = m_mainPanel.Height - m_mainPanel.Padding.Vertical - bottom;
+        }
+
         private void OnAction(Action action)
         {
             if (action == null)
@@ -475,7 +492,14 @@ namespace ZasuvkaPtakopyska
             MetroSkinManager.RefreshStyles();
 
             if (SettingsModel != null)
+            {
                 WindowState = SettingsModel.WindowState;
+                if (m_leftPanel != null)
+                {
+                    m_leftPanel.IsRolled = SettingsModel.LeftPanelRolled;
+                    m_leftPanel.IsDocked = SettingsModel.LeftPanelDocked;
+                }
+            }
 
             ValidateSettings();
 
@@ -486,7 +510,14 @@ namespace ZasuvkaPtakopyska
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (SettingsModel != null)
+            {
                 SettingsModel.WindowState = WindowState;
+                if (m_leftPanel != null)
+                {
+                    SettingsModel.LeftPanelRolled = m_leftPanel.IsRolled;
+                    SettingsModel.LeftPanelDocked = m_leftPanel.IsDocked;
+                }
+            }
         }
 
         private void MainForm_Deactivate(object sender, EventArgs e)
@@ -530,6 +561,11 @@ namespace ZasuvkaPtakopyska
 
         private void m_fileSystemWatcher_Renamed(object sender, RenamedEventArgs e)
         {
+        }
+
+        private void sidePanel_DockUndock(object sender, EventArgs e)
+        {
+            UpdateTabsLayout();
         }
 
         #endregion

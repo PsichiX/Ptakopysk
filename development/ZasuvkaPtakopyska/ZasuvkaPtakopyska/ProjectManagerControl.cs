@@ -151,7 +151,11 @@ namespace ZasuvkaPtakopyska
                 mainForm.ProjectModel.Files.Add(hPath);
                 mainForm.ProjectModel.ApplyToCbp(mainForm.SettingsModel);
                 if (File.Exists(hPath))
-                    OpenEditFile(hPath);
+                {
+                    DialogResult result = MetroMessageBox.Show(mainForm, "Open created component file?", "Open component", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (result == DialogResult.Yes)
+                        OpenEditFile(hPath);
+                }
             }
         }
         
@@ -192,7 +196,7 @@ namespace ZasuvkaPtakopyska
             {
                 MetroPromptBox prompt = new MetroPromptBox();
                 prompt.Title = "Enter component name:";
-                prompt.Value = "Component";
+                prompt.Value = "UserComponent";
                 result = prompt.ShowDialog();
                 if (result == DialogResult.OK)
                     CreateNewComponent(dialog.SelectedPath, prompt.Value);

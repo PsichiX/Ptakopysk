@@ -180,7 +180,7 @@ namespace ZasuvkaPtakopyska
             ProcessStartInfo info = new ProcessStartInfo();
             info.WorkingDirectory = Path.GetFullPath(mainForm.ProjectModel.WorkingDirectory);
             info.FileName = Path.GetFullPath(cbExe);
-            info.Arguments = "/ns /na /nd " + target + " " + op + " " + mainForm.ProjectModel.CbpPath;
+            info.Arguments = "/ns /na /nd --no-batch-window-close " + target + " " + op + " " + mainForm.ProjectModel.CbpPath;
             info.UseShellExecute = false;
             info.RedirectStandardOutput = true;
             proc.StartInfo = info;

@@ -13,6 +13,8 @@ namespace ZasuvkaPtakopyska
         public MetroFramework.MetroColorStyle UiStyle { get; set; }
         public MetroFramework.MetroThemeStyle UiTheme { get; set; }
         public FormWindowState WindowState { get; set; }
+        public bool LeftPanelRolled { get; set; }
+        public bool LeftPanelDocked { get; set; }
 
         #endregion
 
@@ -28,6 +30,8 @@ namespace ZasuvkaPtakopyska
             UiStyle = MetroFramework.MetroColorStyle.Blue;
             UiTheme = MetroFramework.MetroThemeStyle.Dark;
             WindowState = FormWindowState.Normal;
+            LeftPanelRolled = true;
+            LeftPanelDocked = false;
         }
 
         #endregion
