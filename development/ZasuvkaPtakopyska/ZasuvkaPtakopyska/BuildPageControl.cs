@@ -43,8 +43,10 @@ namespace ZasuvkaPtakopyska
         private MetroTileIcon m_buildTile;
         private MetroTileIcon m_rebuildTile;
         private MetroTileIcon m_cleanTile;
+        private MetroTileIcon m_buildAndRunTile;
         private MetroTileIcon m_runTile;
         private MetroTileIcon m_syncTile;
+        private Queue<Action> m_afterBatchBuildQueue = new Queue<Action>();
         
         #endregion
 
@@ -106,12 +108,21 @@ namespace ZasuvkaPtakopyska
             m_cleanTile.Click += new EventHandler(m_cleanTile_Click);
             Controls.Add(m_cleanTile);
 
+            m_buildAndRunTile = new MetroTileIcon();
+            MetroSkinManager.ApplyMetroStyle(m_buildAndRunTile);
+            m_buildAndRunTile.Text = "BUILD && RUN";
+            m_buildAndRunTile.Image = Bitmap.FromFile("resources/icons/appbar.control.play.png");
+            m_buildAndRunTile.Size = DEFAULT_TILE_SIZE;
+            m_buildAndRunTile.Location = new Point(m_buildTile.Left, m_buildTile.Bottom + DEFAULT_TILE_SEPARATOR.Y);
+            m_buildAndRunTile.Click += new EventHandler(m_buildAndRunTile_Click);
+            Controls.Add(m_buildAndRunTile);
+
             m_runTile = new MetroTileIcon();
             MetroSkinManager.ApplyMetroStyle(m_runTile);
             m_runTile.Text = "RUN";
             m_runTile.Image = Bitmap.FromFile("resources/icons/appbar.control.play.png");
             m_runTile.Size = DEFAULT_TILE_SIZE;
-            m_runTile.Location = new Point(m_buildTile.Left, m_buildTile.Bottom + DEFAULT_TILE_SEPARATOR.Y);
+            m_runTile.Location = new Point(m_buildAndRunTile.Right + DEFAULT_TILE_SEPARATOR.X, m_buildAndRunTile.Top);
             m_runTile.Click += new EventHandler(m_runTile_Click);
             Controls.Add(m_runTile);
 
@@ -147,7 +158,7 @@ namespace ZasuvkaPtakopyska
                 m_activeBuildComboBox.DataSource = null;
         }
 
-        public void BatchOperationProject(BatchOperationMode mode)
+        public void BatchOperationProject(BatchOperationMode mode, Action afterBuildAction = null)
         {
             MainForm mainForm = FindForm() as MainForm;
             if (mainForm == null || mainForm.SettingsModel == null || mainForm.ProjectModel == null)
@@ -189,6 +200,14 @@ namespace ZasuvkaPtakopyska
             m_runningProcess = proc;
             m_progressSpinner.Visible = true;
             proc.Start();
+
+            if (afterBuildAction != null)
+            {
+                lock (m_afterBatchBuildQueue)
+                {
+                    m_afterBatchBuildQueue.Enqueue(afterBuildAction);
+                }
+            }
         }
 
         public void SyncOperationProject()
@@ -280,6 +299,11 @@ namespace ZasuvkaPtakopyska
             BatchOperationProject(BatchOperationMode.Clean);
         }
 
+        private void m_buildAndRunTile_Click(object sender, EventArgs e)
+        {
+            BatchOperationProject(BatchOperationMode.Build, () => RunProject());
+        }
+
         private void m_runTile_Click(object sender, EventArgs e)
         {
             RunProject();
@@ -308,6 +332,14 @@ namespace ZasuvkaPtakopyska
                         MetroMessageBox.Show(mainForm, log, "Operation Error: " + m_runningProcess.ExitCode.ToString(), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+            
+            lock (m_afterBatchBuildQueue)
+            {
+                Action action = m_afterBatchBuildQueue.Dequeue();
+                if (m_runningProcess.ExitCode == 0 && action != null)
+                    action();
+            }
+
             m_runningProcess = null;
         }
 
