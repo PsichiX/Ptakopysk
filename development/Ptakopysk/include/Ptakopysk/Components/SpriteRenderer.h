@@ -8,6 +8,9 @@
 namespace Ptakopysk
 {
 
+    META_COMPONENT(
+        META_ATTR_DESCRIPTION( "Sprite renderer component." )
+    )
     class SpriteRenderer
     : public virtual XeCore::Common::IRtti
     , public virtual XeCore::Common::MemoryManager::Manageable
@@ -39,13 +42,49 @@ namespace Ptakopysk
         FORCEINLINE bool getMaterialValidation() { return m_materialValidation; };
         FORCEINLINE void setMaterialValidation( bool v ) { m_materialValidation = v; };
 
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Texture name." )
+        )
         XeCore::Common::Property< sf::Texture*, SpriteRenderer > Texture;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Size of the sprite." ),
+            META_ATTR_DEFAULT_VALUE( "[0, 0]" )
+        )
         XeCore::Common::Property< sf::Vector2f, SpriteRenderer > Size;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Origin (local anchor point)." ),
+            META_ATTR_DEFAULT_VALUE( "[0, 0]" )
+        )
         XeCore::Common::Property< sf::Vector2f, SpriteRenderer > Origin;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Origin percent (local anchor point in unit-space)." ),
+            META_ATTR_DEFAULT_VALUE( "[0, 0]" )
+        )
         XeCore::Common::Property< sf::Vector2f, SpriteRenderer > OriginPercent;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Color." ),
+            META_ATTR_DEFAULT_VALUE( "[255, 255, 255, 255]" )
+        )
         XeCore::Common::Property< sf::Color, SpriteRenderer > Color;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Render states." )
+        )
         XeCore::Common::Property< sf::RenderStates, SpriteRenderer > RenderStates;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Render material." )
+        )
         XeCore::Common::Property< RenderMaterial&, SpriteRenderer > Material;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Determines if material should be validated in rendering process." ),
+            META_ATTR_DEFAULT_VALUE( "false" )
+        )
         XeCore::Common::Property< bool, SpriteRenderer > MaterialValidation;
 
     protected:

@@ -1,0 +1,24 @@
+{
+  "Name": "TextRenderer",
+  "Description": "Text renderer component.",
+  "Properties": [
+    {
+      "Name": "Text",
+      "Description": "Text value.",
+      "ValueType": "sf::String",
+      "DefaultValue": ""
+    },
+    {
+      "Name": "Color",
+      "Description": "Color.",
+      "ValueType": "sf::Color",
+      "DefaultValue": "[255, 255, 255, 255]"
+    },
+    {
+      "Name": "RenderStates",
+      "Description": "Render states.",
+      "ValueType": "sf::RenderStates",
+      "DefaultValue": null
+    }
+  ]
+}

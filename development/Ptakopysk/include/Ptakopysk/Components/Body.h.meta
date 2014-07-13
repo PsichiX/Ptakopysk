@@ -1,0 +1,90 @@
+{
+  "Name": "Body",
+  "Description": "Physics body component.",
+  "Properties": [
+    {
+      "Name": "Radius",
+      "Description": "Radius of the body (if radius is greater than 0, body drops current vertices and becomes a ball).",
+      "ValueType": "float",
+      "DefaultValue": "0"
+    },
+    {
+      "Name": "Density",
+      "Description": "Density.",
+      "ValueType": "float",
+      "DefaultValue": "0"
+    },
+    {
+      "Name": "Friction",
+      "Description": "Friction.",
+      "ValueType": "float",
+      "DefaultValue": "0.2"
+    },
+    {
+      "Name": "Restitution",
+      "Description": "Restitution.",
+      "ValueType": "float",
+      "DefaultValue": "0"
+    },
+    {
+      "Name": "Filter",
+      "Description": "Collision filter.",
+      "ValueType": "b2Filter",
+      "DefaultValue": null
+    },
+    {
+      "Name": "BodyType",
+      "Description": "Body type.",
+      "ValueType": "b2BodyType",
+      "DefaultValue": "b2_staticBody"
+    },
+    {
+      "Name": "LinearVelocity",
+      "Description": "Linear velocity.",
+      "ValueType": "b2Vec2",
+      "DefaultValue": "[0, 0]"
+    },
+    {
+      "Name": "AngularVelocity",
+      "Description": "Angular velocity.",
+      "ValueType": "float",
+      "DefaultValue": "0"
+    },
+    {
+      "Name": "LinearDamping",
+      "Description": "Linear damping.",
+      "ValueType": "float",
+      "DefaultValue": "0"
+    },
+    {
+      "Name": "AngularDamping",
+      "Description": "Angular damping.",
+      "ValueType": "float",
+      "DefaultValue": "0"
+    },
+    {
+      "Name": "IsSleepingAllowed",
+      "Description": "Determines if sleeping is allowed for this body.",
+      "ValueType": "bool",
+      "DefaultValue": "true"
+    },
+    {
+      "Name": "IsFixedRotation",
+      "Description": "Determines if body have fixed rotation.",
+      "ValueType": "bool",
+      "DefaultValue": "false"
+    },
+    {
+      "Name": "IsBullet",
+      "Description": "Determines if body is a bullet.",
+      "ValueType": "bool",
+      "DefaultValue": "false"
+    },
+    {
+      "Name": "GravityScale",
+      "Description": "Gravity scale.",
+      "ValueType": "float",
+      "DefaultValue": "0"
+    }
+  ]
+}

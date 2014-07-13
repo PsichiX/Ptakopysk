@@ -8,6 +8,9 @@
 namespace Ptakopysk
 {
 
+    META_COMPONENT(
+        META_ATTR_DESCRIPTION( "Text renderer component." )
+    )
     class TextRenderer
     : public virtual XeCore::Common::IRtti
     , public virtual XeCore::Common::MemoryManager::Manageable
@@ -37,12 +40,41 @@ namespace Ptakopysk
         FORCEINLINE RenderMaterial& getMaterial() { return m_material; };
         FORCEINLINE void setMaterial( RenderMaterial& v ) { m_material.copyFrom( v ); };
 
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Text value." ),
+            META_ATTR_DEFAULT_VALUE( "" )
+        )
         XeCore::Common::Property< sf::String, TextRenderer > Text;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Font name." )
+        )
         XeCore::Common::Property< sf::Font*, TextRenderer > Font;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Font size." ),
+        )
         XeCore::Common::Property< unsigned int, TextRenderer > Size;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Style." ),
+        )
         XeCore::Common::Property< unsigned int, TextRenderer > Style;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Color." ),
+            META_ATTR_DEFAULT_VALUE( "[255, 255, 255, 255]" )
+        )
         XeCore::Common::Property< sf::Color, TextRenderer > Color;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Render states." )
+        )
         XeCore::Common::Property< sf::RenderStates, TextRenderer > RenderStates;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Render material." )
+        )
         XeCore::Common::Property< RenderMaterial&, TextRenderer > Material;
 
     protected:

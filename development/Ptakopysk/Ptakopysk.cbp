@@ -83,6 +83,7 @@
 		<Unit filename="include/Ptakopysk/System/GameObject.inl" />
 		<Unit filename="include/Ptakopysk/System/Math.h" />
 		<Unit filename="include/Ptakopysk/System/Math.inl" />
+		<Unit filename="include/Ptakopysk/System/Meta.h" />
 		<Unit filename="include/Ptakopysk/System/RenderMaterial.h" />
 		<Unit filename="include/Ptakopysk/System/Tween.h" />
 		<Unit filename="include/Ptakopysk/System/Tween.inl" />

@@ -1,0 +1,30 @@
+{
+  "Name": "Transform",
+  "Description": "Transform component.",
+  "Properties": [
+    {
+      "Name": "Position",
+      "Description": "Position vector.",
+      "ValueType": "sf::Vector2f",
+      "DefaultValue": "[0, 0]"
+    },
+    {
+      "Name": "Rotation",
+      "Description": "Rotation angle.",
+      "ValueType": "float",
+      "DefaultValue": "0"
+    },
+    {
+      "Name": "Scale",
+      "Description": "Scale vector.",
+      "ValueType": "sf::Vector2f",
+      "DefaultValue": "[1, 1]"
+    },
+    {
+      "Name": "Mode",
+      "Description": "Transform mode.",
+      "ValueType": "ModeType",
+      "DefaultValue": "mHierarchy"
+    }
+  ]
+}

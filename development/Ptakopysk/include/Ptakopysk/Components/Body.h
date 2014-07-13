@@ -7,6 +7,9 @@
 namespace Ptakopysk
 {
 
+    META_COMPONENT(
+        META_ATTR_DESCRIPTION( "Physics body component." )
+    )
     class Body
     : public virtual XeCore::Common::IRtti
     , public virtual XeCore::Common::MemoryManager::Manageable
@@ -59,20 +62,93 @@ namespace Ptakopysk
         FORCEINLINE b2Vec2 getPosition() { return m_body ? m_body->GetPosition() : m_bodyDef.position; };
         FORCEINLINE float getAngle() { return m_body ? m_body->GetAngle() : m_bodyDef.angle; };
 
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Contains array of body shape vertices." ),
+            META_ATTR_DEFAULT_VALUE( "null" )
+        )
         XeCore::Common::Property< VerticesData&, Body > Vertices;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Radius of the body (if radius is greater than 0, body drops current vertices and becomes a ball)." ),
+            META_ATTR_DEFAULT_VALUE( "0" )
+        )
         XeCore::Common::Property< float, Body > Radius;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Density." ),
+            META_ATTR_DEFAULT_VALUE( "0" )
+        )
         XeCore::Common::Property< float, Body > Density;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Friction." ),
+            META_ATTR_DEFAULT_VALUE( "0.2" )
+        )
         XeCore::Common::Property< float, Body > Friction;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Restitution." ),
+            META_ATTR_DEFAULT_VALUE( "0" )
+        )
         XeCore::Common::Property< float, Body > Restitution;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Collision filter." )
+        )
         XeCore::Common::Property< b2Filter, Body > Filter;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Body type." ),
+            META_ATTR_DEFAULT_VALUE( "b2_staticBody" )
+        )
         XeCore::Common::Property< b2BodyType, Body > BodyType;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Linear velocity." ),
+            META_ATTR_DEFAULT_VALUE( "[0, 0]" )
+        )
         XeCore::Common::Property< b2Vec2, Body > LinearVelocity;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Angular velocity." ),
+            META_ATTR_DEFAULT_VALUE( "0" )
+        )
         XeCore::Common::Property< float, Body > AngularVelocity;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Linear damping." ),
+            META_ATTR_DEFAULT_VALUE( "0" )
+        )
         XeCore::Common::Property< float, Body > LinearDamping;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Angular damping." ),
+            META_ATTR_DEFAULT_VALUE( "0" )
+        )
         XeCore::Common::Property< float, Body > AngularDamping;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Determines if sleeping is allowed for this body." ),
+            META_ATTR_DEFAULT_VALUE( "true" )
+        )
         XeCore::Common::Property< bool, Body > IsSleepingAllowed;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Determines if body have fixed rotation." ),
+            META_ATTR_DEFAULT_VALUE( "false" )
+        )
         XeCore::Common::Property< bool, Body > IsFixedRotation;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Determines if body is a bullet." ),
+            META_ATTR_DEFAULT_VALUE( "false" )
+        )
         XeCore::Common::Property< bool, Body > IsBullet;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Gravity scale." ),
+            META_ATTR_DEFAULT_VALUE( "0" )
+        )
         XeCore::Common::Property< float, Body > GravityScale;
 
     protected:

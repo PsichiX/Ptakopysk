@@ -5,6 +5,9 @@
 
 using namespace Ptakopysk;
 
+META_COMPONENT(
+    META_ATTR_DESCRIPTION( "TemplateComponent" )
+)
 class TemplateComponent
 : public virtual XeCore::Common::IRtti
 , public virtual XeCore::Common::MemoryManager::Manageable
@@ -21,7 +24,11 @@ public:
 	//<TEMPLATE
 	FORCEINLINE float getValue() { return m_value; };
 	FORCEINLINE void setValue( float v ) { m_value = v; };
-	
+
+	META_PROPERTY(
+        META_ATTR_DESCRIPTION( "Property value" ),
+        META_ATTR_DEFAULT_VALUE( "0" )
+    )
 	XeCore::Common::Property< float, TemplateComponent > Value;
 	//TEMPLATE>
 protected:
@@ -30,7 +37,7 @@ protected:
 
 	virtual void onDuplicate( Component* dst );
 	virtual void onUpdate( float dt );
-	
+
 private:
 	//<TEMPLATE
 	float m_value;

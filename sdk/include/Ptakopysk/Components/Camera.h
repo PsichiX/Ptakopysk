@@ -7,6 +7,10 @@
 
 namespace Ptakopysk
 {
+
+    META_COMPONENT(
+        META_ATTR_DESCRIPTION( "Camera component." )
+    )
     class Camera
     : public virtual XeCore::Common::IRtti
     , public virtual XeCore::Common::MemoryManager::Manageable
@@ -36,11 +40,40 @@ namespace Ptakopysk
         FORCEINLINE bool isApplyViewToRenderTexture() { return m_applyViewToRT; };
         FORCEINLINE void setApplyViewToRenderTexture( bool v ) { m_applyViewToRT = v; };
 
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Size of view in world-space." ),
+            META_ATTR_DEFAULT_VALUE( "[100, 100]" )
+        )
         XeCore::Common::Property< sf::Vector2f, Camera > Size;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Zoom factor." ),
+            META_ATTR_DEFAULT_VALUE( "1" )
+        )
         XeCore::Common::Property< float, Camera > Zoom;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Zoom-out factor." ),
+            META_ATTR_DEFAULT_VALUE( "1" )
+        )
         XeCore::Common::Property< float, Camera > ZoomOut;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Viewport rectangle." ),
+            META_ATTR_DEFAULT_VALUE( "[0, 0, 1, 1]" )
+        )
         XeCore::Common::Property< sf::FloatRect, Camera > Viewport;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "RenderTexture target of rendering process." ),
+            META_ATTR_DEFAULT_VALUE( "null" )
+        )
         XeCore::Common::Property< sf::RenderTexture*, Camera > TargetTexture;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Determines if view settings should be used when camera renders content into RenderTexture." ),
+            META_ATTR_DEFAULT_VALUE( "false" )
+        )
         XeCore::Common::Property< bool, Camera > ApplyViewToRenderTexture;
 
     protected:

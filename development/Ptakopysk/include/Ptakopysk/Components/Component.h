@@ -9,6 +9,7 @@
 #include <SFML/Window/Event.hpp>
 #include <string>
 #include "../Serialization/Serialized.h"
+#include "../System/Meta.h"
 
 class b2Contact;
 class b2Joint;
@@ -19,6 +20,9 @@ namespace Ptakopysk
 
     class GameObject;
 
+    META_COMPONENT(
+        META_ATTR_DESCRIPTION( "Base component." )
+    )
     class Component
     : public virtual XeCore::Common::IRtti
     , public virtual XeCore::Common::MemoryManager::Manageable
@@ -52,8 +56,22 @@ namespace Ptakopysk
         void fromJson( const Json::Value& root );
         Json::Value toJson();
 
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Bit-flags that describes what kind of events this component is listen to." ),
+            META_ATTR_DEFAULT_VALUE( "0" )
+        )
         XeCore::Common::Property< Type, Component > TypeFlags;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Determines if component is active." ),
+            META_ATTR_DEFAULT_VALUE( "true" )
+        )
         XeCore::Common::Property< bool, Component > Active;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "GameObject that holds this component." ),
+            META_ATTR_DEFAULT_VALUE( "true" )
+        )
         XeCore::Common::Property< GameObject*, Component > Owner;
 
     protected:

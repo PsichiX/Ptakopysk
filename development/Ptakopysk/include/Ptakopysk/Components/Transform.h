@@ -7,6 +7,10 @@
 
 namespace Ptakopysk
 {
+
+    META_COMPONENT(
+        META_ATTR_DESCRIPTION( "Transform component." )
+    )
     class Transform
     : public virtual XeCore::Common::IRtti
     , public virtual XeCore::Common::MemoryManager::Manageable
@@ -39,9 +43,28 @@ namespace Ptakopysk
         FORCEINLINE const sf::Transform& getTransformGlobal() { return m_transformGlobal; };
         void recomputeTransform();
 
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Position vector." ),
+            META_ATTR_DEFAULT_VALUE( "[0, 0]" )
+        )
         XeCore::Common::Property< sf::Vector2f, Transform > Position;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Rotation angle." ),
+            META_ATTR_DEFAULT_VALUE( "0" )
+        )
         XeCore::Common::Property< float, Transform > Rotation;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Scale vector." ),
+            META_ATTR_DEFAULT_VALUE( "[1, 1]" )
+        )
         XeCore::Common::Property< sf::Vector2f, Transform > Scale;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Transform mode." ),
+            META_ATTR_DEFAULT_VALUE( "mHierarchy" )
+        )
         XeCore::Common::Property< ModeType, Transform > Mode;
 
     protected:

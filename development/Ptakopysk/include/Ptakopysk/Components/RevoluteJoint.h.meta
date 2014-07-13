@@ -1,0 +1,78 @@
+{
+  "Name": "RevoluteJoint",
+  "Description": "Physics revolute joint component.",
+  "Properties": [
+    {
+      "Name": "BindingA",
+      "Description": "First binding body ID.",
+      "ValueType": "std::string",
+      "DefaultValue": null
+    },
+    {
+      "Name": "BindingB",
+      "Description": "Second binding body ID.",
+      "ValueType": "std::string",
+      "DefaultValue": null
+    },
+    {
+      "Name": "CollideConnected",
+      "Description": "Determines if connected bodies should collide.",
+      "ValueType": "bool",
+      "DefaultValue": "false"
+    },
+    {
+      "Name": "ReferenceAngle",
+      "Description": "Reference angle.",
+      "ValueType": "float",
+      "DefaultValue": "0"
+    },
+    {
+      "Name": "LocalAnchorA",
+      "Description": "Local anchor of the first body.",
+      "ValueType": "b2Vec2",
+      "DefaultValue": "[0, 0]"
+    },
+    {
+      "Name": "LocalAnchorB",
+      "Description": "Local anchor of the second body.",
+      "ValueType": "b2Vec2",
+      "DefaultValue": "[0, 0]"
+    },
+    {
+      "Name": "LimitEnabled",
+      "Description": "Determines if angle difference limits are enabled.",
+      "ValueType": "bool",
+      "DefaultValue": "false"
+    },
+    {
+      "Name": "LowerLimit",
+      "Description": "Lower angle difference limit.",
+      "ValueType": "float",
+      "DefaultValue": "0"
+    },
+    {
+      "Name": "UpperLimit",
+      "Description": "Uper angle difference limit.",
+      "ValueType": "float",
+      "DefaultValue": "0"
+    },
+    {
+      "Name": "MotorEnabled",
+      "Description": "Determines if motor is enabled.",
+      "ValueType": "bool",
+      "DefaultValue": "false"
+    },
+    {
+      "Name": "MotorSpeed",
+      "Description": "Motor speed.",
+      "ValueType": "float",
+      "DefaultValue": "0"
+    },
+    {
+      "Name": "MotorTorque",
+      "Description": "Motor torque.",
+      "ValueType": "float",
+      "DefaultValue": "0"
+    }
+  ]
+}

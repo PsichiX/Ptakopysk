@@ -124,6 +124,12 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PtakopyskMetaGenerator\PtakopyskMetaGenerator.csproj">
+      <Project>{1568BFA1-47B1-4AF1-8DF1-5C95A3AD6237}</Project>
+      <Name>PtakopyskMetaGenerator</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.-->

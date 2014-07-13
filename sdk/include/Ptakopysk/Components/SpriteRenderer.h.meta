@@ -1,0 +1,42 @@
+{
+  "Name": "SpriteRenderer",
+  "Description": "Sprite renderer component.",
+  "Properties": [
+    {
+      "Name": "Size",
+      "Description": "Size of the sprite.",
+      "ValueType": "sf::Vector2f",
+      "DefaultValue": "[0, 0]"
+    },
+    {
+      "Name": "Origin",
+      "Description": "Origin (local anchor point).",
+      "ValueType": "sf::Vector2f",
+      "DefaultValue": "[0, 0]"
+    },
+    {
+      "Name": "OriginPercent",
+      "Description": "Origin percent (local anchor point in unit-space).",
+      "ValueType": "sf::Vector2f",
+      "DefaultValue": "[0, 0]"
+    },
+    {
+      "Name": "Color",
+      "Description": "Color.",
+      "ValueType": "sf::Color",
+      "DefaultValue": "[255, 255, 255, 255]"
+    },
+    {
+      "Name": "RenderStates",
+      "Description": "Render states.",
+      "ValueType": "sf::RenderStates",
+      "DefaultValue": null
+    },
+    {
+      "Name": "MaterialValidation",
+      "Description": "Determines if material should be validated in rendering process.",
+      "ValueType": "bool",
+      "DefaultValue": "false"
+    }
+  ]
+}

@@ -7,6 +7,9 @@
 namespace Ptakopysk
 {
 
+    META_COMPONENT(
+        META_ATTR_DESCRIPTION( "Physics revolute joint component." )
+    )
     class RevoluteJoint
     : public virtual XeCore::Common::IRtti
     , public virtual XeCore::Common::MemoryManager::Manageable
@@ -46,17 +49,74 @@ namespace Ptakopysk
         FORCEINLINE float getMotorTorque() { return m_joint ? m_joint->GetMaxMotorTorque() : m_jointDef.maxMotorTorque; };
         FORCEINLINE void setMotorTorque( float v ) { if( m_joint ) m_joint->SetMaxMotorTorque( v ); else m_jointDef.maxMotorTorque = v; };
 
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "First binding body ID." )
+        )
         XeCore::Common::Property< std::string, RevoluteJoint > BindingA;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Second binding body ID." )
+        )
         XeCore::Common::Property< std::string, RevoluteJoint > BindingB;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Determines if connected bodies should collide." ),
+            META_ATTR_DEFAULT_VALUE( "false" )
+        )
         XeCore::Common::Property< bool, RevoluteJoint > CollideConnected;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Reference angle." ),
+            META_ATTR_DEFAULT_VALUE( "0" )
+        )
         XeCore::Common::Property< float, RevoluteJoint > ReferenceAngle;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Local anchor of the first body." ),
+            META_ATTR_DEFAULT_VALUE( "[0, 0]" )
+        )
         XeCore::Common::Property< b2Vec2, RevoluteJoint > LocalAnchorA;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Local anchor of the second body." ),
+            META_ATTR_DEFAULT_VALUE( "[0, 0]" )
+        )
         XeCore::Common::Property< b2Vec2, RevoluteJoint > LocalAnchorB;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Determines if angle difference limits are enabled." ),
+            META_ATTR_DEFAULT_VALUE( "false" )
+        )
         XeCore::Common::Property< bool, RevoluteJoint > LimitEnabled;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Lower angle difference limit." ),
+            META_ATTR_DEFAULT_VALUE( "0" )
+        )
         XeCore::Common::Property< float, RevoluteJoint > LowerLimit;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Uper angle difference limit." ),
+            META_ATTR_DEFAULT_VALUE( "0" )
+        )
         XeCore::Common::Property< float, RevoluteJoint > UpperLimit;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Determines if motor is enabled." ),
+            META_ATTR_DEFAULT_VALUE( "false" )
+        )
         XeCore::Common::Property< bool, RevoluteJoint > MotorEnabled;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Motor speed." ),
+            META_ATTR_DEFAULT_VALUE( "0" )
+        )
         XeCore::Common::Property< float, RevoluteJoint > MotorSpeed;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Motor torque." ),
+            META_ATTR_DEFAULT_VALUE( "0" )
+        )
         XeCore::Common::Property< float, RevoluteJoint > MotorTorque;
 
     protected:

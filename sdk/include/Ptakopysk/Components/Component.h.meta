@@ -1,0 +1,18 @@
+{
+  "Name": "Component",
+  "Description": "Base component.",
+  "Properties": [
+    {
+      "Name": "TypeFlags",
+      "Description": "Bit-flags that describes what kind of events this component is listen to.",
+      "ValueType": "Type",
+      "DefaultValue": "0"
+    },
+    {
+      "Name": "Active",
+      "Description": "Determines if component is active.",
+      "ValueType": "bool",
+      "DefaultValue": "true"
+    }
+  ]
+}
