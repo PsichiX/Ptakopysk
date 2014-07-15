@@ -1,6 +1,11 @@
 {
   "Name": "TextRenderer",
   "Description": "Text renderer component.",
+  "BaseClasses": [
+    "XeCore::Common::IRtti",
+    "XeCore::Common::MemoryManager::Manageable",
+    "Component"
+  ],
   "Properties": [
     {
       "Name": "Text",

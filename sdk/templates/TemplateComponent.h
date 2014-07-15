@@ -21,7 +21,6 @@ public:
 
 	FORCEINLINE static Component* onBuildComponent() { return xnew TemplateComponent(); }
 
-	//<TEMPLATE
 	FORCEINLINE float getValue() { return m_value; };
 	FORCEINLINE void setValue( float v ) { m_value = v; };
 
@@ -30,7 +29,7 @@ public:
         META_ATTR_DEFAULT_VALUE( "0" )
     )
 	XeCore::Common::Property< float, TemplateComponent > Value;
-	//TEMPLATE>
+
 protected:
 	virtual Json::Value onSerialize( const std::string& property );
 	virtual void onDeserialize( const std::string& property, const Json::Value& root );

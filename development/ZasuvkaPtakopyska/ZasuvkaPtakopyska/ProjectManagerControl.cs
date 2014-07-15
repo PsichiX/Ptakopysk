@@ -72,18 +72,39 @@ namespace ZasuvkaPtakopyska
                 return;
 
             int y = 0;
+            MetroTileIcon icon;
             MetroButton btn;
+            Image image;
             foreach (string file in mainForm.ProjectModel.Files)
             {
+                if (mainForm.ProjectModel.MetaComponents.ContainsKey(file) ||
+                    (Path.GetExtension(file) == ".cpp" && mainForm.ProjectModel.MetaComponents.ContainsKey(Path.ChangeExtension(file, ".h")))
+                    )
+                    image = Bitmap.FromFile("resources/icons/logo-metro-icon-mini.png");
+                else
+                    image = null;
+                
                 btn = new MetroButton();
                 MetroSkinManager.ApplyMetroStyle(btn);
                 btn.Text = Path.GetFileName(file);
                 btn.Tag = file;
-                btn.Top = y;
-                btn.Width = Width;
+                btn.Location = new Point(image == null ? 0 : btn.Height, y);
+                btn.Width = Width - (image == null ? 0 : btn.Height);
                 btn.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
                 btn.Click += new EventHandler(btn_Click);
                 m_filesPanel.Controls.Add(btn);
+
+                if (image != null)
+                {
+                    icon = new MetroTileIcon();
+                    MetroSkinManager.ApplyMetroStyle(icon);
+                    icon.Location = new Point(0, y);
+                    icon.Size = new Size(btn.Height, btn.Height);
+                    icon.Text = "C";
+                    icon.TextAlign = ContentAlignment.MiddleCenter;
+                    icon.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+                    m_filesPanel.Controls.Add(icon);
+                }
 
                 y = btn.Bottom;
             }

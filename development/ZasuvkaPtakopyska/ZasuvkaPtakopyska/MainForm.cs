@@ -6,13 +6,15 @@ using System.Drawing;
 using System.IO;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using PtakopyskMetaGenerator;
+using System.Threading.Tasks;
 
 namespace ZasuvkaPtakopyska
 {
     public partial class MainForm : MetroForm
     {
         #region Public Nested Classes.
-        
+
         public class Action
         {
             public string Id;
@@ -24,7 +26,7 @@ namespace ZasuvkaPtakopyska
                 Params = args;
             }
         }
-        
+
         #endregion
 
 
@@ -32,7 +34,7 @@ namespace ZasuvkaPtakopyska
         #region Private Static Data.
 
         private static readonly string DEFAULT_APP_TITLE = "Zásuvka Ptakopyska";
-        
+
         #endregion
 
 
@@ -69,7 +71,7 @@ namespace ZasuvkaPtakopyska
         public static readonly string TAB_NAME_SCENE = "Scene";
         public static readonly string TAB_NAME_EDIT = "Edit";
         public static readonly string TAB_NAME_SETTINGS = "Settings";
-        
+
         #endregion
 
 
@@ -79,7 +81,7 @@ namespace ZasuvkaPtakopyska
         public string AppTitleExtended { get { return m_appTitleExtended; } set { m_appTitleExtended = value; RefreshAppTitle(); } }
         public ProjectModel ProjectModel { get { return m_projectPage == null ? null : m_projectPage.ProjectModel; } }
         public SettingsModel SettingsModel { get { return m_settingsPage == null ? null : m_settingsPage.SettingsModel; } }
-        
+
         #endregion
 
 
@@ -179,7 +181,7 @@ namespace ZasuvkaPtakopyska
         public void DeinitializeGameEditorPages()
         {
             UnwatchProjectFileSystem();
-            
+
             if (m_scenePage != null)
             {
                 RemoveTabPage(TAB_NAME_SCENE);
@@ -235,6 +237,52 @@ namespace ZasuvkaPtakopyska
             }
         }
 
+        public void GenerateMetaFiles()
+        {
+            if (ProjectModel == null)
+                return;
+
+            foreach (string file in ProjectModel.Files)
+                GenerateMetaFile(file);
+        }
+
+        public void GenerateMetaFile(string path)
+        {
+            if (!File.Exists(path) || Path.GetExtension(path) != ".h")
+                return;
+
+            string content = File.ReadAllText(path);
+            string log = "";
+            string json = MetaCpp.GenerateMetaComponentJson(content, out log);
+            if (String.IsNullOrEmpty(json))
+                DoAction(new Action("RemoveMetaData", path));
+            else
+            {
+                File.WriteAllText(path + ".meta", json);
+                DoAction(new Action("LoadMetaData", path));
+            }
+        }
+
+        public void RemoveMetaFile(string path)
+        {
+            if (!File.Exists(path) || Path.GetExtension(path) != ".h" || !File.Exists(path + ".meta"))
+                return;
+
+            File.Delete(path + ".meta");
+            DoAction(new Action("RemoveMetaData", path));
+        }
+
+        public void RenameMetaFile(string oldPath, string newPath)
+        {
+            DoAction(new Action("RemoveMetaData", oldPath));
+
+            if (!File.Exists(newPath) || Path.GetExtension(newPath) != ".h" || !File.Exists(oldPath + ".meta"))
+                return;
+
+            File.Move(oldPath + ".meta", newPath + ".meta");
+            DoAction(new Action("LoadMetaData", newPath));
+        }
+
         #endregion
 
 
@@ -263,7 +311,7 @@ namespace ZasuvkaPtakopyska
             InitializeWelcomePage();
             InitializeSettingsPage();
             InitializeProjectPage();
-            
+
             // sub-panels.
             InitializeLeftPanel();
             //InitializeRightPanel();
@@ -285,7 +333,7 @@ namespace ZasuvkaPtakopyska
             m_leftPanel.Undocked += new EventHandler(sidePanel_DockUndock);
             m_mainPanel.Controls.Add(m_leftPanel);
             m_leftPanel.BringToFront();
-            
+
             m_projectManagerPanel = new ProjectManagerControl();
             m_projectManagerPanel.Dock = DockStyle.Fill;
             m_leftPanel.Content.Controls.Add(m_projectManagerPanel);
@@ -473,8 +521,39 @@ namespace ZasuvkaPtakopyska
                 if (ProjectModel != null)
                 {
                     ProjectModel.UpdateFromCbp();
+                    Parallel.Invoke(() => GenerateMetaFiles());
                     if (m_buildPage != null)
                         m_buildPage.RefreshContent();
+                    if (m_projectManagerPanel != null)
+                        m_projectManagerPanel.RebuildList();
+                }
+            }
+            else if (action.Id == "LoadMetaData" && action.Params != null && action.Params.Length > 0)
+            {
+                string path = action.Params[0] as string;
+                if (!String.IsNullOrEmpty(path) && ProjectModel != null)
+                {
+                    Console.WriteLine(">>> Load meta-data for: " + path);
+                    string metaPath = path + ".meta";
+                    if (File.Exists(metaPath))
+                    {
+                        string json = File.ReadAllText(metaPath);
+                        MetaComponent meta = Newtonsoft.Json.JsonConvert.DeserializeObject<MetaComponent>(json);
+                        ProjectModel.MetaComponents.Remove(path);
+                        if (meta != null)
+                            ProjectModel.MetaComponents.Add(path, meta);
+                    }
+                    if (m_projectManagerPanel != null)
+                        m_projectManagerPanel.RebuildList();
+                }
+            }
+            else if (action.Id == "RemoveMetaData" && action.Params != null && action.Params.Length > 0)
+            {
+                string path = action.Params[0] as string;
+                if (!String.IsNullOrEmpty(path) && ProjectModel != null)
+                {
+                    Console.WriteLine(">>> Remove meta-data for: " + path);
+                    ProjectModel.MetaComponents.Remove(path);
                     if (m_projectManagerPanel != null)
                         m_projectManagerPanel.RebuildList();
                 }
@@ -548,19 +627,61 @@ namespace ZasuvkaPtakopyska
             {
                 if (e.FullPath == ProjectModel.WorkingDirectory + @"\" + ProjectModel.CbpPath)
                     DoAction(new Action("CbpChanged"));
+                else if (Path.GetExtension(e.FullPath) == ".h" && ProjectModel.Files.Contains(e.FullPath))
+                    Parallel.Invoke(() => GenerateMetaFile(e.FullPath));
             }
         }
 
         private void m_fileSystemWatcher_Created(object sender, FileSystemEventArgs e)
         {
+            if (ProjectModel != null)
+            {
+                if (Path.GetExtension(e.FullPath) == ".h" && ProjectModel.Files.Contains(e.FullPath))
+                    Parallel.Invoke(() => GenerateMetaFile(e.FullPath));
+            }
         }
 
         private void m_fileSystemWatcher_Deleted(object sender, FileSystemEventArgs e)
         {
+            if (ProjectModel != null)
+            {
+                if (Path.GetExtension(e.FullPath) == ".h" && ProjectModel.Files.Contains(e.FullPath))
+                    RemoveMetaFile(e.FullPath);
+            }
         }
 
         private void m_fileSystemWatcher_Renamed(object sender, RenamedEventArgs e)
         {
+            if (ProjectModel != null)
+            {
+                if (Path.GetExtension(e.OldFullPath) == ".h" && ProjectModel.Files.Contains(e.OldFullPath))
+                {
+                    string cppPath = Path.ChangeExtension(e.OldFullPath, ".cpp");
+                    if (File.Exists(cppPath))
+                        File.Move(cppPath, Path.ChangeExtension(e.FullPath, ".cpp"));
+                    ProjectModel.Files.Remove(e.OldFullPath);
+                    if (Path.GetExtension(e.FullPath) == ".h")
+                    {
+                        ProjectModel.Files.Add(e.FullPath);
+                        RenameMetaFile(e.OldFullPath, e.FullPath);
+                    }
+                    else
+                        RemoveMetaFile(e.OldFullPath);
+                    ProjectModel.ApplyToCbp(SettingsModel);
+                }
+                else if (Path.GetExtension(e.OldFullPath) == ".cpp" && ProjectModel.Files.Contains(e.OldFullPath))
+                {
+                    ProjectModel.Files.Remove(e.OldFullPath);
+                    if (Path.GetExtension(e.FullPath) == ".cpp")
+                    {
+                        ProjectModel.Files.Add(e.FullPath);
+                        string hPath = Path.ChangeExtension(e.OldFullPath, ".h");
+                        if (File.Exists(hPath))
+                            File.Move(hPath, Path.ChangeExtension(e.FullPath, ".h"));
+                    }
+                    ProjectModel.ApplyToCbp(SettingsModel);
+                }
+            }
         }
 
         private void sidePanel_DockUndock(object sender, EventArgs e)

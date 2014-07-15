@@ -1,6 +1,11 @@
 {
   "Name": "Transform",
   "Description": "Transform component.",
+  "BaseClasses": [
+    "XeCore::Common::IRtti",
+    "XeCore::Common::MemoryManager::Manageable",
+    "Component"
+  ],
   "Properties": [
     {
       "Name": "Position",

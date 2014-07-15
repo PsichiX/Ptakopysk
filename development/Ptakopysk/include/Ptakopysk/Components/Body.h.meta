@@ -1,6 +1,11 @@
 {
   "Name": "Body",
   "Description": "Physics body component.",
+  "BaseClasses": [
+    "XeCore::Common::IRtti",
+    "XeCore::Common::MemoryManager::Manageable",
+    "Component"
+  ],
   "Properties": [
     {
       "Name": "Radius",

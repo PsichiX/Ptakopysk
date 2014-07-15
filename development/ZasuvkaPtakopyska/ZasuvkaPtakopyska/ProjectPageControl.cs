@@ -221,6 +221,7 @@ namespace ZasuvkaPtakopyska
                 mainForm.InitializeGameEditorPages();
                 mainForm.SelectTabPage(MainForm.TAB_NAME_BUILD);
                 mainForm.AppTitleExtended = m_projectModel.Name;
+                mainForm.GenerateMetaFiles();
             }
         }
 

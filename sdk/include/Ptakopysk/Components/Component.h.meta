@@ -1,6 +1,11 @@
 {
   "Name": "Component",
   "Description": "Base component.",
+  "BaseClasses": [
+    "XeCore::Common::IRtti",
+    "XeCore::Common::MemoryManager::Manageable",
+    "Serialized"
+  ],
   "Properties": [
     {
       "Name": "TypeFlags",

@@ -1,6 +1,11 @@
 {
   "Name": "SpriteRenderer",
   "Description": "Sprite renderer component.",
+  "BaseClasses": [
+    "XeCore::Common::IRtti",
+    "XeCore::Common::MemoryManager::Manageable",
+    "Component"
+  ],
   "Properties": [
     {
       "Name": "Size",

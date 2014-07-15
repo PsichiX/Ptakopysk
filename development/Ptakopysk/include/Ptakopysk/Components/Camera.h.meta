@@ -1,6 +1,11 @@
 {
   "Name": "Camera",
   "Description": "Camera component.",
+  "BaseClasses": [
+    "XeCore::Common::IRtti",
+    "XeCore::Common::MemoryManager::Manageable",
+    "Component"
+  ],
   "Properties": [
     {
       "Name": "Size",

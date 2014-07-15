@@ -32,6 +32,18 @@ namespace PtakopyskMetaGenerator
 
         public static MetaComponent GenerateMetaComponent(string cppContent, out string status)
         {
+            ParseNode root = GenerateCppAst(cppContent, out status);
+            return root == null ? null : FindMetaComponent(root);
+        }
+
+        public static string GenerateCppAstJson(string cppContent, out string status)
+        {
+            ParseNode root = GenerateCppAst(cppContent, out status);
+            return root == null ? null : Newtonsoft.Json.JsonConvert.SerializeObject(root, Newtonsoft.Json.Formatting.Indented);
+        }
+
+        public static CppRipper.ParseNode GenerateCppAst(string cppContent, out string status)
+        {
             CppStructuralGrammar grammar = new CppStructuralGrammar();
             Rule parse_rule = grammar.file;
             ParserState state = new ParserState(cppContent);
@@ -48,7 +60,7 @@ namespace PtakopyskMetaGenerator
                     if (state.AtEndOfInput())
                     {
                         status = "Successfully parsed c++ content";
-                        return FindMetaComponent(state.GetRoot());
+                        return state.GetRoot();
                     }
                     else
                     {
@@ -102,6 +114,25 @@ namespace PtakopyskMetaGenerator
                                 }
                             }
                             meta.Properties = SearchDownForProperties(parent);
+                            i += 2;
+                            if (i < parent.Count - 1 && HasRuleWithValue(parent[i], RULE_NAME_UNNAMED, ":", RULE_TYPE_CHARSET))
+                            {
+                                List<string> baseClasses = new List<string>();
+                                ParseNode fragment;
+                                while (i + 1 < parent.Count - 1)
+                                {
+                                    ++i;
+                                    fragment = SearchDownFor(parent[i], RULE_NAME_IDENTIFIER);
+                                    if (fragment != null &&
+                                        fragment.Value != "public" &&
+                                        fragment.Value != "private" &&
+                                        fragment.Value != "protected" &&
+                                        fragment.Value != "virtual"
+                                        )
+                                        baseClasses.Add(fragment.Value);
+                                }
+                                meta.BaseClasses = baseClasses;
+                            }
                             return meta;
                         }
                     }

@@ -1,6 +1,11 @@
 {
   "Name": "RevoluteJoint",
   "Description": "Physics revolute joint component.",
+  "BaseClasses": [
+    "XeCore::Common::IRtti",
+    "XeCore::Common::MemoryManager::Manageable",
+    "Component"
+  ],
   "Properties": [
     {
       "Name": "BindingA",
