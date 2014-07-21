@@ -779,7 +779,7 @@
 	"Component.h"
 	<Box2D/Box2D.h>
 
-1405266440 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\component.h
+1405976161 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\component.h
 	<XeCore/Common/Property.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -920,7 +920,7 @@
 	"../../include/Ptakopysk/System/GameManager.h"
 	<SFML/Graphics/RenderWindow.hpp>
 
-1405267368 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\camera.h
+1405976257 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\camera.h
 	"Component.h"
 	<SFML/Graphics/View.hpp>
 	<SFML/Graphics/RenderTexture.hpp>

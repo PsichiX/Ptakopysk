@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using MetroFramework.Controls;
 using Newtonsoft.Json;
 using MetroFramework;
+using ZasuvkaPtakopyskaExtender;
 
 namespace ZasuvkaPtakopyska
 {
@@ -221,7 +222,9 @@ namespace ZasuvkaPtakopyska
                 mainForm.InitializeGameEditorPages();
                 mainForm.SelectTabPage(MainForm.TAB_NAME_BUILD);
                 mainForm.AppTitleExtended = m_projectModel.Name;
-                mainForm.GenerateMetaFiles();
+                mainForm.ProjectFilesViewer.RootPath = m_projectModel.WorkingDirectory;
+                mainForm.LoadSdkMetaFiles();
+                mainForm.GenerateProjectMetaFiles();
             }
         }
 
@@ -238,6 +241,7 @@ namespace ZasuvkaPtakopyska
         public void CloseProject()
         {
             m_projectModel = null;
+            MetaComponentsManager.Instance.UnregisterAllMetaComponents();
             
             MainForm mainForm = FindForm() as MainForm;
             if (mainForm != null)
@@ -245,6 +249,8 @@ namespace ZasuvkaPtakopyska
                 mainForm.DeinitializeGameEditorPages();
                 mainForm.SelectTabPage(MainForm.TAB_NAME_PROJECT);
                 mainForm.AppTitleExtended = null;
+                mainForm.ProjectFilesViewer.RootPath = null;
+                mainForm.ExploreGameObjectProperties(null);
             }
         }
         

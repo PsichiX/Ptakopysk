@@ -39,6 +39,11 @@ namespace ConsoleMetaGenerator
                 else if (Directory.Exists(input))
                     ProcessDirectory(input, output);
             }
+            else
+            {
+                Console.WriteLine(@"# Example of usage:");
+                Console.WriteLine(@"# ConsoleMetaGenerator.exe Path\to\input\file\or\directory [Path\to\output\file\or\directory]");
+            }
         }
 
         private static void ProcessFile(string input, string output)
@@ -67,9 +72,7 @@ namespace ConsoleMetaGenerator
         {
             DirectoryInfo dir = new DirectoryInfo(input);
             foreach (FileInfo info in dir.GetFiles("*.h"))
-            {
                 ProcessFile(input + @"\" + info.Name, output);
-            }
             foreach (DirectoryInfo info in dir.GetDirectories())
                 ProcessDirectory(input + @"\" + info.Name, output);
         }

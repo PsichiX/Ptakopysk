@@ -31,7 +31,7 @@ namespace ZasuvkaPtakopyska
         [JsonIgnore]
         public List<string> Files { get; set; }
         [JsonIgnore]
-        public Dictionary<string, MetaComponent> MetaComponents { get; set; }
+        public Dictionary<string, MetaComponent> MetaComponentPaths { get; set; }
 
         #endregion
 
@@ -48,7 +48,7 @@ namespace ZasuvkaPtakopyska
             BuildTargets = new List<string[]>();
             ActiveTarget = "";
             Files = new List<string>();
-            MetaComponents = new Dictionary<string, MetaComponent>();
+            MetaComponentPaths = new Dictionary<string, MetaComponent>();
         }
 
         #endregion

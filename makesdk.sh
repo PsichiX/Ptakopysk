@@ -200,3 +200,5 @@ mkdir -p ./sdk/IDE/resources/settings/
 cp -r ./development/ZasuvkaPtakopyska/ZasuvkaPtakopyska/bin/Release/resources/settings/* ./sdk/IDE/resources/settings/
 cp -r ./development/ZasuvkaPtakopyska/ZasuvkaPtakopyska/bin/Release/*.dll ./sdk/IDE/
 cp -r ./development/ZasuvkaPtakopyska/ZasuvkaPtakopyska/bin/Release/ZasuvkaPtakopyska.exe ./sdk/IDE/
+mkdir -p ./sdk/IDE/tools/
+cp -r ./development/ZasuvkaPtakopyska/ConsoleMetaGenerator/bin/Release/ConsoleMetaGenerator.exe ./sdk/IDE/tools/

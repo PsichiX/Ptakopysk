@@ -56,7 +56,7 @@ namespace Ptakopysk
             return v;
         }
         else if( property == "Rotation" )
-            return Json::Value( Rotation );
+            return Json::Value( m_rotation );
         else if( property == "Scale" )
         {
             Json::Value v;

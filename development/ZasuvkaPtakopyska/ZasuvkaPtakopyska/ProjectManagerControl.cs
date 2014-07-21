@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using MetroFramework;
 using System.Diagnostics;
 using System.Drawing;
+using ZasuvkaPtakopyskaExtender;
 
 namespace ZasuvkaPtakopyska
 {
@@ -72,64 +73,45 @@ namespace ZasuvkaPtakopyska
                 return;
 
             int y = 0;
-            MetroTileIcon icon;
+            MetroTile icon;
             MetroButton btn;
-            Image image;
+            int type = 0;
             foreach (string file in mainForm.ProjectModel.Files)
             {
-                if (mainForm.ProjectModel.MetaComponents.ContainsKey(file) ||
-                    (Path.GetExtension(file) == ".cpp" && mainForm.ProjectModel.MetaComponents.ContainsKey(Path.ChangeExtension(file, ".h")))
+                if (mainForm.ProjectModel.MetaComponentPaths.ContainsKey(file) ||
+                    (Path.GetExtension(file) == ".cpp" && mainForm.ProjectModel.MetaComponentPaths.ContainsKey(Path.ChangeExtension(file, ".h")))
                     )
-                    image = Bitmap.FromFile("resources/icons/logo-metro-icon-mini.png");
+                    type = 1;
                 else
-                    image = null;
-                
+                    type = 0;
+
                 btn = new MetroButton();
                 MetroSkinManager.ApplyMetroStyle(btn);
                 btn.Text = Path.GetFileName(file);
                 btn.Tag = file;
-                btn.Location = new Point(image == null ? 0 : btn.Height, y);
-                btn.Width = Width - (image == null ? 0 : btn.Height);
+                btn.Location = new Point(type == 0 ? 0 : btn.Height, y);
+                btn.Width = Width - (type == 0 ? 0 : btn.Height);
                 btn.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
                 btn.Click += new EventHandler(btn_Click);
                 m_filesPanel.Controls.Add(btn);
 
-                if (image != null)
+                if(type == 1)
                 {
-                    icon = new MetroTileIcon();
+                    icon = new MetroTile();
                     MetroSkinManager.ApplyMetroStyle(icon);
-                    icon.Location = new Point(0, y);
-                    icon.Size = new Size(btn.Height, btn.Height);
                     icon.Text = "C";
                     icon.TextAlign = ContentAlignment.MiddleCenter;
+                    icon.Tag = file;
+                    icon.Location = new Point(0, y);
+                    icon.Size = new Size(btn.Height, btn.Height);
+                    icon.TileTextFontSize = MetroTileTextSize.Small;
+                    icon.TileTextFontWeight = MetroTileTextWeight.Bold;
                     icon.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
                     m_filesPanel.Controls.Add(icon);
                 }
 
                 y = btn.Bottom;
             }
-        }
-
-        public void OpenEditFile(string path, int line = -1)
-        {
-            MainForm mainForm = FindForm() as MainForm;
-            if (mainForm == null || mainForm.SettingsModel == null || mainForm.ProjectModel == null)
-                return;
-
-            string cbExe = mainForm.SettingsModel.CodeBlocksIdePath + @"\codeblocks.exe";
-            if (!File.Exists(cbExe))
-            {
-                MetroMessageBox.Show(mainForm, "Code::Blocks executable not found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            Process proc = new Process();
-            ProcessStartInfo info = new ProcessStartInfo();
-            info.WorkingDirectory = Path.GetFullPath(mainForm.ProjectModel.WorkingDirectory);
-            info.FileName = Path.GetFullPath(cbExe);
-            info.Arguments = "--file=\"" + path + "\":" + (line < 0 ? "" : line.ToString()) + " " + mainForm.ProjectModel.CbpPath;
-            proc.StartInfo = info;
-            proc.Start();
         }
 
         #endregion
@@ -175,7 +157,7 @@ namespace ZasuvkaPtakopyska
                 {
                     DialogResult result = MetroMessageBox.Show(mainForm, "Open created component file?", "Open component", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (result == DialogResult.Yes)
-                        OpenEditFile(hPath);
+                        mainForm.OpenEditFile(hPath);
                 }
             }
         }
@@ -226,9 +208,10 @@ namespace ZasuvkaPtakopyska
         
         private void btn_Click(object sender, EventArgs e)
         {
+            MainForm mainForm = FindForm() as MainForm;
             MetroButton btn = sender as MetroButton;
-            if (btn != null)
-                OpenEditFile(btn.Tag as string);
+            if (mainForm != null && btn != null)
+                mainForm.OpenEditFile(btn.Tag as string);
         }
 
         #endregion

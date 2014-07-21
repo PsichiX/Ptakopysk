@@ -4,13 +4,14 @@ using System.Windows.Forms;
 using MetroFramework.Controls;
 using MetroFramework.Animation;
 using MetroFramework.Components;
+using ZasuvkaPtakopyskaExtender;
 
 namespace ZasuvkaPtakopyska
 {
     public partial class MetroSidePanel : MetroUserControl
     {
         #region Public Static Data.
-        
+
         public static readonly int ROLLED_PART_SIZE = 24;
 
         #endregion
@@ -37,6 +38,7 @@ namespace ZasuvkaPtakopyska
         private bool m_rolled = false;
         private Padding m_offsetPadding;
         private bool m_docked = false;
+        private bool m_dockable = true;
         private MoveAnimation m_moveAnim;
         private Control m_lastParent;
 
@@ -57,7 +59,7 @@ namespace ZasuvkaPtakopyska
             get { return m_docked; }
             set
             {
-                m_docked = value;
+                m_docked = m_dockable ? value : false;
                 m_dockTile.Image = m_docked ? m_undockImage : m_dockImage;
                 if (m_docked)
                     IsRolled = false;
@@ -68,6 +70,7 @@ namespace ZasuvkaPtakopyska
                     Undocked(this, new EventArgs());
             }
         }
+        public bool IsDockable { get { return m_dockable; } set { m_dockable = value; IsDocked = IsDocked; m_dockTile.Visible = m_dockable; } }
 
         #endregion
 
@@ -77,7 +80,9 @@ namespace ZasuvkaPtakopyska
 
         public event EventHandler Docked;
         public event EventHandler Undocked;
-        
+        public event EventHandler Rolled;
+        public event EventHandler Unrolled;
+
         #endregion
 
 
@@ -136,7 +141,7 @@ namespace ZasuvkaPtakopyska
         {
             m_moveAnim.Cancel();
             Location = CalculateTargetLocation(m_rolled, Location);
-            
+
             if (m_side == DockStyle.Left)
                 m_titleBar.TextAlign = ContentAlignment.MiddleRight;
             else if (m_side == DockStyle.Right)
@@ -147,14 +152,30 @@ namespace ZasuvkaPtakopyska
             if (m_side == DockStyle.Left)
             {
                 m_dockTile.Left = 0;
-                m_titleBar.Left = m_dockTile.Width + 4;
-                m_titleBar.Width = Width - Padding.Horizontal - m_dockTile.Width - 4;
+                if (m_dockable)
+                {
+                    m_titleBar.Left = m_dockTile.Width + 4;
+                    m_titleBar.Width = Width - Padding.Horizontal - m_dockTile.Width - 4;
+                }
+                else
+                {
+                    m_titleBar.Left = 0;
+                    m_titleBar.Width = Width - Padding.Horizontal;
+                }
             }
             else
             {
                 m_dockTile.Left = Width - Padding.Horizontal - m_dockTile.Width;
-                m_titleBar.Left = 0;
-                m_titleBar.Width = Width - Padding.Horizontal - m_dockTile.Width - 4;
+                if (m_dockable)
+                {
+                    m_titleBar.Left = 0;
+                    m_titleBar.Width = Width - Padding.Horizontal - m_dockTile.Width - 4;
+                }
+                else
+                {
+                    m_titleBar.Left = 0;
+                    m_titleBar.Width = Width - Padding.Horizontal;
+                }
             }
         }
 
@@ -177,6 +198,8 @@ namespace ZasuvkaPtakopyska
                 m_moveAnim.Start(this, pos, ROLLING_TRANSITION, ROLLING_DURATION);
             else
                 Location = pos;
+            if (Unrolled != null)
+                Unrolled(this, new EventArgs());
         }
 
         public void Roll()
@@ -188,6 +211,8 @@ namespace ZasuvkaPtakopyska
                 m_moveAnim.Start(this, pos, ROLLING_TRANSITION, ROLLING_DURATION);
             else
                 Location = pos;
+            if (Rolled != null)
+                Rolled(this, new EventArgs());
         }
 
         public void Toggle()
@@ -199,14 +224,18 @@ namespace ZasuvkaPtakopyska
                 m_moveAnim.Start(this, pos, ROLLING_TRANSITION, ROLLING_DURATION);
             else
                 Location = pos;
+            if (m_rolled && Rolled != null)
+                Rolled(this, new EventArgs());
+            else if (!m_rolled && Unrolled != null)
+                Unrolled(this, new EventArgs());
         }
 
         #endregion
 
-        
-        
+
+
         #region Private Functionality.
-        
+
         private Point CalculateTargetLocation(bool rolled, Point defaultLoc)
         {
             Size parentSize = Parent == null ? new Size() : Parent.Size;
@@ -236,10 +265,10 @@ namespace ZasuvkaPtakopyska
 
         #endregion
 
-        
-        
+
+
         #region Private Events Handlers.
-        
+
         private void SidePanelControl_Load(object sender, EventArgs e)
         {
             Apply();

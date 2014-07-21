@@ -7,6 +7,7 @@ using MetroFramework.Forms;
 using System.Drawing;
 using MetroFramework.Controls;
 using System.Windows.Forms;
+using ZasuvkaPtakopyskaExtender;
 
 namespace ZasuvkaPtakopyska
 {

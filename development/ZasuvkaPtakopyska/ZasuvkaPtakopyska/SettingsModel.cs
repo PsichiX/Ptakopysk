@@ -15,6 +15,10 @@ namespace ZasuvkaPtakopyska
         public FormWindowState WindowState { get; set; }
         public bool LeftPanelRolled { get; set; }
         public bool LeftPanelDocked { get; set; }
+        public bool RightPanelRolled { get; set; }
+        public bool RightPanelDocked { get; set; }
+        public bool BottomPanelRolled { get; set; }
+        public bool BottomPanelDocked { get; set; }
 
         #endregion
 
@@ -32,6 +36,10 @@ namespace ZasuvkaPtakopyska
             WindowState = FormWindowState.Normal;
             LeftPanelRolled = true;
             LeftPanelDocked = false;
+            RightPanelRolled = true;
+            RightPanelDocked = false;
+            BottomPanelRolled = true;
+            BottomPanelDocked = false;
         }
 
         #endregion

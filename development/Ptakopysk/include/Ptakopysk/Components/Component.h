@@ -56,10 +56,6 @@ namespace Ptakopysk
         void fromJson( const Json::Value& root );
         Json::Value toJson();
 
-        META_PROPERTY(
-            META_ATTR_DESCRIPTION( "Bit-flags that describes what kind of events this component is listen to." ),
-            META_ATTR_DEFAULT_VALUE( "0" )
-        )
         XeCore::Common::Property< Type, Component > TypeFlags;
 
         META_PROPERTY(
@@ -68,10 +64,6 @@ namespace Ptakopysk
         )
         XeCore::Common::Property< bool, Component > Active;
 
-        META_PROPERTY(
-            META_ATTR_DESCRIPTION( "GameObject that holds this component." ),
-            META_ATTR_DEFAULT_VALUE( "true" )
-        )
         XeCore::Common::Property< GameObject*, Component > Owner;
 
     protected:

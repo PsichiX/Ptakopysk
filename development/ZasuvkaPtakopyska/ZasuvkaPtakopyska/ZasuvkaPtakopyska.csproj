@@ -74,13 +74,22 @@
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="GameObjectPropertiesEditor.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="MetroPromptBox.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MetroTileIcon.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="OpenFileWithDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Program.cs" />
+    <Compile Include="ProjectFilesControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="ProjectManagerControl.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -92,6 +101,7 @@
     <Compile Include="RendererSurfaceControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="SceneModel.cs" />
     <Compile Include="ScenePageControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -102,10 +112,9 @@
     <Compile Include="MetroSidePanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="MetroSkinManager.cs" />
     <Compile Include="Utils.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -129,6 +138,13 @@
       <Project>{1568BFA1-47B1-4AF1-8DF1-5C95A3AD6237}</Project>
       <Name>PtakopyskMetaGenerator</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ZasuvkaPtakopyskaExtender\ZasuvkaPtakopyskaExtender.csproj">
+      <Project>{29F124A8-AA87-47DB-9AD2-AD9F5B98745B}</Project>
+      <Name>ZasuvkaPtakopyskaExtender</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="resources\icons\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

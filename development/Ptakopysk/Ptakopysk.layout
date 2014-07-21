@@ -1,6 +1,76 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Release Static" />
+	<File name="source\Components\TextRenderer.cpp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2172" topLine="54" />
+		</Cursor>
+	</File>
+	<File name="include\Ptakopysk\Components\TextRenderer.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2843" topLine="57" />
+		</Cursor>
+	</File>
+	<File name="source\Components\Transform.cpp" open="1" top="1" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1890" topLine="41" />
+		</Cursor>
+	</File>
+	<File name="include\Ptakopysk\Components\Transform.h" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1768" topLine="51" />
+		</Cursor>
+	</File>
+	<File name="include\Ptakopysk\Serialization\BitFieldSerializer.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="247" topLine="6" />
+		</Cursor>
+	</File>
+	<File name="source\Serialization\EnumSerializer.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="356" topLine="13" />
+		</Cursor>
+	</File>
+	<File name="include\Ptakopysk\Serialization\BlendModeSerializer.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="184" topLine="3" />
+		</Cursor>
+	</File>
+	<File name="source\Serialization\Serialized.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2353" topLine="67" />
+		</Cursor>
+	</File>
+	<File name="include\Ptakopysk\Serialization\EnumSerializer.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="429" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="source\Serialization\b2FilterSerializer.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="585" topLine="7" />
+		</Cursor>
+	</File>
+	<File name="include\Ptakopysk\Serialization\Serialized.h" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1463" topLine="34" />
+		</Cursor>
+	</File>
+	<File name="source\System\Assets.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="9747" topLine="304" />
+		</Cursor>
+	</File>
+	<File name="include\Ptakopysk\Serialization\Serialized.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="601" topLine="15" />
+		</Cursor>
+	</File>
+	<File name="source\System\Events.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="52" topLine="0" />
+		</Cursor>
+	</File>
 	<File name="include\Ptakopysk\Serialization\StyleSerializer.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="367" topLine="3" />
@@ -23,7 +93,7 @@
 	</File>
 	<File name="include\Ptakopysk\System\Assets.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2636" topLine="62" />
+			<Cursor1 position="643" topLine="11" />
 		</Cursor>
 	</File>
 	<File name="include\Ptakopysk\System\Events.h" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -51,14 +121,39 @@
 			<Cursor1 position="2610" topLine="66" />
 		</Cursor>
 	</File>
+	<File name="source\System\GameManager.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="17730" topLine="443" />
+		</Cursor>
+	</File>
+	<File name="include\Ptakopysk\System\Meta.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="221" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="source\System\GameObject.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5433" topLine="142" />
+		</Cursor>
+	</File>
 	<File name="include\Ptakopysk\System\RenderMaterial.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="2717" topLine="45" />
 		</Cursor>
 	</File>
+	<File name="source\System\RenderMaterial.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="4788" topLine="153" />
+		</Cursor>
+	</File>
 	<File name="include\Ptakopysk\System\Tween.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="4386" topLine="130" />
+		</Cursor>
+	</File>
+	<File name="source\System\Tween.cpp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="4241" topLine="170" />
 		</Cursor>
 	</File>
 	<File name="include\Ptakopysk\System\Tween.inl" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -68,142 +163,52 @@
 	</File>
 	<File name="source\Components\Body.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="8457" topLine="184" />
-		</Cursor>
-	</File>
-	<File name="source\Components\Camera.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1463" topLine="26" />
+			<Cursor1 position="3834" topLine="98" />
 		</Cursor>
 	</File>
 	<File name="include\Ptakopysk\Components\Body.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="215" topLine="1" />
+			<Cursor1 position="7317" topLine="137" />
 		</Cursor>
 	</File>
-	<File name="source\Components\Component.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="source\Components\Camera.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="736" topLine="0" />
+			<Cursor1 position="3537" topLine="108" />
 		</Cursor>
 	</File>
-	<File name="source\Components\RevoluteJoint.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="include\Ptakopysk\Components\Camera.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="3157" topLine="48" />
+			<Cursor1 position="2391" topLine="52" />
+		</Cursor>
+	</File>
+	<File name="source\Components\Component.cpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1687" topLine="31" />
 		</Cursor>
 	</File>
 	<File name="include\Ptakopysk\Components\Component.h" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1779" topLine="45" />
+			<Cursor1 position="1872" topLine="52" />
 		</Cursor>
 	</File>
-	<File name="source\Components\SpriteRenderer.cpp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="source\Components\RevoluteJoint.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="920" topLine="20" />
+			<Cursor1 position="3099" topLine="67" />
 		</Cursor>
 	</File>
 	<File name="include\Ptakopysk\Components\RevoluteJoint.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="3528" topLine="59" />
+			<Cursor1 position="5001" topLine="97" />
 		</Cursor>
 	</File>
-	<File name="source\Components\TextRenderer.cpp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="source\Components\SpriteRenderer.cpp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1332" topLine="8" />
+			<Cursor1 position="4263" topLine="118" />
 		</Cursor>
 	</File>
 	<File name="include\Ptakopysk\Components\SpriteRenderer.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="3546" topLine="69" />
-		</Cursor>
-	</File>
-	<File name="source\Components\Transform.cpp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="4102" topLine="110" />
-		</Cursor>
-	</File>
-	<File name="include\Ptakopysk\Components\TextRenderer.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2874" topLine="62" />
-		</Cursor>
-	</File>
-	<File name="include\Ptakopysk\Components\Transform.h" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2372" topLine="57" />
-		</Cursor>
-	</File>
-	<File name="source\Serialization\EnumSerializer.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="356" topLine="13" />
-		</Cursor>
-	</File>
-	<File name="source\System\GameObject.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="18630" topLine="535" />
-		</Cursor>
-	</File>
-	<File name="include\Ptakopysk\Serialization\BitFieldSerializer.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="247" topLine="6" />
-		</Cursor>
-	</File>
-	<File name="source\Serialization\Serialized.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3024" topLine="76" />
-		</Cursor>
-	</File>
-	<File name="source\System\RenderMaterial.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="4788" topLine="153" />
-		</Cursor>
-	</File>
-	<File name="include\Ptakopysk\Serialization\BlendModeSerializer.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="184" topLine="3" />
-		</Cursor>
-	</File>
-	<File name="source\Serialization\b2FilterSerializer.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="585" topLine="7" />
-		</Cursor>
-	</File>
-	<File name="source\System\Tween.cpp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="4241" topLine="170" />
-		</Cursor>
-	</File>
-	<File name="include\Ptakopysk\Serialization\EnumSerializer.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="429" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="source\System\Assets.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="9054" topLine="273" />
-		</Cursor>
-	</File>
-	<File name="include\Ptakopysk\System\Meta.h" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="221" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="include\Ptakopysk\Serialization\Serialized.h" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1463" topLine="34" />
-		</Cursor>
-	</File>
-	<File name="source\System\Events.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="52" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="include\Ptakopysk\Serialization\Serialized.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="601" topLine="15" />
-		</Cursor>
-	</File>
-	<File name="source\System\GameManager.cpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="11846" topLine="301" />
+			<Cursor1 position="2825" topLine="65" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

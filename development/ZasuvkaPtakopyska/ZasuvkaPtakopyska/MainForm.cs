@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using PtakopyskMetaGenerator;
 using System.Threading.Tasks;
+using ZasuvkaPtakopyskaExtender;
+using System.Diagnostics;
 
 namespace ZasuvkaPtakopyska
 {
@@ -34,6 +36,8 @@ namespace ZasuvkaPtakopyska
         #region Private Static Data.
 
         private static readonly string DEFAULT_APP_TITLE = "Zásuvka Ptakopyska";
+        private static readonly string APP_CODE_BLOCKS = "Code::Blocks";
+        private static readonly string APP_SCENE_EDITOR = "Scene Editor";
 
         #endregion
 
@@ -50,11 +54,13 @@ namespace ZasuvkaPtakopyska
         private SettingsPageControl m_settingsPage;
         private MetroSidePanel m_leftPanel;
         private ProjectManagerControl m_projectManagerPanel;
+        private ProjectFilesControl m_projectFilesPanel;
         private MetroSidePanel m_rightPanel;
         private MetroSidePanel m_bottomPanel;
 
         private string m_appTitleExtended;
-        private FileSystemWatcher m_fileSystemWatcher;
+        private FileSystemWatcher m_projectFileSystemWatcher;
+        private FileSystemWatcher m_sdkFileSystemWatcher;
         private volatile bool m_isActive = false;
         private List<Action> m_actionsQueue = new List<Action>();
         private bool m_settingsValidated = false;
@@ -81,6 +87,7 @@ namespace ZasuvkaPtakopyska
         public string AppTitleExtended { get { return m_appTitleExtended; } set { m_appTitleExtended = value; RefreshAppTitle(); } }
         public ProjectModel ProjectModel { get { return m_projectPage == null ? null : m_projectPage.ProjectModel; } }
         public SettingsModel SettingsModel { get { return m_settingsPage == null ? null : m_settingsPage.SettingsModel; } }
+        public ProjectFilesControl ProjectFilesViewer { get { return m_projectFilesPanel; } }
 
         #endregion
 
@@ -100,12 +107,18 @@ namespace ZasuvkaPtakopyska
             Size = new Size(800, 600);
             RefreshAppTitle();
 
-            m_fileSystemWatcher = new FileSystemWatcher();
-            m_fileSystemWatcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
-            m_fileSystemWatcher.Changed += new FileSystemEventHandler(m_fileSystemWatcher_Changed);
-            m_fileSystemWatcher.Created += new FileSystemEventHandler(m_fileSystemWatcher_Created);
-            m_fileSystemWatcher.Deleted += new FileSystemEventHandler(m_fileSystemWatcher_Deleted);
-            m_fileSystemWatcher.Renamed += new RenamedEventHandler(m_fileSystemWatcher_Renamed);
+            m_projectFileSystemWatcher = new FileSystemWatcher();
+            m_projectFileSystemWatcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
+            m_projectFileSystemWatcher.Changed += new FileSystemEventHandler(m_fileSystemWatcher_Changed);
+            m_projectFileSystemWatcher.Created += new FileSystemEventHandler(m_fileSystemWatcher_Created);
+            m_projectFileSystemWatcher.Deleted += new FileSystemEventHandler(m_fileSystemWatcher_Deleted);
+            m_projectFileSystemWatcher.Renamed += new RenamedEventHandler(m_fileSystemWatcher_Renamed);
+            m_sdkFileSystemWatcher = new FileSystemWatcher();
+            m_sdkFileSystemWatcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
+            m_sdkFileSystemWatcher.Changed += new FileSystemEventHandler(m_fileSystemWatcher_Changed);
+            m_sdkFileSystemWatcher.Created += new FileSystemEventHandler(m_fileSystemWatcher_Created);
+            m_sdkFileSystemWatcher.Deleted += new FileSystemEventHandler(m_fileSystemWatcher_Deleted);
+            m_sdkFileSystemWatcher.Renamed += new RenamedEventHandler(m_fileSystemWatcher_Renamed);
 
             InitializeMainPanel();
         }
@@ -155,23 +168,56 @@ namespace ZasuvkaPtakopyska
             }
         }
 
-        public void WatchProjectFileSystem()
+        public void ExploreGameObjectProperties(SceneModel.GameObject model)
         {
-            if (ProjectModel == null)
+            if (m_rightPanel == null)
                 return;
 
-            m_fileSystemWatcher.Path = ProjectModel.WorkingDirectory;
-            m_fileSystemWatcher.EnableRaisingEvents = true;
+            m_rightPanel.Content.Controls.Clear();
+
+            if (model == null)
+                return;
+
+            GameObjectPropertiesEditor editor = new GameObjectPropertiesEditor(model);
+            editor.Dock = DockStyle.Fill;
+            m_rightPanel.Content.Controls.Add(editor);
+            m_rightPanel.Unroll();
+        }
+
+        public void WatchProjectFileSystem()
+        {
+            UnwatchProjectFileSystem();
+            if (ProjectModel == null || !Directory.Exists(ProjectModel.WorkingDirectory))
+                return;
+
+            m_projectFileSystemWatcher.Path = ProjectModel.WorkingDirectory;
+            m_projectFileSystemWatcher.EnableRaisingEvents = true;
         }
 
         public void UnwatchProjectFileSystem()
         {
-            m_fileSystemWatcher.EnableRaisingEvents = false; ;
+            m_projectFileSystemWatcher.EnableRaisingEvents = false;
+        }
+
+        public void WatchSdkFileSystem()
+        {
+            UnwatchSdkFileSystem();
+            if (SettingsModel == null || !Directory.Exists(SettingsModel.SdkPath))
+                return;
+
+            m_sdkFileSystemWatcher.Path = SettingsModel.SdkPath + @"\include\Ptakopysk";
+            m_sdkFileSystemWatcher.EnableRaisingEvents = true;
+        }
+
+        public void UnwatchSdkFileSystem()
+        {
+            m_projectFileSystemWatcher.EnableRaisingEvents = false;
         }
 
         public void InitializeGameEditorPages()
         {
             WatchProjectFileSystem();
+            WatchSdkFileSystem();
 
             InitializeScenePage();
             InitializeBuildPage();
@@ -181,6 +227,7 @@ namespace ZasuvkaPtakopyska
         public void DeinitializeGameEditorPages()
         {
             UnwatchProjectFileSystem();
+            UnwatchSdkFileSystem();
 
             if (m_scenePage != null)
             {
@@ -237,11 +284,31 @@ namespace ZasuvkaPtakopyska
             }
         }
 
-        public void GenerateMetaFiles()
+        public void LoadMetaFilesFrom(string dir)
+        {
+            DirectoryInfo info = new DirectoryInfo(dir);
+            DirectoryInfo[] dirs = info.GetDirectories();
+            if (dirs != null && dirs.Length > 0)
+                foreach (DirectoryInfo d in dirs)
+                    LoadMetaFilesFrom(d.FullName);
+            FileInfo[] files = info.GetFiles("*.meta");
+            if (files != null && files.Length > 0)
+                foreach (FileInfo f in files)
+                    DoAction(new Action("LoadMetaData", f.FullName.Substring(0, f.FullName.Length - 5)));
+        }
+
+        public void LoadSdkMetaFiles()
+        {
+            if (SettingsModel != null)
+                LoadMetaFilesFrom(SettingsModel.SdkPath + @"\include\Ptakopysk");
+        }
+
+        public void GenerateProjectMetaFiles()
         {
             if (ProjectModel == null)
                 return;
 
+            ProjectModel.MetaComponentPaths.Clear();
             foreach (string file in ProjectModel.Files)
                 GenerateMetaFile(file);
         }
@@ -283,6 +350,60 @@ namespace ZasuvkaPtakopyska
             DoAction(new Action("LoadMetaData", newPath));
         }
 
+        public void OpenEditFile(string path, int line = -1)
+        {
+            if (SettingsModel == null || ProjectModel == null)
+                return;
+
+            string ext = Path.GetExtension(path);
+            OpenFileWithDialog dialog = null;
+            if (ext == ".h" || ext == ".cpp")
+                dialog = new OpenFileWithDialog(APP_CODE_BLOCKS, "Default Code Editor");
+            else if (ext == ".json")
+                dialog = new OpenFileWithDialog(APP_SCENE_EDITOR, "Default JSON Editor");
+            else
+                dialog = new OpenFileWithDialog();
+            DialogResult result = dialog.OptionsCount > 0 ? dialog.ShowDialog() : DialogResult.OK;
+
+            if (result == DialogResult.OK)
+            {
+                if (dialog.ResultOption == APP_CODE_BLOCKS)
+                {
+                    string cbExe = SettingsModel.CodeBlocksIdePath + @"\codeblocks.exe";
+                    if (!File.Exists(cbExe))
+                    {
+                        MetroFramework.MetroMessageBox.Show(this, "Code::Blocks executable not found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    Process proc = new Process();
+                    ProcessStartInfo info = new ProcessStartInfo();
+                    info.WorkingDirectory = Path.GetFullPath(ProjectModel.WorkingDirectory);
+                    info.FileName = Path.GetFullPath(cbExe);
+                    info.Arguments = "--file=\"" + path + "\":" + (line < 0 ? "" : line.ToString()) + " " + ProjectModel.CbpPath;
+                    proc.StartInfo = info;
+                    proc.Start();
+                }
+                else if (dialog.ResultOption == APP_SCENE_EDITOR)
+                {
+                    if (m_scenePage != null)
+                        if (m_scenePage.OpenScene(path))
+                            SelectTabPage(TAB_NAME_SCENE);
+                }
+                else
+                {
+                    try
+                    {
+                        Process.Start(path);
+                    }
+                    catch (Exception ex)
+                    {
+                        MetroFramework.MetroMessageBox.Show(this, "Cannot open file: \"" + path + "\"!\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
         #endregion
 
 
@@ -314,8 +435,8 @@ namespace ZasuvkaPtakopyska
 
             // sub-panels.
             InitializeLeftPanel();
-            //InitializeRightPanel();
-            //InitializeBottomPanel();
+            InitializeRightPanel();
+            InitializeBottomPanel();
         }
 
         private void InitializeLeftPanel()
@@ -350,6 +471,8 @@ namespace ZasuvkaPtakopyska
             m_rightPanel.OffsetPadding = new Padding(0, 38, 0, 24);
             m_rightPanel.Width = 250;
             m_rightPanel.Height = m_mainPanel.Height;
+            m_rightPanel.Docked += new EventHandler(sidePanel_DockUndock);
+            m_rightPanel.Undocked += new EventHandler(sidePanel_DockUndock);
             m_mainPanel.Controls.Add(m_rightPanel);
             m_rightPanel.BringToFront();
         }
@@ -358,14 +481,20 @@ namespace ZasuvkaPtakopyska
         {
             m_bottomPanel = new MetroSidePanel();
             MetroSkinManager.ApplyMetroStyle(m_bottomPanel);
-            m_bottomPanel.Text = "Custom Actions";
+            m_bottomPanel.Text = "Project Files";
             m_bottomPanel.Side = DockStyle.Bottom;
             m_bottomPanel.IsRolled = true;
             m_bottomPanel.AnimatedRolling = false;
-            m_bottomPanel.Height = 250;
+            m_bottomPanel.Height = 200;
             m_bottomPanel.Width = m_mainPanel.Width;
+            m_bottomPanel.Docked += new EventHandler(sidePanel_DockUndock);
+            m_bottomPanel.Undocked += new EventHandler(sidePanel_DockUndock);
             m_mainPanel.Controls.Add(m_bottomPanel);
             m_bottomPanel.BringToFront();
+
+            m_projectFilesPanel = new ProjectFilesControl();
+            m_projectFilesPanel.Dock = DockStyle.Fill;
+            m_bottomPanel.Content.Controls.Add(m_projectFilesPanel);
         }
 
         private void InitializeWelcomePage()
@@ -521,7 +650,9 @@ namespace ZasuvkaPtakopyska
                 if (ProjectModel != null)
                 {
                     ProjectModel.UpdateFromCbp();
-                    Parallel.Invoke(() => GenerateMetaFiles());
+                    MetaComponentsManager.Instance.UnregisterAllMetaComponents();
+                    Parallel.Invoke(() => LoadSdkMetaFiles());
+                    Parallel.Invoke(() => GenerateProjectMetaFiles());
                     if (m_buildPage != null)
                         m_buildPage.RefreshContent();
                     if (m_projectManagerPanel != null)
@@ -539,9 +670,13 @@ namespace ZasuvkaPtakopyska
                     {
                         string json = File.ReadAllText(metaPath);
                         MetaComponent meta = Newtonsoft.Json.JsonConvert.DeserializeObject<MetaComponent>(json);
-                        ProjectModel.MetaComponents.Remove(path);
+                        MetaComponentsManager.Instance.UnregisterMetaComponent(meta);
+                        ProjectModel.MetaComponentPaths.Remove(path);
                         if (meta != null)
-                            ProjectModel.MetaComponents.Add(path, meta);
+                        {
+                            MetaComponentsManager.Instance.RegisterMetaComponent(meta);
+                            ProjectModel.MetaComponentPaths.Add(path, meta);
+                        }
                     }
                     if (m_projectManagerPanel != null)
                         m_projectManagerPanel.RebuildList();
@@ -550,10 +685,11 @@ namespace ZasuvkaPtakopyska
             else if (action.Id == "RemoveMetaData" && action.Params != null && action.Params.Length > 0)
             {
                 string path = action.Params[0] as string;
-                if (!String.IsNullOrEmpty(path) && ProjectModel != null)
+                if (!String.IsNullOrEmpty(path) && ProjectModel != null && ProjectModel.MetaComponentPaths.ContainsKey(path))
                 {
                     Console.WriteLine(">>> Remove meta-data for: " + path);
-                    ProjectModel.MetaComponents.Remove(path);
+                    MetaComponentsManager.Instance.UnregisterMetaComponent(ProjectModel.MetaComponentPaths[path]);
+                    ProjectModel.MetaComponentPaths.Remove(path);
                     if (m_projectManagerPanel != null)
                         m_projectManagerPanel.RebuildList();
                 }
@@ -578,6 +714,16 @@ namespace ZasuvkaPtakopyska
                     m_leftPanel.IsRolled = SettingsModel.LeftPanelRolled;
                     m_leftPanel.IsDocked = SettingsModel.LeftPanelDocked;
                 }
+                if (m_rightPanel != null)
+                {
+                    m_rightPanel.IsRolled = SettingsModel.RightPanelRolled;
+                    m_rightPanel.IsDocked = SettingsModel.RightPanelDocked;
+                }
+                if (m_bottomPanel != null)
+                {
+                    m_bottomPanel.IsRolled = SettingsModel.BottomPanelRolled;
+                    m_bottomPanel.IsDocked = SettingsModel.BottomPanelDocked;
+                }
             }
 
             ValidateSettings();
@@ -595,6 +741,16 @@ namespace ZasuvkaPtakopyska
                 {
                     SettingsModel.LeftPanelRolled = m_leftPanel.IsRolled;
                     SettingsModel.LeftPanelDocked = m_leftPanel.IsDocked;
+                }
+                if (m_rightPanel != null)
+                {
+                    SettingsModel.RightPanelRolled = m_rightPanel.IsRolled;
+                    SettingsModel.RightPanelDocked = m_rightPanel.IsDocked;
+                }
+                if (m_bottomPanel != null)
+                {
+                    SettingsModel.BottomPanelRolled = m_bottomPanel.IsRolled;
+                    SettingsModel.BottomPanelDocked = m_bottomPanel.IsDocked;
                 }
             }
         }

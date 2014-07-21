@@ -64,10 +64,6 @@ namespace Ptakopysk
         )
         XeCore::Common::Property< sf::FloatRect, Camera > Viewport;
 
-        META_PROPERTY(
-            META_ATTR_DESCRIPTION( "RenderTexture target of rendering process." ),
-            META_ATTR_DEFAULT_VALUE( "null" )
-        )
         XeCore::Common::Property< sf::RenderTexture*, Camera > TargetTexture;
 
         META_PROPERTY(
