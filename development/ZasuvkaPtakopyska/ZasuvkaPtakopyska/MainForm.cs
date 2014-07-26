@@ -10,6 +10,8 @@ using PtakopyskMetaGenerator;
 using System.Threading.Tasks;
 using ZasuvkaPtakopyskaExtender;
 using System.Diagnostics;
+using ZasuvkaPtakopyskaExtender.Editors;
+using System.Reflection;
 
 namespace ZasuvkaPtakopyska
 {
@@ -121,6 +123,9 @@ namespace ZasuvkaPtakopyska
             m_sdkFileSystemWatcher.Renamed += new RenamedEventHandler(m_fileSystemWatcher_Renamed);
 
             InitializeMainPanel();
+
+            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+                PropertyEditorsManager.Instance.RegisterPropertyEditorsFromAssembly(assembly);
         }
 
         #endregion
@@ -628,7 +633,7 @@ namespace ZasuvkaPtakopyska
             return true;
         }
 
-        private void UpdateTabsLayout()
+        private void UpdateLayout()
         {
             int left = m_leftPanel != null && m_leftPanel.IsDocked ? m_leftPanel.Width - MetroSidePanel.ROLLED_PART_SIZE : 0;
             int right = m_rightPanel != null && m_rightPanel.IsDocked ? m_rightPanel.Width - MetroSidePanel.ROLLED_PART_SIZE : 0;
@@ -637,6 +642,16 @@ namespace ZasuvkaPtakopyska
             m_mainPanelTabs.Top = m_mainPanel.Padding.Top;
             m_mainPanelTabs.Width = m_mainPanel.Width - m_mainPanel.Padding.Horizontal - left - right;
             m_mainPanelTabs.Height = m_mainPanel.Height - m_mainPanel.Padding.Vertical - bottom;
+            Padding p = m_leftPanel.OffsetPadding;
+            p.Bottom = bottom + MetroSidePanel.ROLLED_PART_SIZE;
+            m_leftPanel.OffsetPadding = p;
+            m_leftPanel.Fit();
+            m_leftPanel.Apply();
+            p = m_rightPanel.OffsetPadding;
+            p.Bottom = bottom + MetroSidePanel.ROLLED_PART_SIZE;
+            m_rightPanel.OffsetPadding = p;
+            m_rightPanel.Fit();
+            m_rightPanel.Apply();
         }
 
         private void OnAction(Action action)
@@ -646,7 +661,7 @@ namespace ZasuvkaPtakopyska
 
             if (action.Id == "CbpChanged")
             {
-                Console.WriteLine(">>> CBP project file changed");
+                Console.WriteLine("CBP project file changed!");
                 if (ProjectModel != null)
                 {
                     ProjectModel.UpdateFromCbp();
@@ -664,7 +679,7 @@ namespace ZasuvkaPtakopyska
                 string path = action.Params[0] as string;
                 if (!String.IsNullOrEmpty(path) && ProjectModel != null)
                 {
-                    Console.WriteLine(">>> Load meta-data for: " + path);
+                    Console.WriteLine("Load meta-data for: \"{0}\"", path);
                     string metaPath = path + ".meta";
                     if (File.Exists(metaPath))
                     {
@@ -676,6 +691,9 @@ namespace ZasuvkaPtakopyska
                         {
                             MetaComponentsManager.Instance.RegisterMetaComponent(meta);
                             ProjectModel.MetaComponentPaths.Add(path, meta);
+                            foreach (MetaProperty prop in meta.Properties)
+                                if(PropertyEditorsManager.Instance.FindPropertyEditorByValueType(prop.ValueType) == null)
+                                    Console.WriteLine("Property editor for type: \"{0}\" (component: \"{1}\", property: \"{2}\") not found!", prop.ValueType, meta.Name, prop.Name);
                         }
                     }
                     if (m_projectManagerPanel != null)
@@ -687,7 +705,7 @@ namespace ZasuvkaPtakopyska
                 string path = action.Params[0] as string;
                 if (!String.IsNullOrEmpty(path) && ProjectModel != null && ProjectModel.MetaComponentPaths.ContainsKey(path))
                 {
-                    Console.WriteLine(">>> Remove meta-data for: " + path);
+                    Console.WriteLine("Remove meta-data for: \"{0}\"", path);
                     MetaComponentsManager.Instance.UnregisterMetaComponent(ProjectModel.MetaComponentPaths[path]);
                     ProjectModel.MetaComponentPaths.Remove(path);
                     if (m_projectManagerPanel != null)
@@ -842,7 +860,7 @@ namespace ZasuvkaPtakopyska
 
         private void sidePanel_DockUndock(object sender, EventArgs e)
         {
-            UpdateTabsLayout();
+            UpdateLayout();
         }
 
         #endregion

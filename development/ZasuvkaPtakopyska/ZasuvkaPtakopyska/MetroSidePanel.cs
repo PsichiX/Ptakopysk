@@ -50,10 +50,10 @@ namespace ZasuvkaPtakopyska
 
         public override string Text { get { return m_titleBar.Text; } set { m_titleBar.Text = value; } }
         public MetroPanel Content { get { return m_content; } }
-        public DockStyle Side { get { return m_side; } set { m_side = value; Apply(); } }
+        public DockStyle Side { get { return m_side; } set { m_side = value; Fit(); Apply(); } }
         public bool IsRolled { get { return m_rolled; } set { m_rolled = value; if (!m_docked && m_rolled) Roll(); else Unroll(); } }
         public bool AnimatedRolling { get; set; }
-        public Padding OffsetPadding { get { return m_offsetPadding; } set { m_offsetPadding = value; Apply(); } }
+        public Padding OffsetPadding { get { return m_offsetPadding; } set { m_offsetPadding = value; Fit(); Apply(); } }
         public bool IsDocked
         {
             get { return m_docked; }
@@ -63,6 +63,7 @@ namespace ZasuvkaPtakopyska
                 m_dockTile.Image = m_docked ? m_undockImage : m_dockImage;
                 if (m_docked)
                     IsRolled = false;
+                Fit();
                 Apply();
                 if (m_docked && Docked != null)
                     Docked(this, new EventArgs());
@@ -128,6 +129,7 @@ namespace ZasuvkaPtakopyska
             Load += new EventHandler(SidePanelControl_Load);
             ParentChanged += new EventHandler(SidePanelControl_ParentChanged);
 
+            Fit();
             Apply();
         }
 
@@ -204,6 +206,7 @@ namespace ZasuvkaPtakopyska
 
         public void Roll()
         {
+            Fit();
             Apply();
             m_rolled = true;
             Point pos = CalculateTargetLocation(m_rolled, Location);
@@ -217,6 +220,7 @@ namespace ZasuvkaPtakopyska
 
         public void Toggle()
         {
+            Fit();
             Apply();
             m_rolled = !m_rolled;
             Point pos = CalculateTargetLocation(m_rolled, Location);
@@ -271,6 +275,7 @@ namespace ZasuvkaPtakopyska
 
         private void SidePanelControl_Load(object sender, EventArgs e)
         {
+            Fit();
             Apply();
         }
 

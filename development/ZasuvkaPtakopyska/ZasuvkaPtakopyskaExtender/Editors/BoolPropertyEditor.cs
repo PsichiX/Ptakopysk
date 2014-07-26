@@ -1,5 +1,6 @@
 ﻿using System;
 using MetroFramework.Controls;
+using System.Collections.Generic;
 
 namespace ZasuvkaPtakopyskaExtender.Editors
 {
@@ -10,6 +11,22 @@ namespace ZasuvkaPtakopyskaExtender.Editors
 
         public BoolPropertyEditor(object propertyOwner, string propertyName)
             : base(propertyOwner, propertyName, false)
+        {
+            InitializeComponent();
+        }
+
+        public BoolPropertyEditor(Dictionary<string, object> properties, string propertyName)
+            : base(properties, propertyName, false)
+        {
+            InitializeComponent();
+        }
+
+        public override void UpdateEditorValue()
+        {
+            m_toggle.Checked = Value;
+        }
+
+        private void InitializeComponent()
         {
             m_toggle = new MetroToggle();
             MetroSkinManager.ApplyMetroStyle(m_toggle);

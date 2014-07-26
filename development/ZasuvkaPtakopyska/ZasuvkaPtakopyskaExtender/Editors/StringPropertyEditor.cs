@@ -1,18 +1,34 @@
 ﻿using System;
 using MetroFramework.Controls;
 using System.Windows.Forms;
-using System.Reflection;
+using System.Collections.Generic;
 
 namespace ZasuvkaPtakopyskaExtender.Editors
 {
-    [PtakopyskPropertyEditor("string")]
     [PtakopyskPropertyEditor("std::string")]
+    [PtakopyskPropertyEditor("string", TypePriority = 1)]
     public class StringPropertyEditor : PropertyEditor<string>
     {
         private MetroTextBox m_textBox;
 
         public StringPropertyEditor(object propertyOwner, string propertyName)
             : base(propertyOwner, propertyName, "")
+        {
+            InitializeComponent();
+        }
+
+        public StringPropertyEditor(Dictionary<string, object> properties, string propertyName)
+            : base(properties, propertyName, "")
+        {
+            InitializeComponent();
+        }
+
+        public override void UpdateEditorValue()
+        {
+            m_textBox.Text = Value;
+        }
+
+        private void InitializeComponent()
         {
             m_textBox = new MetroTextBox();
             MetroSkinManager.ApplyMetroStyle(m_textBox);

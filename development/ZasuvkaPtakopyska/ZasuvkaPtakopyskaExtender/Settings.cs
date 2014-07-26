@@ -1,0 +1,3 @@
+﻿using ZasuvkaPtakopyskaExtender;
+
+[assembly:ZasuvkaPtakopyskaExtender]

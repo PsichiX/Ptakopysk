@@ -47,23 +47,25 @@ namespace ZasuvkaPtakopyskaExtender.Editors
 
         public bool RegisterPropertyEditor<T>(string valueType) where T : PropertyEditor<T>
         {
-            if (String.IsNullOrEmpty(valueType))
+            if (valueType == null)
                 return false;
 
             Type t = typeof(T);
-            if (m_editors.ContainsValue(t))
+            if (m_editors.ContainsKey(valueType))
                 return false;
 
             m_editors.Add(valueType, t);
+            Console.WriteLine("Register property editor: \"{0}\" for type: {1}", t.FullName, valueType);
             return true;
         }
 
         public bool RegisterPropertyEditor(string valueType, Type type)
         {
-            if (type == null || String.IsNullOrEmpty(valueType) || m_editors.ContainsValue(type))
+            if (type == null || valueType == null || m_editors.ContainsKey(valueType))
                 return false;
 
             m_editors.Add(valueType, type);
+            Console.WriteLine("Register property editor: \"{0}\" for type: {1}", type.FullName, valueType);
             return true;
         }
 

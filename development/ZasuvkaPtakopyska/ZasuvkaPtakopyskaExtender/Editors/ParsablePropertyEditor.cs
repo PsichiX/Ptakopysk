@@ -2,6 +2,7 @@
 using MetroFramework.Controls;
 using System.Windows.Forms;
 using System.Reflection;
+using System.Collections.Generic;
 
 namespace ZasuvkaPtakopyskaExtender.Editors
 {
@@ -11,6 +12,22 @@ namespace ZasuvkaPtakopyskaExtender.Editors
 
         public ParsablePropertyEditor(object propertyOwner, string propertyName, T defaultValue)
             : base(propertyOwner, propertyName, defaultValue)
+        {
+            InitializeComponent();
+        }
+
+        public ParsablePropertyEditor(Dictionary<string, object> properties, string propertyName, T defaultValue)
+            : base(properties, propertyName, defaultValue)
+        {
+            InitializeComponent();
+        }
+
+        public override void UpdateEditorValue()
+        {
+            m_textBox.Text = Value.ToString();
+        }
+
+        private void InitializeComponent()
         {
             m_textBox = new MetroTextBox();
             MetroSkinManager.ApplyMetroStyle(m_textBox);

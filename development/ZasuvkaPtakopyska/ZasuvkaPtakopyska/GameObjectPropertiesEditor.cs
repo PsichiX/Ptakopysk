@@ -32,18 +32,19 @@ namespace ZasuvkaPtakopyska
         public GameObjectPropertiesEditor(SceneModel.GameObject model)
         {
             if (model == null)
-                throw new ArgumentNullException("Ptakopysk Component model cannot be null!");
+                throw new ArgumentNullException("Game Object model cannot be null!");
 
             m_model = model;
             if (m_model.properties == null)
                 m_model.properties = new SceneModel.GameObject.Properties();
 
             MetroSkinManager.ApplyMetroStyle(this);
-            AutoScroll = true;
-
+            
             int y = DEFAULT_SEPARATOR;
             y = InitializePropertiesSection(y);
             y = InitializeComponentsSection(y);
+            
+            AutoScroll = true;
         }
 
         #endregion
@@ -109,7 +110,7 @@ namespace ZasuvkaPtakopyska
             MetroSkinManager.ApplyMetroStyle(btn);
             btn.Text = comp.type;
             btn.FontWeight = MetroButtonWeight.Bold;
-            btn.Top = y;
+            btn.Top = y + DEFAULT_SEPARATOR + DEFAULT_SEPARATOR + DEFAULT_SEPARATOR;
             btn.Width = Width;
             btn.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             Controls.Add(btn);
@@ -122,6 +123,62 @@ namespace ZasuvkaPtakopyska
             foreach (MetaProperty p in props)
             {
                 Type t = PropertyEditorsManager.Instance.FindPropertyEditorByValueType(p.ValueType);
+                if (t == null)
+                {
+                    string msg = string.Format("Property editor for type: \"{0}\" not found!", p.ValueType);
+                    ErrorPropertyEditor editor = new ErrorPropertyEditor(p.Name, msg);
+                    editor.UpdateEditorValue();
+                    editor.Top = y;
+                    editor.Width = Width;
+                    editor.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+                    Controls.Add(editor);
+                    y = editor.Bottom + DEFAULT_SEPARATOR;
+                }
+                else
+                    y = InitializePropertyFragment(comp, p, t, y);
+            }
+
+            return y;
+        }
+
+        private int InitializePropertyFragment(SceneModel.GameObject.Component component, MetaProperty property, Type editorType, int y)
+        {
+            if (component == null || property == null || editorType == null)
+                return y;
+
+            if (component.properties == null)
+                component.properties = new Dictionary<string, object>();
+
+            try
+            {
+                object obj = Activator.CreateInstance(editorType, component.properties, property.Name);
+                MetroUserControl editor = obj as MetroUserControl;
+                IEditorJsonValue jvEditor = editor as IEditorJsonValue;
+                if (editor != null && jvEditor != null)
+                {
+                    if (!component.properties.ContainsKey(property.Name))
+                    {
+                        jvEditor.JsonDefaultValue = property.DefaultValue;
+                        jvEditor.JsonValue = property.DefaultValue;
+                        jvEditor.UpdateEditorValue();
+                    }
+                    editor.Top = y;
+                    editor.Width = Width;
+                    editor.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+                    Controls.Add(editor);
+                    y = editor.Bottom + DEFAULT_SEPARATOR;
+                }
+            }
+            catch(Exception ex)
+            {
+                while (ex.InnerException != null)
+                    ex = ex.InnerException;
+                ErrorPropertyEditor editor = new ErrorPropertyEditor(property.Name, ex.Message);
+                editor.Top = y;
+                editor.Width = Width;
+                editor.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+                Controls.Add(editor);
+                y = editor.Bottom + DEFAULT_SEPARATOR;
             }
 
             return y;

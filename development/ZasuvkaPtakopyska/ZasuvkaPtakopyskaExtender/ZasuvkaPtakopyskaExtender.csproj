@@ -41,8 +41,12 @@
     <Reference Include="PtakopyskMetaGenerator">
       <HintPath>..\PtakopyskMetaGenerator\bin\Release\PtakopyskMetaGenerator.dll</HintPath>
     </Reference>
+    <Reference Include="sfmlnet-window-2">
+      <HintPath>..\..\requirements\SFML.Net\Managed\sfmlnet-window-2.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -52,6 +56,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Editors\BoolPropertyEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editors\ErrorPropertyEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editors\IEditorJsonValue.cs" />
+    <Compile Include="Editors\Vector2fPropertyEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Editors\FloatPropertyEditor.cs">
@@ -77,6 +88,8 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Editors\PropertyEditorsManager.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="ZasuvkaPtakopyskaExtenderAttribute.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
