@@ -21,10 +21,13 @@ namespace Ptakopysk
     , Color( this, &TextRenderer::getColor, &TextRenderer::setColor )
     , RenderStates( this, &TextRenderer::getRenderStates, &TextRenderer::setRenderStates )
     , Material( this, &TextRenderer::getMaterial, &TextRenderer::setMaterial )
+    , MaterialValidation( this, &TextRenderer::getMaterialValidation, &TextRenderer::setMaterialValidation )
     , m_renderStates( sf::RenderStates::Default )
+    , m_materialValidation( false )
     {
         serializableProperty( "RenderStates" );
         serializableProperty( "Material" );
+        serializableProperty( "MaterialValidation" );
         serializableProperty( "Font" );
         serializableProperty( "Size" );
         serializableProperty( "Style" );
@@ -75,6 +78,8 @@ namespace Ptakopysk
         }
         else if( property == "Material" )
             return m_material.serialize();
+        else if( property == "MaterialValidation" )
+            return Json::Value( m_materialValidation );
         else
             return Component::onSerialize( property );
     }
@@ -117,6 +122,8 @@ namespace Ptakopysk
         }
         else if( property == "Material" && root.isObject() )
             m_material.deserialize( root );
+        else if( property == "MaterialValidation" && root.isBool() )
+            m_materialValidation = root.asBool();
         else
             Component::onDeserialize( property, root );
     }
@@ -129,13 +136,14 @@ namespace Ptakopysk
         if( !XeCore::Common::IRtti::isDerived< TextRenderer >( dst ) )
             return;
         TextRenderer* c = (TextRenderer*)dst;
+        c->setMaterial( getMaterial() );
+        c->setMaterialValidation( getMaterialValidation() );
         c->setText( getText() );
         c->setFont( getFont() );
         c->setSize( getSize() );
         c->setStyle( getStyle() );
         c->setColor( getColor() );
         c->setRenderStates( getRenderStates() );
-        c->setMaterial( getMaterial() );
     }
 
     void TextRenderer::onTransform( const sf::Transform& inTrans, sf::Transform& outTrans )

@@ -12,7 +12,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
         private MetroTextBox m_textBox;
 
         public ErrorPropertyEditor(string propertyName, string errorMessage)
-            : base(null, propertyName, "")
+            : base(null, propertyName)
         {
             InitializeComponent(errorMessage);
         }
@@ -22,6 +22,8 @@ namespace ZasuvkaPtakopyskaExtender.Editors
             m_textBox = new MetroTextBox();
             MetroSkinManager.ApplyMetroStyle(m_textBox);
             m_textBox.ReadOnly = true;
+            m_textBox.DisplayIcon = true;
+            m_textBox.Icon = ZasuvkaPtakopyskaExtender.Properties.Resources.appbar_question;
             m_textBox.Text = message;
             m_textBox.Width = Width;
             m_textBox.Top = Height;
@@ -30,9 +32,23 @@ namespace ZasuvkaPtakopyskaExtender.Editors
             m_textBox.UseCustomForeColor = true;
             m_textBox.BackColor = Color.Red;
             m_textBox.ForeColor = Color.White;
+            m_textBox.Click += new EventHandler(m_textBox_Click);
             Controls.Add(m_textBox);
 
             Height += m_textBox.Height;
+        }
+
+        private void m_textBox_Click(object sender, EventArgs e)
+        {
+            MetroTextBox editor = sender as MetroTextBox;
+            if (editor == null)
+                return;
+
+            string text = Tag as string;
+            if (text == null)
+                text = m_textBox.Text;
+
+            MetroMessageBox.Show(FindForm(), text, "Property Editor Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }

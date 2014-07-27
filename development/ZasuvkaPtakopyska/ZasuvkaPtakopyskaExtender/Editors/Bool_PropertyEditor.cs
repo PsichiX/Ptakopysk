@@ -5,18 +5,18 @@ using System.Collections.Generic;
 namespace ZasuvkaPtakopyskaExtender.Editors
 {
     [PtakopyskPropertyEditor("bool")]
-    public class BoolPropertyEditor : PropertyEditor<bool>
+    public class Bool_PropertyEditor : PropertyEditor<bool>
     {
         private MetroToggle m_toggle;
 
-        public BoolPropertyEditor(object propertyOwner, string propertyName)
-            : base(propertyOwner, propertyName, false)
+        public Bool_PropertyEditor(object propertyOwner, string propertyName)
+            : base(propertyOwner, propertyName)
         {
             InitializeComponent();
         }
 
-        public BoolPropertyEditor(Dictionary<string, object> properties, string propertyName)
-            : base(properties, propertyName, false)
+        public Bool_PropertyEditor(Dictionary<string, object> properties, string propertyName)
+            : base(properties, propertyName)
         {
             InitializeComponent();
         }
@@ -30,7 +30,6 @@ namespace ZasuvkaPtakopyskaExtender.Editors
         {
             m_toggle = new MetroToggle();
             MetroSkinManager.ApplyMetroStyle(m_toggle);
-            m_toggle.Checked = Value;
             m_toggle.Top = Height;
             m_toggle.CheckedChanged += new EventHandler(m_toggle_CheckedChanged);
             Controls.Add(m_toggle);

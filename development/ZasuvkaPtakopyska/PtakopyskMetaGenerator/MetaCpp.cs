@@ -8,6 +8,7 @@ namespace PtakopyskMetaGenerator
         private static readonly string META_COMPONENT = "META_COMPONENT";
         private static readonly string META_PROPERTY = "META_PROPERTY";
         private static readonly string META_ATTR_NAME = "META_ATTR_NAME";
+        private static readonly string META_ATTR_VALUE_TYPE = "META_ATTR_VALUE_TYPE";
         private static readonly string META_ATTR_DESCRIPTION = "META_ATTR_DESCRIPTION";
         private static readonly string META_ATTR_DEFAULT_VALUE = "META_ATTR_DEFAULT_VALUE";
         private static readonly string XECORE_COMMON_PROPERTY = "XeCore::Common::Property";
@@ -287,44 +288,67 @@ namespace PtakopyskMetaGenerator
                                 int i = 0;
                                 do
                                 {
-                                    if (HasRuleWithValue(declCont[i], RULE_NAME_IDENTIFIER, META_PROPERTY) && i + 8 < declCont.Count)
+                                    if (HasRuleWithValue(declCont[i], RULE_NAME_IDENTIFIER, META_PROPERTY) && i + 3 < declCont.Count)
                                     {
                                         if (HasRuleWithValue(declCont[i + 2], RULE_NAME_IDENTIFIER, XECORE_COMMON_PROPERTY) &&
-                                            HasRuleWithValue(declCont[i + 3], RULE_NAME_UNNAMED, "<", RULE_TYPE_CHARSET) &&
-                                            HasRuleWithValue(declCont[i + 5], RULE_NAME_UNNAMED, ",", RULE_TYPE_CHARSET) &&
-                                            HasRuleWithValue(declCont[i + 7], RULE_NAME_UNNAMED, ">", RULE_TYPE_CHARSET)
-                                            )
+                                            HasRuleWithValue(declCont[i + 3], RULE_NAME_UNNAMED, "<", RULE_TYPE_CHARSET))
                                         {
-                                            meta = new MetaProperty();
-
-                                            propCont = SearchDownFor(declCont[i + 4], RULE_NAME_IDENTIFIER);
-                                            if (propCont != null)
-                                                meta.ValueType = propCont.Value;
-                                            propCont = SearchDownFor(declCont[i + 8], RULE_NAME_IDENTIFIER);
-                                            if (propCont != null)
-                                                meta.Name = propCont.Value;
-                                            propCont = SearchDownFor(declCont[i + 1], RULE_NAME_PARAN_GROUP);
-                                            if (propCont != null)
+                                            int skip = 0;
+                                            int variant = -1;
+                                            if (i + 8 < declCont.Count &&
+                                                HasRuleWithValue(declCont[i + 5], RULE_NAME_UNNAMED, ",", RULE_TYPE_CHARSET) &&
+                                                HasRuleWithValue(declCont[i + 7], RULE_NAME_UNNAMED, ">", RULE_TYPE_CHARSET))
                                             {
-                                                attrs = SearchDownForAttributes(propCont);
-                                                if (attrs != null)
-                                                {
-                                                    foreach (string attr in attrs.Keys)
-                                                    {
-                                                        if (attr == META_ATTR_NAME)
-                                                            meta.Name = attrs[attr];
-                                                        else if (attr == META_ATTR_DESCRIPTION)
-                                                            meta.Description = attrs[attr];
-                                                        else if (attr == META_ATTR_DEFAULT_VALUE)
-                                                            meta.DefaultValue = attrs[attr];
-                                                    }
-                                                }
-                                                attrs = null;
+                                                variant = 8;
+                                                skip = 8;
+                                            }
+                                            else if (i + 9 < declCont.Count &&
+                                                (
+                                                    HasRuleWithValue(declCont[i + 5], RULE_NAME_UNNAMED, "*", RULE_TYPE_CHARSET) ||
+                                                    HasRuleWithValue(declCont[i + 5], RULE_NAME_UNNAMED, "&", RULE_TYPE_CHARSET)
+                                                ) &&
+                                                HasRuleWithValue(declCont[i + 6], RULE_NAME_UNNAMED, ",", RULE_TYPE_CHARSET) &&
+                                                HasRuleWithValue(declCont[i + 8], RULE_NAME_UNNAMED, ">", RULE_TYPE_CHARSET))
+                                            {
+                                                variant = 9;
+                                                skip = 9;
                                             }
 
-                                            props.Add(meta);
+                                            if (variant != -1)
+                                            {
+                                                meta = new MetaProperty();
+
+                                                propCont = SearchDownFor(declCont[i + 4], RULE_NAME_IDENTIFIER);
+                                                if (propCont != null)
+                                                    meta.ValueType = propCont.Value;
+                                                propCont = SearchDownFor(declCont[i + variant], RULE_NAME_IDENTIFIER);
+                                                if (propCont != null)
+                                                    meta.Name = propCont.Value;
+                                                propCont = SearchDownFor(declCont[i + 1], RULE_NAME_PARAN_GROUP);
+                                                if (propCont != null)
+                                                {
+                                                    attrs = SearchDownForAttributes(propCont);
+                                                    if (attrs != null)
+                                                    {
+                                                        foreach (string attr in attrs.Keys)
+                                                        {
+                                                            if (attr == META_ATTR_NAME)
+                                                                meta.Name = attrs[attr];
+                                                            else if (attr == META_ATTR_DESCRIPTION)
+                                                                meta.Description = attrs[attr];
+                                                            else if (attr == META_ATTR_VALUE_TYPE)
+                                                                meta.ValueType = attrs[attr];
+                                                            else if (attr == META_ATTR_DEFAULT_VALUE)
+                                                                meta.DefaultValue = attrs[attr].Replace("\\\"", "\"");
+                                                        }
+                                                    }
+                                                    attrs = null;
+                                                }
+
+                                                props.Add(meta);
+                                                i += skip;
+                                            }
                                         }
-                                        i += 8;
                                     }
                                     ++i;
                                 }

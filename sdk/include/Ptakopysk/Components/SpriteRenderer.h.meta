@@ -8,6 +8,12 @@
   ],
   "Properties": [
     {
+      "Name": "Texture",
+      "Description": "Texture name.",
+      "ValueType": "sf::Texture",
+      "DefaultValue": null
+    },
+    {
       "Name": "Size",
       "Description": "Size of the sprite.",
       "ValueType": "sf::Vector2f",
@@ -35,6 +41,12 @@
       "Name": "RenderStates",
       "Description": "Render states.",
       "ValueType": "sf::RenderStates",
+      "DefaultValue": null
+    },
+    {
+      "Name": "Material",
+      "Description": "Render material.",
+      "ValueType": "RenderMaterial",
       "DefaultValue": null
     },
     {

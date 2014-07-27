@@ -1,15 +1,78 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.Drawing;
+using ZasuvkaPtakopyskaExtender;
+using ZasuvkaPtakopyskaExtender.Visualizers;
+using System.Collections.Generic;
 
 namespace ZasuvkaPtakopyska
 {
-    public partial class RendererSurfaceControl : UserControl
+    public class RendererSurfaceControl : UserControl, IVisualizerParent
     {
         #region Nested Classes.
 
-        public class GameObject
+        public class GameObjectVisualizer
         {
+            private SceneModel.GameObject m_model;
+            private Dictionary<Type, IComponentVisualizer> m_components = new Dictionary<Type, IComponentVisualizer>();
+
+            public GameObjectVisualizer(SceneModel.GameObject model)
+            {
+                m_model = model;
+            }
+
+            public void Initialize(IVisualizerParent parent)
+            {
+                Release(parent);
+                if (m_model == null)
+                    return;
+
+                foreach (SceneModel.GameObject.Component c in m_model.components)
+                {
+                    Type t = ComponentVisualizersManager.Instance.FindComponentVisualizerByComponentType(c.type);
+                    if (t != null && !m_components.ContainsKey(t))
+                    {
+                        try
+                        {
+                            object obj = Activator.CreateInstance(t);
+                            IComponentVisualizer visualizer = obj as IComponentVisualizer;
+                            if (visualizer != null)
+                            {
+                                m_components.Add(t, visualizer);
+                                visualizer.OnInitialize(parent, m_model);
+                            }
+                        }
+                        catch { }
+                    }
+                }
+                if (m_components.Count == 0)
+                {
+                    try
+                    {
+                        object obj = Activator.CreateInstance(typeof(DefaultComponentVisualizer));
+                        IComponentVisualizer visualizer = obj as IComponentVisualizer;
+                        if (visualizer != null)
+                        {
+                            m_components.Add(typeof(DefaultComponentVisualizer), visualizer);
+                            visualizer.OnInitialize(parent, m_model);
+                        }
+                    }
+                    catch { }
+                }
+            }
+
+            public void Release(IVisualizerParent parent)
+            {
+                foreach (IComponentVisualizer c in m_components.Values)
+                    c.OnRelease(parent, m_model);
+                m_components.Clear();
+            }
+
+            public void Render(IVisualizerParent parent, SFML.Graphics.RenderTarget target)
+            {
+                foreach (IComponentVisualizer c in m_components.Values)
+                    c.OnRender(parent, target, m_model);
+            }
         }
 
         #endregion
@@ -32,6 +95,13 @@ namespace ZasuvkaPtakopyska
         private SFML.Graphics.View m_camera;
         private bool m_isDragging = false;
         private Point m_dragPosition;
+        private Dictionary<string, SFML.Graphics.Texture> m_textures = new Dictionary<string, SFML.Graphics.Texture>();
+        private Dictionary<string, SFML.Graphics.Shader> m_shaders = new Dictionary<string, SFML.Graphics.Shader>();
+        private Dictionary<string, SFML.Graphics.Font> m_fonts = new Dictionary<string, SFML.Graphics.Font>();
+        private Dictionary<SceneModel.GameObject, GameObjectVisualizer> m_gameObjects = new Dictionary<SceneModel.GameObject, GameObjectVisualizer>();
+        private SFML.Graphics.Texture m_defaultTexture;
+        private SFML.Graphics.Shader m_defaultShader;
+        private SFML.Graphics.Font m_defaultFont;
 
         #endregion
 
@@ -41,6 +111,9 @@ namespace ZasuvkaPtakopyska
 
         public SceneModel SceneModel { get { return m_model; } set { m_model = value; RebuildScene(); } }
         public float Zoom { get; set; }
+        public SFML.Graphics.Texture DefaultTextureAsset { get { return m_defaultTexture; } }
+        public SFML.Graphics.Shader DefaultShaderAsset { get { return m_defaultShader; } }
+        public SFML.Graphics.Font DefaultFontAsset { get { return m_defaultFont; } }
 
         #endregion
 
@@ -51,6 +124,7 @@ namespace ZasuvkaPtakopyska
         public RendererSurfaceControl()
         {
             Load += new EventHandler(RendererSurfaceControl_Load);
+            Disposed += new EventHandler(RendererSurfaceControl_Disposed);
             MouseDown += new MouseEventHandler(RendererSurfaceControl_MouseDown);
             MouseMove += new MouseEventHandler(RendererSurfaceControl_MouseMove);
             MouseUp += new MouseEventHandler(RendererSurfaceControl_MouseUp);
@@ -69,9 +143,40 @@ namespace ZasuvkaPtakopyska
 
         #region Public Functionality.
 
+        public SFML.Graphics.Texture FindTextureAsset(string id)
+        {
+            return m_textures.ContainsKey(id) ? m_textures[id] : null;
+        }
+
+        public SFML.Graphics.Shader FindShaderAsset(string id)
+        {
+            return m_shaders.ContainsKey(id) ? m_shaders[id] : null;
+        }
+
+        public SFML.Graphics.Font FindFontAsset(string id)
+        {
+            return m_fonts.ContainsKey(id) ? m_fonts[id] : null;
+        }
+
+        public void ClearGameObjects()
+        {
+            foreach (GameObjectVisualizer go in m_gameObjects.Values)
+                go.Release(this);
+            m_gameObjects.Clear();
+        }
+
         public void RebuildScene()
         {
+            ClearGameObjects();
+            if (m_model == null)
+                return;
 
+            foreach (SceneModel.GameObject go in m_model.scene)
+            {
+                GameObjectVisualizer visualizer = new GameObjectVisualizer(go);
+                m_gameObjects.Add(go, visualizer);
+                visualizer.Initialize(this);
+            }
         }
 
         #endregion
@@ -91,7 +196,7 @@ namespace ZasuvkaPtakopyska
             m_camera.Zoom(Zoom);
             m_renderer.SetView(m_camera);
 
-            // draw grid
+            // draw grid.
             float fleft = m_camera.Center.X - m_camera.Size.X * 0.5f;
             float ftop = m_camera.Center.Y - m_camera.Size.Y * 0.5f;
             float fright = m_camera.Center.X + m_camera.Size.X * 0.5f;
@@ -121,6 +226,11 @@ namespace ZasuvkaPtakopyska
                 m_renderer.Draw(line, SFML.Graphics.PrimitiveType.Lines);
             }
 
+            // draw game objects.
+            foreach (GameObjectVisualizer go in m_gameObjects.Values)
+                go.Render(this, m_renderer);
+
+            // show rendered image.
             m_renderer.Display();
         }
 
@@ -139,6 +249,42 @@ namespace ZasuvkaPtakopyska
             m_renderer = new SFML.Graphics.RenderWindow(Handle);
             m_renderer.SetVerticalSyncEnabled(false);
             m_camera = new SFML.Graphics.View();
+            m_camera.Center = new SFML.Window.Vector2f();
+            try { m_defaultTexture = new SFML.Graphics.Texture("resources/textures/logo.png"); }
+            catch (Exception ex) { while (ex.InnerException != null)ex = ex.InnerException; Console.WriteLine("{0}: {1}", ex.GetType().Name, ex.Message); }
+            try { m_defaultShader = new SFML.Graphics.Shader("resources/shaders/color-texture.vs", "resources/shaders/color-texture.fs"); }
+            catch (Exception ex) { while (ex.InnerException != null)ex = ex.InnerException; Console.WriteLine("{0}: {1}", ex.GetType().Name, ex.Message); }
+            try { m_defaultFont = new SFML.Graphics.Font("resources/fonts/verdana.ttf"); }
+            catch (Exception ex) { while (ex.InnerException != null)ex = ex.InnerException; Console.WriteLine("{0}: {1}", ex.GetType().Name, ex.Message); }
+        }
+
+        private void RendererSurfaceControl_Disposed(object sender, EventArgs e)
+        {
+            if (m_defaultTexture != null)
+            {
+                m_defaultTexture.Dispose();
+                m_defaultTexture = null;
+            }
+            if (m_defaultShader != null)
+            {
+                m_defaultShader.Dispose();
+                m_defaultShader = null;
+            }
+            if (m_defaultFont != null)
+            {
+                m_defaultFont.Dispose();
+                m_defaultFont = null;
+            }
+            if (m_camera != null)
+            {
+                m_camera.Dispose();
+                m_camera = null;
+            }
+            if (m_renderer != null)
+            {
+                m_renderer.Dispose();
+                m_renderer = null;
+            }
         }
 
         private void m_timer_Tick(object sender, EventArgs e)

@@ -5,43 +5,42 @@ using System.Collections.Generic;
 
 namespace ZasuvkaPtakopyskaExtender.Editors
 {
+    [PtakopyskPropertyEditor("b2Vec2")]
     [PtakopyskPropertyEditor("sf::Vector2f")]
     [PtakopyskPropertyEditor("Vector2f", TypePriority = 1)]
-    public class Vector2fPropertyEditor : PropertyEditor<List<float>>
+    public class FloatVector2_PropertyEditor : PropertyEditor<List<float>>
     {
+        private static readonly int DEFAULT_LABEL_WIDTH = 30;
+
         private MetroTextBox m_xTextBox;
         private MetroTextBox m_yTextBox;
 
-        public Vector2fPropertyEditor(object propertyOwner, string propertyName)
-            : base(propertyOwner, propertyName, new List<float>())
+        public FloatVector2_PropertyEditor(object propertyOwner, string propertyName)
+            : base(propertyOwner, propertyName)
         {
-            ValidateValue();
             InitializeComponent();
         }
 
-        public Vector2fPropertyEditor(Dictionary<string, object> properties, string propertyName)
-            : base(properties, propertyName, new List<float>())
+        public FloatVector2_PropertyEditor(Dictionary<string, object> properties, string propertyName)
+            : base(properties, propertyName)
         {
-            ValidateValue();
             InitializeComponent();
         }
 
         public override void UpdateEditorValue()
         {
-            ValidateValue();
+            if (!ValidateValue())
+                return;
 
             m_xTextBox.Text = Value[0].ToString();
             m_yTextBox.Text = Value[1].ToString();
         }
 
-        private void ValidateValue()
+        private bool ValidateValue()
         {
-            if (Value == null)
+            if (Value == null && DefaultValue == null)
                 Value = new List<float>(DefaultValue);
-            if (Value.Count < 1)
-                Value.Add(0.0f);
-            if (Value.Count < 2)
-                Value.Add(0.0f);
+            return Value != null && Value.Count >= 2;
         }
 
         private void InitializeComponent()
@@ -51,14 +50,13 @@ namespace ZasuvkaPtakopyskaExtender.Editors
             label = new MetroLabel();
             MetroSkinManager.ApplyMetroStyle(label);
             label.Text = "X:";
-            label.Width = 30;
+            label.Width = DEFAULT_LABEL_WIDTH;
             label.Top = Height;
             label.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             Controls.Add(label);
 
             m_xTextBox = new MetroTextBox();
             MetroSkinManager.ApplyMetroStyle(m_xTextBox);
-            m_xTextBox.Text = Value[0].ToString();
             m_xTextBox.Width = Width;
             m_xTextBox.Top = Height;
             m_xTextBox.Left = label.Width;
@@ -71,14 +69,13 @@ namespace ZasuvkaPtakopyskaExtender.Editors
             label = new MetroLabel();
             MetroSkinManager.ApplyMetroStyle(label);
             label.Text = "Y:";
-            label.Width = 30;
+            label.Width = DEFAULT_LABEL_WIDTH;
             label.Top = Height;
             label.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             Controls.Add(label);
 
             m_yTextBox = new MetroTextBox();
             MetroSkinManager.ApplyMetroStyle(m_yTextBox);
-            m_yTextBox.Text = Value[1].ToString();
             m_yTextBox.Width = Width;
             m_yTextBox.Top = Height;
             m_yTextBox.Left = label.Width;
@@ -91,6 +88,9 @@ namespace ZasuvkaPtakopyskaExtender.Editors
 
         private void m_xTextBox_TextChanged(object sender, EventArgs e)
         {
+            if (!ValidateValue())
+                return;
+
             float v = Value[0];
             if (float.TryParse(m_xTextBox.Text, out v))
                 Value[0] = v;
@@ -98,6 +98,9 @@ namespace ZasuvkaPtakopyskaExtender.Editors
 
         private void m_yTextBox_TextChanged(object sender, EventArgs e)
         {
+            if (!ValidateValue())
+                return;
+
             float v = Value[1];
             if (float.TryParse(m_yTextBox.Text, out v))
                 Value[1] = v;

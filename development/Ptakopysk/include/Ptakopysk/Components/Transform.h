@@ -62,8 +62,9 @@ namespace Ptakopysk
         XeCore::Common::Property< sf::Vector2f, Transform > Scale;
 
         META_PROPERTY(
+            META_ATTR_VALUE_TYPE( "Transform::ModeType" ),
             META_ATTR_DESCRIPTION( "Transform mode." ),
-            META_ATTR_DEFAULT_VALUE( "mHierarchy" )
+            META_ATTR_DEFAULT_VALUE( "\"mHierarchy\"" )
         )
         XeCore::Common::Property< ModeType, Transform > Mode;
 

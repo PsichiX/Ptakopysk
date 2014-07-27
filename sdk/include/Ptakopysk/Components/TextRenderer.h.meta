@@ -14,6 +14,12 @@
       "DefaultValue": ""
     },
     {
+      "Name": "Font",
+      "Description": "Font name.",
+      "ValueType": "sf::Font",
+      "DefaultValue": null
+    },
+    {
       "Name": "Color",
       "Description": "Color.",
       "ValueType": "sf::Color",
@@ -24,6 +30,18 @@
       "Description": "Render states.",
       "ValueType": "sf::RenderStates",
       "DefaultValue": null
+    },
+    {
+      "Name": "Material",
+      "Description": "Render material.",
+      "ValueType": "RenderMaterial",
+      "DefaultValue": null
+    },
+    {
+      "Name": "MaterialValidation",
+      "Description": "Determines if material should be validated in rendering process.",
+      "ValueType": "bool",
+      "DefaultValue": "false"
     }
   ]
 }

@@ -23,6 +23,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
 
         #region Public Properties.
 
+        public string PropertyName { get { return m_property != null ? m_property.Name : (m_propertyKey != null ? m_propertyKey : null); } }
         public T DefaultValue { get { return m_default; } set { m_default = value; } }
         public T Value
         {
@@ -78,20 +79,20 @@ namespace ZasuvkaPtakopyskaExtender.Editors
 
         #region Construction and Destruction.
 
-        public PropertyEditor(object propertyOwner, string propertyName, T defaultValue)
+        public PropertyEditor(object propertyOwner, string propertyName)
         {
             m_object = propertyOwner;
             m_property = m_object == null ? null : propertyOwner.GetType().GetProperty(propertyName);
-            m_default = defaultValue;
+            m_default = default(T);
 
             InitializeComponent(propertyName);
         }
 
-        public PropertyEditor(Dictionary<string, object> properties, string propertyName, T defaultValue)
+        public PropertyEditor(Dictionary<string, object> properties, string propertyName)
         {
             m_propertiesContainer = properties;
             m_propertyKey = m_propertiesContainer == null ? null : propertyName;
-            m_default = defaultValue;
+            m_default = default(T);
 
             InitializeComponent(propertyName);
         }

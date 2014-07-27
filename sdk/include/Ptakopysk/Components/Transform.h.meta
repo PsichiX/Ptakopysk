@@ -28,8 +28,8 @@
     {
       "Name": "Mode",
       "Description": "Transform mode.",
-      "ValueType": "ModeType",
-      "DefaultValue": "mHierarchy"
+      "ValueType": "Transform::ModeType",
+      "DefaultValue": "\"mHierarchy\""
     }
   ]
 }

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Newtonsoft.Json;
+using PtakopyskMetaGenerator;
 
-namespace ZasuvkaPtakopyska
+namespace ZasuvkaPtakopyskaExtender
 {
     public class SceneModel
     {
@@ -112,6 +110,33 @@ namespace ZasuvkaPtakopyska
                         foreach (string k in comp.properties.Keys)
                             properties[k] = comp.properties[k];
                     }
+                }
+
+                public bool GetPropertyValueOrDefault<T>(string name, out T result)
+                {
+                    MetaComponent meta = MetaComponentsManager.Instance.FindMetaComponent(type);
+                    if (meta != null)
+                    {
+                        MetaProperty prop = meta.Properties.Find(item => item.Name == name);
+                        if (prop != null)
+                        {
+                            if (properties != null && properties.ContainsKey(name) && properties[name] is Newtonsoft.Json.Linq.JArray)
+                            {
+                                Newtonsoft.Json.Linq.JToken v = properties[name] as Newtonsoft.Json.Linq.JToken;
+                                try
+                                {
+                                    result = v.ToObject<T>();
+                                    return true;
+                                }
+                                catch { }
+                            }
+                            try { result = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(prop.DefaultValue); }
+                            catch { result = default(T); }
+                            return true;
+                        }
+                    }
+                    result = default(T);
+                    return false;
                 }
             }
 

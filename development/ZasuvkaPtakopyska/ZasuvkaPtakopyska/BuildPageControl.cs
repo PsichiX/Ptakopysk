@@ -70,6 +70,7 @@ namespace ZasuvkaPtakopyska
 
             m_activeBuildComboBox = new MetroComboBox();
             MetroSkinManager.ApplyMetroStyle(m_activeBuildComboBox);
+            m_activeBuildComboBox.BindingContext = new BindingContext();
             m_activeBuildComboBox.Location = new Point(title.Right, title.Top);
             m_activeBuildComboBox.SelectedValueChanged += new EventHandler(m_activeBuildComboBox_SelectedValueChanged);
             Controls.Add(m_activeBuildComboBox);

@@ -1,0 +1,1 @@
+varying vec2 coord;void main(){	coord = ( gl_TextureMatrix[ 0 ] * gl_MultiTexCoord0 ).xy;	gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;}

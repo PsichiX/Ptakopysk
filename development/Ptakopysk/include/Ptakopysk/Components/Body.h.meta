@@ -8,6 +8,12 @@
   ],
   "Properties": [
     {
+      "Name": "Vertices",
+      "Description": "Contains array of body shape vertices.",
+      "ValueType": "VerticesData",
+      "DefaultValue": "null"
+    },
+    {
       "Name": "Radius",
       "Description": "Radius of the body (if radius is greater than 0, body drops current vertices and becomes a ball).",
       "ValueType": "float",
@@ -41,7 +47,7 @@
       "Name": "BodyType",
       "Description": "Body type.",
       "ValueType": "b2BodyType",
-      "DefaultValue": "b2_staticBody"
+      "DefaultValue": "\"b2_staticBody\""
     },
     {
       "Name": "LinearVelocity",

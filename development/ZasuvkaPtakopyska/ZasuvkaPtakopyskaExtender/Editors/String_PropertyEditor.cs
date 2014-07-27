@@ -7,18 +7,20 @@ namespace ZasuvkaPtakopyskaExtender.Editors
 {
     [PtakopyskPropertyEditor("std::string")]
     [PtakopyskPropertyEditor("string", TypePriority = 1)]
-    public class StringPropertyEditor : PropertyEditor<string>
+    [PtakopyskPropertyEditor("sf::String")]
+    [PtakopyskPropertyEditor("String", TypePriority = 1)]
+    public class String_PropertyEditor : PropertyEditor<string>
     {
         private MetroTextBox m_textBox;
 
-        public StringPropertyEditor(object propertyOwner, string propertyName)
-            : base(propertyOwner, propertyName, "")
+        public String_PropertyEditor(object propertyOwner, string propertyName)
+            : base(propertyOwner, propertyName)
         {
             InitializeComponent();
         }
 
-        public StringPropertyEditor(Dictionary<string, object> properties, string propertyName)
-            : base(properties, propertyName, "")
+        public String_PropertyEditor(Dictionary<string, object> properties, string propertyName)
+            : base(properties, propertyName)
         {
             InitializeComponent();
         }
@@ -32,7 +34,6 @@ namespace ZasuvkaPtakopyskaExtender.Editors
         {
             m_textBox = new MetroTextBox();
             MetroSkinManager.ApplyMetroStyle(m_textBox);
-            m_textBox.Text = Value;
             m_textBox.Width = Width;
             m_textBox.Top = Height;
             m_textBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;

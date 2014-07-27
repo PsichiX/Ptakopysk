@@ -1,6 +1,5 @@
 ﻿using System.Windows.Forms;
 using MetroFramework.Controls;
-using MetroFramework.Components;
 using ZasuvkaPtakopyskaExtender;
 using System.IO;
 
@@ -114,6 +113,7 @@ namespace ZasuvkaPtakopyska
 
             if (m_model == null || m_model.scene == null || m_model.scene.Count == 0)
                 return;
+
             int y = 0;
             MetroButton btn;
             foreach (SceneModel.GameObject go in m_model.scene)
@@ -126,10 +126,16 @@ namespace ZasuvkaPtakopyska
                 if (go.properties != null)
                     btn.Text = go.properties.Id;
                 btn.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-                btn.Click += new System.EventHandler(btn_Click);
+                btn.MouseUp += new MouseEventHandler(btn_MouseUp);
                 m_gameObjectsList.Controls.Add(btn);
                 y = btn.Bottom;
             }
+
+            MainForm mainForm = FindForm() as MainForm;
+            if (mainForm != null)
+                mainForm.ExploreGameObjectProperties(null, null);
+
+            m_renderer.SceneModel = m_model;
         }
 
         #endregion
@@ -138,12 +144,42 @@ namespace ZasuvkaPtakopyska
 
         #region Private Events Handlers.
 
-        private void btn_Click(object sender, System.EventArgs e)
+        void btn_MouseUp(object sender, MouseEventArgs e)
         {
             MetroButton btn = sender as MetroButton;
             MainForm mainForm = FindForm() as MainForm;
-            if (btn != null || mainForm != null || !(btn.Tag is SceneModel.GameObject))
-                mainForm.ExploreGameObjectProperties(btn.Tag as SceneModel.GameObject);
+            if (btn == null || mainForm == null || !(btn.Tag is SceneModel.GameObject))
+                return;
+
+            if (e.Button == System.Windows.Forms.MouseButtons.Left)
+                mainForm.ExploreGameObjectProperties(btn.Tag as SceneModel.GameObject, m_model.assets);
+            else if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            {
+                MetroContextMenu menu = new MetroContextMenu(null);
+                MetroSkinManager.ApplyMetroStyle(menu);
+                ToolStripMenuItem menuItem;
+
+                menuItem = new ToolStripMenuItem("Remove");
+                menuItem.Tag = btn.Tag;
+                menuItem.Click += new System.EventHandler(menuItem_Click);
+                menu.Items.Add(menuItem);
+
+                menu.Show(btn, new System.Drawing.Point(btn.Width, 0));
+            }
+        }
+
+        private void menuItem_Click(object sender, System.EventArgs e)
+        {
+            ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
+            if (menuItem == null)
+                return;
+
+            SceneModel.GameObject model = menuItem.Tag as SceneModel.GameObject;
+            if (model != null && m_model.scene.Contains(model))
+            {
+                m_model.scene.Remove(model);
+                RebuildSceneList();
+            }
         }
 
         #endregion

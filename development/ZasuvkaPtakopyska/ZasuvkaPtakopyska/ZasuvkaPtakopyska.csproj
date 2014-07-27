@@ -101,7 +101,6 @@
     <Compile Include="RendererSurfaceControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="SceneModel.cs" />
     <Compile Include="ScenePageControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -143,9 +142,7 @@
       <Name>ZasuvkaPtakopyskaExtender</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="resources\icons\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.-->
@@ -154,11 +151,17 @@
   <Target Name="AfterBuild">
     <ItemGroup>
       <ResourcesIconsFiles Include="$(ProjectDir).\resources\icons\*" />
+      <ResourcesTexturesFiles Include="$(ProjectDir).\resources\textures\*" />
+      <ResourcesShadersFiles Include="$(ProjectDir).\resources\shaders\*" />
+      <ResourcesFontsFiles Include="$(ProjectDir).\resources\fonts\*" />
       <ResourcesSettingsFiles Include="$(ProjectDir).\resources\settings\*" />
       <DependenciesSfmlNativeFiles Include="$(ProjectDir)..\..\requirements\SFML.Net\Native\*" />
     </ItemGroup>
     <MakeDir Directories="$(TargetDir).\resources\icons" />
     <Copy SourceFiles="@(ResourcesIconsFiles)" DestinationFolder="$(TargetDir).\resources\icons" />
+    <Copy SourceFiles="@(ResourcesTexturesFiles)" DestinationFolder="$(TargetDir).\resources\textures" />
+    <Copy SourceFiles="@(ResourcesShadersFiles)" DestinationFolder="$(TargetDir).\resources\shaders" />
+    <Copy SourceFiles="@(ResourcesFontsFiles)" DestinationFolder="$(TargetDir).\resources\fonts" />
     <Copy SourceFiles="@(ResourcesSettingsFiles)" DestinationFolder="$(TargetDir).\resources\settings" />
     <Copy SourceFiles="@(DependenciesSfmlNativeFiles)" DestinationFolder="$(TargetDir)" />
   </Target>

@@ -250,7 +250,7 @@ namespace ZasuvkaPtakopyska
                 mainForm.SelectTabPage(MainForm.TAB_NAME_PROJECT);
                 mainForm.AppTitleExtended = null;
                 mainForm.ProjectFilesViewer.RootPath = null;
-                mainForm.ExploreGameObjectProperties(null);
+                mainForm.ExploreGameObjectProperties(null, null);
             }
         }
         

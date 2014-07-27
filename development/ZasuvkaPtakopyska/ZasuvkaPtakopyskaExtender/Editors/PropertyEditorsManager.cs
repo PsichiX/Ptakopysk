@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Reflection;
 
 namespace ZasuvkaPtakopyskaExtender.Editors
@@ -26,10 +24,14 @@ namespace ZasuvkaPtakopyskaExtender.Editors
         {
             if (assembly == null)
                 return;
+            
+            object[] attributes = assembly.GetCustomAttributes(typeof(ZasuvkaPtakopyskaExtenderAttribute), false);
+            if (attributes == null)
+                return;
 
             foreach (Type t in assembly.GetTypes())
             {
-                object[] attributes = t.GetCustomAttributes(typeof(PtakopyskPropertyEditorAttribute), false);
+                attributes = t.GetCustomAttributes(typeof(PtakopyskPropertyEditorAttribute), false);
                 if (attributes != null && attributes.Length > 0)
                 {
                     PtakopyskPropertyEditorAttribute a;

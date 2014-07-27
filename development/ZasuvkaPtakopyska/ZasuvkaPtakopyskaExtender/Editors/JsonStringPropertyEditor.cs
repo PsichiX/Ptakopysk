@@ -5,19 +5,18 @@ using System.Collections.Generic;
 
 namespace ZasuvkaPtakopyskaExtender.Editors
 {
-    [PtakopyskPropertyEditor("")]
     public class JsonStringPropertyEditor : PropertyEditor<object>
     {
         private MetroTextBox m_textBox;
 
         public JsonStringPropertyEditor(object propertyOwner, string propertyName)
-            : base(propertyOwner, propertyName, "")
+            : base(propertyOwner, propertyName)
         {
             InitializeComponent();
         }
 
         public JsonStringPropertyEditor(Dictionary<string, object> properties, string propertyName)
-            : base(properties, propertyName, "")
+            : base(properties, propertyName)
         {
             InitializeComponent();
         }
@@ -31,7 +30,6 @@ namespace ZasuvkaPtakopyskaExtender.Editors
         {
             m_textBox = new MetroTextBox();
             MetroSkinManager.ApplyMetroStyle(m_textBox);
-            m_textBox.Text = JsonValue;
             m_textBox.Width = Width;
             m_textBox.Top = Height;
             m_textBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;

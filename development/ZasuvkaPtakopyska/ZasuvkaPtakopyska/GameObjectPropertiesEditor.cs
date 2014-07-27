@@ -21,7 +21,8 @@ namespace ZasuvkaPtakopyska
 
         #region Private Data.
 
-        private SceneModel.GameObject m_model;
+        private SceneModel.GameObject m_gameObjectModel;
+        private SceneModel.Assets m_assetsModel;
 
         #endregion
 
@@ -29,14 +30,15 @@ namespace ZasuvkaPtakopyska
 
         #region Construction and Destruction.
 
-        public GameObjectPropertiesEditor(SceneModel.GameObject model)
+        public GameObjectPropertiesEditor(SceneModel.GameObject gameObject, SceneModel.Assets assets)
         {
-            if (model == null)
+            if (gameObject == null)
                 throw new ArgumentNullException("Game Object model cannot be null!");
 
-            m_model = model;
-            if (m_model.properties == null)
-                m_model.properties = new SceneModel.GameObject.Properties();
+            m_gameObjectModel = gameObject;
+            if (m_gameObjectModel.properties == null)
+                m_gameObjectModel.properties = new SceneModel.GameObject.Properties();
+            m_assetsModel = assets;
 
             MetroSkinManager.ApplyMetroStyle(this);
             
@@ -55,28 +57,32 @@ namespace ZasuvkaPtakopyska
 
         private int InitializePropertiesSection(int y)
         {
-            StringPropertyEditor idEditor = new StringPropertyEditor(m_model.properties, "Id");
+            String_PropertyEditor idEditor = new String_PropertyEditor(m_gameObjectModel.properties, "Id");
+            idEditor.UpdateEditorValue();
             idEditor.Top = y;
             idEditor.Width = Width;
             idEditor.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             Controls.Add(idEditor);
             y = idEditor.Bottom + DEFAULT_SEPARATOR;
 
-            BoolPropertyEditor activeEditor = new BoolPropertyEditor(m_model.properties, "Active");
+            Bool_PropertyEditor activeEditor = new Bool_PropertyEditor(m_gameObjectModel.properties, "Active");
+            activeEditor.UpdateEditorValue();
             activeEditor.Top = y;
             activeEditor.Width = Width;
             activeEditor.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             Controls.Add(activeEditor);
             y = activeEditor.Bottom + DEFAULT_SEPARATOR;
 
-            IntPropertyEditor orderEditor = new IntPropertyEditor(m_model.properties, "Order");
+            Int_PropertyEditor orderEditor = new Int_PropertyEditor(m_gameObjectModel.properties, "Order");
+            orderEditor.UpdateEditorValue();
             orderEditor.Top = y;
             orderEditor.Width = Width;
             orderEditor.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             Controls.Add(orderEditor);
             y = orderEditor.Bottom + DEFAULT_SEPARATOR;
 
-            JsonStringPropertyEditor metaDataEditor = new JsonStringPropertyEditor(m_model.properties, "MetaData");
+            JsonStringPropertyEditor metaDataEditor = new JsonStringPropertyEditor(m_gameObjectModel.properties, "MetaData");
+            metaDataEditor.UpdateEditorValue();
             metaDataEditor.Top = y;
             metaDataEditor.Width = Width;
             metaDataEditor.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
@@ -88,10 +94,10 @@ namespace ZasuvkaPtakopyska
 
         private int InitializeComponentsSection(int y)
         {
-            if (m_model == null || m_model.components == null || m_model.components.Count == 0)
+            if (m_gameObjectModel == null || m_gameObjectModel.components == null || m_gameObjectModel.components.Count == 0)
                 return y;
 
-            foreach (SceneModel.GameObject.Component comp in m_model.components)
+            foreach (SceneModel.GameObject.Component comp in m_gameObjectModel.components)
                 y = InitializeComponentFragment(comp, y);
 
             return y;
@@ -156,12 +162,12 @@ namespace ZasuvkaPtakopyska
                 IEditorJsonValue jvEditor = editor as IEditorJsonValue;
                 if (editor != null && jvEditor != null)
                 {
+                    if(obj is IAssetsModelRequired)
+                        (obj as IAssetsModelRequired).AssetsModel = m_assetsModel;
+                    jvEditor.JsonDefaultValue = property.DefaultValue;
                     if (!component.properties.ContainsKey(property.Name))
-                    {
-                        jvEditor.JsonDefaultValue = property.DefaultValue;
                         jvEditor.JsonValue = property.DefaultValue;
-                        jvEditor.UpdateEditorValue();
-                    }
+                    jvEditor.UpdateEditorValue();
                     editor.Top = y;
                     editor.Width = Width;
                     editor.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
@@ -174,6 +180,7 @@ namespace ZasuvkaPtakopyska
                 while (ex.InnerException != null)
                     ex = ex.InnerException;
                 ErrorPropertyEditor editor = new ErrorPropertyEditor(property.Name, ex.Message);
+                editor.Tag = string.Format("{0}\n{1}\n\nStack trace:\n{2}", ex.GetType().Name, ex.Message, ex.StackTrace);
                 editor.Top = y;
                 editor.Width = Width;
                 editor.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;

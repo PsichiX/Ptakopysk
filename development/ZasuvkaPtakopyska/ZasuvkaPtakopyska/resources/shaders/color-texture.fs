@@ -1,0 +1,1 @@
+varying vec2 coord;uniform sampler2D sBaseTexture;uniform vec4 uColor;void main(){	vec4 col = texture2D( sBaseTexture, coord );	gl_FragColor = col * uColor;}

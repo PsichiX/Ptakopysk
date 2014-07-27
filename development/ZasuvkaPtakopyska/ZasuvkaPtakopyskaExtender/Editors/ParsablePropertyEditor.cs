@@ -10,14 +10,14 @@ namespace ZasuvkaPtakopyskaExtender.Editors
     {
         private MetroTextBox m_textBox;
 
-        public ParsablePropertyEditor(object propertyOwner, string propertyName, T defaultValue)
-            : base(propertyOwner, propertyName, defaultValue)
+        public ParsablePropertyEditor(object propertyOwner, string propertyName)
+            : base(propertyOwner, propertyName)
         {
             InitializeComponent();
         }
 
-        public ParsablePropertyEditor(Dictionary<string, object> properties, string propertyName, T defaultValue)
-            : base(properties, propertyName, defaultValue)
+        public ParsablePropertyEditor(Dictionary<string, object> properties, string propertyName)
+            : base(properties, propertyName)
         {
             InitializeComponent();
         }
@@ -31,7 +31,6 @@ namespace ZasuvkaPtakopyskaExtender.Editors
         {
             m_textBox = new MetroTextBox();
             MetroSkinManager.ApplyMetroStyle(m_textBox);
-            m_textBox.Text = Value.ToString();
             m_textBox.Width = Width;
             m_textBox.Top = Height;
             m_textBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;

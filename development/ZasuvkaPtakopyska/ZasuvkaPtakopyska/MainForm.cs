@@ -12,6 +12,7 @@ using ZasuvkaPtakopyskaExtender;
 using System.Diagnostics;
 using ZasuvkaPtakopyskaExtender.Editors;
 using System.Reflection;
+using ZasuvkaPtakopyskaExtender.Visualizers;
 
 namespace ZasuvkaPtakopyska
 {
@@ -125,7 +126,10 @@ namespace ZasuvkaPtakopyska
             InitializeMainPanel();
 
             foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
                 PropertyEditorsManager.Instance.RegisterPropertyEditorsFromAssembly(assembly);
+                ComponentVisualizersManager.Instance.RegisterComponentVisualizersFromAssembly(assembly);
+            }
         }
 
         #endregion
@@ -173,17 +177,17 @@ namespace ZasuvkaPtakopyska
             }
         }
 
-        public void ExploreGameObjectProperties(SceneModel.GameObject model)
+        public void ExploreGameObjectProperties(SceneModel.GameObject gameObject, SceneModel.Assets assets)
         {
             if (m_rightPanel == null)
                 return;
 
             m_rightPanel.Content.Controls.Clear();
 
-            if (model == null)
+            if (gameObject == null)
                 return;
 
-            GameObjectPropertiesEditor editor = new GameObjectPropertiesEditor(model);
+            GameObjectPropertiesEditor editor = new GameObjectPropertiesEditor(gameObject, assets);
             editor.Dock = DockStyle.Fill;
             m_rightPanel.Content.Controls.Add(editor);
             m_rightPanel.Unroll();

@@ -41,6 +41,9 @@
     <Reference Include="PtakopyskMetaGenerator">
       <HintPath>..\PtakopyskMetaGenerator\bin\Release\PtakopyskMetaGenerator.dll</HintPath>
     </Reference>
+    <Reference Include="sfmlnet-graphics-2">
+      <HintPath>..\..\requirements\SFML.Net\Managed\sfmlnet-graphics-2.dll</HintPath>
+    </Reference>
     <Reference Include="sfmlnet-window-2">
       <HintPath>..\..\requirements\SFML.Net\Managed\sfmlnet-window-2.dll</HintPath>
     </Reference>
@@ -55,20 +58,54 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Editors\BoolPropertyEditor.cs">
+    <Compile Include="Editors\AssetPropertyEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editors\Bool_PropertyEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editors\Color_PropertyEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editors\FontAsset_PropertyEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editors\IAssetsModelRequired.cs" />
+    <Compile Include="Editors\MusicAsset_PropertyEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editors\SoundAsset_PropertyEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editors\ShaderAsset_PropertyEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editors\EnumPropertyEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editors\FloatRect_PropertyEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Editors\ErrorPropertyEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Editors\IEditorJsonValue.cs" />
-    <Compile Include="Editors\Vector2fPropertyEditor.cs">
+    <Compile Include="Editors\RenderStates_PropertyEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Editors\FloatPropertyEditor.cs">
+    <Compile Include="Editors\TextureAsset_PropertyEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Editors\IntPropertyEditor.cs">
+    <Compile Include="Editors\TransformModeType_PropertyEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editors\FloatVector2_PropertyEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editors\Float_PropertyEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editors\Int_PropertyEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Editors\JsonStringPropertyEditor.cs">
@@ -84,12 +121,34 @@
     <Compile Include="MetaComponentsManager.cs" />
     <Compile Include="MetroSkinManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Editors\StringPropertyEditor.cs">
+    <Compile Include="Editors\String_PropertyEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Editors\PropertyEditorsManager.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="SceneModel.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="Visualizers\CameraComponentVisualizer.cs" />
+    <Compile Include="Visualizers\DefaultComponentVisualizer.cs" />
+    <Compile Include="Visualizers\IComponentVisualizer.cs" />
+    <Compile Include="Visualizers\IVisualizerParent.cs" />
+    <Compile Include="Visualizers\ComponentVisualizersManager.cs" />
+    <Compile Include="Visualizers\PtakopyskComponentVisualizerAttribute.cs" />
     <Compile Include="ZasuvkaPtakopyskaExtenderAttribute.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\appbar.question.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

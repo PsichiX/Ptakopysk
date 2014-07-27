@@ -99,7 +99,7 @@ namespace Ptakopysk
 
         META_PROPERTY(
             META_ATTR_DESCRIPTION( "Body type." ),
-            META_ATTR_DEFAULT_VALUE( "b2_staticBody" )
+            META_ATTR_DEFAULT_VALUE( "\"b2_staticBody\"" )
         )
         XeCore::Common::Property< b2BodyType, Body > BodyType;
 

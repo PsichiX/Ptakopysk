@@ -39,6 +39,8 @@ namespace Ptakopysk
         FORCEINLINE void setRenderStates( sf::RenderStates states ) { m_renderStates = states; };
         FORCEINLINE RenderMaterial& getMaterial() { return m_material; };
         FORCEINLINE void setMaterial( RenderMaterial& v ) { m_material.copyFrom( v ); };
+        FORCEINLINE bool getMaterialValidation() { return m_materialValidation; };
+        FORCEINLINE void setMaterialValidation( bool v ) { m_materialValidation = v; };
 
         META_PROPERTY(
             META_ATTR_DESCRIPTION( "Text value." ),
@@ -77,6 +79,12 @@ namespace Ptakopysk
         )
         XeCore::Common::Property< RenderMaterial&, TextRenderer > Material;
 
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Determines if material should be validated in rendering process." ),
+            META_ATTR_DEFAULT_VALUE( "false" )
+        )
+        XeCore::Common::Property< bool, TextRenderer > MaterialValidation;
+
     protected:
         virtual Json::Value onSerialize( const std::string& property );
         virtual void onDeserialize( const std::string& property, const Json::Value& root );
@@ -89,6 +97,7 @@ namespace Ptakopysk
         sf::Text* m_text;
         sf::RenderStates m_renderStates;
         RenderMaterial m_material;
+        bool m_materialValidation;
     };
 
 }
