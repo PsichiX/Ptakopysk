@@ -133,6 +133,7 @@
     <Compile Include="SceneModel.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Visualizers\CameraComponentVisualizer.cs" />
+    <Compile Include="Visualizers\SpriteRendererComponentVisualizer.cs" />
     <Compile Include="Visualizers\DefaultComponentVisualizer.cs" />
     <Compile Include="Visualizers\IComponentVisualizer.cs" />
     <Compile Include="Visualizers\IVisualizerParent.cs" />

@@ -46,7 +46,7 @@ namespace ZasuvkaPtakopyskaExtender.Visualizers
 
         public void OnRender(IVisualizerParent parent, SFML.Graphics.RenderTarget target, SceneModel.GameObject gameObject)
         {
-            if (m_text == null)
+            if (m_text == null || m_bg == null || m_icon == null)
                 return;
 
             SFML.Window.Vector2f pos = new SFML.Window.Vector2f();
@@ -70,7 +70,7 @@ namespace ZasuvkaPtakopyskaExtender.Visualizers
             m_icon.Position = pos + new SFML.Window.Vector2f(0, m_bg.Size.Y * 0.5f);
             target.Draw(m_icon);
 
-            m_text.Position = pos - new SFML.Window.Vector2f(0, m_bg.Size.Y * 0.5f);
+            m_text.Position = pos - new SFML.Window.Vector2f(0, m_bg.Size.Y * 0.5f - 10);
             target.Draw(m_text);
         }
     }

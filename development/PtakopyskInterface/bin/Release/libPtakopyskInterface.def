@@ -1,0 +1,9 @@
+EXPORTS
+    DllMain@12 @1
+    Initialize @2
+    ProcessEvents @3
+    ProcessPhysics @4
+    ProcessRender @5
+    ProcessUpdate @6
+    Release @7
+    SetVerticalSyncEnabled @8

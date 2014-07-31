@@ -6,6 +6,7 @@ namespace ZasuvkaPtakopyskaExtender.Visualizers
     public class CameraComponentVisualizer : IComponentVisualizer
     {
         private SFML.Graphics.RectangleShape m_frame;
+        private SFML.Graphics.Vertex[] m_lines = new SFML.Graphics.Vertex[4];
         private SFML.Graphics.Text m_text;
 
         public void OnInitialize(IVisualizerParent parent, SceneModel.GameObject gameObject)
@@ -16,8 +17,13 @@ namespace ZasuvkaPtakopyskaExtender.Visualizers
 
             m_frame = new SFML.Graphics.RectangleShape();
             m_frame.FillColor = new SFML.Graphics.Color(0, 0, 0, 32);
-            m_frame.OutlineColor = new SFML.Graphics.Color(255, 255, 255, 192);
-            m_frame.OutlineThickness = 4;
+            m_frame.OutlineColor = new SFML.Graphics.Color(255, 255, 255, 64);
+            m_frame.OutlineThickness = 2;
+
+            m_lines[0] = new SFML.Graphics.Vertex(new SFML.Window.Vector2f(), m_frame.OutlineColor);
+            m_lines[1] = new SFML.Graphics.Vertex(new SFML.Window.Vector2f(), m_frame.OutlineColor);
+            m_lines[2] = new SFML.Graphics.Vertex(new SFML.Window.Vector2f(), m_frame.OutlineColor);
+            m_lines[3] = new SFML.Graphics.Vertex(new SFML.Window.Vector2f(), m_frame.OutlineColor);
 
             string name = gameObject.properties != null ? gameObject.properties.Id : "";
             m_text = new SFML.Graphics.Text(name, font, 16);
@@ -31,13 +37,14 @@ namespace ZasuvkaPtakopyskaExtender.Visualizers
         {
             m_frame.Dispose();
             m_frame = null;
+            m_lines = null;
             m_text.Dispose();
             m_text = null;
         }
 
         public void OnRender(IVisualizerParent parent, SFML.Graphics.RenderTarget target, SceneModel.GameObject gameObject)
         {
-            if (m_text == null)
+            if (m_frame == null || m_lines == null || m_text == null)
                 return;
 
             SFML.Window.Vector2f pos = new SFML.Window.Vector2f();
@@ -80,6 +87,13 @@ namespace ZasuvkaPtakopyskaExtender.Visualizers
             m_frame.Origin = new SFML.Window.Vector2f(m_frame.Size.X * 0.5f, m_frame.Size.Y * 0.5f);
             m_frame.Position = pos;
             target.Draw(m_frame);
+
+            SFML.Graphics.FloatRect rect = m_frame.GetGlobalBounds();
+            m_lines[0].Position = new SFML.Window.Vector2f(rect.Left + m_frame.OutlineThickness, rect.Top + m_frame.OutlineThickness);
+            m_lines[1].Position = new SFML.Window.Vector2f(rect.Left + rect.Width - m_frame.OutlineThickness, rect.Top + rect.Height - m_frame.OutlineThickness);
+            m_lines[2].Position = new SFML.Window.Vector2f(rect.Left + m_frame.OutlineThickness, rect.Top + rect.Height - m_frame.OutlineThickness);
+            m_lines[3].Position = new SFML.Window.Vector2f(rect.Left + rect.Width - m_frame.OutlineThickness, rect.Top + m_frame.OutlineThickness);
+            target.Draw(m_lines, SFML.Graphics.PrimitiveType.Lines);
 
             m_text.Position = pos - new SFML.Window.Vector2f(0, m_frame.Size.Y * 0.5f);
             target.Draw(m_text);

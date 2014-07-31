@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="PtakopyskInterface" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/PtakopyskInterface" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-DBUILD_DLL" />
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add library="user32" />
+					<Add library="libPtakopysk-d.a" />
+					<Add library="libsfml-audio-s-d.a" />
+					<Add library="libsfml-graphics-s-d.a" />
+					<Add library="libsfml-window-s-d.a" />
+					<Add library="libsfml-system-s-d.a" />
+					<Add library="libBox2D-d.a" />
+					<Add library="libJsonCpp-d.a" />
+					<Add library="libBinaryJson-d.a" />
+					<Add library="libXenonCore3-d.a" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/PtakopyskInterface" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-DBUILD_DLL" />
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="user32" />
+					<Add library="libPtakopysk.a" />
+					<Add library="libsfml-audio-s.a" />
+					<Add library="libsfml-graphics-s.a" />
+					<Add library="libsfml-window-s.a" />
+					<Add library="libsfml-system-s.a" />
+					<Add library="libBox2D.a" />
+					<Add library="libJsonCpp.a" />
+					<Add library="libBinaryJson.a" />
+					<Add library="libXenonCore3.a" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+			<Add option="-DSFML_STATIC" />
+			<Add directory="../../sdk/include" />
+		</Compiler>
+		<Linker>
+			<Add directory="../../sdk/lib" />
+		</Linker>
+		<Unit filename="PtakopyskInterface.cpp" />
+		<Unit filename="PtakopyskInterface.h" />
+		<Unit filename="main.cpp" />
+		<Unit filename="main.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
