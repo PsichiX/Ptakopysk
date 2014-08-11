@@ -391,8 +391,10 @@ namespace Ptakopysk
         sf::Texture* t = getTexture( id );
         if( !t )
         {
+            std::stringstream ss;
+            ss << m_fileSystemRoot << path;
             t = xnew sf::Texture();
-            if( !t->loadFromFile( path ) )
+            if( !t->loadFromFile( path ) && !t->loadFromFile( ss.str() ) )
             {
                 DELETE_OBJECT( t );
                 return 0;
@@ -408,8 +410,12 @@ namespace Ptakopysk
         sf::Shader* t = getShader( id );
         if( !t )
         {
+            std::stringstream ssv;
+            ssv << m_fileSystemRoot << vspath;
+            std::stringstream ssf;
+            ssf << m_fileSystemRoot << fspath;
             t = xnew sf::Shader();
-            if( !t->loadFromFile( vspath, fspath ) )
+            if( !t->loadFromFile( vspath, fspath ) && !t->loadFromFile( ssf.str(), ssf.str() ) )
             {
                 DELETE_OBJECT( t );
                 return 0;
@@ -428,8 +434,10 @@ namespace Ptakopysk
         sf::Sound* t = getSound( id );
         if( !t )
         {
+            std::stringstream ss;
+            ss << m_fileSystemRoot << path;
             sf::SoundBuffer* tb = xnew sf::SoundBuffer();
-            if( !tb->loadFromFile( path ) )
+            if( !tb->loadFromFile( path ) && !tb->loadFromFile( ss.str() ) )
             {
                 DELETE_OBJECT( tb );
                 return 0;
@@ -448,8 +456,10 @@ namespace Ptakopysk
         sf::Music* t = getMusic( id );
         if( !t )
         {
+            std::stringstream ss;
+            ss << m_fileSystemRoot << path;
             t = xnew sf::Music();
-            if( !t->openFromFile( path ) )
+            if( !t->openFromFile( path ) && !t->openFromFile( ss.str() ) )
             {
                 DELETE_OBJECT( t );
                 return 0;
@@ -465,8 +475,10 @@ namespace Ptakopysk
         sf::Font* t = getFont( id );
         if( !t )
         {
+            std::stringstream ss;
+            ss << m_fileSystemRoot << path;
             t = xnew sf::Font();
-            if( !t->loadFromFile( path ) )
+            if( !t->loadFromFile( path ) && !t->loadFromFile( ss.str() ) )
             {
                 DELETE_OBJECT( t );
                 return 0;

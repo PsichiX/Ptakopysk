@@ -80,6 +80,7 @@ namespace Ptakopysk
         virtual void onDuplicate( Component* dst );
         virtual void onUpdate( float dt );
         virtual void onRender( sf::RenderTarget*& target );
+        virtual void onRenderEditor( sf::RenderTarget* target );
 
     private:
         static sf::RenderTexture* s_currentRT;

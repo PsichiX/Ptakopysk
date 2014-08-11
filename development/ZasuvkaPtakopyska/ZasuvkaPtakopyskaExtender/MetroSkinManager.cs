@@ -4,6 +4,7 @@ using MetroFramework.Interfaces;
 using MetroFramework.Components;
 using System.Windows.Forms;
 using MetroFramework.Forms;
+using MetroFramework.Drawing;
 
 namespace ZasuvkaPtakopyskaExtender
 {
@@ -23,12 +24,12 @@ namespace ZasuvkaPtakopyskaExtender
         public static MetroColorStyle Style
         {
             get { GetExtender(); return MANAGER.Style; }
-            set { GetExtender(); MANAGER.Style = value; }
+            set { GetExtender(); MANAGER.Style = value; RefreshStyles(); }
         }
         public static MetroThemeStyle Theme
         {
             get { GetExtender(); return MANAGER.Theme; }
-            set { GetExtender(); MANAGER.Theme = value; }
+            set { GetExtender(); MANAGER.Theme = value; RefreshStyles(); }
         }
 
         #endregion
@@ -48,7 +49,7 @@ namespace ZasuvkaPtakopyskaExtender
             }
             return EXTENDER;
         }
-        
+
         #endregion.
 
 
@@ -77,13 +78,24 @@ namespace ZasuvkaPtakopyskaExtender
                 legacyForm.Disposed += new EventHandler(legacyForm_Disposed);
         }
 
-        public static void ExtendMetroStyle(Control control)
+        public static void ExtendMetroStyle(Control control, bool instantApplyColors = true)
         {
             if (control == null)
                 return;
 
             GetExtender();
             EXTENDER.SetApplyMetroTheme(control, true);
+            if (instantApplyColors)
+                InstantApplyMetroColors(control);
+        }
+
+        public static void InstantApplyMetroColors(Control control)
+        {
+            if (control == null)
+                return;
+
+            control.BackColor = MetroPaint.BackColor.Form(Theme);
+            control.ForeColor = MetroPaint.ForeColor.Label.Normal(Theme);
         }
 
         public static void SetManagerOwner(MetroForm form)
@@ -94,6 +106,8 @@ namespace ZasuvkaPtakopyskaExtender
         public static void RefreshStyles()
         {
             MANAGER.Update();
+            GetExtender();
+            EXTENDER.StyleManager = MANAGER;
         }
 
         #endregion
@@ -123,7 +137,7 @@ namespace ZasuvkaPtakopyskaExtender
             if (legacyForm != null)
                 legacyForm.Disposed -= new EventHandler(legacyForm_Disposed);
         }
-        
+
         #endregion
     }
 }

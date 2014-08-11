@@ -3,6 +3,7 @@ using MetroFramework;
 using System.Windows.Forms;
 using System.Reflection;
 using System.Collections.Generic;
+using System;
 
 namespace ZasuvkaPtakopyskaExtender.Editors
 {
@@ -10,11 +11,9 @@ namespace ZasuvkaPtakopyskaExtender.Editors
     {
         #region Private Data.
 
-        private object m_object;
-        private PropertyInfo m_property;
-        private Dictionary<string, object> m_propertiesContainer;
+        private Dictionary<string, string> m_properties;
         private string m_propertyKey;
-        private T m_default;
+        private string m_defaultJson;
         private MetroLabel m_label;
 
         #endregion
@@ -23,76 +22,76 @@ namespace ZasuvkaPtakopyskaExtender.Editors
 
         #region Public Properties.
 
-        public string PropertyName { get { return m_property != null ? m_property.Name : (m_propertyKey != null ? m_propertyKey : null); } }
-        public T DefaultValue { get { return m_default; } set { m_default = value; } }
-        public T Value
-        {
-            get
-            {
-                if (m_property != null && m_object != null && m_property.CanRead)
-                    return (T)m_property.GetValue(m_object, null);
-                else if (m_propertyKey != null && m_propertiesContainer != null && m_propertiesContainer.ContainsKey(m_propertyKey) && m_propertiesContainer[m_propertyKey] is T)
-                    return (T)m_propertiesContainer[m_propertyKey];
-                else
-                    return m_default;
-            }
-            set
-            {
-                if (m_property != null && m_object != null && m_property.CanWrite)
-                    m_property.SetValue(m_object, value, null);
-                else if (m_propertyKey != null && m_propertiesContainer != null)
-                    m_propertiesContainer[m_propertyKey] = value;
-            }
-        }
-        public string JsonDefaultValue
-        {
-            get
-            {
-                try { return Newtonsoft.Json.JsonConvert.SerializeObject(DefaultValue); }
-                catch { return ""; }
-            }
-            set
-            {
-                try { DefaultValue = string.IsNullOrEmpty(value) ? default(T) : Newtonsoft.Json.JsonConvert.DeserializeObject<T>(value); }
-                catch { DefaultValue = default(T); }
-            }
-        }
+        public override string Text { get { return m_label.Text; } set { m_label.Text = value; } }
+        public IEditorJsonValueChangedCallback EditorJsonValueChangedCallback { get; set; }
+        public bool IsProxyEditor { get; set; }
+        public string PropertyName { get { return m_propertyKey != null ? m_propertyKey : null; } }
+        public string JsonDefaultValue { get { return m_defaultJson; } set { m_defaultJson = value; } }
         public string JsonValue
         {
             get
             {
-                try { return Newtonsoft.Json.JsonConvert.SerializeObject(Value); }
-                catch { return ""; }
+                if (m_propertyKey != null && m_properties != null && m_properties.ContainsKey(m_propertyKey))
+                    return m_properties[m_propertyKey];
+                else
+                    return JsonDefaultValue;
             }
             set
             {
-                try { Value = string.IsNullOrEmpty(value) ? DefaultValue : Newtonsoft.Json.JsonConvert.DeserializeObject<T>(value); }
-                catch { Value = DefaultValue; }
+                if (m_propertyKey != null && m_properties != null)
+                {
+                    m_properties[m_propertyKey] = value;
+                    if (EditorJsonValueChangedCallback != null)
+                        EditorJsonValueChangedCallback.OnEditorValueChanged(this, m_propertyKey, value);
+                }
             }
         }
-        public bool IsPropertyBound { get { return m_property != null; } }
-        public bool IsPropertyKeyBound { get { return m_propertyKey != null; } }
-
+        public T DefaultValue
+        {
+            get
+            {
+                if (IsProxyEditor)
+                    return default(T);
+                try { return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(JsonDefaultValue); }
+                catch { return default(T); }
+            }
+            set
+            {
+                if (IsProxyEditor)
+                    return;
+                try { JsonDefaultValue = Newtonsoft.Json.JsonConvert.SerializeObject(value); }
+                catch { JsonDefaultValue = "null"; }
+            }
+        }
+        public T Value
+        {
+            get
+            {
+                if (IsProxyEditor)
+                    return DefaultValue;
+                try { return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(JsonValue); }
+                catch { return DefaultValue; }
+            }
+            set
+            {
+                if (IsProxyEditor)
+                    return;
+                try { JsonValue = Newtonsoft.Json.JsonConvert.SerializeObject(value); }
+                catch { JsonValue = JsonDefaultValue; }
+            }
+        }
+        
         #endregion
 
 
 
         #region Construction and Destruction.
 
-        public PropertyEditor(object propertyOwner, string propertyName)
+        public PropertyEditor(Dictionary<string, string> properties, string propertyName)
         {
-            m_object = propertyOwner;
-            m_property = m_object == null ? null : propertyOwner.GetType().GetProperty(propertyName);
-            m_default = default(T);
-
-            InitializeComponent(propertyName);
-        }
-
-        public PropertyEditor(Dictionary<string, object> properties, string propertyName)
-        {
-            m_propertiesContainer = properties;
-            m_propertyKey = m_propertiesContainer == null ? null : propertyName;
-            m_default = default(T);
+            m_properties = properties;
+            m_propertyKey = m_properties == null ? null : propertyName;
+            DefaultValue = default(T);
 
             InitializeComponent(propertyName);
         }
@@ -121,9 +120,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
             MetroSkinManager.ApplyMetroStyle(m_label);
             m_label.FontSize = MetroLabelSize.Small;
             m_label.FontWeight = MetroLabelWeight.Bold;
-            if (m_property != null)
-                m_label.Text = m_property.Name;
-            else if (m_propertyKey != null)
+            if (m_propertyKey != null)
                 m_label.Text = m_propertyKey;
             else
                 m_label.Text = label;

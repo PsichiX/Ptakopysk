@@ -188,44 +188,51 @@ namespace Ptakopysk
         unregisterAllComponentFactories();
     }
 
-    void GameManager::registerComponentFactory( const std::string& id, XeCore::Common::IRtti::Derivation type, Component::OnBuildComponentCallback builder )
+    bool GameManager::registerComponentFactory( const std::string& id, XeCore::Common::IRtti::Derivation type, Component::OnBuildComponentCallback builder )
     {
         if( id.empty() || s_componentsFactory.count( id ) || !type || !builder )
-            return;
+            return false;
         ComponentFactoryData d;
         d.type = type;
         d.builder = builder;
         s_componentsFactory[ id ] = d;
+        return true;
     }
 
-    void GameManager::unregisterComponentFactory( const std::string& id )
+    bool GameManager::unregisterComponentFactory( const std::string& id )
     {
         if( s_componentsFactory.count( id ) )
+        {
             s_componentsFactory.erase( id );
+            return true;
+        }
+        return false;
     }
 
-    void GameManager::unregisterComponentFactory( XeCore::Common::IRtti::Derivation type )
+    bool GameManager::unregisterComponentFactory( XeCore::Common::IRtti::Derivation type )
     {
         for( std::map< std::string, ComponentFactoryData >::iterator it = s_componentsFactory.begin(); it != s_componentsFactory.end(); it++ )
         {
             if( it->second.type == type )
             {
                 s_componentsFactory.erase( it );
-                return;
+                return true;
             }
         }
+        return false;
     }
 
-    void GameManager::unregisterComponentFactory( Component::OnBuildComponentCallback builder )
+    bool GameManager::unregisterComponentFactory( Component::OnBuildComponentCallback builder )
     {
         for( std::map< std::string, ComponentFactoryData >::iterator it = s_componentsFactory.begin(); it != s_componentsFactory.end(); it++ )
         {
             if( it->second.builder == builder )
             {
                 s_componentsFactory.erase( it );
-                return;
+                return true;
             }
         }
+        return false;
     }
 
     void GameManager::unregisterAllComponentFactories()
@@ -292,6 +299,30 @@ namespace Ptakopysk
             if( it->second.type == type )
                 return it->second.builder();
         return 0;
+    }
+
+    unsigned int GameManager::getComponentsIds( std::vector< std::string >& result )
+    {
+        result.clear();
+        for( std::map< std::string, ComponentFactoryData >::iterator it = s_componentsFactory.begin(); it != s_componentsFactory.end(); it++ )
+            result.push_back( it->first );
+        return result.size();
+    }
+
+    unsigned int GameManager::getComponentsTypes( std::vector< XeCore::Common::IRtti::Derivation >& result )
+    {
+        result.clear();
+        for( std::map< std::string, ComponentFactoryData >::iterator it = s_componentsFactory.begin(); it != s_componentsFactory.end(); it++ )
+            result.push_back( it->second.type );
+        return result.size();
+    }
+
+    unsigned int GameManager::getComponentsBuilders( std::vector< Component::OnBuildComponentCallback >& result )
+    {
+        result.clear();
+        for( std::map< std::string, ComponentFactoryData >::iterator it = s_componentsFactory.begin(); it != s_componentsFactory.end(); it++ )
+            result.push_back( it->second.builder );
+        return result.size();
     }
 
     Json::Value GameManager::loadJson( const std::string& path, bool binary, dword binaryKeyHash )
@@ -412,7 +443,7 @@ namespace Ptakopysk
         }
     }
 
-    Json::Value GameManager::sceneToJson( SceneContentType contentFlags )
+    Json::Value GameManager::sceneToJson( SceneContentType contentFlags, bool omitDefaultValues )
     {
         Json::Value root;
         if( contentFlags & GameManager::PhysicsSettings )
@@ -438,20 +469,20 @@ namespace Ptakopysk
         }
         if( contentFlags & GameManager::PrefabGameObjects )
         {
-            Json::Value prefabs = gameObjectsToJson( true );
+            Json::Value prefabs = gameObjectsToJson( true, omitDefaultValues );
             if( !prefabs.isNull() )
                 root[ "prefabs" ] = prefabs;
         }
         if( contentFlags & GameManager::GameObjects )
         {
-            Json::Value scene = gameObjectsToJson( false );
+            Json::Value scene = gameObjectsToJson( false, omitDefaultValues );
             if( !scene.isNull() )
                 root[ "scene" ] = scene;
         }
         return root;
     }
 
-    Json::Value GameManager::gameObjectsToJson( bool prefab )
+    Json::Value GameManager::gameObjectsToJson( bool prefab, bool omitDefaultValues )
     {
         GameObject::List& cgo = prefab ? m_prefabGameObjects : m_gameObjects;
         if( cgo.empty() )
@@ -462,7 +493,7 @@ namespace Ptakopysk
         for( GameObject::List::iterator it = cgo.begin(); it != cgo.end(); it++ )
         {
             go = *it;
-            item = go->toJson();
+            item = go->toJson( omitDefaultValues );
             if( !item.isNull() )
                 root.append( item );
         }
@@ -581,6 +612,15 @@ namespace Ptakopysk
         return false;
     }
 
+    bool GameManager::containsGameObject( GameObject* go, bool prefab )
+    {
+        GameObject::List& cgo = prefab ? m_prefabGameObjects : m_gameObjects;
+        for( GameObject::List::iterator it = cgo.begin(); it != cgo.end(); it++ )
+            if( *it == go || (*it)->containsGameObject( go ) )
+                return true;
+        return false;
+    }
+
     GameObject* GameManager::getGameObject( const std::string& id, bool prefab )
     {
         GameObject::List& cgo = prefab ? m_prefabGameObjects : m_gameObjects;
@@ -628,12 +668,24 @@ namespace Ptakopysk
         return cgo.end();
     }
 
+    GameObject* GameManager::gameObjectAt( unsigned int index )
+    {
+        if( index >= m_gameObjects.size() )
+            return 0;
+        unsigned int i = 0;
+        for( GameObject::List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++, i++ )
+            if( i == index )
+                return *it;
+        return 0;
+    }
+
     GameObject* GameManager::instantiatePrefab( const std::string& id )
     {
         GameObject* p = getGameObject( id, true );
         if( !p )
             return 0;
         GameObject* go = xnew GameObject();
+        go->setInstanceOf( p );
         p->onDuplicate( go );
         return go;
     }
@@ -659,7 +711,7 @@ namespace Ptakopysk
             (*it)->onUpdate( dt, sf::Transform::Identity, sort );
     }
 
-    void GameManager::processRender( sf::RenderTarget* target, const sf::Transform& trans )
+    void GameManager::processRender( sf::RenderTarget* target )
     {
         if( !target )
             target = m_renderWindow;
@@ -675,6 +727,21 @@ namespace Ptakopysk
         target->setView( target->getDefaultView() );
         if( Camera::s_currentRT )
             Camera::s_currentRT->display();
+    }
+
+    void GameManager::processRenderEditor( sf::View& view, sf::RenderTarget* target )
+    {
+        if( !target )
+            target = m_renderWindow;
+        if( !target )
+        {
+            XWARNING( "Cannot process render without target!" );
+            return;
+        }
+        target->setView( view );
+        for( GameObject::List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            (*it)->onRenderEditor( target );
+        target->setView( view );
     }
 
     void GameManager::processAdding()

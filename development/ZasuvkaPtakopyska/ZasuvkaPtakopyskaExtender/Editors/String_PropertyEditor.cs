@@ -13,13 +13,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
     {
         private MetroTextBox m_textBox;
 
-        public String_PropertyEditor(object propertyOwner, string propertyName)
-            : base(propertyOwner, propertyName)
-        {
-            InitializeComponent();
-        }
-
-        public String_PropertyEditor(Dictionary<string, object> properties, string propertyName)
+        public String_PropertyEditor(Dictionary<string, string> properties, string propertyName)
             : base(properties, propertyName)
         {
             InitializeComponent();

@@ -23,14 +23,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
             }
         }
         
-        public EnumPropertyEditor(object propertyOwner, string propertyName, string[] values)
-            : base(propertyOwner, propertyName)
-        {
-            m_values = values;
-            InitializeComponent();
-        }
-
-        public EnumPropertyEditor(Dictionary<string, object> properties, string propertyName, string[] values)
+        public EnumPropertyEditor(Dictionary<string, string> properties, string propertyName, string[] values)
             : base(properties, propertyName)
         {
             m_values = values;

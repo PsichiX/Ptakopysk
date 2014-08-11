@@ -8,12 +8,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
     {
         private static readonly string[] VALUES = new string[] { "mHierarchy", "mParent", "mGlobal" };
 
-        public TransformModeType_PropertyEditor(object propertyOwner, string propertyName)
-            : base(propertyOwner, propertyName, VALUES)
-        {
-        }
-
-        public TransformModeType_PropertyEditor(Dictionary<string, object> properties, string propertyName)
+        public TransformModeType_PropertyEditor(Dictionary<string, string> properties, string propertyName)
             : base(properties, propertyName, VALUES)
         {
         }

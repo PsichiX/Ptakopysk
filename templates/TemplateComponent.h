@@ -38,9 +38,7 @@ protected:
 	virtual void onUpdate( float dt );
 
 private:
-	//<TEMPLATE
 	float m_value;
-	//TEMPLATE>
 };
 
 #endif

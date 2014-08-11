@@ -12,7 +12,6 @@ using ZasuvkaPtakopyskaExtender;
 using System.Diagnostics;
 using ZasuvkaPtakopyskaExtender.Editors;
 using System.Reflection;
-using ZasuvkaPtakopyskaExtender.Visualizers;
 
 namespace ZasuvkaPtakopyska
 {
@@ -110,13 +109,19 @@ namespace ZasuvkaPtakopyska
             Size = new Size(800, 600);
             RefreshAppTitle();
 
+            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+                PropertyEditorsManager.Instance.RegisterPropertyEditorsFromAssembly(assembly);
+
             m_projectFileSystemWatcher = new FileSystemWatcher();
+            m_projectFileSystemWatcher.IncludeSubdirectories = true;
             m_projectFileSystemWatcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
             m_projectFileSystemWatcher.Changed += new FileSystemEventHandler(m_fileSystemWatcher_Changed);
             m_projectFileSystemWatcher.Created += new FileSystemEventHandler(m_fileSystemWatcher_Created);
             m_projectFileSystemWatcher.Deleted += new FileSystemEventHandler(m_fileSystemWatcher_Deleted);
             m_projectFileSystemWatcher.Renamed += new RenamedEventHandler(m_fileSystemWatcher_Renamed);
+
             m_sdkFileSystemWatcher = new FileSystemWatcher();
+            m_sdkFileSystemWatcher.IncludeSubdirectories = true;
             m_sdkFileSystemWatcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
             m_sdkFileSystemWatcher.Changed += new FileSystemEventHandler(m_fileSystemWatcher_Changed);
             m_sdkFileSystemWatcher.Created += new FileSystemEventHandler(m_fileSystemWatcher_Created);
@@ -124,12 +129,6 @@ namespace ZasuvkaPtakopyska
             m_sdkFileSystemWatcher.Renamed += new RenamedEventHandler(m_fileSystemWatcher_Renamed);
 
             InitializeMainPanel();
-
-            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                PropertyEditorsManager.Instance.RegisterPropertyEditorsFromAssembly(assembly);
-                ComponentVisualizersManager.Instance.RegisterComponentVisualizersFromAssembly(assembly);
-            }
         }
 
         #endregion
@@ -177,20 +176,32 @@ namespace ZasuvkaPtakopyska
             }
         }
 
-        public void ExploreGameObjectProperties(SceneModel.GameObject gameObject, SceneModel.Assets assets)
+        public void ReloadScene()
+        {
+            if (m_scenePage != null)
+                m_scenePage.ReloadScene();
+        }
+
+        public void RefreshSceneView()
+        {
+            if (m_scenePage != null)
+                m_scenePage.RefreshSceneView();
+        }
+
+        public void ExploreGameObjectProperties(int handle, bool isPrefab)
         {
             if (m_rightPanel == null)
                 return;
 
             m_rightPanel.Content.Controls.Clear();
 
-            if (gameObject == null)
-                return;
-
-            GameObjectPropertiesEditor editor = new GameObjectPropertiesEditor(gameObject, assets);
-            editor.Dock = DockStyle.Fill;
-            m_rightPanel.Content.Controls.Add(editor);
-            m_rightPanel.Unroll();
+            if (handle != 0)
+            {
+                GameObjectPropertiesEditor editor = new GameObjectPropertiesEditor(handle, isPrefab);
+                editor.Dock = DockStyle.Fill;
+                m_rightPanel.Content.Controls.Add(editor);
+                m_rightPanel.Unroll();
+            }
         }
 
         public void WatchProjectFileSystem()
@@ -220,7 +231,7 @@ namespace ZasuvkaPtakopyska
 
         public void UnwatchSdkFileSystem()
         {
-            m_projectFileSystemWatcher.EnableRaisingEvents = false;
+            m_sdkFileSystemWatcher.EnableRaisingEvents = false;
         }
 
         public void InitializeGameEditorPages()
@@ -261,7 +272,7 @@ namespace ZasuvkaPtakopyska
 
             if (m_isActive || forceExecute)
             {
-                this.doOnUIThread(() => this.OnAction(action));
+                this.DoOnUiThread(() => this.OnAction(action));
                 return true;
             }
             else
@@ -288,7 +299,7 @@ namespace ZasuvkaPtakopyska
             lock (m_actionsQueue)
             {
                 foreach (Action action in m_actionsQueue)
-                    this.doOnUIThread(() => this.OnAction(action));
+                    this.DoOnUiThread(() => this.OnAction(action));
                 m_actionsQueue.Clear();
             }
         }
@@ -411,6 +422,12 @@ namespace ZasuvkaPtakopyska
                     }
                 }
             }
+        }
+
+        public void RebuildEditorComponents()
+        {
+            if (m_projectManagerPanel != null)
+                m_projectManagerPanel.RebuildEditorComponents();
         }
 
         #endregion
@@ -678,6 +695,36 @@ namespace ZasuvkaPtakopyska
                         m_projectManagerPanel.RebuildList();
                 }
             }
+            else if (action.Id == "EditorCbpChanged")
+            {
+                Console.WriteLine("Editor CBP project file changed!");
+                if (m_buildPage != null && !m_buildPage.IsBatchProcessRunning && ProjectModel != null && !string.IsNullOrEmpty(ProjectModel.EditorCbpPath))
+                {
+                    if (!string.IsNullOrEmpty(ProjectModel.EditorComponentsPluginPath))
+                        PtakopyskInterface.Instance.PluginUnloadComponentsByPath(
+                            ProjectModel.WorkingDirectory + @"\" + ProjectModel.EditorComponentsPluginPath
+                            );
+                    m_buildPage.BatchOperationProject(
+                        BuildPageControl.BatchOperationMode.Build,
+                        null,
+                        ProjectModel.WorkingDirectory + @"\" + ProjectModel.EditorCbpPath
+                        );
+                }
+            }
+            else if (action.Id == "EditorComponentsPluginChanged")
+            {
+                Console.WriteLine("Editor components plugin changed!");
+                if (ProjectModel != null && !string.IsNullOrEmpty(ProjectModel.EditorComponentsPluginPath))
+                {
+                    string pluginPath = ProjectModel.WorkingDirectory + @"\" + ProjectModel.EditorComponentsPluginPath;
+                    PtakopyskInterface.Instance.PluginUnloadComponentsByPath(pluginPath);
+                    PtakopyskInterface.Instance.PluginLoadComponents(pluginPath);
+                    List<string> clist = PtakopyskInterface.Instance.GetComponentsIds();
+                    foreach (string c in clist)
+                        Console.WriteLine(">>> Registered component: " + c);
+                    ReloadScene();
+                }
+            }
             else if (action.Id == "LoadMetaData" && action.Params != null && action.Params.Length > 0)
             {
                 string path = action.Params[0] as string;
@@ -696,7 +743,7 @@ namespace ZasuvkaPtakopyska
                             MetaComponentsManager.Instance.RegisterMetaComponent(meta);
                             ProjectModel.MetaComponentPaths.Add(path, meta);
                             foreach (MetaProperty prop in meta.Properties)
-                                if(PropertyEditorsManager.Instance.FindPropertyEditorByValueType(prop.ValueType) == null)
+                                if (PropertyEditorsManager.Instance.FindPropertyEditorByValueType(prop.ValueType) == null)
                                     Console.WriteLine("Property editor for type: \"{0}\" (component: \"{1}\", property: \"{2}\") not found!", prop.ValueType, meta.Name, prop.Name);
                         }
                     }
@@ -715,6 +762,11 @@ namespace ZasuvkaPtakopyska
                     if (m_projectManagerPanel != null)
                         m_projectManagerPanel.RebuildList();
                 }
+            }
+            else if (action.Id == "GameObjectIdChanged" && action.Params != null && action.Params.Length > 0)
+            {
+                if (m_scenePage != null)
+                    m_scenePage.SceneTreeChangeGameObjectId((int)action.Params[0]);
             }
         }
 
@@ -786,6 +838,7 @@ namespace ZasuvkaPtakopyska
         {
             m_isActive = true;
             PerformPendingActions();
+            Invalidate(true);
         }
 
         private void m_mainPanelTabs_Selected(object sender, TabControlEventArgs e)
@@ -805,6 +858,10 @@ namespace ZasuvkaPtakopyska
             {
                 if (e.FullPath == ProjectModel.WorkingDirectory + @"\" + ProjectModel.CbpPath)
                     DoAction(new Action("CbpChanged"));
+                else if (e.FullPath == ProjectModel.WorkingDirectory + @"\" + ProjectModel.EditorCbpPath)
+                    DoAction(new Action("EditorCbpChanged"));
+                else if (e.FullPath == ProjectModel.WorkingDirectory + @"\" + ProjectModel.EditorComponentsPluginPath)
+                    DoAction(new Action("EditorComponentsPluginChanged"));
                 else if (Path.GetExtension(e.FullPath) == ".h" && ProjectModel.Files.Contains(e.FullPath))
                     Parallel.Invoke(() => GenerateMetaFile(e.FullPath));
             }
@@ -814,7 +871,11 @@ namespace ZasuvkaPtakopyska
         {
             if (ProjectModel != null)
             {
-                if (Path.GetExtension(e.FullPath) == ".h" && ProjectModel.Files.Contains(e.FullPath))
+                if (e.FullPath == ProjectModel.WorkingDirectory + @"\" + ProjectModel.EditorCbpPath)
+                    DoAction(new Action("EditorCbpChanged"));
+                else if (e.FullPath == ProjectModel.WorkingDirectory + @"\" + ProjectModel.EditorComponentsPluginPath)
+                    DoAction(new Action("EditorComponentsPluginChanged"));
+                else if (Path.GetExtension(e.FullPath) == ".h" && ProjectModel.Files.Contains(e.FullPath))
                     Parallel.Invoke(() => GenerateMetaFile(e.FullPath));
             }
         }

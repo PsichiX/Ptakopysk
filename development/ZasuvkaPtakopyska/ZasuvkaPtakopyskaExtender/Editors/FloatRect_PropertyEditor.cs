@@ -16,13 +16,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
         private MetroTextBox m_widthTextBox;
         private MetroTextBox m_heightTextBox;
 
-        public FloatRect_PropertyEditor(object propertyOwner, string propertyName)
-            : base(propertyOwner, propertyName)
-        {
-            InitializeComponent();
-        }
-
-        public FloatRect_PropertyEditor(Dictionary<string, object> properties, string propertyName)
+        public FloatRect_PropertyEditor(Dictionary<string, string> properties, string propertyName)
             : base(properties, propertyName)
         {
             InitializeComponent();
@@ -33,17 +27,22 @@ namespace ZasuvkaPtakopyskaExtender.Editors
             if (!ValidateValue())
                 return;
 
-            m_leftTextBox.Text = Value[0].ToString();
-            m_topTextBox.Text = Value[1].ToString();
-            m_widthTextBox.Text = Value[2].ToString();
-            m_heightTextBox.Text = Value[3].ToString();
+            var ov = Value;
+            m_leftTextBox.Text = ov[0].ToString();
+            m_topTextBox.Text = ov[1].ToString();
+            m_widthTextBox.Text = ov[2].ToString();
+            m_heightTextBox.Text = ov[3].ToString();
         }
 
         private bool ValidateValue()
         {
-            if (Value == null && DefaultValue == null)
+            var ov = Value;
+            if (ov == null)
+            {
                 Value = new List<float>(DefaultValue);
-            return Value != null && Value.Count >= 4;
+                ov = Value;
+            }
+            return ov != null && ov.Count >= 4;
         }
 
         private void InitializeComponent()
@@ -60,7 +59,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
 
             m_leftTextBox = new MetroTextBox();
             MetroSkinManager.ApplyMetroStyle(m_leftTextBox);
-            m_leftTextBox.Width = Width;
+            m_leftTextBox.Width = Width - label.Width;
             m_leftTextBox.Top = Height;
             m_leftTextBox.Left = label.Width;
             m_leftTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
@@ -79,7 +78,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
 
             m_topTextBox = new MetroTextBox();
             MetroSkinManager.ApplyMetroStyle(m_topTextBox);
-            m_topTextBox.Width = Width;
+            m_topTextBox.Width = Width - label.Width;
             m_topTextBox.Top = Height;
             m_topTextBox.Left = label.Width;
             m_topTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
@@ -98,7 +97,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
 
             m_widthTextBox = new MetroTextBox();
             MetroSkinManager.ApplyMetroStyle(m_widthTextBox);
-            m_widthTextBox.Width = Width;
+            m_widthTextBox.Width = Width - label.Width;
             m_widthTextBox.Top = Height;
             m_widthTextBox.Left = label.Width;
             m_widthTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
@@ -117,7 +116,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
 
             m_heightTextBox = new MetroTextBox();
             MetroSkinManager.ApplyMetroStyle(m_heightTextBox);
-            m_heightTextBox.Width = Width;
+            m_heightTextBox.Width = Width - label.Width;
             m_heightTextBox.Top = Height;
             m_heightTextBox.Left = label.Width;
             m_heightTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
@@ -131,10 +130,11 @@ namespace ZasuvkaPtakopyskaExtender.Editors
         {
             if (!ValidateValue())
                 return;
-            
-            float v = Value[0];
+
+            var ov = Value;
+            float v = ov[0];
             if (float.TryParse(m_leftTextBox.Text, out v))
-                Value[0] = v;
+                Value = new List<float>(new float[] { v, ov[1], ov[2], ov[3] });
         }
 
         private void m_topTextBox_TextChanged(object sender, EventArgs e)
@@ -142,9 +142,10 @@ namespace ZasuvkaPtakopyskaExtender.Editors
             if (!ValidateValue())
                 return;
 
-            float v = Value[1];
+            var ov = Value;
+            float v = ov[1];
             if (float.TryParse(m_topTextBox.Text, out v))
-                Value[1] = v;
+                Value = new List<float>(new float[] { ov[0], v, ov[2], ov[3] });
         }
 
         private void m_widthTextBox_TextChanged(object sender, EventArgs e)
@@ -152,9 +153,10 @@ namespace ZasuvkaPtakopyskaExtender.Editors
             if (!ValidateValue())
                 return;
 
+            var ov = Value;
             float v = Value[2];
             if (float.TryParse(m_topTextBox.Text, out v))
-                Value[2] = v;
+                Value = new List<float>(new float[] { ov[0], ov[1], v, ov[3] });
         }
 
         private void m_heightTextBox_TextChanged(object sender, EventArgs e)
@@ -162,9 +164,10 @@ namespace ZasuvkaPtakopyskaExtender.Editors
             if (!ValidateValue())
                 return;
 
+            var ov = Value;
             float v = Value[3];
             if (float.TryParse(m_topTextBox.Text, out v))
-                Value[3] = v;
+                Value = new List<float>(new float[] { ov[0], ov[1], ov[2], v });
         }
     }
 }

@@ -41,12 +41,6 @@
     <Reference Include="PtakopyskMetaGenerator">
       <HintPath>..\PtakopyskMetaGenerator\bin\Release\PtakopyskMetaGenerator.dll</HintPath>
     </Reference>
-    <Reference Include="sfmlnet-graphics-2">
-      <HintPath>..\..\requirements\SFML.Net\Managed\sfmlnet-graphics-2.dll</HintPath>
-    </Reference>
-    <Reference Include="sfmlnet-window-2">
-      <HintPath>..\..\requirements\SFML.Net\Managed\sfmlnet-window-2.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -58,19 +52,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ControlExtension.cs" />
     <Compile Include="Editors\AssetPropertyEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Editors\Bool_PropertyEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Editors\CollectionPropertyEditorUtils.cs" />
     <Compile Include="Editors\Color_PropertyEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editors\CollectionPropertyEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editors\Material_PropertyEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Editors\FontAsset_PropertyEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Editors\IAssetsModelRequired.cs" />
+    <Compile Include="Editors\IEditorJsonValueChangedCallback.cs" />
     <Compile Include="Editors\MusicAsset_PropertyEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -130,15 +132,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="SceneModel.cs" />
+    <Compile Include="PtakopyskInterface.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="Visualizers\CameraComponentVisualizer.cs" />
-    <Compile Include="Visualizers\SpriteRendererComponentVisualizer.cs" />
-    <Compile Include="Visualizers\DefaultComponentVisualizer.cs" />
-    <Compile Include="Visualizers\IComponentVisualizer.cs" />
-    <Compile Include="Visualizers\IVisualizerParent.cs" />
-    <Compile Include="Visualizers\ComponentVisualizersManager.cs" />
-    <Compile Include="Visualizers\PtakopyskComponentVisualizerAttribute.cs" />
     <Compile Include="ZasuvkaPtakopyskaExtenderAttribute.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -31,12 +31,15 @@ namespace Ptakopysk
 
     public:
         typedef std::list< GameObject* > List;
+        typedef std::pair< XeCore::Common::IRtti::Derivation, Component* > ComponentDataPair;
+        typedef std::list< ComponentDataPair > Components;
 
         GameObject( const std::string& id = "" );
         virtual ~GameObject();
 
         FORCEINLINE bool isDestroying() { return m_isDestroying; };
         FORCEINLINE bool isPrefab() { return m_prefab; };
+        FORCEINLINE GameObject* getPrefab() { return m_instanceOf; };
         FORCEINLINE std::string getId() { return m_id; };
         FORCEINLINE void setId( std::string id ) { m_id = id; };
         FORCEINLINE bool isActive() { return m_active; };
@@ -50,7 +53,7 @@ namespace Ptakopysk
         GameManager* getGameManagerRoot();
 
         void fromJson( const Json::Value& root );
-        Json::Value toJson();
+        Json::Value toJson( bool omitDefaultValues = false );
         void duplicate( GameObject* from );
 
         void addComponent( Component* c );
@@ -66,8 +69,12 @@ namespace Ptakopysk
         Component* getComponent( XeCore::Common::IRtti::Derivation d );
         template< typename T >
         FORCEINLINE T* getComponent() { return (T*)getComponent( RTTI_CLASS_TYPE( T ) ); };
+        Component* getOrCreateComponent( XeCore::Common::IRtti::Derivation d );
         template< typename T >
-        T* getOrCreateComponent();
+        FORCEINLINE T* getOrCreateComponent() { return (T*)getOrCreateComponent( RTTI_CLASS_TYPE( T ) ); };
+        FORCEINLINE unsigned int componentsCount() { return m_components.size(); };
+        FORCEINLINE Components::iterator componentAtBegin() { return m_components.begin(); };
+        FORCEINLINE Components::iterator componentAtEnd() { return m_components.end(); };
         void processRemovingDelayedComponents();
         bool isWaitingToRemoveDelayedComponent( Component* c );
         bool isWaitingToRemoveDelayedComponent( XeCore::Common::IRtti::Derivation d );
@@ -80,6 +87,7 @@ namespace Ptakopysk
         void removeAllGameObjects();
         bool hasGameObject( GameObject* go );
         bool hasGameObject( const std::string& id );
+        bool containsGameObject( GameObject* go );
         GameObject* getGameObject( const std::string& id );
         GameObject* findGameObject( const std::string& path );
         FORCEINLINE unsigned int gameObjectsCount() { return m_gameObjects.size(); };
@@ -106,22 +114,22 @@ namespace Ptakopysk
         void onEvent( const sf::Event& event );
         void onUpdate( float dt, const sf::Transform& trans, bool sort = true );
         void onRender( sf::RenderTarget*& target );
+        void onRenderEditor( sf::RenderTarget* target );
         void onCollide( GameObject* other, bool beginOrEnd, b2Contact* contact );
         void onJointGoodbye( b2Joint* joint );
         void onFixtureGoodbye( b2Fixture* fixture );
 
     private:
-        typedef std::pair< XeCore::Common::IRtti::Derivation, Component* > ComponentDataPair;
-        typedef std::list< ComponentDataPair > Components;
-
         FORCEINLINE void setGameManager( GameManager* gm ) { m_gameManager = gm; };
         FORCEINLINE void setParent( GameObject* go ) { m_parent = go; };
+        FORCEINLINE void setInstanceOf( GameObject* go ) { m_instanceOf = go; };
         void setPrefab( bool mode );
         void setDestroying( bool mode );
         GameObject* findGameObjectInPartOfPath( const std::string& path, unsigned int from );
 
         GameManager* m_gameManager;
         GameObject* m_parent;
+        GameObject* m_instanceOf;
         bool m_prefab;
         std::string m_id;
         bool m_active;
@@ -136,7 +144,5 @@ namespace Ptakopysk
     };
 
 }
-
-#include "GameObject.inl"
 
 #endif

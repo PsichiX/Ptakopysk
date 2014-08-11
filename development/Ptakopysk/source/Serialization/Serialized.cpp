@@ -73,12 +73,19 @@ namespace Ptakopysk
         return s_customSerializers.count( id ) ? s_customSerializers[ id ] : 0;
     }
 
-    void Serialized::serialize( Json::Value& dstRoot )
+    void Serialized::serialize( Json::Value& dstRoot, Serialized* omitFrom )
     {
         Json::Value item;
+        Json::Value itemOmit;
         for( std::vector< std::string >::iterator it = m_properties.begin(); it != m_properties.end(); it++ )
         {
             item = onSerialize( *it );
+            if( omitFrom )
+            {
+                itemOmit = omitFrom->onSerialize( *it );
+                if( itemOmit.isNull() || itemOmit == item )
+                    continue;
+            }
             if( !item.isNull() )
                 dstRoot[ *it ] = item;
         }
@@ -94,6 +101,30 @@ namespace Ptakopysk
             item = srcRoot[ *it ];
             if( !item.isNull() )
                 onDeserialize( *it, item );
+        }
+    }
+
+    void Serialized::serializeProperty( const std::string& name, Json::Value& dstRoot )
+    {
+        for( std::vector< std::string >::iterator it = m_properties.begin(); it != m_properties.end(); it++ )
+        {
+            if( *it == name )
+            {
+                dstRoot = onSerialize( *it );
+                return;
+            }
+        }
+    }
+
+    void Serialized::deserializeProperty( const std::string& name, const Json::Value& srcRoot )
+    {
+        for( std::vector< std::string >::iterator it = m_properties.begin(); it != m_properties.end(); it++ )
+        {
+            if( *it == name )
+            {
+                onDeserialize( *it, srcRoot );
+                return;
+            }
         }
     }
 

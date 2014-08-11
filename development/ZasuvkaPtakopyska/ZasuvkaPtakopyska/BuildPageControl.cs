@@ -22,7 +22,7 @@ namespace ZasuvkaPtakopyska
             Rebuild,
             Clean
         }
-        
+
         #endregion
 
 
@@ -31,7 +31,7 @@ namespace ZasuvkaPtakopyska
 
         private static readonly Size DEFAULT_TILE_SIZE = new Size(128, 128);
         private static readonly Point DEFAULT_TILE_SEPARATOR = new Point(8, 8);
-        
+
         #endregion
 
 
@@ -48,7 +48,15 @@ namespace ZasuvkaPtakopyska
         private MetroTileIcon m_runTile;
         private MetroTileIcon m_syncTile;
         private Queue<Action> m_afterBatchBuildQueue = new Queue<Action>();
-        
+
+        #endregion
+
+
+
+        #region Public Properties.
+
+        public bool IsBatchProcessRunning { get { return m_runningProcess != null; } }
+
         #endregion
 
 
@@ -59,7 +67,7 @@ namespace ZasuvkaPtakopyska
         {
             MetroSkinManager.ApplyMetroStyle(this);
             AutoScroll = true;
-            
+
             MetroLabel title = new MetroLabel();
             MetroSkinManager.ApplyMetroStyle(title);
             title.Text = "Active target: ";
@@ -160,7 +168,7 @@ namespace ZasuvkaPtakopyska
                 m_activeBuildComboBox.DataSource = null;
         }
 
-        public void BatchOperationProject(BatchOperationMode mode, Action afterBuildAction = null)
+        public void BatchOperationProject(BatchOperationMode mode, Action afterBuildAction = null, string customCbpPath = null)
         {
             MainForm mainForm = FindForm() as MainForm;
             if (mainForm == null || mainForm.SettingsModel == null || mainForm.ProjectModel == null)
@@ -171,7 +179,7 @@ namespace ZasuvkaPtakopyska
                 MetroMessageBox.Show(mainForm, "Cannot run " + mode.ToString() + " operation because another operation is running!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            
+
             string cbExe = mainForm.SettingsModel.CodeBlocksIdePath + @"\codeblocks.exe";
             if (!File.Exists(cbExe))
             {
@@ -188,12 +196,13 @@ namespace ZasuvkaPtakopyska
                 op = "--clean";
 
             string target = "--target=\"" + mainForm.ProjectModel.ActiveTarget + "\"";
-            
+            string cbpPath = string.IsNullOrEmpty(customCbpPath) ? mainForm.ProjectModel.CbpPath : customCbpPath;
+
             Process proc = new Process();
             ProcessStartInfo info = new ProcessStartInfo();
             info.WorkingDirectory = Path.GetFullPath(mainForm.ProjectModel.WorkingDirectory);
             info.FileName = Path.GetFullPath(cbExe);
-            info.Arguments = "/ns /na /nd --no-batch-window-close " + target + " " + op + " " + mainForm.ProjectModel.CbpPath;
+            info.Arguments = "/ns /na /nd --no-batch-window-close " + target + " " + op + " " + cbpPath;
             info.UseShellExecute = false;
             info.RedirectStandardOutput = true;
             proc.StartInfo = info;
@@ -268,7 +277,7 @@ namespace ZasuvkaPtakopyska
             proc.StartInfo = info;
             proc.Start();
         }
-        
+
         #endregion
 
 
@@ -283,7 +292,18 @@ namespace ZasuvkaPtakopyska
                 && mainForm.ProjectModel.BuildTargets != null
                 && mainForm.ProjectModel.BuildTargets.Exists(item => item[0] == m_activeBuildComboBox.SelectedValue as string)
                 )
-                mainForm.ProjectModel.ActiveTarget = mainForm.ProjectModel.BuildTargets.Find(item => item[0] == m_activeBuildComboBox.SelectedValue as string)[0];
+            {
+                string[] target = mainForm.ProjectModel.BuildTargets.Find(item => item[0] == m_activeBuildComboBox.SelectedValue as string);
+                if (target != null)
+                {
+                    string lastTarget = mainForm.ProjectModel.ActiveTarget;
+                    mainForm.ProjectModel.ActiveTarget = target[0];
+                    mainForm.ProjectModel.ActiveTargetWorkingDirectory = target[2];
+                    mainForm.ReloadScene();
+                    if (mainForm.ProjectModel.ActiveTarget != lastTarget)
+                        mainForm.RebuildEditorComponents();
+                }
+            }
         }
 
         private void m_buildTile_Click(object sender, EventArgs e)
@@ -318,7 +338,8 @@ namespace ZasuvkaPtakopyska
 
         private void proc_Exited(object sender, EventArgs e)
         {
-            m_progressSpinner.doOnUIThread(() => {
+            m_progressSpinner.DoOnUiThread(() =>
+            {
                 m_progressSpinner.Visible = false;
             });
             if (m_runningProcess != null)
@@ -334,12 +355,15 @@ namespace ZasuvkaPtakopyska
                         MetroMessageBox.Show(mainForm, log, "Operation Error: " + m_runningProcess.ExitCode.ToString(), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-            
+
             lock (m_afterBatchBuildQueue)
             {
-                Action action = m_afterBatchBuildQueue.Dequeue();
-                if (m_runningProcess.ExitCode == 0 && action != null)
-                    action();
+                if (m_afterBatchBuildQueue.Count > 0)
+                {
+                    Action action = m_afterBatchBuildQueue.Dequeue();
+                    if (m_runningProcess.ExitCode == 0 && action != null)
+                        action();
+                }
             }
 
             m_runningProcess = null;

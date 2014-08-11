@@ -54,7 +54,7 @@ namespace Ptakopysk
         FORCEINLINE GameObject* getGameObject() { return m_gameObject; };
 
         void fromJson( const Json::Value& root );
-        Json::Value toJson();
+        Json::Value toJson( Component* omitFrom = 0 );
 
         XeCore::Common::Property< Type, Component > TypeFlags;
 
@@ -77,6 +77,7 @@ namespace Ptakopysk
         virtual void onUpdate( float dt ) {};
         virtual void onTransform( const sf::Transform& inTrans, sf::Transform& outTrans ) {};
         virtual void onRender( sf::RenderTarget*& target ) {};
+        virtual void onRenderEditor( sf::RenderTarget* target ) { onRender( target ); };
         virtual void onCollide( GameObject* other, bool beginOrEnd, b2Contact* contact ) {};
         virtual void onJointGoodbye( b2Joint* joint ) {};
         virtual void onFixtureGoodbye( b2Fixture* fixture ) {};

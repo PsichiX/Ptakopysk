@@ -39,14 +39,17 @@ namespace Ptakopysk
         deserialize( properties );
     }
 
-    Json::Value Component::toJson()
+    Json::Value Component::toJson( Component* omitFrom )
     {
         Json::Value root;
         std::string typeId = std::string( getName() );
         if( GameManager::findComponentFactoryTypeById( typeId ) != getType() )
             return Json::Value::null;
         root[ "type" ] = typeId;
-        serialize( root[ "properties" ] );
+        Json::Value properties;
+        serialize( properties, omitFrom );
+        if( !properties.isNull() )
+            root[ "properties" ] = properties;
         return root;
     }
 

@@ -52,7 +52,6 @@ void TemplateComponent::onDuplicate( Component* dst )
 
 void TemplateComponent::onUpdate( float dt )
 {
-	//<TEMPLATE
 	m_value += dt;
 	TextRenderer* text = getGameObject()->getComponent< TextRenderer >();
 	SpriteRenderer* spr = getGameObject()->getComponent< SpriteRenderer >();
@@ -65,5 +64,4 @@ void TemplateComponent::onUpdate( float dt )
 	}
 	else if( spr && trans )
         trans->Rotation = m_value * 90.0f;
-	//TEMPLATE>
 }

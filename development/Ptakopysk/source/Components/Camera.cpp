@@ -184,4 +184,8 @@ namespace Ptakopysk
         }
     }
 
+    void Camera::onRenderEditor( sf::RenderTarget* target )
+    {
+    }
+
 }

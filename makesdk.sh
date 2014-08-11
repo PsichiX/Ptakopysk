@@ -11,6 +11,7 @@ CP_BOX2D=(1 1 1)
 CP_JSONCPP=(1 1 1)
 CP_SFML=(1 1 1)
 CP_XECORE=(1 1 1)
+CP_INTERFACE=(1 1 1)
 
 TYPE=-1
 MODE=1
@@ -72,6 +73,12 @@ for arg in ${@}; do
 	else
 	  CP_XECORE[${TYPE}]=${MODE}
 	fi
+  elif [ ${arg} = "interface" ] || [ ${arg} = "i" ]; then
+    if [ ${TYPE} = -1 ]; then
+	  CP_INTERFACE=(${MODE} ${MODE} ${MODE})
+	else
+	  CP_INTERFACE[${TYPE}]=${MODE}
+	fi
   elif [ ${arg} = "-all" ] || [ ${arg} = "-a" ]; then
     if [ ${TYPE} = -1 ]; then
 	  CP_PTAKOPYSK=(${MODE} ${MODE} ${MODE})
@@ -79,12 +86,14 @@ for arg in ${@}; do
       CP_JSONCPP=(${MODE} ${MODE} ${MODE})
       CP_SFML=(${MODE} ${MODE} ${MODE})
       CP_XECORE=(${MODE} ${MODE} ${MODE})
+      CP_INTERFACE=(${MODE} ${MODE} ${MODE})
 	else
 	  CP_PTAKOPYSK[${TYPE}]=${MODE}
       CP_BOX2D[${TYPE}]=${MODE}
       CP_JSONCPP[${TYPE}]=${MODE}
       CP_SFML[${TYPE}]=${MODE}
       CP_XECORE[${TYPE}]=${MODE}
+      CP_INTERFACE[${TYPE}]=${MODE}
 	fi
   else
 	echo "Unknown parameter: ${arg}"
@@ -111,6 +120,10 @@ if [ ${DEBUG} = 1 ]; then
   done
   echo "XECORE:"
   for val in ${CP_XECORE[*]}; do
+    echo "${val}"
+  done
+  echo "INTERFACE:"
+  for val in ${CP_INTERFACE[*]}; do
     echo "${val}"
   done
 fi
@@ -147,6 +160,10 @@ fi
 if [ ${CP_XECORE[0]} = 1 ]; then
   cp -r ./development/requirements/xenon-core-3-sdk/Code/Engine/XenonCore3/include/* ./sdk/include/
 fi
+if [ ${CP_INTERFACE[0]} = 1 ]; then
+  mkdir -p ./sdk/include/PtakopyskInterface/
+  cp -r ./development/PtakopyskInterface/PtakopyskInterface.h ./sdk/include/PtakopyskInterface/
+fi
 
 # lib
 echo "Copying libs..."
@@ -169,6 +186,10 @@ fi
 if [ ${CP_XECORE[1]} = 1 ]; then
   cp ./development/requirements/xenon-core-3-sdk/Code/Engine/XenonCore3/libs/*.a ./sdk/lib/
 fi
+if [ ${CP_INTERFACE[1]} = 1 ]; then
+  cp ./development/PtakopyskInterface/bin/Debug/*.a ./sdk/lib/
+  cp ./development/PtakopyskInterface/bin/Release/*.a ./sdk/lib/
+fi
 
 # bin
 echo "Copying binaries..."
@@ -183,14 +204,15 @@ mkdir -p ./sdk/templates/
 cp ./templates/*.h ./sdk/templates/
 cp ./templates/*.cpp ./sdk/templates/
 cp ./templates/*.cbp ./sdk/templates/
+cp ./templates/make_new_project.sh ./sdk/templates/
+cp ./templates/make_new_component.sh ./sdk/templates/
+cp ./development/EditorComponentsTemplate/dllmain.cpp ./sdk/templates/dllmain.cpp
 mkdir -p ./sdk/templates/bin/
 cp ./templates/bin/*.exe ./sdk/templates/bin/
 cp ./templates/bin/*.dll ./sdk/templates/bin/
 cp ./templates/bin/*.png ./sdk/templates/bin/
 cp ./templates/bin/*.ttf ./sdk/templates/bin/
 cp ./templates/bin/template_game.json ./sdk/templates/bin/
-cp ./templates/make_new_project.sh ./sdk/templates/
-cp ./templates/make_new_component.sh ./sdk/templates/
 
 # IDE
 echo "Copying IDE..."

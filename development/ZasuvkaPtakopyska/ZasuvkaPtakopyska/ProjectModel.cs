@@ -20,6 +20,10 @@ namespace ZasuvkaPtakopyska
         #region Public Properties.
 
         public string CbpPath { get; set; }
+        [JsonIgnore]
+        public string EditorCbpPath { get; set; }
+        [JsonIgnore]
+        public string EditorComponentsPluginPath { get; set; }
         public int Version { get; set; }
         [JsonIgnore]
         public string Name { get; set; }
@@ -28,6 +32,7 @@ namespace ZasuvkaPtakopyska
         [JsonIgnore]
         public List<string[]> BuildTargets { get; set; }
         public string ActiveTarget { get; set; }
+        public string ActiveTargetWorkingDirectory { get; set; }
         [JsonIgnore]
         public List<string> Files { get; set; }
         [JsonIgnore]
@@ -42,11 +47,14 @@ namespace ZasuvkaPtakopyska
         public ProjectModel(string cbpPath = "")
         {
             CbpPath = cbpPath;
+            EditorCbpPath = "";
+            EditorComponentsPluginPath = "";
             Version = CURRENT_PROJECT_VERSION;
             Name = "";
             WorkingDirectory = "";
             BuildTargets = new List<string[]>();
             ActiveTarget = "";
+            ActiveTargetWorkingDirectory = "";
             Files = new List<string>();
             MetaComponentPaths = new Dictionary<string, MetaComponent>();
         }

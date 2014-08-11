@@ -48,13 +48,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
             set { m_rgbPicker.Color = value; m_aTrack.Value = value.A; }
         }
 
-        public Color_PropertyEditor(object propertyOwner, string propertyName)
-            : base(propertyOwner, propertyName)
-        {
-            InitializeComponent();
-        }
-
-        public Color_PropertyEditor(Dictionary<string, object> properties, string propertyName)
+        public Color_PropertyEditor(Dictionary<string, string> properties, string propertyName)
             : base(properties, propertyName)
         {
             InitializeComponent();
@@ -65,19 +59,19 @@ namespace ZasuvkaPtakopyskaExtender.Editors
             if (!ValidateValue())
                 return;
 
-            Color = Color.FromArgb(
-                Value[3],
-                Value[0],
-                Value[1],
-                Value[2]
-                );
+            var ov = Value;
+            Color = Color.FromArgb(ov[3], ov[0], ov[1], ov[2]);
         }
 
         private bool ValidateValue()
         {
-            if (Value == null && DefaultValue == null)
-                Value = new List<int>(DefaultValue);
-            return Value != null && Value.Count >= 4;
+            var ov = Value;
+            if (ov == null)
+            {
+                Value = DefaultValue;
+                ov = Value;
+            }
+            return ov != null && ov.Count >= 4;
         }
 
         private void InitializeComponent()
@@ -118,10 +112,8 @@ namespace ZasuvkaPtakopyskaExtender.Editors
         {
             int v = m_aTrack.Value;
             if (!int.TryParse(m_aTextBox.Text, out v))
-            {
-                //m_aTextBox.Text = v.ToString();
                 return;
-            }
+
             v = Math.Max(m_aTrack.Minimum, Math.Min(m_aTrack.Maximum, v));
 
             m_aTrack.ValueChanged -= new EventHandler(m_aTrack_ValueChanged);
@@ -131,7 +123,8 @@ namespace ZasuvkaPtakopyskaExtender.Editors
             if (!ValidateValue())
                 return;
 
-            Value[3] = m_aTrack.Value;
+            var ov = Value;
+            Value = new List<int>(new int[] { ov[0], ov[1], ov[2], m_aTrack.Value });
         }
 
         private void m_aTrack_ValueChanged(object sender, EventArgs e)
@@ -139,11 +132,12 @@ namespace ZasuvkaPtakopyskaExtender.Editors
             m_aTextBox.TextChanged -= new EventHandler(m_aTextBox_TextChanged);
             m_aTextBox.Text = m_aTrack.Value.ToString();
             m_aTextBox.TextChanged += new EventHandler(m_aTextBox_TextChanged);
-            
+
             if (!ValidateValue())
                 return;
 
-            Value[3] = m_aTrack.Value;
+            var ov = Value;
+            Value = new List<int>(new int[] { ov[0], ov[1], ov[2], m_aTrack.Value });
         }
 
         private void m_rgbPicker_ColorChanged(Color c)
@@ -151,9 +145,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
             if (!ValidateValue())
                 return;
 
-            Value[0] = Color.R;
-            Value[1] = Color.G;
-            Value[2] = Color.B;
+            Value = new List<int>(new int[] { Color.R, Color.G, Color.B, Value[3] });
         }
 
         private void m_rgbPicker_Click(object sender, EventArgs e)

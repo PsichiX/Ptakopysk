@@ -219,12 +219,12 @@ namespace ZasuvkaPtakopyska
             {
                 m_projectModel.ApplyToCbp(mainForm.SettingsModel);
 
+                mainForm.LoadSdkMetaFiles();
+                mainForm.GenerateProjectMetaFiles();
                 mainForm.InitializeGameEditorPages();
                 mainForm.SelectTabPage(MainForm.TAB_NAME_BUILD);
                 mainForm.AppTitleExtended = m_projectModel.Name;
                 mainForm.ProjectFilesViewer.RootPath = m_projectModel.WorkingDirectory;
-                mainForm.LoadSdkMetaFiles();
-                mainForm.GenerateProjectMetaFiles();
             }
         }
 
@@ -250,7 +250,7 @@ namespace ZasuvkaPtakopyska
                 mainForm.SelectTabPage(MainForm.TAB_NAME_PROJECT);
                 mainForm.AppTitleExtended = null;
                 mainForm.ProjectFilesViewer.RootPath = null;
-                mainForm.ExploreGameObjectProperties(null, null);
+                mainForm.ExploreGameObjectProperties(0, false);
             }
         }
         

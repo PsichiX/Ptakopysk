@@ -44,10 +44,13 @@ namespace Ptakopysk
         template< typename T >
         FORCEINLINE static T deserializeCustom( const std::string& id, const Json::Value& root );
 
+        FORCEINLINE std::vector< std::string >& accessPropertiesNames() { return m_properties; };
         FORCEINLINE void serializableProperty( const std::string& name );
         FORCEINLINE void notSerializableProperty( const std::string& name );
-        void serialize( Json::Value& dstRoot );
+        void serialize( Json::Value& dstRoot, Serialized* omitFrom = 0 );
         void deserialize( const Json::Value& srcRoot );
+        void serializeProperty( const std::string& name, Json::Value& dstRoot );
+        void deserializeProperty( const std::string& name, const Json::Value& srcRoot );
 
     protected:
         virtual Json::Value onSerialize( const std::string& property ) = 0;

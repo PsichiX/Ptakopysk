@@ -15,13 +15,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
         private MetroTextBox m_xTextBox;
         private MetroTextBox m_yTextBox;
 
-        public FloatVector2_PropertyEditor(object propertyOwner, string propertyName)
-            : base(propertyOwner, propertyName)
-        {
-            InitializeComponent();
-        }
-
-        public FloatVector2_PropertyEditor(Dictionary<string, object> properties, string propertyName)
+        public FloatVector2_PropertyEditor(Dictionary<string, string> properties, string propertyName)
             : base(properties, propertyName)
         {
             InitializeComponent();
@@ -38,9 +32,13 @@ namespace ZasuvkaPtakopyskaExtender.Editors
 
         private bool ValidateValue()
         {
-            if (Value == null && DefaultValue == null)
+            var ov = Value;
+            if (ov == null)
+            {
                 Value = new List<float>(DefaultValue);
-            return Value != null && Value.Count >= 2;
+                ov = Value;
+            }
+            return ov != null && ov.Count >= 2;
         }
 
         private void InitializeComponent()
@@ -57,7 +55,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
 
             m_xTextBox = new MetroTextBox();
             MetroSkinManager.ApplyMetroStyle(m_xTextBox);
-            m_xTextBox.Width = Width;
+            m_xTextBox.Width = Width - label.Width;
             m_xTextBox.Top = Height;
             m_xTextBox.Left = label.Width;
             m_xTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
@@ -76,7 +74,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
 
             m_yTextBox = new MetroTextBox();
             MetroSkinManager.ApplyMetroStyle(m_yTextBox);
-            m_yTextBox.Width = Width;
+            m_yTextBox.Width = Width - label.Width;
             m_yTextBox.Top = Height;
             m_yTextBox.Left = label.Width;
             m_yTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
@@ -91,9 +89,10 @@ namespace ZasuvkaPtakopyskaExtender.Editors
             if (!ValidateValue())
                 return;
 
-            float v = Value[0];
+            var ov = Value;
+            float v = ov[0];
             if (float.TryParse(m_xTextBox.Text, out v))
-                Value[0] = v;
+                Value = new List<float>(new float[] { v, ov[1] });
         }
 
         private void m_yTextBox_TextChanged(object sender, EventArgs e)
@@ -101,9 +100,10 @@ namespace ZasuvkaPtakopyskaExtender.Editors
             if (!ValidateValue())
                 return;
 
+            var ov = Value;
             float v = Value[1];
             if (float.TryParse(m_yTextBox.Text, out v))
-                Value[1] = v;
+                Value = new List<float>(new float[] { ov[0], v });
         }
     }
 }

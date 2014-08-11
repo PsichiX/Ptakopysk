@@ -9,13 +9,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
     {
         private MetroToggle m_toggle;
 
-        public Bool_PropertyEditor(object propertyOwner, string propertyName)
-            : base(propertyOwner, propertyName)
-        {
-            InitializeComponent();
-        }
-
-        public Bool_PropertyEditor(Dictionary<string, object> properties, string propertyName)
+        public Bool_PropertyEditor(Dictionary<string, string> properties, string propertyName)
             : base(properties, propertyName)
         {
             InitializeComponent();

@@ -21,6 +21,7 @@ namespace Ptakopysk
     , Owner( this, &GameObject::getGameManager, 0 )
     , m_gameManager( 0 )
     , m_parent( 0 )
+    , m_instanceOf( 0 )
     , m_prefab( false )
     , m_id( id )
     , m_active( true )
@@ -138,16 +139,25 @@ namespace Ptakopysk
         }
     }
 
-    Json::Value GameObject::toJson()
+    Json::Value GameObject::toJson( bool omitDefaultValues )
     {
+        GameManager* gm = getGameManagerRoot();
+        GameObject* prefab = gm && m_instanceOf && gm->containsGameObject( m_instanceOf, true ) ? m_instanceOf : 0;
         Json::Value root;
-        serialize( root[ "properties" ] );
+        if( prefab )
+            root[ "prefab" ] = Json::Value( prefab->getId() );
+        Json::Value properties;
+        serialize( properties, omitDefaultValues ? prefab : 0 );
+        if( !properties.isNull() )
+            root[ "properties" ] = properties;
         Json::Value components;
         Json::Value comp;
+        Component* compOmit;
         for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
         {
-            comp = it->second->toJson();
-            if( !comp.isNull() )
+            compOmit = omitDefaultValues && prefab ? prefab->getComponent( it->first ) : 0;
+            comp = it->second->toJson( compOmit );
+            if( !comp.isNull() && ( prefab ? comp.size() > 1 : true ) )
                 components.append( comp );
         }
         if( !components.isNull() )
@@ -160,11 +170,12 @@ namespace Ptakopysk
             for( List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
             {
                 go = *it;
-                item = go->toJson();
+                item = go->toJson( omitDefaultValues && prefab );
                 if( !item.isNull() )
                     gameObjects.append( item );
             }
-            root[ "gameObjects" ] = gameObjects;
+            if( !gameObjects.isNull() )
+                root[ "gameObjects" ] = gameObjects;
         }
         return root;
     }
@@ -277,6 +288,20 @@ namespace Ptakopysk
         return 0;
     }
 
+    Component* GameObject::getOrCreateComponent( XeCore::Common::IRtti::Derivation d )
+    {
+        Component* c = getComponent( d );
+        if( !c )
+        {
+            c = GameManager::buildComponent( d );
+            if( c && c->getType() == d )
+                addComponent( c );
+            else
+                DELETE_OBJECT( c );
+        }
+        return c;
+    }
+
     void GameObject::processRemovingDelayedComponents()
     {
         Component* c;
@@ -361,6 +386,14 @@ namespace Ptakopysk
     {
         for( List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
             if( (*it)->getId() == id )
+                return true;
+        return false;
+    }
+
+    bool GameObject::containsGameObject( GameObject* go )
+    {
+        for( List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            if( *it == go || (*it)->containsGameObject( go ) )
                 return true;
         return false;
     }
@@ -567,8 +600,33 @@ namespace Ptakopysk
                 (*it)->onRender( target );
                 it++;
             }
-            //for( List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
-            //    (*it)->onRender( target );
+        }
+    }
+
+    void GameObject::onRenderEditor( sf::RenderTarget* target )
+    {
+        if( m_active )
+        {
+            List::iterator it = m_gameObjects.begin();
+            while( it != m_gameObjects.end() )
+            {
+                if( (*it)->getOrder() <= 0 )
+                    break;
+                (*it)->onRenderEditor( target );
+                it++;
+            }
+            Component* c;
+            for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
+            {
+                c = it->second;
+                if( c->isActive() && c->getTypeFlags() & Component::tRender )
+                    c->onRenderEditor( target );
+            }
+            while( it != m_gameObjects.end() )
+            {
+                (*it)->onRenderEditor( target );
+                it++;
+            }
         }
     }
 

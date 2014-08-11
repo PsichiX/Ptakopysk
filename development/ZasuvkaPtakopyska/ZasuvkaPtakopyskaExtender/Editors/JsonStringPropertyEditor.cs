@@ -9,13 +9,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
     {
         private MetroTextBox m_textBox;
 
-        public JsonStringPropertyEditor(object propertyOwner, string propertyName)
-            : base(propertyOwner, propertyName)
-        {
-            InitializeComponent();
-        }
-
-        public JsonStringPropertyEditor(Dictionary<string, object> properties, string propertyName)
+        public JsonStringPropertyEditor(Dictionary<string, string> properties, string propertyName)
             : base(properties, propertyName)
         {
             InitializeComponent();

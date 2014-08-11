@@ -53,10 +53,10 @@ namespace Ptakopysk
 
         static void initialize();
         static void cleanup();
-        static void registerComponentFactory( const std::string& id, XeCore::Common::IRtti::Derivation type, Component::OnBuildComponentCallback builder );
-        static void unregisterComponentFactory( const std::string& id );
-        static void unregisterComponentFactory( XeCore::Common::IRtti::Derivation type );
-        static void unregisterComponentFactory( Component::OnBuildComponentCallback factory );
+        static bool registerComponentFactory( const std::string& id, XeCore::Common::IRtti::Derivation type, Component::OnBuildComponentCallback builder );
+        static bool unregisterComponentFactory( const std::string& id );
+        static bool unregisterComponentFactory( XeCore::Common::IRtti::Derivation type );
+        static bool unregisterComponentFactory( Component::OnBuildComponentCallback factory );
         static void unregisterAllComponentFactories();
         static XeCore::Common::IRtti::Derivation findComponentFactoryTypeById( const std::string& id );
         static XeCore::Common::IRtti::Derivation findComponentFactoryTypeByBuilder( Component::OnBuildComponentCallback builder );
@@ -66,6 +66,9 @@ namespace Ptakopysk
         static Component::OnBuildComponentCallback findComponentFactoryBuilderByType( XeCore::Common::IRtti::Derivation type );
         static Component* buildComponent( const std::string& id );
         static Component* buildComponent( XeCore::Common::IRtti::Derivation type );
+        static unsigned int getComponentsIds( std::vector< std::string >& result );
+        static unsigned int getComponentsTypes( std::vector< XeCore::Common::IRtti::Derivation >& result );
+        static unsigned int getComponentsBuilders( std::vector< Component::OnBuildComponentCallback >& result );
 
         FORCEINLINE b2World* getPhysicsWorld() { return m_world; };
 
@@ -73,8 +76,8 @@ namespace Ptakopysk
         static bool saveJson( const std::string& path, const Json::Value& root, bool binary = false, dword binaryKeyHash = 0 );
         void jsonToScene( const Json::Value& root, SceneContentType contentFlags = All );
         void jsonToGameObjects( const Json::Value& root, bool prefab = false );
-        Json::Value sceneToJson( SceneContentType contentFlags = All );
-        Json::Value gameObjectsToJson( bool prefab = false );
+        Json::Value sceneToJson( SceneContentType contentFlags = All, bool omitDefaultValues = false );
+        Json::Value gameObjectsToJson( bool prefab = false, bool omitDefaultValues = false );
 
         void removeScene( SceneContentType contentFlags = All );
         void addGameObject( GameObject* go, bool prefab = false );
@@ -83,11 +86,13 @@ namespace Ptakopysk
         void removeAllGameObjects( bool prefab = false );
         bool hasGameObject( GameObject* go, bool prefab = false );
         bool hasGameObject( const std::string& id, bool prefab = false );
+        bool containsGameObject( GameObject* go, bool prefab = false );
         GameObject* getGameObject( const std::string& id, bool prefab = false );
         GameObject* findGameObject( const std::string& path );
         FORCEINLINE unsigned int gameObjectsCount( bool prefab = false ) { return prefab ? m_prefabGameObjects.size() : m_gameObjects.size(); };
         GameObject::List::iterator gameObjectAtBegin( bool prefab = false );
         GameObject::List::iterator gameObjectAtEnd( bool prefab = false );
+        GameObject* gameObjectAt( unsigned int index );
         GameObject* instantiatePrefab( const std::string& id );
 
         FORCEINLINE b2Vec2 getWorldGravity() { return m_world->GetGravity(); };
@@ -99,7 +104,8 @@ namespace Ptakopysk
         void processEvents( const sf::Event& event );
         void processPhysics( float dt, int velIters = DEFAULT_VEL_ITERS, int posIters = DEFAULT_POS_ITERS );
         void processUpdate( float dt, bool sort = true );
-        void processRender( sf::RenderTarget* target = 0, const sf::Transform& trans = sf::Transform::Identity );
+        void processRender( sf::RenderTarget* target = 0 );
+        void processRenderEditor( sf::View& view, sf::RenderTarget* target = 0 );
         void processAdding();
         void processRemoving();
         bool isWaitingToAdd( GameObject* go );

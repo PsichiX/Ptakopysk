@@ -24,6 +24,9 @@ namespace Ptakopysk
         Assets();
         virtual ~Assets();
 
+        FORCEINLINE void setFileSystemRoot( const std::string& path ) { m_fileSystemRoot = path; };
+        FORCEINLINE std::string getFileSystemRoot() { return m_fileSystemRoot; };
+
         void jsonToAssets( const Json::Value& root );
         void jsonToTextures( const Json::Value& root );
         void jsonToShaders( const Json::Value& root );
@@ -84,6 +87,22 @@ namespace Ptakopysk
 
         FORCEINLINE std::vector< std::string >* getShaderUniforms( const std::string& id ) { return m_uniformsShaders.count( id ) ? &m_uniformsShaders[ id ] : 0; };
 
+        FORCEINLINE unsigned int getTexturesCount() { return m_textures.size(); };
+        FORCEINLINE std::map< std::string, sf::Texture* >::iterator getTextureAtBegin() { return m_textures.begin(); };
+        FORCEINLINE std::map< std::string, sf::Texture* >::iterator getTextureAtEnd() { return m_textures.end(); };
+        FORCEINLINE unsigned int getShadersCount() { return m_shaders.size(); };
+        FORCEINLINE std::map< std::string, sf::Shader* >::iterator getShaderAtBegin() { return m_shaders.begin(); };
+        FORCEINLINE std::map< std::string, sf::Shader* >::iterator getShaderAtEnd() { return m_shaders.end(); };
+        FORCEINLINE unsigned int getSoundsCount() { return m_sounds.size(); };
+        FORCEINLINE std::map< std::string, sf::Sound* >::iterator getSoundAtBegin() { return m_sounds.begin(); };
+        FORCEINLINE std::map< std::string, sf::Sound* >::iterator getSoundAtEnd() { return m_sounds.end(); };
+        FORCEINLINE unsigned int getMusicsCount() { return m_musics.size(); };
+        FORCEINLINE std::map< std::string, sf::Music* >::iterator getMusicAtBegin() { return m_musics.begin(); };
+        FORCEINLINE std::map< std::string, sf::Music* >::iterator getMusicAtEnd() { return m_musics.end(); };
+        FORCEINLINE unsigned int getFontsCount() { return m_fonts.size(); };
+        FORCEINLINE std::map< std::string, sf::Font* >::iterator getFontAtBegin() { return m_fonts.begin(); };
+        FORCEINLINE std::map< std::string, sf::Font* >::iterator getFontAtEnd() { return m_fonts.end(); };
+
         void freeTexture( const std::string& id );
         void freeShader( const std::string& id );
         void freeSound( const std::string& id );
@@ -100,6 +119,7 @@ namespace Ptakopysk
         void parseTags( const Json::Value& inRoot, std::vector< std::string >& outArray );
         Json::Value jsonTags( std::vector< std::string >& inArray );
 
+        std::string m_fileSystemRoot;
         std::map< std::string, sf::Texture* > m_textures;
         std::map< std::string, sf::Shader* > m_shaders;
         std::map< std::string, sf::Sound* > m_sounds;
