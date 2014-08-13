@@ -27,7 +27,7 @@ namespace Ptakopysk
         FORCEINLINE sf::RectangleShape* getRenderer() { return m_shape; };
         sf::Texture* getTexture();
         void setTexture( sf::Texture* tex );
-        FORCEINLINE sf::Vector2f getSize() { return m_shape->getSize(); };
+        sf::Vector2f getSize();
         void setSize( sf::Vector2f size );
         FORCEINLINE sf::Vector2f getOrigin() { return m_shape->getOrigin(); };
         FORCEINLINE void setOrigin( sf::Vector2f origin ) { m_shape->setOrigin( origin ); };
@@ -94,8 +94,11 @@ namespace Ptakopysk
         virtual void onDuplicate( Component* dst );
         virtual void onTransform( const sf::Transform& inTrans, sf::Transform& outTrans );
         virtual void onRender( sf::RenderTarget*& target );
+        virtual void onTextureChanged( const sf::Texture* a, bool addedOrRemoved );
+        virtual void onShaderChanged( const sf::Shader* a, bool addedOrRemoved );
 
     private:
+        sf::Vector2f m_size;
         sf::RectangleShape* m_shape;
         sf::RenderStates m_renderStates;
         RenderMaterial m_material;

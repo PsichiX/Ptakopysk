@@ -29,11 +29,9 @@ namespace ZasuvkaPtakopyska
         private MetroPanel m_toolbarContent;
         private MetroScrollBar m_toolbarContentScrollbarH;
         private MetroComboBox m_gameObjectsModeComboBox;
-        private MetroButton m_gameObjectAddButton;
-        private MetroButton m_saveSceneButton;
-        private MetroButton m_saveSceneAsButton;
-        private MetroButton m_reloadSceneButton;
-        private MetroButton m_closeSceneButton;
+        private MetroButton m_gameObjectsMenuButton;
+        private MetroButton m_sceneMenuButton;
+        private MetroButton m_assetsMenuButton;
         private RendererSurfaceControl m_renderer;
         private MetroSidePanel m_gameObjectsPanel;
         private TreeView m_gameObjectsTree;
@@ -182,55 +180,35 @@ namespace ZasuvkaPtakopyska
             m_toolbarContent.Controls.Add(m_gameObjectsModeComboBox);
             x = m_gameObjectsModeComboBox.Right + DEFAULT_TOOLBAR_SEPARATOR;
 
-            m_gameObjectAddButton = new MetroButton();
-            MetroSkinManager.ApplyMetroStyle(m_gameObjectAddButton);
-            m_gameObjectAddButton.Top = DEFAULT_TOOLBAR_SEPARATOR;
-            m_gameObjectAddButton.Text = "Add Game Object";
-            m_gameObjectAddButton.Left = x;
-            m_gameObjectAddButton.Width = m_gameObjectAddButton.GetPreferredSize(new Size()).Width + 20;
-            m_gameObjectAddButton.Click += new EventHandler(m_gameObjectAddButton_Click);
-            m_toolbarContent.Controls.Add(m_gameObjectAddButton);
-            x = m_gameObjectAddButton.Right + DEFAULT_TOOLBAR_SEPARATOR;
+            m_gameObjectsMenuButton = new MetroButton();
+            MetroSkinManager.ApplyMetroStyle(m_gameObjectsMenuButton);
+            m_gameObjectsMenuButton.Top = DEFAULT_TOOLBAR_SEPARATOR;
+            m_gameObjectsMenuButton.Text = "Game Objects";
+            m_gameObjectsMenuButton.Left = x;
+            m_gameObjectsMenuButton.Width = m_gameObjectsMenuButton.GetPreferredSize(new Size()).Width + 20;
+            m_gameObjectsMenuButton.Click += new EventHandler(m_gameObjectsMenuButton_Click);
+            m_toolbarContent.Controls.Add(m_gameObjectsMenuButton);
+            x = m_gameObjectsMenuButton.Right + DEFAULT_TOOLBAR_SEPARATOR;
 
-            m_saveSceneButton = new MetroButton();
-            MetroSkinManager.ApplyMetroStyle(m_saveSceneButton);
-            m_saveSceneButton.Top = DEFAULT_TOOLBAR_SEPARATOR;
-            m_saveSceneButton.Text = "Save Scene";
-            m_saveSceneButton.Left = x;
-            m_saveSceneButton.Width = m_saveSceneButton.GetPreferredSize(new Size()).Width + 20;
-            m_saveSceneButton.Click += new EventHandler(m_saveSceneButton_Click);
-            m_toolbarContent.Controls.Add(m_saveSceneButton);
-            x = m_saveSceneButton.Right + DEFAULT_TOOLBAR_SEPARATOR;
+            m_sceneMenuButton = new MetroButton();
+            MetroSkinManager.ApplyMetroStyle(m_sceneMenuButton);
+            m_sceneMenuButton.Top = DEFAULT_TOOLBAR_SEPARATOR;
+            m_sceneMenuButton.Text = "Scene";
+            m_sceneMenuButton.Left = x;
+            m_sceneMenuButton.Width = m_sceneMenuButton.GetPreferredSize(new Size()).Width + 20;
+            m_sceneMenuButton.Click += new EventHandler(m_sceneMenuButton_Click);
+            m_toolbarContent.Controls.Add(m_sceneMenuButton);
+            x = m_sceneMenuButton.Right + DEFAULT_TOOLBAR_SEPARATOR;
 
-            m_saveSceneAsButton = new MetroButton();
-            MetroSkinManager.ApplyMetroStyle(m_saveSceneAsButton);
-            m_saveSceneAsButton.Top = DEFAULT_TOOLBAR_SEPARATOR;
-            m_saveSceneAsButton.Text = "Save Scene As..";
-            m_saveSceneAsButton.Left = x;
-            m_saveSceneAsButton.Width = m_saveSceneAsButton.GetPreferredSize(new Size()).Width + 20;
-            m_saveSceneAsButton.Click += new EventHandler(m_saveSceneAsButton_Click);
-            m_toolbarContent.Controls.Add(m_saveSceneAsButton);
-            x = m_saveSceneAsButton.Right + DEFAULT_TOOLBAR_SEPARATOR;
-
-            m_reloadSceneButton = new MetroButton();
-            MetroSkinManager.ApplyMetroStyle(m_reloadSceneButton);
-            m_reloadSceneButton.Top = DEFAULT_TOOLBAR_SEPARATOR;
-            m_reloadSceneButton.Text = "Reload Scene";
-            m_reloadSceneButton.Left = x;
-            m_reloadSceneButton.Width = m_reloadSceneButton.GetPreferredSize(new Size()).Width + 20;
-            m_reloadSceneButton.Click += new EventHandler(m_reloadSceneButton_Click);
-            m_toolbarContent.Controls.Add(m_reloadSceneButton);
-            x = m_reloadSceneButton.Right + DEFAULT_TOOLBAR_SEPARATOR;
-
-            m_closeSceneButton = new MetroButton();
-            MetroSkinManager.ApplyMetroStyle(m_closeSceneButton);
-            m_closeSceneButton.Top = DEFAULT_TOOLBAR_SEPARATOR;
-            m_closeSceneButton.Text = "Close Scene";
-            m_closeSceneButton.Left = x;
-            m_closeSceneButton.Width = m_closeSceneButton.GetPreferredSize(new Size()).Width + 20;
-            m_closeSceneButton.Click += new EventHandler(m_closeSceneButton_Click);
-            m_toolbarContent.Controls.Add(m_closeSceneButton);
-            x = m_closeSceneButton.Right + DEFAULT_TOOLBAR_SEPARATOR;
+            m_assetsMenuButton = new MetroButton();
+            MetroSkinManager.ApplyMetroStyle(m_assetsMenuButton);
+            m_assetsMenuButton.Top = DEFAULT_TOOLBAR_SEPARATOR;
+            m_assetsMenuButton.Text = "Assets";
+            m_assetsMenuButton.Left = x;
+            m_assetsMenuButton.Width = m_assetsMenuButton.GetPreferredSize(new Size()).Width + 20;
+            m_assetsMenuButton.Click += new EventHandler(m_assetsMenuButton_Click);
+            m_toolbarContent.Controls.Add(m_assetsMenuButton);
+            x = m_assetsMenuButton.Right + DEFAULT_TOOLBAR_SEPARATOR;
         }
 
         private void InitializeSceneView()
@@ -332,6 +310,7 @@ namespace ZasuvkaPtakopyska
         {
             int left = m_gameObjectsPanel != null && m_gameObjectsPanel.IsRolled ? 0 : m_gameObjectsPanel.Width - MetroSidePanel.ROLLED_PART_SIZE;
             m_renderer.Left = left;
+            m_renderer.Width = Width - left;
         }
 
         private void UpdateToolbarScrollbars()
@@ -416,23 +395,112 @@ namespace ZasuvkaPtakopyska
                 RebuildSceneTree();
         }
 
-        private void m_gameObjectAddButton_Click(object sender, EventArgs e)
+        private void m_gameObjectsMenuButton_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(m_scenePath))
+                return;
+
+            MetroButton btn = sender as MetroButton;
+            if (btn == null)
+                return;
+
+            MetroContextMenu menu = new MetroContextMenu(null);
+            MetroSkinManager.ApplyMetroStyle(menu);
+            ToolStripMenuItem menuItem;
+
+            menuItem = new ToolStripMenuItem("Add Game Object");
+            menuItem.Click += new EventHandler(menuItem_gameObjectAdd_Click);
+            menu.Items.Add(menuItem);
+
+            menu.Show(btn, new Point(0, btn.Height));
+        }
+
+        private void m_sceneMenuButton_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(m_scenePath))
+                return;
+
+            MetroButton btn = sender as MetroButton;
+            if (btn == null)
+                return;
+
+            MetroContextMenu menu = new MetroContextMenu(null);
+            MetroSkinManager.ApplyMetroStyle(menu);
+            ToolStripMenuItem menuItem;
+
+            menuItem = new ToolStripMenuItem("Save Scene");
+            menuItem.Click += new EventHandler(menuItem_saveScene_Click);
+            menu.Items.Add(menuItem);
+
+            menuItem = new ToolStripMenuItem("Save Scene As...");
+            menuItem.Click += new EventHandler(menuItem_saveSceneAs_Click);
+            menu.Items.Add(menuItem);
+
+            menuItem = new ToolStripMenuItem("Reload Scene");
+            menuItem.Click += new EventHandler(menuItem_reloadScene_Click);
+            menu.Items.Add(menuItem);
+
+            menuItem = new ToolStripMenuItem("Close Scene");
+            menuItem.Click += new EventHandler(menuItem_closeScene_Click);
+            menu.Items.Add(menuItem);
+
+            menu.Show(btn, new Point(0, btn.Height));
+        }
+
+        private void m_assetsMenuButton_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(m_scenePath))
+                return;
+
+            MetroButton btn = sender as MetroButton;
+            if (btn == null)
+                return;
+
+            MetroContextMenu menu = new MetroContextMenu(null);
+            MetroSkinManager.ApplyMetroStyle(menu);
+            ToolStripMenuItem menuItem;
+
+            menuItem = new ToolStripMenuItem("Textures");
+            menuItem.Click += new EventHandler(menuItem_textures_Click);
+            menu.Items.Add(menuItem);
+
+            menuItem = new ToolStripMenuItem("Shaders");
+            menuItem.Click += new EventHandler(menuItem_shaders_Click);
+            menu.Items.Add(menuItem);
+
+            menuItem = new ToolStripMenuItem("Sounds");
+            menuItem.Click += new EventHandler(menuItem_sounds_Click);
+            menu.Items.Add(menuItem);
+
+            menuItem = new ToolStripMenuItem("Music");
+            menuItem.Click += new EventHandler(menuItem_music_Click);
+            menu.Items.Add(menuItem);
+
+            menuItem = new ToolStripMenuItem("Fonts");
+            menuItem.Click += new EventHandler(menuItem_fonts_Click);
+            menu.Items.Add(menuItem);
+
+            menu.Show(btn, new Point(0, btn.Height));
+        }
+
+        private void menuItem_gameObjectAdd_Click(object sender, EventArgs e)
         {
             AddNewGameObject(IsGameObjectsPrefabsMode, 0);
         }
 
-        private void m_saveSceneButton_Click(object sender, EventArgs e)
+        private void menuItem_saveScene_Click(object sender, EventArgs e)
         {
             SaveScene(m_scenePath);
         }
 
-        private void m_saveSceneAsButton_Click(object sender, EventArgs e)
+        private void menuItem_saveSceneAs_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(m_scenePath))
                 return;
 
             SaveFileDialog dialog = new SaveFileDialog();
-            dialog.FileName = m_scenePath;
+            dialog.InitialDirectory = Path.GetDirectoryName(m_scenePath);
+            dialog.FileName = Path.GetFileName(m_scenePath);
             dialog.RestoreDirectory = true;
             dialog.OverwritePrompt = true;
             dialog.Filter = DEFAULT_SCENE_FILTER;
@@ -441,14 +509,49 @@ namespace ZasuvkaPtakopyska
                 SaveScene(dialog.FileName);
         }
 
-        private void m_reloadSceneButton_Click(object sender, EventArgs e)
+        private void menuItem_reloadScene_Click(object sender, EventArgs e)
         {
             ReloadScene();
         }
 
-        private void m_closeSceneButton_Click(object sender, EventArgs e)
+        private void menuItem_closeScene_Click(object sender, EventArgs e)
         {
             CloseScene();
+        }
+
+        private void menuItem_textures_Click(object sender, EventArgs e)
+        {
+            MainForm mainForm = FindForm() as MainForm;
+            if (mainForm != null)
+                mainForm.ExploreAssetsProperties(PtakopyskInterface.AssetType.Texture);
+        }
+
+        private void menuItem_shaders_Click(object sender, EventArgs e)
+        {
+            MainForm mainForm = FindForm() as MainForm;
+            if (mainForm != null)
+                mainForm.ExploreAssetsProperties(PtakopyskInterface.AssetType.Shader);
+        }
+
+        private void menuItem_sounds_Click(object sender, EventArgs e)
+        {
+            MainForm mainForm = FindForm() as MainForm;
+            if (mainForm != null)
+                mainForm.ExploreAssetsProperties(PtakopyskInterface.AssetType.Sound);
+        }
+
+        private void menuItem_music_Click(object sender, EventArgs e)
+        {
+            MainForm mainForm = FindForm() as MainForm;
+            if (mainForm != null)
+                mainForm.ExploreAssetsProperties(PtakopyskInterface.AssetType.Music);
+        }
+
+        private void menuItem_fonts_Click(object sender, EventArgs e)
+        {
+            MainForm mainForm = FindForm() as MainForm;
+            if (mainForm != null)
+                mainForm.ExploreAssetsProperties(PtakopyskInterface.AssetType.Font);
         }
 
         private void m_gameObjectsPanel_RollUnroll(object sender, EventArgs e)
@@ -466,7 +569,7 @@ namespace ZasuvkaPtakopyska
             if (e.Button == MouseButtons.Left)
             {
                 if (node != null && node.Tag is int)
-                    mainForm.ExploreGameObjectProperties((int)node.Tag, false);
+                    mainForm.ExploreGameObjectProperties((int)node.Tag, IsGameObjectsPrefabsMode);
                 else
                     mainForm.ExploreGameObjectProperties(0, false);
             }

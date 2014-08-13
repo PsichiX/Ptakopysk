@@ -50,7 +50,7 @@ public:
     PtakopyskInterface();
     virtual ~PtakopyskInterface();
 
-    bool initialize( int windowHandle, const std::string& defaultTexturePath, const std::string& defaultVertexShaderPath, const std::string& defaultFragmentShaderPath, const std::string& defaultFontPath );
+    bool initialize( int windowHandle, bool editMode );
     void release();
     void setAssetsFileSystemRoot( const std::string& path );
     bool processEvents();
@@ -66,9 +66,6 @@ public:
     FORCEINLINE void setSceneViewCenter( sf::Vector2f v ) { m_sceneView.setCenter( v ); };
     FORCEINLINE float getSceneViewZoom() { return m_cameraZoom; };
     FORCEINLINE void setSceneViewZoom( float v ) { m_cameraZoom = v; m_sceneView.setSize( m_cameraSize ); m_sceneView.zoom( m_cameraZoom ); };
-    FORCEINLINE sf::Texture* getDefaultTexture() { return m_defaultTexture; };
-    FORCEINLINE sf::Shader* getDefaultShader() { return m_defaultShader; };
-    FORCEINLINE sf::Font* getDefaultFont() { return m_defaultFont; };
     FORCEINLINE std::string popErrors() { std::string err = m_errors.str(); m_errors.str( "" ); return err; };
     bool clearScene();
     bool applyJsonToScene( const std::string& json );
@@ -76,6 +73,7 @@ public:
     int createGameObject( bool isPrefab, int parent, const std::string& prefabSource, const std::string& id );
     bool destroyGameObject( int handle, bool isPrefab );
     bool clearGameObject( int handle, bool isPrefab );
+    bool duplicateGameObject( int handleFrom, bool isPrefabFrom, int handleTo, bool isPrefabTo );
     bool applyJsonToGameObject( int handle, bool isPrefab, const std::string& json );
     std::string convertGameObjectToJson( int handle, bool isPrefab );
     bool startQueryGameObject( int handle, bool isPrefab );
@@ -96,7 +94,10 @@ public:
     bool canIterateAssetsNext( AssetType type );
     bool iterateAssetsNext( AssetType type );
     std::string getIteratedAssetId( AssetType type );
+    std::string getIteratedAssetMeta( AssetType type );
+    std::string getIteratedAssetTags( AssetType type );
     void endIterateAssets( AssetType type );
+    bool queryAssets( AssetType type, const std::string& query );
     int pluginLoadComponents( const std::string& path );
     bool pluginUnloadComponents( int handle );
     bool pluginUnloadComponentsByPath( const std::string& path );
@@ -110,7 +111,7 @@ public:
     void endIterateComponents();
 
 private:
-    void renderGrid( sf::RenderWindow* target, sf::Vector2f gridSize, float alphaFactor );
+    void renderGrid( sf::RenderWindow* target, sf::Vector2f gridSize );
     GameObject* findGameObject( int handle, bool isPrefab, GameObject* parent = 0 );
     GameObject* findGameObjectById( const std::string& id, bool isPrefab, GameObject* parent = 0 );
 
@@ -132,9 +133,6 @@ private:
     sf::View                                        m_sceneView;
     sf::Vector2f                                    m_cameraSize;
     float                                           m_cameraZoom;
-    sf::Texture*                                    m_defaultTexture;
-    sf::Shader*                                     m_defaultShader;
-    sf::Font*                                       m_defaultFont;
     std::map< std::string, HINSTANCE >              m_plugins;
     std::vector< ComponentData >                    m_componentsPending;
     std::vector< std::string >                      m_queruedComponentsIds;

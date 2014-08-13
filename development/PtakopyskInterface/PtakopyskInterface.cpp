@@ -17,9 +17,6 @@ PtakopyskInterface::PtakopyskInterface()
 , m_gridSize( sf::Vector2f( 64.0f, 64.0f ) )
 , m_cameraSize( sf::Vector2f( 1.0f, 1.0f ) )
 , m_cameraZoom( 1.0f )
-, m_defaultTexture( 0 )
-, m_defaultShader( 0 )
-, m_defaultFont( 0 )
 {
 }
 
@@ -28,7 +25,7 @@ PtakopyskInterface::~PtakopyskInterface()
     release();
 }
 
-bool PtakopyskInterface::initialize( int windowHandle, const std::string& defaultTexturePath, const std::string& defaultVertexShaderPath, const std::string& defaultFragmentShaderPath, const std::string& defaultFontPath )
+bool PtakopyskInterface::initialize( int windowHandle, bool editMode )
 {
     if( !windowHandle )
     {
@@ -38,42 +35,18 @@ bool PtakopyskInterface::initialize( int windowHandle, const std::string& defaul
 
     release();
 
+    LOG_SETUP( "PtakopyskInterface.log" );
     GameManager::initialize();
+    GameManager::setEditMode( editMode );
     m_renderWindow = xnew sf::RenderWindow( (sf::WindowHandle)windowHandle );
     m_gameManager = xnew GameManager();
     m_gameManager->RenderWindow = m_renderWindow;
-
-    m_defaultTexture = xnew sf::Texture();
-    if( !defaultTexturePath.empty() && !m_defaultTexture->loadFromFile( defaultTexturePath ) )
-    {
-        m_errors << "Cannot load default texture from file: '" << defaultTexturePath.c_str() << "'.\n";
-        release();
-        return false;
-    }
-    m_defaultShader = xnew sf::Shader();
-    if( !defaultVertexShaderPath.empty() && !defaultFragmentShaderPath.empty() && !m_defaultShader->loadFromFile( defaultVertexShaderPath, defaultFragmentShaderPath ) )
-    {
-        m_errors << "Cannot load default shader from files: '" << defaultVertexShaderPath.c_str() << "' and: '" << defaultFragmentShaderPath.c_str() << "'.\n";
-        release();
-        return false;
-    }
-    m_defaultFont = xnew sf::Font();
-    if( !defaultFontPath.empty() && !m_defaultFont->loadFromFile( defaultFontPath ) )
-    {
-        m_errors << "Cannot load default font from file: '" << defaultFontPath.c_str() << "'.\n";
-        release();
-        return false;
-    }
 
     return true;
 }
 
 void PtakopyskInterface::release()
 {
-    DELETE_OBJECT( m_defaultTexture );
-    DELETE_OBJECT( m_defaultShader );
-    DELETE_OBJECT( m_defaultFont );
-
     DELETE_OBJECT( m_gameManager );
     if( m_renderWindow )
         m_renderWindow->close();
@@ -140,7 +113,28 @@ bool PtakopyskInterface::processRender()
     m_renderWindow->clear( sf::Color( 64, 64, 64, 255 ) );
     m_renderWindow->setView( m_sceneView );
     m_gameManager->processRenderEditor( m_sceneView, m_renderWindow );
-    renderGrid( m_renderWindow, m_gridSize, 1.0f );
+    float zf = 1.0f;
+    float zt = 1.0f;
+    if( m_cameraZoom > 1.0f )
+    {
+        zt *= 2.0f;
+        while( zt <= m_cameraZoom )
+        {
+            zf = zt;
+            zt *= 2.0f;
+        }
+    }
+    else if( m_cameraZoom < 1.0f )
+    {
+        zf *= 0.5f;
+        while( zf >= m_cameraZoom )
+        {
+            zt = zf;
+            zf *= 0.5f;
+        }
+    }
+    renderGrid( m_renderWindow, m_gridSize * zf );
+    renderGrid( m_renderWindow, m_gridSize * zt );
     m_renderWindow->display();
     return true;
 }
@@ -279,7 +273,7 @@ bool PtakopyskInterface::destroyGameObject( int handle, bool isPrefab )
         }
         else
         {
-            m_gameManager->removeGameObject( go );
+            m_gameManager->removeGameObject( go, isPrefab );
             m_gameManager->processRemoving();
             return true;
         }
@@ -294,6 +288,18 @@ bool PtakopyskInterface::clearGameObject( int handle, bool isPrefab )
     if( go )
     {
         go->removeAllComponents();
+        return true;
+    }
+    return false;
+}
+
+bool PtakopyskInterface::duplicateGameObject( int handleFrom, bool isPrefabFrom, int handleTo, bool isPrefabTo )
+{
+    GameObject* goFrom = findGameObject( handleFrom, isPrefabFrom );
+    GameObject* goTo = findGameObject( handleTo, isPrefabTo );
+    if( goFrom && goTo )
+    {
+        goTo->duplicate( goFrom );
         return true;
     }
     return false;
@@ -861,6 +867,82 @@ std::string PtakopyskInterface::getIteratedAssetId( AssetType type )
     return "";
 }
 
+std::string PtakopyskInterface::getIteratedAssetMeta( AssetType type )
+{
+    if( type == atTexture )
+    {
+        if( m_assetTextureIterator != Assets::use().getTextureAtEnd() )
+            return Assets::use().getTextureMeta( m_assetTextureIterator->first );
+    }
+    else if( type == atShader )
+    {
+        if( m_assetShaderIterator != Assets::use().getShaderAtEnd() )
+            return Assets::use().getShaderMeta( m_assetShaderIterator->first );
+    }
+    else if( type == atSound )
+    {
+        if( m_assetSoundIterator != Assets::use().getSoundAtEnd() )
+            return Assets::use().getSoundMeta( m_assetSoundIterator->first );
+    }
+    else if( type == atMusic )
+    {
+        if( m_assetMusicIterator != Assets::use().getMusicAtEnd() )
+            return Assets::use().getMusicMeta( m_assetMusicIterator->first );
+    }
+    else if( type == atFont )
+    {
+        if( m_assetFontIterator != Assets::use().getFontAtEnd() )
+            return Assets::use().getFontMeta( m_assetFontIterator->first );
+    }
+    return "";
+}
+
+std::string PtakopyskInterface::getIteratedAssetTags( AssetType type )
+{
+    std::vector< std::string >* tags = 0;
+    if( type == atTexture )
+    {
+        if( m_assetTextureIterator != Assets::use().getTextureAtEnd() )
+            tags = Assets::use().accessTextureTags( m_assetTextureIterator->first );
+    }
+    else if( type == atShader )
+    {
+        if( m_assetShaderIterator != Assets::use().getShaderAtEnd() )
+            tags = Assets::use().accessShaderTags( m_assetShaderIterator->first );
+    }
+    else if( type == atSound )
+    {
+        if( m_assetSoundIterator != Assets::use().getSoundAtEnd() )
+            tags = Assets::use().accessSoundTags( m_assetSoundIterator->first );
+    }
+    else if( type == atMusic )
+    {
+        if( m_assetMusicIterator != Assets::use().getMusicAtEnd() )
+            tags = Assets::use().accessMusicTags( m_assetMusicIterator->first );
+    }
+    else if( type == atFont )
+    {
+        if( m_assetFontIterator != Assets::use().getFontAtEnd() )
+            tags = Assets::use().accessFontTags( m_assetFontIterator->first );
+    }
+
+    if( tags && !tags->empty() )
+    {
+        std::stringstream ss;
+        unsigned int i = 0;
+        for( std::vector< std::string >::iterator it = tags->begin(); it != tags->end(); it++ )
+        {
+            ss << *it;
+            if( i < tags->size() - 1 )
+                ss << "|";
+            i++;
+        }
+        return ss.str();
+    }
+    else
+        return "";
+}
+
 void PtakopyskInterface::endIterateAssets( AssetType type )
 {
     if( type == atTexture )
@@ -873,6 +955,139 @@ void PtakopyskInterface::endIterateAssets( AssetType type )
         m_assetMusicIterator = Assets::use().getMusicAtEnd();
     else if( type == atFont )
         m_assetFontIterator = Assets::use().getFontAtEnd();
+}
+
+bool PtakopyskInterface::queryAssets( AssetType type, const std::string& query )
+{
+    Json::Value root;
+    Json::Reader reader;
+    if( !reader.parse( query, root ) )
+    {
+        m_errors << "Cannot parse asset query: " << query.c_str() << "!\n";
+        return false;
+    }
+    if( root.isObject() )
+    {
+        if( root.isMember( "free" ) )
+        {
+            Json::Value free = root[ "free" ];
+            if( free.isArray() && !free.empty() )
+            {
+                Json::Value item;
+                for( unsigned int i = 0; i < free.size(); i++ )
+                {
+                    item = free[ i ];
+                    if( item.isString() )
+                    {
+                        if( type == atTexture )
+                        {
+                            Assets::use().freeTexture( item.asString() );
+                            if( Assets::use().getTexture( item.asString() ) )
+                                m_errors << "Cannot release texture: " << item.asString() << "!\n";
+                            else
+                                m_errors << "Texture released: " << item.asString() << "!\n";
+                        }
+                        else if( type == atShader )
+                        {
+                            Assets::use().freeShader( item.asString() );
+                            if( Assets::use().getShader( item.asString() ) )
+                                m_errors << "Cannot release shader: " << item.asString() << "!\n";
+                            else
+                                m_errors << "Shader released: " << item.asString() << "!\n";
+                        }
+                        else if( type == atSound )
+                        {
+                            Assets::use().freeSound( item.asString() );
+                            if( Assets::use().getSound( item.asString() ) )
+                                m_errors << "Cannot release sound: " << item.asString() << "!\n";
+                            else
+                                m_errors << "Sound released: " << item.asString() << "!\n";
+                        }
+                        else if( type == atMusic )
+                        {
+                            Assets::use().freeMusic( item.asString() );
+                            if( Assets::use().getMusic( item.asString() ) )
+                                m_errors << "Cannot release music: " << item.asString() << "!\n";
+                            else
+                                m_errors << "Music released: " << item.asString() << "!\n";
+                        }
+                        else if( type == atFont )
+                        {
+                            Assets::use().freeFont( item.asString() );
+                            if( Assets::use().getFont( item.asString() ) )
+                                m_errors << "Cannot release font: " << item.asString() << "!\n";
+                            else
+                                m_errors << "Font released: " << item.asString() << "!\n";
+                        }
+                    }
+                }
+            }
+        }
+        if( root.isMember( "load" ) )
+        {
+            Json::Value load = root[ "load" ];
+            if( load.isArray() && !load.empty() )
+            {
+                Json::Value item;
+                Json::Value id;
+                std::string sid;
+                for( unsigned int i = 0; i < load.size(); i++ )
+                {
+                    item = load[ i ];
+                    if( item.isObject() && item.isMember( "id" ) )
+                    {
+                        id = item[ "id" ];
+                        if( id.isString() )
+                        {
+                            sid = id.asString();
+                            if( type == atTexture )
+                            {
+                                Assets::use().jsonToTexture( item );
+                                if( Assets::use().getTexture( sid ) )
+                                    m_errors << "Texture loaded: " << sid << "!\n";
+                                else
+                                    m_errors << "Cannot load texture: " << sid << "!\n";
+                            }
+                            else if( type == atShader )
+                            {
+                                Assets::use().jsonToShader( item );
+                                if( Assets::use().getShader( sid ) )
+                                    m_errors << "Shader loaded: " << sid << "!\n";
+                                else
+                                    m_errors << "Cannot load shader: " << sid << "!\n";
+                            }
+                            else if( type == atSound )
+                            {
+                                Assets::use().jsonToSound( item );
+                                if( Assets::use().getSound( sid ) )
+                                    m_errors << "Sound loaded: " << sid << "!\n";
+                                else
+                                    m_errors << "Cannot load sound: " << sid << "!\n";
+                            }
+                            else if( type == atMusic )
+                            {
+                                Assets::use().jsonToMusic( item );
+                                if( Assets::use().getMusic( sid ) )
+                                    m_errors << "Music loaded: " << sid << "!\n";
+                                else
+                                    m_errors << "Cannot load music: " << sid << "!\n";
+                            }
+                            else if( type == atFont )
+                            {
+                                Assets::use().jsonToFont( item );
+                                if( Assets::use().getFont( sid ) )
+                                    m_errors << "Font loaded: " << sid << "!\n";
+                                else
+                                    m_errors << "Cannot load font: " << sid << "!\n";
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    return false;
 }
 
 int PtakopyskInterface::pluginLoadComponents( const std::string& path )
@@ -1101,29 +1316,25 @@ void PtakopyskInterface::endIterateComponents()
     m_queruedComponentsIdsIterator = m_queruedComponentsIds.end();
 }
 
-void PtakopyskInterface::renderGrid( sf::RenderWindow* target, sf::Vector2f gridSize, float alphaFactor )
+void PtakopyskInterface::renderGrid( sf::RenderWindow* target, sf::Vector2f gridSize )
 {
     if( !target )
     {
         m_errors << "Target is null.\n";
         return;
     }
-    if( alphaFactor <= 0.0f )
-        return;
-
-    alphaFactor = std::min( 1.0f, alphaFactor );
 
     float hw = m_sceneView.getSize().x * 0.5f;
     float hh = m_sceneView.getSize().y * 0.5f;
-    float xc = std::floor( m_sceneView.getCenter().x / m_gridSize.x ) * gridSize.x;
-    float yc = std::floor( m_sceneView.getCenter().y / m_gridSize.y ) * gridSize.y;
-    float xf = xc - hw - gridSize.x;
-    float yf = yc - hh - gridSize.y;
-    float xt = xc + hw + gridSize.x;
-    float yt = yc + hh + gridSize.y;
+    float xc = m_sceneView.getCenter().x;
+    float yc = m_sceneView.getCenter().y;
+    float xf = std::floor( ( xc - hw ) / gridSize.x ) * gridSize.x;
+    float yf = std::floor( ( yc - hh ) / gridSize.y ) * gridSize.y;
+    float xt = std::ceil( ( xc + hw ) / gridSize.x ) * gridSize.x;
+    float yt = std::ceil( ( yc + hh ) / gridSize.y ) * gridSize.y;
     sf::Vertex v[ 2 ];
-    v[ 0 ].color = sf::Color( 255, 255, 255, (byte)( 64.0f * alphaFactor ) );
-    v[ 1 ].color = sf::Color( 255, 255, 255, (byte)( 64.0f * alphaFactor ) );
+    v[ 0 ].color = sf::Color( 255, 255, 255, 16 );
+    v[ 1 ].color = sf::Color( 255, 255, 255, 16 );
     v[ 0 ].position.y = yf;
     v[ 1 ].position.y = yt;
     for( float x = xf; x <= xt; x += gridSize.x )

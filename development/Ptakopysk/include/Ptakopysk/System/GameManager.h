@@ -15,6 +15,7 @@
 namespace Ptakopysk
 {
 
+    class AssetsListener;
     class DestructionListener;
     class ContactListener;
 
@@ -22,6 +23,7 @@ namespace Ptakopysk
         : public virtual XeCore::Common::IRtti
         , public virtual XeCore::Common::MemoryManager::Manageable
     {
+        friend class AssetsListener;
         friend class DestructionListener;
         friend class ContactListener;
 
@@ -53,6 +55,8 @@ namespace Ptakopysk
 
         static void initialize();
         static void cleanup();
+        FORCEINLINE static bool isEditMode() { return s_editMode; };
+        FORCEINLINE static void setEditMode( bool mode ) { s_editMode = mode; };
         static bool registerComponentFactory( const std::string& id, XeCore::Common::IRtti::Derivation type, Component::OnBuildComponentCallback builder );
         static bool unregisterComponentFactory( const std::string& id );
         static bool unregisterComponentFactory( XeCore::Common::IRtti::Derivation type );
@@ -124,11 +128,18 @@ namespace Ptakopysk
         void processContact( bool beginOrEnd, GameObject* a, GameObject* b, b2Contact* contact );
         void processJointGoodbye( GameObject* o, b2Joint* joint );
         void processFixtureGoodbye( GameObject* o, b2Fixture* fixture );
+        void processTextureChanged( const sf::Texture* p, bool addedOrRemoved );
+        void processShaderChanged( const sf::Shader* p, bool addedOrRemoved );
+        void processSoundChanged( const sf::Sound* p, bool addedOrRemoved );
+        void processMusicChanged( const sf::Music* p, bool addedOrRemoved );
+        void processFontChanged( const sf::Font* p, bool addedOrRemoved );
 
         static std::map< std::string, ComponentFactoryData > s_componentsFactory;
+        static bool s_editMode;
 
         b2World* m_world;
         sf::RenderWindow* m_renderWindow;
+        AssetsListener* m_assetsListener;
         DestructionListener* m_destructionListener;
         ContactListener* m_contactListener;
         GameObject::List m_prefabGameObjects;

@@ -60,7 +60,8 @@ namespace ZasuvkaPtakopyska
                 pos.Offset(ImageOffset);
                 if (IsImageScaled)
                     e.Graphics.DrawImage(Image, pos.X, pos.Y, size.Width, size.Height);
-                e.Graphics.DrawImageUnscaled(Image, pos);
+                else
+                    e.Graphics.DrawImageUnscaled(Image, pos);
             }
 
             if (Focused)

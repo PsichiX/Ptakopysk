@@ -21,8 +21,25 @@ namespace ZasuvkaPtakopyskaExtender.Editors
 
         public override void UpdateEditorValue()
         {
-            m_subProperties["blendMode"] = m_blendModeEditor.JsonValue;
-            m_subProperties["shader"] = m_shaderAssetEditor.JsonDefaultValue;
+            try
+            {
+                Newtonsoft.Json.Linq.JObject data = Newtonsoft.Json.JsonConvert.DeserializeObject<Newtonsoft.Json.Linq.JObject>(JsonValue);
+                if (data != null)
+                {
+                    Newtonsoft.Json.Linq.JToken v;
+                    if (data.TryGetValue("blendMode", out v))
+                    {
+                        m_subProperties["blendMode"] = v.ToString(Newtonsoft.Json.Formatting.None);
+                        m_blendModeEditor.UpdateEditorValue();
+                    }
+                    if (data.TryGetValue("shader", out v))
+                    {
+                        m_subProperties["shader"] = v.ToString(Newtonsoft.Json.Formatting.None);
+                        m_shaderAssetEditor.UpdateEditorValue();
+                    }
+                }
+            }
+            catch { }
         }
 
         public void OnEditorValueChanged(IEditorJsonValue editor, string property, string jsonValue)

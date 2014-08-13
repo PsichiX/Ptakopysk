@@ -6,6 +6,9 @@
 #include <XeCore/Common/MemoryManager.h>
 #include <json/json.h>
 #include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Audio/Sound.hpp>
+#include <SFML/Audio/Music.hpp>
+#include <SFML/Graphics/Font.hpp>
 #include <SFML/Window/Event.hpp>
 #include <list>
 #include <string>
@@ -118,6 +121,11 @@ namespace Ptakopysk
         void onCollide( GameObject* other, bool beginOrEnd, b2Contact* contact );
         void onJointGoodbye( b2Joint* joint );
         void onFixtureGoodbye( b2Fixture* fixture );
+        void onTextureChanged( const sf::Texture* a, bool addedOrRemoved );
+        void onShaderChanged( const sf::Shader* a, bool addedOrRemoved );
+        void onSoundChanged( const sf::Sound* a, bool addedOrRemoved );
+        void onMusicChanged( const sf::Music* a, bool addedOrRemoved );
+        void onFontChanged( const sf::Font* a, bool addedOrRemoved );
 
     private:
         FORCEINLINE void setGameManager( GameManager* gm ) { m_gameManager = gm; };

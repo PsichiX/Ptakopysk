@@ -7,6 +7,9 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Transform.hpp>
 #include <SFML/Window/Event.hpp>
+#include <SFML/Audio/Sound.hpp>
+#include <SFML/Audio/Music.hpp>
+#include <SFML/Graphics/Font.hpp>
 #include <string>
 #include "../Serialization/Serialized.h"
 #include "../System/Meta.h"
@@ -81,6 +84,11 @@ namespace Ptakopysk
         virtual void onCollide( GameObject* other, bool beginOrEnd, b2Contact* contact ) {};
         virtual void onJointGoodbye( b2Joint* joint ) {};
         virtual void onFixtureGoodbye( b2Fixture* fixture ) {};
+        virtual void onTextureChanged( const sf::Texture* a, bool addedOrRemoved ) {};
+        virtual void onShaderChanged( const sf::Shader* a, bool addedOrRemoved ) {};
+        virtual void onSoundChanged( const sf::Sound* a, bool addedOrRemoved ) {};
+        virtual void onMusicChanged( const sf::Music* a, bool addedOrRemoved ) {};
+        virtual void onFontChanged( const sf::Font* a, bool addedOrRemoved ) {};
 
     private:
         void setGameObject( GameObject* gameObject );

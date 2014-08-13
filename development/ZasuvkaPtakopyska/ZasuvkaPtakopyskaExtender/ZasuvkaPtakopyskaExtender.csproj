@@ -66,6 +66,9 @@
     <Compile Include="Editors\CollectionPropertyEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Editors\Path_PropertyEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Editors\Material_PropertyEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>

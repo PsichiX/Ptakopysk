@@ -17,7 +17,7 @@ extern "C"
 #endif
 
 const char* DLL_EXPORT _PopErrors();
-bool DLL_EXPORT _Initialize( int windowHandle, const char* defaultTexturePath, const char* defaultVertexShaderPath, const char* defaultFragmentShaderPath, const char* defaultFontPath );
+bool DLL_EXPORT _Initialize( int windowHandle, bool editMode );
 void DLL_EXPORT _Release();
 void DLL_EXPORT _SetAssetsFileSystemRoot( const char* path );
 bool DLL_EXPORT _ProcessEvents();
@@ -42,6 +42,7 @@ const char* DLL_EXPORT _ConvertSceneToJson();
 int DLL_EXPORT _CreateGameObject( bool isPrefab, int parent, const char* prefabSource, const char* id );
 bool DLL_EXPORT _DestroyGameObject( int handle, bool isPrefab );
 bool DLL_EXPORT _ClearGameObject( int handle, bool isPrefab );
+bool DLL_EXPORT _DuplicateGameObject( int handleFrom, bool isPrefabFrom, int handleTo, bool isPrefabTo );
 bool DLL_EXPORT _ApplyJsonToGameObject( int handle, bool isPrefab, const char* json );
 const char* DLL_EXPORT _ConvertGameObjectToJson( int handle, bool isPrefab );
 bool DLL_EXPORT _StartQueryGameObject( int handle, bool isPrefab );
@@ -62,7 +63,10 @@ void DLL_EXPORT _StartIterateAssets( int type );
 bool DLL_EXPORT _CanIterateAssetsNext( int type );
 bool DLL_EXPORT _IterateAssetsNext( int type );
 const char* DLL_EXPORT _GetIteratedAssetId( int type );
+const char* DLL_EXPORT _GetIteratedAssetMeta( int type );
+const char* DLL_EXPORT _GetIteratedAssetTags( int type );
 void DLL_EXPORT _EndIterateAssets( int type );
+bool DLL_EXPORT _QueryAssets( int type, const char* query );
 int DLL_EXPORT _PluginLoadComponents( const char* path );
 bool DLL_EXPORT _PluginUnloadComponents( int handle );
 bool DLL_EXPORT _PluginUnloadComponentsByPath( const char* path );

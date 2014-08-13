@@ -10,6 +10,7 @@ namespace Ptakopysk
 
     Assets::Assets()
     : RTTI_CLASS_DEFINE( Assets )
+    , m_assetsChangedListener( 0 )
     {
         m_defaultTexture = xnew sf::Texture();
         m_defaultTexture->create( 1, 1 );
@@ -337,6 +338,8 @@ namespace Ptakopysk
         {
             t = (sf::Texture*)ptr;
             m_textures[ id ] = t;
+            if( m_assetsChangedListener )
+                m_assetsChangedListener->onTextureChanged( id, ptr, true );
         }
         return t;
     }
@@ -348,6 +351,8 @@ namespace Ptakopysk
         {
             t = (sf::Shader*)ptr;
             m_shaders[ id ] = t;
+            if( m_assetsChangedListener )
+                m_assetsChangedListener->onShaderChanged( id, ptr, true );
         }
         return t;
     }
@@ -360,6 +365,8 @@ namespace Ptakopysk
             t = (sf::Sound*)ptr;
             m_soundsBuffs[ id ] = (sf::SoundBuffer*)ptrbuff;
             m_sounds[ id ] = t;
+            if( m_assetsChangedListener )
+                m_assetsChangedListener->onSoundChanged( id, ptr, true );
         }
         return t;
     }
@@ -371,6 +378,8 @@ namespace Ptakopysk
         {
             t = (sf::Music*)ptr;
             m_musics[ id ] = t;
+            if( m_assetsChangedListener )
+                m_assetsChangedListener->onMusicChanged( id, ptr, true );
         }
         return t;
     }
@@ -382,6 +391,8 @@ namespace Ptakopysk
         {
             t = (sf::Font*)ptr;
             m_fonts[ id ] = t;
+            if( m_assetsChangedListener )
+                m_assetsChangedListener->onFontChanged( id, ptr, true );
         }
         return t;
     }
@@ -401,6 +412,8 @@ namespace Ptakopysk
             }
             m_textures[ id ] = t;
             m_metaTextures[ id ] = path;
+            if( m_assetsChangedListener )
+                m_assetsChangedListener->onTextureChanged( id, t, true );
         }
         return t;
     }
@@ -425,6 +438,8 @@ namespace Ptakopysk
             m_uniformsShaders[ id ].clear();
             for( unsigned int i = 0; i < uniformsCount; i++ )
                 m_uniformsShaders[ id ].push_back( uniforms[ i ] );
+            if( m_assetsChangedListener )
+                m_assetsChangedListener->onShaderChanged( id, t, true );
         }
         return t;
     }
@@ -447,6 +462,8 @@ namespace Ptakopysk
             t->setBuffer( *tb );
             m_sounds[ id ] = t;
             m_metaSounds[ id ] = path;
+            if( m_assetsChangedListener )
+                m_assetsChangedListener->onSoundChanged( id, t, true );
         }
         return t;
     }
@@ -466,6 +483,8 @@ namespace Ptakopysk
             }
             m_musics[ id ] = t;
             m_metaMusics[ id ] = path;
+            if( m_assetsChangedListener )
+                m_assetsChangedListener->onMusicChanged( id, t, true );
         }
         return t;
     }
@@ -485,6 +504,8 @@ namespace Ptakopysk
             }
             m_fonts[ id ] = t;
             m_metaFonts[ id ] = path;
+            if( m_assetsChangedListener )
+                m_assetsChangedListener->onFontChanged( id, t, true );
         }
         return t;
     }
@@ -569,6 +590,8 @@ namespace Ptakopysk
         if( m_textures.count( id ) )
         {
             sf::Texture* t = m_textures[ id ];
+            if( m_assetsChangedListener )
+                m_assetsChangedListener->onTextureChanged( id, t, false );
             DELETE_OBJECT( t );
             m_textures.erase( id );
         }
@@ -583,6 +606,8 @@ namespace Ptakopysk
         if( m_shaders.count( id ) )
         {
             sf::Shader* t = m_shaders[ id ];
+            if( m_assetsChangedListener )
+                m_assetsChangedListener->onShaderChanged( id, t, false );
             DELETE_OBJECT( t );
             m_shaders.erase( id );
         }
@@ -599,6 +624,8 @@ namespace Ptakopysk
         if( m_sounds.count( id ) )
         {
             sf::Sound* t = m_sounds[ id ];
+            if( m_assetsChangedListener )
+                m_assetsChangedListener->onSoundChanged( id, t, false );
             DELETE_OBJECT( t );
             m_sounds.erase( id );
         }
@@ -619,6 +646,8 @@ namespace Ptakopysk
         if( m_musics.count( id ) )
         {
             sf::Music* t = m_musics[ id ];
+            if( m_assetsChangedListener )
+                m_assetsChangedListener->onMusicChanged( id, t, false );
             DELETE_OBJECT( t );
             m_musics.erase( id );
         }
@@ -633,6 +662,8 @@ namespace Ptakopysk
         if( m_fonts.count( id ) )
         {
             sf::Font* t = m_fonts[ id ];
+            if( m_assetsChangedListener )
+                m_assetsChangedListener->onFontChanged( id, t, false );
             DELETE_OBJECT( t );
             m_fonts.erase( id );
         }
@@ -645,7 +676,11 @@ namespace Ptakopysk
     void Assets::freeAllTextures()
     {
         for( std::map< std::string, sf::Texture* >::iterator it = m_textures.begin(); it != m_textures.end(); it++ )
+        {
+            if( m_assetsChangedListener )
+                m_assetsChangedListener->onTextureChanged( it->first, it->second, false );
             DELETE_OBJECT( it->second );
+        }
         m_textures.clear();
         m_metaTextures.clear();
         m_tagsTextures.clear();
@@ -654,7 +689,11 @@ namespace Ptakopysk
     void Assets::freeAllShaders()
     {
         for( std::map< std::string, sf::Shader* >::iterator it = m_shaders.begin(); it != m_shaders.end(); it++ )
+        {
+            if( m_assetsChangedListener )
+                m_assetsChangedListener->onShaderChanged( it->first, it->second, false );
             DELETE_OBJECT( it->second );
+        }
         m_shaders.clear();
         m_metaShaders.clear();
         m_tagsShaders.clear();
@@ -667,7 +706,11 @@ namespace Ptakopysk
             DELETE_OBJECT( it->second );
         m_soundsBuffs.clear();
         for( std::map< std::string, sf::Sound* >::iterator it = m_sounds.begin(); it != m_sounds.end(); it++ )
+        {
+            if( m_assetsChangedListener )
+                m_assetsChangedListener->onSoundChanged( it->first, it->second, false );
             DELETE_OBJECT( it->second );
+        }
         m_sounds.clear();
         m_metaSounds.clear();
         m_tagsSounds.clear();
@@ -676,7 +719,11 @@ namespace Ptakopysk
     void Assets::freeAllMusics()
     {
         for( std::map< std::string, sf::Music* >::iterator it = m_musics.begin(); it != m_musics.end(); it++ )
+        {
+            if( m_assetsChangedListener )
+                m_assetsChangedListener->onMusicChanged( it->first, it->second, false );
             DELETE_OBJECT( it->second );
+        }
         m_musics.clear();
         m_metaMusics.clear();
         m_tagsMusics.clear();
@@ -685,7 +732,11 @@ namespace Ptakopysk
     void Assets::freeAllFonts()
     {
         for( std::map< std::string, sf::Font* >::iterator it = m_fonts.begin(); it != m_fonts.end(); it++ )
+        {
+            if( m_assetsChangedListener )
+                m_assetsChangedListener->onFontChanged( it->first, it->second, false );
             DELETE_OBJECT( it->second );
+        }
         m_fonts.clear();
         m_metaFonts.clear();
         m_tagsFonts.clear();

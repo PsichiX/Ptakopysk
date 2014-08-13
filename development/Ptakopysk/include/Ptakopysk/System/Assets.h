@@ -13,6 +13,18 @@
 namespace Ptakopysk
 {
 
+    class AssetsChangedListener
+    {
+    public:
+        virtual ~AssetsChangedListener() {}
+
+        virtual void onTextureChanged( const std::string& id, const sf::Texture* asset, bool addedOrRemoved ) = 0;
+        virtual void onShaderChanged( const std::string& id, const sf::Shader* asset, bool addedOrRemoved ) = 0;
+        virtual void onSoundChanged( const std::string& id, const sf::Sound* asset, bool addedOrRemoved ) = 0;
+        virtual void onMusicChanged( const std::string& id, const sf::Music* asset, bool addedOrRemoved ) = 0;
+        virtual void onFontChanged( const std::string& id, const sf::Font* asset, bool addedOrRemoved ) = 0;
+    };
+
     class Assets
     : public virtual XeCore::Common::IRtti
     , public virtual XeCore::Common::MemoryManager::Manageable
@@ -26,6 +38,8 @@ namespace Ptakopysk
 
         FORCEINLINE void setFileSystemRoot( const std::string& path ) { m_fileSystemRoot = path; };
         FORCEINLINE std::string getFileSystemRoot() { return m_fileSystemRoot; };
+        FORCEINLINE void setAssetsChangedListener( AssetsChangedListener* listener ) { m_assetsChangedListener = listener; };
+        FORCEINLINE AssetsChangedListener* getAssetsChangedListener() { return m_assetsChangedListener; };
 
         void jsonToAssets( const Json::Value& root );
         void jsonToTextures( const Json::Value& root );
@@ -79,11 +93,17 @@ namespace Ptakopysk
         std::string findMusic( const sf::Music* ptr );
         std::string findFont( const sf::Font* ptr );
 
-        FORCEINLINE std::vector< std::string >* getTextureTags( const std::string& id ) { return m_tagsTextures.count( id ) ? &m_tagsTextures[ id ] : 0; };
-        FORCEINLINE std::vector< std::string >* getShaderTags( const std::string& id ) { return m_tagsShaders.count( id ) ? &m_tagsShaders[ id ] : 0; };
-        FORCEINLINE std::vector< std::string >* getSoundTags( const std::string& id ) { return m_tagsSounds.count( id ) ? &m_tagsSounds[ id ] : 0; };
-        FORCEINLINE std::vector< std::string >* getMusicTags( const std::string& id ) { return m_tagsMusics.count( id ) ? &m_tagsMusics[ id ] : 0; };
-        FORCEINLINE std::vector< std::string >* getFontTags( const std::string& id ) { return m_tagsFonts.count( id ) ? &m_tagsFonts[ id ] : 0; };
+        FORCEINLINE std::string getTextureMeta( const std::string& id ) { return m_metaTextures.count( id ) ? m_metaTextures[ id ] : ""; };
+        FORCEINLINE std::string getShaderMeta( const std::string& id ) { return m_metaShaders.count( id ) ? m_metaShaders[ id ] : ""; };
+        FORCEINLINE std::string getSoundMeta( const std::string& id ) { return m_metaSounds.count( id ) ? m_metaSounds[ id ] : ""; };
+        FORCEINLINE std::string getMusicMeta( const std::string& id ) { return m_metaMusics.count( id ) ? m_metaMusics[ id ] : ""; };
+        FORCEINLINE std::string getFontMeta( const std::string& id ) { return m_metaFonts.count( id ) ? m_metaFonts[ id ] : ""; };
+
+        FORCEINLINE std::vector< std::string >* accessTextureTags( const std::string& id ) { return m_tagsTextures.count( id ) ? &m_tagsTextures[ id ] : 0; };
+        FORCEINLINE std::vector< std::string >* accessShaderTags( const std::string& id ) { return m_tagsShaders.count( id ) ? &m_tagsShaders[ id ] : 0; };
+        FORCEINLINE std::vector< std::string >* accessSoundTags( const std::string& id ) { return m_tagsSounds.count( id ) ? &m_tagsSounds[ id ] : 0; };
+        FORCEINLINE std::vector< std::string >* accessMusicTags( const std::string& id ) { return m_tagsMusics.count( id ) ? &m_tagsMusics[ id ] : 0; };
+        FORCEINLINE std::vector< std::string >* accessFontTags( const std::string& id ) { return m_tagsFonts.count( id ) ? &m_tagsFonts[ id ] : 0; };
 
         FORCEINLINE std::vector< std::string >* getShaderUniforms( const std::string& id ) { return m_uniformsShaders.count( id ) ? &m_uniformsShaders[ id ] : 0; };
 
@@ -138,6 +158,7 @@ namespace Ptakopysk
         std::map< std::string, std::vector< std::string > > m_tagsFonts;
         std::map< std::string, std::vector< std::string > > m_uniformsShaders;
         sf::Texture* m_defaultTexture;
+        AssetsChangedListener* m_assetsChangedListener;
     };
 
 }

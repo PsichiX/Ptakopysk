@@ -10,13 +10,9 @@ const char* DLL_EXPORT _PopErrors()
     return s_lastErrors.c_str();
 }
 
-bool DLL_EXPORT _Initialize( int windowHandle, const char* defaultTexturePath, const char* defaultVertexShaderPath, const char* defaultFragmentShaderPath, const char* defaultFontPath )
+bool DLL_EXPORT _Initialize( int windowHandle, bool editMode )
 {
-    std::string dtp = defaultTexturePath;
-    std::string dvsp = defaultVertexShaderPath;
-    std::string dfsp = defaultFragmentShaderPath;
-    std::string dfp = defaultFontPath;
-    return PtakopyskInterface::use().initialize( windowHandle, dtp, dvsp, dfsp, dfp );
+    return PtakopyskInterface::use().initialize( windowHandle, editMode );
 }
 
 void DLL_EXPORT _Release()
@@ -144,6 +140,11 @@ bool DLL_EXPORT _ClearGameObject( int handle, bool isPrefab )
     return PtakopyskInterface::use().clearGameObject( handle, isPrefab );
 }
 
+bool DLL_EXPORT _DuplicateGameObject( int handleFrom, bool isPrefabFrom, int handleTo, bool isPrefabTo )
+{
+    return PtakopyskInterface::use().duplicateGameObject( handleFrom, isPrefabFrom, handleTo, isPrefabTo );
+}
+
 bool DLL_EXPORT _ApplyJsonToGameObject( int handle, bool isPrefab, const char* json )
 {
     std::string j = json;
@@ -251,9 +252,27 @@ const char* DLL_EXPORT _GetIteratedAssetId( int type )
     return s_lastString.c_str();
 }
 
+const char* DLL_EXPORT _GetIteratedAssetMeta( int type )
+{
+    s_lastString = PtakopyskInterface::use().getIteratedAssetMeta( (PtakopyskInterface::AssetType)type );
+    return s_lastString.c_str();
+}
+
+const char* DLL_EXPORT _GetIteratedAssetTags( int type )
+{
+    s_lastString = PtakopyskInterface::use().getIteratedAssetTags( (PtakopyskInterface::AssetType)type );
+    return s_lastString.c_str();
+}
+
 void DLL_EXPORT _EndIterateAssets( int type )
 {
     PtakopyskInterface::use().endIterateAssets( (PtakopyskInterface::AssetType)type );
+}
+
+bool DLL_EXPORT _QueryAssets( int type, const char* query )
+{
+    std::string q = query;
+    return PtakopyskInterface::use().queryAssets( (PtakopyskInterface::AssetType)type, q );
 }
 
 int DLL_EXPORT _PluginLoadComponents( const char* path )

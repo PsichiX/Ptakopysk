@@ -31,7 +31,7 @@ namespace ZasuvkaPtakopyska
             SdkPath = "..";
             CodeBlocksIdePath = Utils.GetCodeBlocksInstallationPath();
             BashBinPath = "";
-            UiStyle = MetroFramework.MetroColorStyle.Blue;
+            UiStyle = MetroFramework.MetroColorStyle.Orange;
             UiTheme = MetroFramework.MetroThemeStyle.Dark;
             WindowState = FormWindowState.Normal;
             LeftPanelRolled = true;

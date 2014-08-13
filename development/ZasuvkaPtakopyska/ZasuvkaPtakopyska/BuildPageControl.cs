@@ -202,7 +202,7 @@ namespace ZasuvkaPtakopyska
             ProcessStartInfo info = new ProcessStartInfo();
             info.WorkingDirectory = Path.GetFullPath(mainForm.ProjectModel.WorkingDirectory);
             info.FileName = Path.GetFullPath(cbExe);
-            info.Arguments = "/ns /na /nd --no-batch-window-close " + target + " " + op + " " + cbpPath;
+            info.Arguments = "/ns /na /nd --multiple-instance --no-batch-window-close " + target + " " + op + " " + cbpPath;
             info.UseShellExecute = false;
             info.RedirectStandardOutput = true;
             proc.StartInfo = info;
@@ -210,6 +210,7 @@ namespace ZasuvkaPtakopyska
             proc.Exited += new EventHandler(proc_Exited);
             m_runningProcess = proc;
             m_progressSpinner.Visible = true;
+            mainForm.IsWorkingProcessOverlayEnabled = true;
             proc.Start();
 
             if (afterBuildAction != null)
@@ -301,7 +302,7 @@ namespace ZasuvkaPtakopyska
                     mainForm.ProjectModel.ActiveTargetWorkingDirectory = target[2];
                     mainForm.ReloadScene();
                     if (mainForm.ProjectModel.ActiveTarget != lastTarget)
-                        mainForm.RebuildEditorComponents();
+                        mainForm.RebuildEditorComponents(!string.IsNullOrEmpty(lastTarget));
                 }
             }
         }
@@ -338,15 +339,14 @@ namespace ZasuvkaPtakopyska
 
         private void proc_Exited(object sender, EventArgs e)
         {
-            m_progressSpinner.DoOnUiThread(() =>
-            {
-                m_progressSpinner.Visible = false;
-            });
+            MainForm mainForm = FindForm() as MainForm;
+            m_progressSpinner.DoOnUiThread(() => m_progressSpinner.Visible = false);
+            if (mainForm != null)
+                mainForm.DoOnUiThread(() => mainForm.IsWorkingProcessOverlayEnabled = false);
             if (m_runningProcess != null)
             {
                 string log = m_runningProcess.StandardOutput.ReadToEnd();
                 Console.Write(log);
-                MainForm mainForm = FindForm() as MainForm;
                 if (m_runningProcess.StartInfo.RedirectStandardOutput && mainForm != null)
                 {
                     if (m_runningProcess.ExitCode == 0)

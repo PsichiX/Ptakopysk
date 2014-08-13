@@ -26,6 +26,8 @@ namespace ZasuvkaPtakopyskaExtender.Editors
                 Pen pen = new Pen(Color.Black);
                 Rectangle rect = ClientRectangle;
                 g.FillRectangle(brush, rect);
+                rect.Width -= 1;
+                rect.Height -= 1;
                 g.DrawRectangle(pen, rect);
                 pen = new Pen(Color.White);
                 rect.X += 1;
@@ -98,7 +100,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
             MetroSkinManager.ApplyMetroStyle(m_aTrack);
             m_aTrack.Top = Height;
             m_aTrack.Left = m_aTextBox.Right;
-            m_aTrack.Width = Width - m_aTextBox.Right - 10;
+            m_aTrack.Width = Width - m_aTextBox.Right;
             m_aTrack.Height = m_rgbPicker.Height;
             m_aTrack.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             m_aTrack.Maximum = 255;

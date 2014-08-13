@@ -672,6 +672,46 @@ namespace Ptakopysk
         }
     }
 
+    void GameObject::onTextureChanged( const sf::Texture* a, bool addedOrRemoved )
+    {
+        for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
+            it->second->onTextureChanged( a, addedOrRemoved );
+        for( GameObject::List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            (*it)->onTextureChanged( a, addedOrRemoved );
+    }
+
+    void GameObject::onShaderChanged( const sf::Shader* a, bool addedOrRemoved )
+    {
+        for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
+            it->second->onShaderChanged( a, addedOrRemoved );
+        for( GameObject::List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            (*it)->onShaderChanged( a, addedOrRemoved );
+    }
+
+    void GameObject::onSoundChanged( const sf::Sound* a, bool addedOrRemoved )
+    {
+        for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
+            it->second->onSoundChanged( a, addedOrRemoved );
+        for( GameObject::List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            (*it)->onSoundChanged( a, addedOrRemoved );
+    }
+
+    void GameObject::onMusicChanged( const sf::Music* a, bool addedOrRemoved )
+    {
+        for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
+            it->second->onMusicChanged( a, addedOrRemoved );
+        for( GameObject::List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            (*it)->onMusicChanged( a, addedOrRemoved );
+    }
+
+    void GameObject::onFontChanged( const sf::Font* a, bool addedOrRemoved )
+    {
+        for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
+            it->second->onFontChanged( a, addedOrRemoved );
+        for( GameObject::List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            (*it)->onFontChanged( a, addedOrRemoved );
+    }
+
     void GameObject::setPrefab( bool mode )
     {
         m_prefab = mode;

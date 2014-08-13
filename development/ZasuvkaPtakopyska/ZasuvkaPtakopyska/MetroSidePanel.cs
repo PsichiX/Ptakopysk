@@ -15,11 +15,14 @@ namespace ZasuvkaPtakopyska
 
         public interface IMetroSidePanelScrollableContent
         {
+            MetroSidePanel SidePanel { get; set; }
             Rectangle ScrollableContentRectangle { get; }
-            bool IsAffectedByScroll { get; }
-            int ScrollValue { get; set; }
-            int ScrollMaximum { get; set; }
-            int ScrollLargeChange { get; set; }
+            int VerticalScrollValue { get; set; }
+            int VerticalScrollMaximum { get; set; }
+            int VerticalScrollLargeChange { get; set; }
+            int HorizontalScrollValue { get; set; }
+            int HorizontalScrollMaximum { get; set; }
+            int HorizontalScrollLargeChange { get; set; }
         }
 
         #endregion
@@ -51,6 +54,7 @@ namespace ZasuvkaPtakopyska
         private Image m_undockImage;
         private MetroPanel m_content;
         private MetroScrollBar m_contentScrollbarV;
+        private MetroScrollBar m_contentScrollbarH;
         private DockStyle m_side = DockStyle.None;
         private bool m_rolled = false;
         private Padding m_offsetPadding;
@@ -128,11 +132,17 @@ namespace ZasuvkaPtakopyska
             m_content.ControlRemoved += new ControlEventHandler(m_content_ControlRemoved);
             contentPanel.Controls.Add(m_content);
 
-            m_contentScrollbarV = new MetroScrollBar();
+            m_contentScrollbarV = new MetroScrollBar(MetroScrollOrientation.Vertical);
             MetroSkinManager.ApplyMetroStyle(m_contentScrollbarV);
             m_contentScrollbarV.Dock = DockStyle.Right;
             m_contentScrollbarV.Scroll += new ScrollEventHandler(m_contentScrollbarV_Scroll);
             contentPanel.Controls.Add(m_contentScrollbarV);
+
+            m_contentScrollbarH = new MetroScrollBar(MetroScrollOrientation.Horizontal);
+            MetroSkinManager.ApplyMetroStyle(m_contentScrollbarH);
+            m_contentScrollbarH.Dock = DockStyle.Bottom;
+            m_contentScrollbarH.Scroll += new ScrollEventHandler(m_contentScrollbarH_Scroll);
+            contentPanel.Controls.Add(m_contentScrollbarH);
 
             MetroPanel titlePanel = new MetroPanel();
             MetroSkinManager.ApplyMetroStyle(titlePanel);
@@ -180,6 +190,9 @@ namespace ZasuvkaPtakopyska
                 m_contentScrollbarV.Maximum = 1;
                 m_contentScrollbarV.LargeChange = 1;
                 m_contentScrollbarV.Visible = false;
+                m_contentScrollbarH.Maximum = 1;
+                m_contentScrollbarH.LargeChange = 1;
+                m_contentScrollbarH.Visible = false;
             }
             else
             {
@@ -191,13 +204,20 @@ namespace ZasuvkaPtakopyska
                 m_contentScrollbarV.Maximum = rect.Height;
                 m_contentScrollbarV.LargeChange = m_content.Height;
                 m_contentScrollbarV.Visible = m_contentScrollbarV.Maximum > m_contentScrollbarV.LargeChange;
+                m_contentScrollbarH.Maximum = rect.Width;
+                m_contentScrollbarH.LargeChange = m_content.Width;
+                m_contentScrollbarH.Visible = m_contentScrollbarH.Maximum > m_contentScrollbarH.LargeChange;
             }
             m_content.VerticalScroll.Maximum = m_contentScrollbarV.Maximum;
             m_content.VerticalScroll.LargeChange = m_contentScrollbarV.LargeChange;
+            m_content.HorizontalScroll.Maximum = m_contentScrollbarH.Maximum;
+            m_content.HorizontalScroll.LargeChange = m_contentScrollbarH.LargeChange;
             foreach (IMetroSidePanelScrollableContent c in m_scrollableControls)
             {
-                c.ScrollMaximum = m_contentScrollbarV.Maximum;
-                c.ScrollLargeChange = m_contentScrollbarV.LargeChange;
+                c.VerticalScrollMaximum = m_contentScrollbarV.Maximum;
+                c.VerticalScrollLargeChange = m_contentScrollbarV.LargeChange;
+                c.HorizontalScrollMaximum = m_contentScrollbarH.Maximum;
+                c.HorizontalScrollLargeChange = m_contentScrollbarH.LargeChange;
             }
         }
 
@@ -373,25 +393,40 @@ namespace ZasuvkaPtakopyska
         {
             m_content.VerticalScroll.Value = e.NewValue;
             foreach (IMetroSidePanelScrollableContent c in m_scrollableControls)
-                c.ScrollValue = e.NewValue;
+                c.VerticalScrollValue = e.NewValue;
+        }
+
+        private void m_contentScrollbarH_Scroll(object sender, ScrollEventArgs e)
+        {
+            m_content.HorizontalScroll.Value = e.NewValue;
+            foreach (IMetroSidePanelScrollableContent c in m_scrollableControls)
+                c.HorizontalScrollValue = e.NewValue;
         }
 
         private void m_content_ControlAdded(object sender, ControlEventArgs e)
         {
             IMetroSidePanelScrollableContent c = e.Control as IMetroSidePanelScrollableContent;
             if (c != null && !m_scrollableControls.Contains(c))
+            {
                 m_scrollableControls.Add(c);
+                c.SidePanel = this;
+            }
             UpdateScrollbars();
             m_contentScrollbarV.Value = m_contentScrollbarV.Minimum;
+            m_contentScrollbarH.Value = m_contentScrollbarH.Minimum;
         }
 
         private void m_content_ControlRemoved(object sender, ControlEventArgs e)
         {
             IMetroSidePanelScrollableContent c = e.Control as IMetroSidePanelScrollableContent;
             if (c != null && m_scrollableControls.Contains(c))
+            {
                 m_scrollableControls.Remove(c);
+                c.SidePanel = null;
+            }
             UpdateScrollbars();
             m_contentScrollbarV.Value = m_contentScrollbarV.Minimum;
+            m_contentScrollbarH.Value = m_contentScrollbarH.Minimum;
         }
 
         #endregion

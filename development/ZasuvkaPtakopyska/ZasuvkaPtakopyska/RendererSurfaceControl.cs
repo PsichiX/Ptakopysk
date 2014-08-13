@@ -34,7 +34,7 @@ namespace ZasuvkaPtakopyska
 
             PtakopyskInterface.Instance.SetSceneViewZoom(m_cameraZoom);
             PtakopyskInterface.Instance.SetSceneViewCenter(m_cameraCenter.X, m_cameraCenter.Y);
-            
+
             m_timer = new Timer();
             m_timer.Interval = 1000 / 20;
             m_timer.Enabled = false;
@@ -85,13 +85,7 @@ namespace ZasuvkaPtakopyska
 
         private void RendererSurfaceControl_Load(object sender, EventArgs e)
         {
-            PtakopyskInterface.Instance.Initialize(
-                Handle.ToInt32(),
-                "",//"resources/textures/logo.png",
-                "",//"resources/shaders/color-texture.vs",
-                "",//"resources/shaders/color-texture.fs",
-                ""//"resources/fonts/verdana.ttf"
-                );
+            PtakopyskInterface.Instance.Initialize(Handle.ToInt32());
             PtakopyskInterface.Instance.SetVerticalSyncEnabled(false);
         }
 
@@ -130,15 +124,22 @@ namespace ZasuvkaPtakopyska
 
             if (ModifierKeys.HasFlag(Keys.Control))
             {
-                m_cameraZoom = m_lastCameraZoom + (0.01f * dy);
+                float dz = 1.0f + (Math.Abs(0.01f * dy) * (ModifierKeys.HasFlag(Keys.Shift) ? 10.0f : 1.0f));
+                if (dy > 0.0f)
+                    m_cameraZoom = m_lastCameraZoom * dz;
+                else if (dy < 0.0f)
+                    m_cameraZoom = m_lastCameraZoom / dz;
+                else
+                    m_cameraZoom = m_lastCameraZoom;
+                m_cameraZoom = Math.Max(m_cameraZoom, 0.001f);
                 PtakopyskInterface.Instance.SetSceneViewZoom(m_cameraZoom);
                 Invalidate();
             }
             else
             {
                 m_lastDragPosition = e.Location;
-                m_cameraCenter.X += dx;
-                m_cameraCenter.Y += dy;
+                m_cameraCenter.X += dx * m_cameraZoom;
+                m_cameraCenter.Y += dy * m_cameraZoom;
                 PtakopyskInterface.Instance.SetSceneViewCenter(m_cameraCenter.X, m_cameraCenter.Y);
                 Invalidate();
                 m_lastCameraZoom = m_cameraZoom;

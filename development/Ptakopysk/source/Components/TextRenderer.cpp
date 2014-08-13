@@ -158,4 +158,16 @@ namespace Ptakopysk
         target->draw( *m_text, m_renderStates );
     }
 
+    void TextRenderer::onShaderChanged( const sf::Shader* a, bool addedOrRemoved )
+    {
+        if( m_renderStates.shader == a )
+            m_renderStates.shader = 0;
+    }
+
+    void TextRenderer::onFontChanged( const sf::Font* a, bool addedOrRemoved )
+    {
+        if( m_text && m_text->getFont() == a )
+            m_text->setFont( *a );
+    }
+
 }

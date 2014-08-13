@@ -1,5 +1,6 @@
 #include "../../include/Ptakopysk/Components/SpriteRenderer.h"
 #include "../../include/Ptakopysk/Components/Transform.h"
+#include "../../include/Ptakopysk/System/GameManager.h"
 #include "../../include/Ptakopysk/System/GameObject.h"
 #include "../../include/Ptakopysk/System/Assets.h"
 
@@ -59,8 +60,14 @@ namespace Ptakopysk
         }
     }
 
+    sf::Vector2f SpriteRenderer::getSize()
+    {
+        return GameManager::isEditMode() ? m_size : m_shape->getSize();
+    }
+
     void SpriteRenderer::setSize( sf::Vector2f size )
     {
+        m_size = size;
         sf::Texture* t = getTexture();
         if( size.x < 0.0f )
             size.x = t ? t->getSize().x : 0.0f;
@@ -72,7 +79,7 @@ namespace Ptakopysk
     sf::Vector2f SpriteRenderer::getOriginPercent()
     {
         sf::Vector2f o = getOrigin();
-        sf::Vector2f s = getSize();
+        sf::Vector2f s = m_shape->getSize();
         o.x = s.x > 0.0f ? o.x / s.x : 0.0f;
         o.y = s.y > 0.0f ? o.y / s.y : 0.0f;
         return o;
@@ -80,7 +87,7 @@ namespace Ptakopysk
 
     void SpriteRenderer::setOriginPercent( sf::Vector2f origin )
     {
-        sf::Vector2f s = getSize();
+        sf::Vector2f s = m_shape->getSize();
         setOrigin( sf::Vector2f( s.x * origin.x, s.y * origin.y ) );
     }
 
@@ -214,6 +221,18 @@ namespace Ptakopysk
         if( m_renderStates.shader )
             m_material.apply( (sf::Shader*)m_renderStates.shader, m_materialValidation );
         target->draw( *m_shape, m_renderStates );
+    }
+
+    void SpriteRenderer::onTextureChanged( const sf::Texture* a, bool addedOrRemoved )
+    {
+        if( m_shape && m_shape->getTexture() == a )
+            m_shape->setTexture( 0 );
+    }
+
+    void SpriteRenderer::onShaderChanged( const sf::Shader* a, bool addedOrRemoved )
+    {
+        if( m_renderStates.shader == a )
+            m_renderStates.shader = 0;
     }
 
 }

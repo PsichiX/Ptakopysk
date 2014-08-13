@@ -19,6 +19,37 @@
 namespace Ptakopysk
 {
 
+    class AssetsListener
+        : public virtual XeCore::Common::IRtti
+        , public virtual XeCore::Common::MemoryManager
+        , public AssetsChangedListener
+    {
+        RTTI_CLASS_DECLARE( AssetsListener );
+
+    public:
+        AssetsListener( GameManager* owner );
+        ~AssetsListener() {};
+
+        void onTextureChanged( const std::string& id, const sf::Texture* asset, bool addedOrRemoved ) { if( m_owner ) m_owner->processTextureChanged( asset, addedOrRemoved ); };
+        void onShaderChanged( const std::string& id, const sf::Shader* asset, bool addedOrRemoved ) { if( m_owner ) m_owner->processShaderChanged( asset, addedOrRemoved ); };
+        void onSoundChanged( const std::string& id, const sf::Sound* asset, bool addedOrRemoved ) { if( m_owner ) m_owner->processSoundChanged( asset, addedOrRemoved ); };
+        void onMusicChanged( const std::string& id, const sf::Music* asset, bool addedOrRemoved ) { if( m_owner ) m_owner->processMusicChanged( asset, addedOrRemoved ); };
+        void onFontChanged( const std::string& id, const sf::Font* asset, bool addedOrRemoved ) { if( m_owner ) m_owner->processFontChanged( asset, addedOrRemoved ); };
+
+    private:
+        GameManager* m_owner;
+    };
+
+    RTTI_CLASS_DERIVATIONS( AssetsListener,
+                            RTTI_DERIVATIONS_END
+                            );
+
+    AssetsListener::AssetsListener( GameManager* owner )
+    : RTTI_CLASS_DEFINE( AssetsListener )
+    , m_owner( owner )
+    {
+    }
+
     class DestructionListener
         : public virtual XeCore::Common::IRtti
         , public virtual XeCore::Common::MemoryManager
@@ -121,12 +152,10 @@ namespace Ptakopysk
 
     void ContactListener::PreSolve( b2Contact* contact, const b2Manifold* oldManifold )
     {
-
     }
 
     void ContactListener::PostSolve( b2Contact* contact, const b2ContactImpulse* impulse )
     {
-
     }
 
     RTTI_CLASS_DERIVATIONS( GameManager,
@@ -134,25 +163,27 @@ namespace Ptakopysk
                             );
 
     std::map< std::string, GameManager::ComponentFactoryData > GameManager::s_componentsFactory = std::map< std::string, GameManager::ComponentFactoryData >();
+    bool GameManager::s_editMode = false;
 
     GameManager::GameManager()
     : RTTI_CLASS_DEFINE( GameManager )
     , PhysicsGravity( this, &GameManager::getWorldGravity, &GameManager::setWorldGravity )
     , RenderWindow( this, &GameManager::getRenderWindow, &GameManager::setRenderWindow )
-    , m_world( 0 )
     , m_renderWindow( 0 )
-    , m_destructionListener( 0 )
-    , m_contactListener( 0 )
     {
         m_world = xnew b2World( b2Vec2( 0.0f, 0.0f ) );
         m_destructionListener = xnew DestructionListener( this );
         m_world->SetDestructionListener( m_destructionListener );
         m_contactListener = xnew ContactListener( this );
         m_world->SetContactListener( m_contactListener );
+        m_assetsListener = xnew AssetsListener( this );
+        Assets::use().setAssetsChangedListener( m_assetsListener );
     }
 
     GameManager::~GameManager()
     {
+        Assets::use().setAssetsChangedListener( 0 );
+        DELETE_OBJECT( m_assetsListener );
         removeScene();
         processRemoving();
         GameObject* go;
@@ -807,6 +838,36 @@ namespace Ptakopysk
     {
         if( o )
             o->onFixtureGoodbye( fixture );
+    }
+
+    void GameManager::processTextureChanged( const sf::Texture* p, bool addedOrRemoved )
+    {
+        for( GameObject::List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            (*it)->onTextureChanged( p, addedOrRemoved );
+    }
+
+    void GameManager::processShaderChanged( const sf::Shader* p, bool addedOrRemoved )
+    {
+        for( GameObject::List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            (*it)->onShaderChanged( p, addedOrRemoved );
+    }
+
+    void GameManager::processSoundChanged( const sf::Sound* p, bool addedOrRemoved )
+    {
+        for( GameObject::List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            (*it)->onSoundChanged( p, addedOrRemoved );
+    }
+
+    void GameManager::processMusicChanged( const sf::Music* p, bool addedOrRemoved )
+    {
+        for( GameObject::List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            (*it)->onMusicChanged( p, addedOrRemoved );
+    }
+
+    void GameManager::processFontChanged( const sf::Font* p, bool addedOrRemoved )
+    {
+        for( GameObject::List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            (*it)->onFontChanged( p, addedOrRemoved );
     }
 
     GameManager::SceneContentType operator|( GameManager::SceneContentType a, GameManager::SceneContentType b )

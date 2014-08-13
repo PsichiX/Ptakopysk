@@ -12,6 +12,7 @@ using ZasuvkaPtakopyskaExtender;
 using System.Diagnostics;
 using ZasuvkaPtakopyskaExtender.Editors;
 using System.Reflection;
+using MetroFramework.Drawing;
 
 namespace ZasuvkaPtakopyska
 {
@@ -31,6 +32,33 @@ namespace ZasuvkaPtakopyska
             }
         }
 
+        public class WorkingProcessOverlay : MetroUserControl
+        {
+            public WorkingProcessOverlay()
+            {
+                SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+                SetStyle(ControlStyles.Opaque, true);
+            }
+
+            protected override CreateParams CreateParams
+            {
+                get
+                {
+                    CreateParams parms = base.CreateParams;
+                    parms.ExStyle |= 0x20;
+                    return parms;
+                }
+            }
+
+            protected override void OnPaintBackground(PaintEventArgs e)
+            {
+            }
+
+            protected override void OnPaint(PaintEventArgs e)
+            {
+            }
+        }
+
         #endregion
 
 
@@ -47,6 +75,7 @@ namespace ZasuvkaPtakopyska
 
         #region Private Data.
 
+        private WorkingProcessOverlay m_workingProcessOverlay;
         private MetroPanel m_mainPanel;
         private MetroTabControl m_mainPanelTabs;
         private WebBrowser m_welcomePage;
@@ -90,6 +119,21 @@ namespace ZasuvkaPtakopyska
         public ProjectModel ProjectModel { get { return m_projectPage == null ? null : m_projectPage.ProjectModel; } }
         public SettingsModel SettingsModel { get { return m_settingsPage == null ? null : m_settingsPage.SettingsModel; } }
         public ProjectFilesControl ProjectFilesViewer { get { return m_projectFilesPanel; } }
+        public bool IsWorkingProcessOverlayEnabled
+        {
+            get { return m_workingProcessOverlay != null ? m_workingProcessOverlay.Visible : false; }
+            set
+            {
+                if (m_workingProcessOverlay != null)
+                {
+                    m_workingProcessOverlay.Visible = value;
+                    if (value)
+                        m_workingProcessOverlay.BringToFront();
+                    else
+                        m_workingProcessOverlay.SendToBack();
+                }
+            }
+        }
 
         #endregion
 
@@ -127,6 +171,11 @@ namespace ZasuvkaPtakopyska
             m_sdkFileSystemWatcher.Created += new FileSystemEventHandler(m_fileSystemWatcher_Created);
             m_sdkFileSystemWatcher.Deleted += new FileSystemEventHandler(m_fileSystemWatcher_Deleted);
             m_sdkFileSystemWatcher.Renamed += new RenamedEventHandler(m_fileSystemWatcher_Renamed);
+
+            m_workingProcessOverlay = new WorkingProcessOverlay();
+            m_workingProcessOverlay.Dock = DockStyle.Fill;
+            m_workingProcessOverlay.Visible = false;
+            Controls.Add(m_workingProcessOverlay);
 
             InitializeMainPanel();
         }
@@ -197,11 +246,24 @@ namespace ZasuvkaPtakopyska
 
             if (handle != 0)
             {
-                GameObjectPropertiesEditor editor = new GameObjectPropertiesEditor(handle, isPrefab);
+                GameObjectPropertiesControl editor = new GameObjectPropertiesControl(handle, isPrefab);
                 editor.Dock = DockStyle.Fill;
                 m_rightPanel.Content.Controls.Add(editor);
                 m_rightPanel.Unroll();
             }
+        }
+
+        public void ExploreAssetsProperties(PtakopyskInterface.AssetType assetType)
+        {
+            if (m_rightPanel == null)
+                return;
+
+            m_rightPanel.Content.Controls.Clear();
+
+            AssetsControl editor = new AssetsControl(assetType, ProjectModel);
+            editor.Dock = DockStyle.Fill;
+            m_rightPanel.Content.Controls.Add(editor);
+            m_rightPanel.Unroll();
         }
 
         public void WatchProjectFileSystem()
@@ -314,7 +376,7 @@ namespace ZasuvkaPtakopyska
             FileInfo[] files = info.GetFiles("*.meta");
             if (files != null && files.Length > 0)
                 foreach (FileInfo f in files)
-                    DoAction(new Action("LoadMetaData", f.FullName.Substring(0, f.FullName.Length - 5)));
+                    DoAction(new Action("LoadMetaData", f.FullName.Substring(0, f.FullName.Length - 5)), true);
         }
 
         public void LoadSdkMetaFiles()
@@ -342,11 +404,11 @@ namespace ZasuvkaPtakopyska
             string log = "";
             string json = MetaCpp.GenerateMetaComponentJson(content, out log);
             if (String.IsNullOrEmpty(json))
-                DoAction(new Action("RemoveMetaData", path));
+                DoAction(new Action("RemoveMetaData", path), true);
             else
             {
                 File.WriteAllText(path + ".meta", json);
-                DoAction(new Action("LoadMetaData", path));
+                DoAction(new Action("LoadMetaData", path), true);
             }
         }
 
@@ -356,18 +418,18 @@ namespace ZasuvkaPtakopyska
                 return;
 
             File.Delete(path + ".meta");
-            DoAction(new Action("RemoveMetaData", path));
+            DoAction(new Action("RemoveMetaData", path), true);
         }
 
         public void RenameMetaFile(string oldPath, string newPath)
         {
-            DoAction(new Action("RemoveMetaData", oldPath));
+            DoAction(new Action("RemoveMetaData", oldPath), true);
 
             if (!File.Exists(newPath) || Path.GetExtension(newPath) != ".h" || !File.Exists(oldPath + ".meta"))
                 return;
 
             File.Move(oldPath + ".meta", newPath + ".meta");
-            DoAction(new Action("LoadMetaData", newPath));
+            DoAction(new Action("LoadMetaData", newPath), true);
         }
 
         public void OpenEditFile(string path, int line = -1)
@@ -424,10 +486,10 @@ namespace ZasuvkaPtakopyska
             }
         }
 
-        public void RebuildEditorComponents()
+        public void RebuildEditorComponents(bool forced = false)
         {
             if (m_projectManagerPanel != null)
-                m_projectManagerPanel.RebuildEditorComponents();
+                m_projectManagerPanel.RebuildEditorComponents(forced);
         }
 
         #endregion
@@ -501,6 +563,7 @@ namespace ZasuvkaPtakopyska
             m_rightPanel.Undocked += new EventHandler(sidePanel_DockUndock);
             m_mainPanel.Controls.Add(m_rightPanel);
             m_rightPanel.BringToFront();
+            m_rightPanel.Content.Controls.Clear();
         }
 
         private void InitializeBottomPanel()
@@ -520,6 +583,7 @@ namespace ZasuvkaPtakopyska
 
             m_projectFilesPanel = new ProjectFilesControl();
             m_projectFilesPanel.Dock = DockStyle.Fill;
+            m_bottomPanel.Content.Controls.Clear();
             m_bottomPanel.Content.Controls.Add(m_projectFilesPanel);
         }
 
@@ -687,8 +751,10 @@ namespace ZasuvkaPtakopyska
                 {
                     ProjectModel.UpdateFromCbp();
                     MetaComponentsManager.Instance.UnregisterAllMetaComponents();
-                    Parallel.Invoke(() => LoadSdkMetaFiles());
-                    Parallel.Invoke(() => GenerateProjectMetaFiles());
+                    Parallel.Invoke(
+                        () => LoadSdkMetaFiles(),
+                        () => GenerateProjectMetaFiles()
+                    );
                     if (m_buildPage != null)
                         m_buildPage.RefreshContent();
                     if (m_projectManagerPanel != null)
@@ -721,7 +787,7 @@ namespace ZasuvkaPtakopyska
                     PtakopyskInterface.Instance.PluginLoadComponents(pluginPath);
                     List<string> clist = PtakopyskInterface.Instance.GetComponentsIds();
                     foreach (string c in clist)
-                        Console.WriteLine(">>> Registered component: " + c);
+                        Console.WriteLine("Registered component: " + c);
                     ReloadScene();
                 }
             }
@@ -748,7 +814,7 @@ namespace ZasuvkaPtakopyska
                         }
                     }
                     if (m_projectManagerPanel != null)
-                        m_projectManagerPanel.RebuildList();
+                        m_projectManagerPanel.UpdateFile(path);
                 }
             }
             else if (action.Id == "RemoveMetaData" && action.Params != null && action.Params.Length > 0)
@@ -760,7 +826,7 @@ namespace ZasuvkaPtakopyska
                     MetaComponentsManager.Instance.UnregisterMetaComponent(ProjectModel.MetaComponentPaths[path]);
                     ProjectModel.MetaComponentPaths.Remove(path);
                     if (m_projectManagerPanel != null)
-                        m_projectManagerPanel.RebuildList();
+                        m_projectManagerPanel.UpdateFile(path);
                 }
             }
             else if (action.Id == "GameObjectIdChanged" && action.Params != null && action.Params.Length > 0)
@@ -877,6 +943,8 @@ namespace ZasuvkaPtakopyska
                     DoAction(new Action("EditorComponentsPluginChanged"));
                 else if (Path.GetExtension(e.FullPath) == ".h" && ProjectModel.Files.Contains(e.FullPath))
                     Parallel.Invoke(() => GenerateMetaFile(e.FullPath));
+                if (m_projectFilesPanel != null)
+                    m_projectFilesPanel.DoOnUiThread(() => m_projectFilesPanel.RebuildList());
             }
         }
 
@@ -886,6 +954,8 @@ namespace ZasuvkaPtakopyska
             {
                 if (Path.GetExtension(e.FullPath) == ".h" && ProjectModel.Files.Contains(e.FullPath))
                     RemoveMetaFile(e.FullPath);
+                if (m_projectFilesPanel != null)
+                    m_projectFilesPanel.DoOnUiThread(() => m_projectFilesPanel.RebuildList());
             }
         }
 
@@ -920,6 +990,8 @@ namespace ZasuvkaPtakopyska
                     }
                     ProjectModel.ApplyToCbp(SettingsModel);
                 }
+                if (m_projectFilesPanel != null)
+                    m_projectFilesPanel.DoOnUiThread(() => m_projectFilesPanel.RebuildList());
             }
         }
 

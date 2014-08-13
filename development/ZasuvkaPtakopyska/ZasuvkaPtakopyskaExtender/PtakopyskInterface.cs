@@ -47,11 +47,11 @@ namespace ZasuvkaPtakopyskaExtender
 
         #region Public Functionality.
 
-        public bool Initialize(int windowHandle, string defaultTexturePath, string defaultVertexShaderPath, string defaultFragmentShaderPath, string defaultFontPath)
+        public bool Initialize(int windowHandle, bool editMode = true)
         {
             try
             {
-                bool status = _Initialize(windowHandle, defaultTexturePath, defaultVertexShaderPath, defaultFragmentShaderPath, defaultFontPath);
+                bool status = _Initialize(windowHandle, editMode);
                 Console.Write(_PopErrors());
                 return status;
             }
@@ -264,6 +264,17 @@ namespace ZasuvkaPtakopyskaExtender
             catch (Exception ex) { LogException(ex); return false; }
         }
 
+        public bool DuplicateGameObject(int handleFrom, bool isPrefabFrom, int handleTo, bool isPrefabTo)
+        {
+            try
+            {
+                bool status = _DuplicateGameObject(handleFrom, isPrefabFrom, handleTo, isPrefabTo);
+                Console.Write(_PopErrors());
+                return status;
+            }
+            catch (Exception ex) { LogException(ex); return false; }
+        }
+
         public bool ApplyJsonToGameObject(int handle, bool isPrefab, string json)
         {
             try
@@ -456,10 +467,43 @@ namespace ZasuvkaPtakopyskaExtender
             catch (Exception ex) { LogException(ex); return null; }
         }
 
+        public string GetIteratedAssetMeta(AssetType type)
+        {
+            try
+            {
+                string result = _GetIteratedAssetMeta((int)type);
+                Console.Write(_PopErrors());
+                return result;
+            }
+            catch (Exception ex) { LogException(ex); return null; }
+        }
+
+        public string GetIteratedAssetTags(AssetType type)
+        {
+            try
+            {
+                string result = _GetIteratedAssetTags((int)type);
+                Console.Write(_PopErrors());
+                return result;
+            }
+            catch (Exception ex) { LogException(ex); return null; }
+        }
+
         public void EndIterateAssets(AssetType type)
         {
             try { _EndIterateAssets((int)type); }
             catch (Exception ex) { LogException(ex); }
+        }
+
+        public bool QueryAssets(AssetType type, string query)
+        {
+            try
+            {
+                bool status = _QueryAssets((int)type, query);
+                Console.Write(_PopErrors());
+                return status;
+            }
+            catch (Exception ex) { LogException(ex); return false; }
         }
 
         public int PluginLoadComponents(string path)
@@ -582,17 +626,7 @@ namespace ZasuvkaPtakopyskaExtender
 
         [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
         [return: MarshalAs(UnmanagedType.U1)]
-        private static extern bool _Initialize(
-            int windowHandle,
-            [MarshalAs(UnmanagedType.LPStr)]
-            string defaultTexturePath,
-            [MarshalAs(UnmanagedType.LPStr)]
-            string defaultVertexShaderPath,
-            [MarshalAs(UnmanagedType.LPStr)]
-            string defaultFragmentShaderPath,
-            [MarshalAs(UnmanagedType.LPStr)]
-            string defaultFontPath
-            );
+        private static extern bool _Initialize(int windowHandle, bool editMode);
 
         [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
         private static extern void _Release();
@@ -699,6 +733,10 @@ namespace ZasuvkaPtakopyskaExtender
 
         [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
         [return: MarshalAs(UnmanagedType.U1)]
+        private static extern bool _DuplicateGameObject(int handleFrom, bool isPrefabFrom, int handleTo, bool isPrefabTo);
+
+        [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
+        [return: MarshalAs(UnmanagedType.U1)]
         private static extern bool _ApplyJsonToGameObject(
             int handle,
             bool isPrefab,
@@ -789,7 +827,23 @@ namespace ZasuvkaPtakopyskaExtender
         private static extern string _GetIteratedAssetId(int type);
 
         [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
+        [return: MarshalAs(UnmanagedType.LPStr)]
+        private static extern string _GetIteratedAssetMeta(int type);
+
+        [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
+        [return: MarshalAs(UnmanagedType.LPStr)]
+        private static extern string _GetIteratedAssetTags(int type);
+
+        [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
         private static extern void _EndIterateAssets(int type);
+
+        [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
+        [return: MarshalAs(UnmanagedType.I1)]
+        private static extern bool _QueryAssets(
+            int type,
+            [MarshalAs(UnmanagedType.LPStr)]
+            string query
+            );
 
         [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
         [return: MarshalAs(UnmanagedType.I4)]

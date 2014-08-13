@@ -52,7 +52,6 @@ namespace ZasuvkaPtakopyska
             MetroSkinManager.ApplyMetroStyle(m_filesPanel);
             m_filesPanel.Size = new Size(Width, 0);
             m_filesPanel.AutoSize = true;
-            //m_filesPanel.AutoScroll = true;
             m_filesPanel.Top = m_optionsTile.Bottom + DEFAULT_SEPARATOR;
             m_filesPanel.Width = Width;
             m_filesPanel.Height = Height - m_filesPanel.Top;
@@ -91,32 +90,46 @@ namespace ZasuvkaPtakopyska
                 MetroSkinManager.ApplyMetroStyle(btn);
                 btn.Text = Path.GetFileName(file);
                 btn.Tag = file;
-                btn.Location = new Point(type == 0 ? 0 : btn.Height, y);
-                btn.Width = Width - (type == 0 ? 0 : btn.Height);
+                btn.Location = new Point(btn.Height, y);
+                btn.Width = Width - btn.Height;
                 btn.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
                 btn.Click += new EventHandler(btn_Click);
                 m_filesPanel.Controls.Add(btn);
 
-                if (type == 1)
-                {
-                    icon = new MetroTile();
-                    MetroSkinManager.ApplyMetroStyle(icon);
-                    icon.Text = "C";
-                    icon.TextAlign = ContentAlignment.MiddleCenter;
-                    icon.Tag = file;
-                    icon.Location = new Point(0, y);
-                    icon.Size = new Size(btn.Height, btn.Height);
-                    icon.TileTextFontSize = MetroTileTextSize.Small;
-                    icon.TileTextFontWeight = MetroTileTextWeight.Bold;
-                    icon.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-                    m_filesPanel.Controls.Add(icon);
-                }
-
+                icon = new MetroTile();
+                MetroSkinManager.ApplyMetroStyle(icon);
+                icon.Text = type == 1 ? "C" : "";
+                icon.TextAlign = ContentAlignment.MiddleCenter;
+                icon.Tag = file;
+                icon.Location = new Point(0, y);
+                icon.Size = new Size(btn.Height, btn.Height);
+                icon.TileTextFontSize = MetroTileTextSize.Small;
+                icon.TileTextFontWeight = MetroTileTextWeight.Bold;
+                icon.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+                m_filesPanel.Controls.Add(icon);
+                
                 y = btn.Bottom;
             }
         }
 
-        public void RebuildEditorComponents()
+        public void UpdateFile(string file)
+        {
+            MainForm mainForm = FindForm() as MainForm;
+            if (mainForm == null || mainForm.ProjectModel == null || mainForm.ProjectModel.Files == null)
+                return;
+
+            string cppfile = Path.ChangeExtension(file, ".cpp");
+            int type = 0;
+            if (mainForm.ProjectModel.MetaComponentPaths.ContainsKey(file) ||
+                (Path.GetExtension(file) == ".cpp" && mainForm.ProjectModel.MetaComponentPaths.ContainsKey(cppfile))
+                )
+                type = 1;
+            foreach (Control c in m_filesPanel.Controls)
+                if (c is MetroTile && c.Tag is string && (c.Tag.Equals(file) || c.Tag.Equals(cppfile)))
+                    c.Text = type == 1 ? "C" : "";
+        }
+
+        public void RebuildEditorComponents(bool forced = false)
         {
             MainForm mainForm = FindForm() as MainForm;
             if (mainForm == null || mainForm.SettingsModel == null || mainForm.ProjectModel == null)
@@ -169,7 +182,7 @@ namespace ZasuvkaPtakopyska
                 File.WriteAllText(unregisterFilePath, unregisterContent);
                 somethingChanged = true;
             }
-            if (!somethingChanged && File.Exists(mainForm.ProjectModel.WorkingDirectory + @"\" + pluginFilePath))
+            if (!forced && !somethingChanged && File.Exists(mainForm.ProjectModel.WorkingDirectory + @"\" + pluginFilePath))
             {
                 mainForm.ProjectModel.EditorCbpPath = editorCbpPath;
                 mainForm.ProjectModel.EditorComponentsPluginPath = pluginFilePath;
@@ -334,6 +347,10 @@ namespace ZasuvkaPtakopyska
             MetroSkinManager.ApplyMetroStyle(menu);
             ToolStripMenuItem menuItem;
 
+            menuItem = new ToolStripMenuItem("Build Editor Components");
+            menuItem.Click += new EventHandler(menuItem_buildEditorComponents_Click);
+            menu.Items.Add(menuItem);
+
             menuItem = new ToolStripMenuItem("Rebuild Editor Components");
             menuItem.Click += new EventHandler(menuItem_rebuildEditorComponents_Click);
             menu.Items.Add(menuItem);
@@ -366,9 +383,14 @@ namespace ZasuvkaPtakopyska
             }
         }
 
-        private void menuItem_rebuildEditorComponents_Click(object sender, EventArgs e)
+        private void menuItem_buildEditorComponents_Click(object sender, EventArgs e)
         {
             RebuildEditorComponents();
+        }
+
+        private void menuItem_rebuildEditorComponents_Click(object sender, EventArgs e)
+        {
+            RebuildEditorComponents(true);
         }
 
         private void btn_Click(object sender, EventArgs e)

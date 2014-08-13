@@ -214,10 +214,15 @@ namespace ZasuvkaPtakopyska
 
         public void LoadSettingsModel()
         {
-            string data = File.Exists(SETTINGS_FILE_PATH) ? File.ReadAllText(SETTINGS_FILE_PATH) : "{}";
-            m_settingsModel = JsonConvert.DeserializeObject<SettingsModel>(data);
-            if (m_settingsModel == null)
-                m_settingsModel = new SettingsModel();
+            string path = AppDomain.CurrentDomain.BaseDirectory + SETTINGS_FILE_PATH;
+            string data = File.Exists(path) ? File.ReadAllText(path) : "{}";
+            try
+            {
+                m_settingsModel = JsonConvert.DeserializeObject<SettingsModel>(data);
+                if (m_settingsModel == null)
+                    m_settingsModel = new SettingsModel();
+            }
+            catch { m_settingsModel = new SettingsModel(); }
             MetroSkinManager.Style = m_settingsModel.UiStyle;
             MetroSkinManager.Theme = m_settingsModel.UiTheme;
         }
@@ -225,7 +230,7 @@ namespace ZasuvkaPtakopyska
         public void SaveSettingsModel()
         {
             string data = JsonConvert.SerializeObject(m_settingsModel, Formatting.Indented);
-            File.WriteAllText(SETTINGS_FILE_PATH, data);
+            File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + SETTINGS_FILE_PATH, data);
         }
         
         #endregion

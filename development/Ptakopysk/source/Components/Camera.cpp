@@ -3,6 +3,8 @@
 #include "../../include/Ptakopysk/System/GameObject.h"
 #include "../../include/Ptakopysk/System/GameManager.h"
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/Color.hpp>
 
 namespace Ptakopysk
 {
@@ -43,9 +45,9 @@ namespace Ptakopysk
 
     void Camera::setSize( sf::Vector2f v )
     {
-        GameManager* gm = getGameObject() ? getGameObject()->getGameManagerRoot() : 0;
-        if( gm )
+        if( !GameManager::isEditMode() )
         {
+            GameManager* gm = getGameObject() ? getGameObject()->getGameManagerRoot() : 0;
             sf::RenderWindow* wnd = gm->getRenderWindow();
             if( wnd )
             {
@@ -186,6 +188,22 @@ namespace Ptakopysk
 
     void Camera::onRenderEditor( sf::RenderTarget* target )
     {
+        if( !target )
+            return;
+        sf::Vector2f s = m_size;
+        if( s.x < 0.0f )
+            s.x = (float)target->getSize().x;
+        if( s.y < 0.0f )
+            s.y = (float)target->getSize().y;
+        sf::RectangleShape rect( s );
+        rect.setOrigin( s * 0.5f );
+        Transform* trans = getGameObject() ? getGameObject()->getComponent< Transform >() : 0;
+        if( trans )
+            rect.setPosition( trans->getPosition() );
+        rect.setFillColor( sf::Color( 0, 0, 0, 64 ) );
+        rect.setOutlineColor( sf::Color( 255, 255, 255, 64 ) );
+        rect.setOutlineThickness( 4 );
+        target->draw( rect );
     }
 
 }

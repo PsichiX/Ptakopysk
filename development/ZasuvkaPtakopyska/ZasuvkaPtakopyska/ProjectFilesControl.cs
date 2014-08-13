@@ -11,11 +11,12 @@ using MetroFramework;
 
 namespace ZasuvkaPtakopyska
 {
-    public class ProjectFilesControl : MetroPanel
+    public class ProjectFilesControl : MetroPanel, MetroSidePanel.IMetroSidePanelScrollableContent
     {
         #region Private Static Data.
 
-        private static readonly Size DEFAULT_TILE_SIZE = new Size(192, 64);
+        private static readonly int DEFAULT_SEPARATOR = 4;
+        private static readonly Size DEFAULT_TILE_SIZE = new Size(74, 74);
 
         #endregion
 
@@ -25,7 +26,7 @@ namespace ZasuvkaPtakopyska
 
         private string m_rootPath;
         private string m_viewPath;
-        private FlowLayoutPanel m_flowPanel;
+        private MetroPanel m_content;
         private Image m_backImage;
         private Image m_dirImage;
         private Image m_fileImage;
@@ -41,8 +42,24 @@ namespace ZasuvkaPtakopyska
 
         #region Public Properties.
 
+        public MetroSidePanel SidePanel { get; set; }
+        public Rectangle ScrollableContentRectangle
+        {
+            get
+            {
+                Rectangle rect;
+                m_content.CalculateContentsRectangle(out rect);
+                return rect;
+            }
+        }
         public string RootPath { get { return m_rootPath; } set { m_rootPath = value; RebuildList(); } }
         public string ViewPath { get { return m_viewPath; } set { m_viewPath = value; RebuildList(); } }
+        public int VerticalScrollValue { get { return m_content.VerticalScroll.Value; } set { m_content.VerticalScroll.Value = value; } }
+        public int VerticalScrollMaximum { get { return m_content.VerticalScroll.Maximum; } set { m_content.VerticalScroll.Maximum = value; } }
+        public int VerticalScrollLargeChange { get { return m_content.VerticalScroll.LargeChange; } set { m_content.VerticalScroll.LargeChange = value; } }
+        public int HorizontalScrollValue { get { return m_content.HorizontalScroll.Value; } set { m_content.HorizontalScroll.Value = value; } }
+        public int HorizontalScrollMaximum { get { return m_content.HorizontalScroll.Maximum; } set { m_content.HorizontalScroll.Maximum = value; } }
+        public int HorizontalScrollLargeChange { get { return m_content.HorizontalScroll.LargeChange; } set { m_content.HorizontalScroll.LargeChange = value; } }
 
         #endregion
 
@@ -53,12 +70,10 @@ namespace ZasuvkaPtakopyska
         public ProjectFilesControl()
         {
             MetroSkinManager.ApplyMetroStyle(this);
-            AutoScroll = true;
-            Resize += new EventHandler(ProjectFilesControl_Resize);
 
-            m_flowPanel = new FlowLayoutPanel();
-            m_flowPanel.FlowDirection = FlowDirection.LeftToRight;
-            Controls.Add(m_flowPanel);
+            m_content = new MetroPanel();
+            m_content.Dock = DockStyle.Fill;
+            Controls.Add(m_content);
 
             m_backImage = Bitmap.FromFile("resources/icons/appbar.arrow.left.png");
             m_dirImage = Bitmap.FromFile("resources/icons/appbar.folder.png");
@@ -68,12 +83,8 @@ namespace ZasuvkaPtakopyska
             m_fileMusicImage = Bitmap.FromFile("resources/icons/appbar.page.music.png");
             m_fileTextImage = Bitmap.FromFile("resources/icons/appbar.page.text.png");
             m_fileDomImage = Bitmap.FromFile("resources/icons/appbar.page.xml.png");
-        }
 
-        private void ProjectFilesControl_Resize(object sender, EventArgs e)
-        {
-            m_flowPanel.Width = Width;
-            m_flowPanel.Height = Height;
+            RebuildList();
         }
 
         #endregion
@@ -84,7 +95,7 @@ namespace ZasuvkaPtakopyska
 
         public void RebuildList()
         {
-            m_flowPanel.Controls.Clear();
+            m_content.Controls.Clear();
 
             if (m_viewPath == null || m_rootPath == null)
                 m_viewPath = m_rootPath;
@@ -94,7 +105,9 @@ namespace ZasuvkaPtakopyska
 
             string root = Path.GetFullPath(m_rootPath);
             string path = Path.GetFullPath(m_viewPath);
-            
+            bool upDownRow = false;
+            int x = DEFAULT_SEPARATOR;
+
             MetroTileIcon tile;
             bool isRoot = path.Length == root.Length;
             DirectoryInfo dir = new DirectoryInfo(path);
@@ -103,25 +116,38 @@ namespace ZasuvkaPtakopyska
                 tile = new MetroTileIcon();
                 MetroSkinManager.ApplyMetroStyle(tile);
                 tile.Tag = dir.FullName + @"\..";
+                tile.Top = DEFAULT_SEPARATOR;
+                tile.Left = x;
                 tile.Size = DEFAULT_TILE_SIZE;
                 tile.Image = m_backImage;
+                tile.IsImageScaled = true;
+                tile.ImageScale = new PointF(0.85f, 0.85f);
                 tile.Click += new EventHandler(tile_Click);
-                m_flowPanel.Controls.Add(tile);
+                m_content.Controls.Add(tile);
+                upDownRow = !upDownRow;
             }
             foreach (DirectoryInfo info in dir.GetDirectories())
             {
                 tile = new MetroTileIcon();
                 MetroSkinManager.ApplyMetroStyle(tile);
                 tile.Tag = info.FullName;
+                tile.Top = upDownRow ? (DEFAULT_SEPARATOR + DEFAULT_TILE_SIZE.Height + DEFAULT_SEPARATOR) : DEFAULT_SEPARATOR;
+                tile.Left = x;
                 tile.Size = DEFAULT_TILE_SIZE;
                 tile.Text = info.Name;
                 tile.TextAlign = ContentAlignment.BottomRight;
-                tile.TileTextFontWeight = MetroTileTextWeight.Bold;
+                tile.TileTextFontSize = MetroTileTextSize.Small;
+                tile.TileTextFontWeight = MetroTileTextWeight.Light;
                 tile.Image = m_dirImage;
+                tile.IsImageScaled = true;
+                tile.ImageScale = new PointF(0.85f, 0.85f);
                 tile.ImageAlign = ContentAlignment.TopLeft;
-                tile.ImageOffset = new Point(-14, -14);
+                tile.ImageOffset = new Point(-10, -10);
                 tile.Click += new EventHandler(tile_Click);
-                m_flowPanel.Controls.Add(tile);
+                m_content.Controls.Add(tile);
+                upDownRow = !upDownRow;
+                if (!upDownRow)
+                    x += DEFAULT_TILE_SIZE.Width + DEFAULT_SEPARATOR;
             }
             string ext;
             foreach (FileInfo info in dir.GetFiles())
@@ -130,10 +156,13 @@ namespace ZasuvkaPtakopyska
                 tile = new MetroTileIcon();
                 MetroSkinManager.ApplyMetroStyle(tile);
                 tile.Tag = info.FullName;
+                tile.Top = upDownRow ? (DEFAULT_SEPARATOR + DEFAULT_TILE_SIZE.Height + DEFAULT_SEPARATOR) : DEFAULT_SEPARATOR;
+                tile.Left = x;
                 tile.Size = DEFAULT_TILE_SIZE;
-                tile.Text = (ext.Length < 1 ? "" : ext.Substring(1).ToUpperInvariant()) + "\n" + Path.GetFileNameWithoutExtension(info.Name);
+                tile.Text = ext + "\n" + Path.GetFileNameWithoutExtension(info.Name);
                 tile.TextAlign = ContentAlignment.BottomRight;
-                tile.TileTextFontWeight = MetroTileTextWeight.Bold;
+                tile.TileTextFontSize = MetroTileTextSize.Small;
+                tile.TileTextFontWeight = MetroTileTextWeight.Light;
                 if (ext == ".h" || ext == ".cpp")
                     tile.Image = m_fileCodeImage;
                 else if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp")
@@ -146,11 +175,19 @@ namespace ZasuvkaPtakopyska
                     tile.Image = m_fileDomImage;
                 else
                     tile.Image = m_fileImage;
+                tile.IsImageScaled = true;
+                tile.ImageScale = new PointF(0.85f, 0.85f);
                 tile.ImageAlign = ContentAlignment.TopLeft;
-                tile.ImageOffset = new Point(-14, -14);
+                tile.ImageOffset = new Point(-10, -10);
                 tile.Click += new EventHandler(tile_Click);
-                m_flowPanel.Controls.Add(tile);
+                m_content.Controls.Add(tile);
+                upDownRow = !upDownRow;
+                if (!upDownRow)
+                    x += DEFAULT_TILE_SIZE.Width + DEFAULT_SEPARATOR;
             }
+
+            if (SidePanel != null)
+                SidePanel.UpdateScrollbars();
         }
 
         public void OpenFile(string path)
@@ -177,6 +214,19 @@ namespace ZasuvkaPtakopyska
                 ViewPath = path;
             else if (File.Exists(path))
                 OpenFile(path);
+        }
+
+        #endregion
+
+
+
+        #region Protected Functionality.
+
+        protected override void OnResize(EventArgs eventargs)
+        {
+            base.OnResize(eventargs);
+            if (SidePanel != null)
+                SidePanel.UpdateScrollbars();
         }
 
         #endregion

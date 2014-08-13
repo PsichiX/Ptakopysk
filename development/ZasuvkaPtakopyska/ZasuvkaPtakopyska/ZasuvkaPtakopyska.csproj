@@ -54,6 +54,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssetsControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="BuildPageControl.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -61,7 +64,7 @@
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GameObjectPropertiesEditor.cs">
+    <Compile Include="GameObjectPropertiesControl.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="MetroPromptBox.cs">
