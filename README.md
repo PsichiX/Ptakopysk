@@ -5,7 +5,7 @@ Ptakopysk
 
 ---------
 ###Zasuvka Ptakopyska IDE###
-![ZasuvkaPtakopyska](https://raw.github.com/PsichiX/Ptakopysk/master/media/zasuvka-ptakopyska-screenshot.png)
+![ZasuvkaPtakopyska](https://raw.github.com/PsichiX/Ptakopysk/master/media/zasuvka-ptakopyska-screenshot.PNG)
 
 ---------
 ###How-to:###
