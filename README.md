@@ -2,6 +2,7 @@ Ptakopysk
 =========
 ![Ptakopysk](https://raw.github.com/PsichiX/Ptakopysk/master/media/logo-mini.png)
 ###C++ game prototyping framework based on component system###
+**[DOWNLOAD LATEST RELEASE](https://github.com/PsichiX/Ptakopysk/releases)**
 
 ---------
 ###Zasuvka Ptakopyska IDE###
