@@ -4,6 +4,10 @@ Ptakopysk
 ###C++ game prototyping framework based on component system###
 
 ---------
+###Zasuvka Ptakopyska IDE###
+![ZasuvkaPtakopyska](https://raw.github.com/PsichiX/Ptakopysk/master/media/zasuvka-ptakopyska-screenshot.png)
+
+---------
 ###How-to:###
 All you will want to do with this library in your project is just use Zasuvka Ptakopyska IDE:
 - Open IDE executable: **\<sdk\>/IDE/ZasuvkaPtakopyska.exe**
