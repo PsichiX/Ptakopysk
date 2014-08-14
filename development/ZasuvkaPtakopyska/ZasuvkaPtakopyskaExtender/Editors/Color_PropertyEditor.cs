@@ -62,7 +62,10 @@ namespace ZasuvkaPtakopyskaExtender.Editors
                 return;
 
             var ov = Value;
+            IEditorJsonValueChangedCallback cb = EditorJsonValueChangedCallback;
+            EditorJsonValueChangedCallback = null;
             Color = Color.FromArgb(ov[3], ov[0], ov[1], ov[2]);
+            EditorJsonValueChangedCallback = cb;
         }
 
         private bool ValidateValue()

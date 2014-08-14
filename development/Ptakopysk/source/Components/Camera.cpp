@@ -45,16 +45,19 @@ namespace Ptakopysk
 
     void Camera::setSize( sf::Vector2f v )
     {
-        if( !GameManager::isEditMode() )
+        if( !GameManager::isEditMode() && getGameObject() )
         {
-            GameManager* gm = getGameObject() ? getGameObject()->getGameManagerRoot() : 0;
-            sf::RenderWindow* wnd = gm->getRenderWindow();
-            if( wnd )
+            GameManager* gm = getGameObject()->getGameManagerRoot();
+            if( gm )
             {
-                if( v.x < 0.0f )
-                    v.x = (float)wnd->getSize().x;
-                if( v.y < 0.0f )
-                    v.y = (float)wnd->getSize().y;
+                sf::RenderWindow* wnd = gm->getRenderWindow();
+                if( wnd )
+                {
+                    if( v.x < 0.0f )
+                        v.x = (float)wnd->getSize().x;
+                    if( v.y < 0.0f )
+                        v.y = (float)wnd->getSize().y;
+                }
             }
         }
         m_size = v;
