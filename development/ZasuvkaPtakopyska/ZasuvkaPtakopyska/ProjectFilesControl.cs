@@ -122,7 +122,7 @@ namespace ZasuvkaPtakopyska
                 tile.Image = m_backImage;
                 tile.IsImageScaled = true;
                 tile.ImageScale = new PointF(0.85f, 0.85f);
-                tile.Click += new EventHandler(tile_Click);
+                tile.MouseUp += new MouseEventHandler(tile_MouseUp);
                 m_content.Controls.Add(tile);
                 upDownRow = !upDownRow;
             }
@@ -143,7 +143,7 @@ namespace ZasuvkaPtakopyska
                 tile.ImageScale = new PointF(0.85f, 0.85f);
                 tile.ImageAlign = ContentAlignment.TopLeft;
                 tile.ImageOffset = new Point(-10, -10);
-                tile.Click += new EventHandler(tile_Click);
+                tile.MouseUp += new MouseEventHandler(tile_MouseUp);
                 m_content.Controls.Add(tile);
                 upDownRow = !upDownRow;
                 if (!upDownRow)
@@ -179,7 +179,7 @@ namespace ZasuvkaPtakopyska
                 tile.ImageScale = new PointF(0.85f, 0.85f);
                 tile.ImageAlign = ContentAlignment.TopLeft;
                 tile.ImageOffset = new Point(-10, -10);
-                tile.Click += new EventHandler(tile_Click);
+                tile.MouseUp += new MouseEventHandler(tile_MouseUp);
                 m_content.Controls.Add(tile);
                 upDownRow = !upDownRow;
                 if (!upDownRow)
@@ -203,17 +203,92 @@ namespace ZasuvkaPtakopyska
 
         #region Private Events Handlers.
 
-        private void tile_Click(object sender, EventArgs e)
+        private void tile_MouseUp(object sender, MouseEventArgs e)
         {
             MetroTileIcon tile = sender as MetroTileIcon;
             if (tile == null)
                 return;
 
             string path = tile.Tag as string;
+            if (e.Button == MouseButtons.Left)
+            {
+                if (Directory.Exists(path))
+                    ViewPath = path;
+                else if (File.Exists(path))
+                    OpenFile(path);
+            }
+            else if (e.Button == MouseButtons.Right)
+            {
+                MetroContextMenu menu = new MetroContextMenu(null);
+                MetroSkinManager.ApplyMetroStyle(menu);
+                ToolStripMenuItem menuItem;
+
+                menuItem = new ToolStripMenuItem("Rename");
+                menuItem.Tag = path;
+                menuItem.Click += new EventHandler(menuItem_rename_Click);
+                menu.Items.Add(menuItem);
+
+                menuItem = new ToolStripMenuItem("Delete");
+                menuItem.Tag = path;
+                menuItem.Click += new EventHandler(menuItem_delete_Click);
+                menu.Items.Add(menuItem);
+
+                menu.Show(tile, e.Location);
+            }
+        }
+
+        private void menuItem_rename_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
+            if (menuItem == null || !(menuItem.Tag is string))
+                return;
+
+            string path = menuItem.Tag as string;
             if (Directory.Exists(path))
-                ViewPath = path;
+            {
+                DirectoryInfo info = new DirectoryInfo(path);
+                MetroPromptBox dialog = new MetroPromptBox();
+                dialog.Title = "Rename Directory";
+                dialog.Message = "Type new directory name:";
+                dialog.Value = info.Name;
+                DialogResult result = dialog.ShowDialog();
+                if (result == DialogResult.OK)
+                    info.MoveTo(info.Parent.FullName + @"\" + dialog.Value);
+            }
             else if (File.Exists(path))
-                OpenFile(path);
+            {
+                FileInfo info = new FileInfo(path);
+                MetroPromptBox dialog = new MetroPromptBox();
+                dialog.Title = "Rename File";
+                dialog.Message = "Type new file name:";
+                dialog.Value = info.Name;
+                DialogResult result = dialog.ShowDialog();
+                if (result == DialogResult.OK)
+                    info.MoveTo(info.Directory.FullName + @"\" + dialog.Value);
+            }
+        }
+
+        private void menuItem_delete_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
+            if (menuItem == null || !(menuItem.Tag is string))
+                return;
+
+            string path = menuItem.Tag as string;
+            if (Directory.Exists(path))
+            {
+                DirectoryInfo info = new DirectoryInfo(path);
+                DialogResult result = MetroMessageBox.Show(FindForm(), info.FullName, "Are you sure to delete directory?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                    info.Delete(true);
+            }
+            else if (File.Exists(path))
+            {
+                FileInfo info = new FileInfo(path);
+                DialogResult result = MetroMessageBox.Show(FindForm(), info.FullName, "Are you sure to delete file?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
+                    info.Delete();
+            }
         }
 
         #endregion
