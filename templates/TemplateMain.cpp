@@ -5,9 +5,7 @@
 #include <XeCore/Common/Logger.h>
 #include <XeCore/Common/Concurrent/Thread.h>
 #include <XeCore/Common/Timer.h>
-//<TEMPLATE
 #include "TemplateComponent.h"
-//TEMPLATE>
 
 using namespace Ptakopysk;
 
@@ -26,9 +24,7 @@ int main()
     LOG_SETUP( "log.log" );
     Events::use().setCallback( &onEvent );
     GameManager::initialize();
-    //<TEMPLATE
 	GameManager::registerComponentFactory( "TemplateComponent", RTTI_CLASS_TYPE( TemplateComponent ), TemplateComponent::onBuildComponent );
-	//TEMPLATE>
 
     /// scene
     sf::RenderWindow* window = xnew sf::RenderWindow(
