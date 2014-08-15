@@ -145,6 +145,13 @@ bool DLL_EXPORT _DuplicateGameObject( int handleFrom, bool isPrefabFrom, int han
     return PtakopyskInterface::use().duplicateGameObject( handleFrom, isPrefabFrom, handleTo, isPrefabTo );
 }
 
+bool DLL_EXPORT _TriggerGameObjectComponentFunctionality( int handle, bool isPrefab, const char* compId, const char* funcName )
+{
+    std::string c = compId;
+    std::string f = funcName;
+    return PtakopyskInterface::use().triggerGameObjectComponentFunctionality( handle, isPrefab, c, f );
+}
+
 bool DLL_EXPORT _ApplyJsonToGameObject( int handle, bool isPrefab, const char* json )
 {
     std::string j = json;

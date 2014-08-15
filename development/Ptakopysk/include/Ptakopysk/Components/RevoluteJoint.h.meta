@@ -79,5 +79,6 @@
       "ValueType": "float",
       "DefaultValue": "0"
     }
-  ]
+  ],
+  "FunctionalityTriggers": []
 }

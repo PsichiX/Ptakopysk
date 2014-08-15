@@ -3,22 +3,30 @@ using MetroFramework.Controls;
 using System.Windows.Forms;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace ZasuvkaPtakopyskaExtender.Editors
 {
-    public abstract class ParsablePropertyEditor<T> : PropertyEditor<T>
+    public class ParsablePropertyEditor<T> : PropertyEditor<T> where T : IFormattable
     {
+        public string StringFormat { get; set; }
+        public NumberStyles NumberStyle { get; set; }
+        public IFormatProvider FormatProvider { get; set; }
+        
         private MetroTextBox m_textBox;
 
         public ParsablePropertyEditor(Dictionary<string, string> properties, string propertyName)
             : base(properties, propertyName)
         {
+            StringFormat = Settings.DEFAULT_STRING_FORMAT;
+            NumberStyle = Settings.DefaultNumberStyle;
+            FormatProvider = Settings.DefaultFormatProvider;
             InitializeComponent();
         }
 
         public override void UpdateEditorValue()
         {
-            m_textBox.Text = Value.ToString();
+            m_textBox.Text = Value.ToString(StringFormat, FormatProvider);
         }
 
         private void InitializeComponent()
@@ -37,13 +45,13 @@ namespace ZasuvkaPtakopyskaExtender.Editors
         private void m_textBox_TextChanged(object sender, EventArgs e)
         {
             MethodInfo method = null;
-            try { method = typeof(T).GetMethod("Parse", new Type[] { typeof(string) }); }
+            try { method = typeof(T).GetMethod("Parse", new Type[] { typeof(string), typeof(NumberStyles), typeof(IFormatProvider) }); }
             catch { }
             if (method == null)
                 return;
 
             T v = Value;
-            try { v = (T)method.Invoke(null, new object[] { m_textBox.Text }); }
+            try { v = (T)method.Invoke(null, new object[] { m_textBox.Text, NumberStyle, FormatProvider }); }
             catch { }
             Value = v;
         }

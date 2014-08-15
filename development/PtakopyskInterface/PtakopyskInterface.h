@@ -74,6 +74,7 @@ public:
     bool destroyGameObject( int handle, bool isPrefab );
     bool clearGameObject( int handle, bool isPrefab );
     bool duplicateGameObject( int handleFrom, bool isPrefabFrom, int handleTo, bool isPrefabTo );
+    bool triggerGameObjectComponentFunctionality( int handle, bool isPrefab, const std::string& compId, const std::string& funcName );
     bool applyJsonToGameObject( int handle, bool isPrefab, const std::string& json );
     std::string convertGameObjectToJson( int handle, bool isPrefab );
     bool startQueryGameObject( int handle, bool isPrefab );

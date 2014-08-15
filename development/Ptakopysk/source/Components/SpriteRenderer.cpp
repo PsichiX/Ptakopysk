@@ -235,4 +235,14 @@ namespace Ptakopysk
             m_renderStates.shader = 0;
     }
 
+    bool SpriteRenderer::onTriggerFunctionality( const std::string& name )
+    {
+        if( name == "Centralize origin" )
+        {
+            setOriginPercent( sf::Vector2f( 0.5f, 0.5f ) );
+            return true;
+        }
+        return false;
+    }
+
 }

@@ -43,6 +43,7 @@ int DLL_EXPORT _CreateGameObject( bool isPrefab, int parent, const char* prefabS
 bool DLL_EXPORT _DestroyGameObject( int handle, bool isPrefab );
 bool DLL_EXPORT _ClearGameObject( int handle, bool isPrefab );
 bool DLL_EXPORT _DuplicateGameObject( int handleFrom, bool isPrefabFrom, int handleTo, bool isPrefabTo );
+bool DLL_EXPORT _TriggerGameObjectComponentFunctionality( int handle, bool isPrefab, const char* compId, const char* funcName );
 bool DLL_EXPORT _ApplyJsonToGameObject( int handle, bool isPrefab, const char* json );
 const char* DLL_EXPORT _ConvertGameObjectToJson( int handle, bool isPrefab );
 bool DLL_EXPORT _StartQueryGameObject( int handle, bool isPrefab );

@@ -28,18 +28,19 @@ namespace ZasuvkaPtakopyskaExtender.Editors
                 return;
 
             var ov = Value;
-            m_leftTextBox.Text = ov[0].ToString();
-            m_topTextBox.Text = ov[1].ToString();
-            m_widthTextBox.Text = ov[2].ToString();
-            m_heightTextBox.Text = ov[3].ToString();
+            m_leftTextBox.Text = ov[0].ToString(Settings.DEFAULT_STRING_FORMAT, Settings.DefaultFormatProvider);
+            m_topTextBox.Text = ov[1].ToString(Settings.DEFAULT_STRING_FORMAT, Settings.DefaultFormatProvider);
+            m_widthTextBox.Text = ov[2].ToString(Settings.DEFAULT_STRING_FORMAT, Settings.DefaultFormatProvider);
+            m_heightTextBox.Text = ov[3].ToString(Settings.DEFAULT_STRING_FORMAT, Settings.DefaultFormatProvider);
         }
 
         private bool ValidateValue()
         {
             var ov = Value;
-            if (ov == null)
+            var dv = DefaultValue;
+            if (ov == null && dv != null)
             {
-                Value = new List<float>(DefaultValue);
+                Value = dv == null || dv.Count < 4 ? new List<float>(new float[] { 0.0f, 0.0f, 0.0f, 0.0f }) : new List<float>(dv);
                 ov = Value;
             }
             return ov != null && ov.Count >= 4;
@@ -133,7 +134,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
 
             var ov = Value;
             float v = ov[0];
-            if (float.TryParse(m_leftTextBox.Text, out v))
+            if (float.TryParse(m_leftTextBox.Text, Settings.DefaultNumberStyle, Settings.DefaultFormatProvider, out v))
                 Value = new List<float>(new float[] { v, ov[1], ov[2], ov[3] });
         }
 
@@ -144,7 +145,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
 
             var ov = Value;
             float v = ov[1];
-            if (float.TryParse(m_topTextBox.Text, out v))
+            if (float.TryParse(m_topTextBox.Text, Settings.DefaultNumberStyle, Settings.DefaultFormatProvider, out v))
                 Value = new List<float>(new float[] { ov[0], v, ov[2], ov[3] });
         }
 
@@ -155,7 +156,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
 
             var ov = Value;
             float v = Value[2];
-            if (float.TryParse(m_topTextBox.Text, out v))
+            if (float.TryParse(m_topTextBox.Text, Settings.DefaultNumberStyle, Settings.DefaultFormatProvider, out v))
                 Value = new List<float>(new float[] { ov[0], ov[1], v, ov[3] });
         }
 
@@ -166,7 +167,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
 
             var ov = Value;
             float v = Value[3];
-            if (float.TryParse(m_topTextBox.Text, out v))
+            if (float.TryParse(m_topTextBox.Text, Settings.DefaultNumberStyle, Settings.DefaultFormatProvider, out v))
                 Value = new List<float>(new float[] { ov[0], ov[1], ov[2], v });
         }
     }

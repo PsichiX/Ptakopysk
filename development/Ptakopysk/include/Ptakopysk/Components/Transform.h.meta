@@ -31,5 +31,6 @@
       "ValueType": "Transform::ModeType",
       "DefaultValue": "\"mHierarchy\""
     }
-  ]
+  ],
+  "FunctionalityTriggers": []
 }

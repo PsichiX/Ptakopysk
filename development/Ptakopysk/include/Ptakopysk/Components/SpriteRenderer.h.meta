@@ -55,5 +55,8 @@
       "ValueType": "bool",
       "DefaultValue": "false"
     }
+  ],
+  "FunctionalityTriggers": [
+    "Centralize origin"
   ]
 }

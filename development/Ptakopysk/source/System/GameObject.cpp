@@ -619,7 +619,7 @@ namespace Ptakopysk
             for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
             {
                 c = it->second;
-                if( c->isActive() && c->getTypeFlags() & Component::tRender )
+                if( c->isActive() )
                     c->onRenderEditor( target );
             }
             while( it != m_gameObjects.end() )

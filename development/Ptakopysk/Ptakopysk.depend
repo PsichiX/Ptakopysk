@@ -769,17 +769,20 @@
 	"../include/GameObject.h"
 	"../include/Body.h"
 
-1400718384 source:d:\git\ptakopysk\development\ptakopysk\source\components\body.cpp
+1408068451 source:d:\git\ptakopysk\development\ptakopysk\source\components\body.cpp
 	"../../include/Ptakopysk/Components/Body.h"
 	"../../include/Ptakopysk/Components/Transform.h"
+	"../../include/Ptakopysk/Components/SpriteRenderer.h"
+	"../../include/Ptakopysk/Components/TextRenderer.h"
 	"../../include/Ptakopysk/System/GameObject.h"
 	"../../include/Ptakopysk/System/GameManager.h"
+	<XeCore/Common/Logger.h>
 
-1406476845 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\body.h
+1408066771 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\body.h
 	"Component.h"
 	<Box2D/Box2D.h>
 
-1407894003 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\component.h
+1408060213 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\component.h
 	<XeCore/Common/Property.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -841,7 +844,7 @@
 	"../../include/Ptakopysk/System/GameObject.h"
 	"../../include/Ptakopysk/System/Assets.h"
 
-1407945221 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\spriterenderer.h
+1408076647 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\spriterenderer.h
 	"Component.h"
 	<SFML/Graphics.hpp>
 	"../System/RenderMaterial.h"
@@ -912,14 +915,14 @@
 	"EnumSerializer.h"
 	<Box2D/Box2D.h>
 
-1407894089 source:d:\git\ptakopysk\development\ptakopysk\source\system\gameobject.cpp
+1408065324 source:d:\git\ptakopysk\development\ptakopysk\source\system\gameobject.cpp
 	"../../include/Ptakopysk/System/GameObject.h"
 	"../../include/Ptakopysk/System/GameManager.h"
 	"../../include/Ptakopysk/Components/Component.h"
 	<XeCore/Common/Logger.h>
 	<sstream>
 
-1407946001 source:d:\git\ptakopysk\development\ptakopysk\source\components\camera.cpp
+1408032864 source:d:\git\ptakopysk\development\ptakopysk\source\components\camera.cpp
 	"../../include/Ptakopysk/Components/Camera.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/System/GameObject.h"
@@ -939,7 +942,7 @@
 	"../../include/Ptakopysk/System/GameObject.h"
 	"../../include/Ptakopysk/System/Assets.h"
 
-1407945918 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\textrenderer.h
+1408076836 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\textrenderer.h
 	"Component.h"
 	<SFML/Graphics.hpp>
 	"../System/RenderMaterial.h"
@@ -1048,5 +1051,5 @@
 1400482278 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gameobject.inl
 	"../Components/Component.h"
 
-1406476845 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\meta.h
+1408057792 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\meta.h
 

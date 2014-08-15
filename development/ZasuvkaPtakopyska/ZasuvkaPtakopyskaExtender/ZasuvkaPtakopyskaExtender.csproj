@@ -59,6 +59,15 @@
     <Compile Include="Editors\Bool_PropertyEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Editors\BodyType_PropertyEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editors\Filter_PropertyEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editors\FloatVector2Collection_PropertyEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Editors\CollectionPropertyEditorUtils.cs" />
     <Compile Include="Editors\Color_PropertyEditor.cs">
       <SubType>UserControl</SubType>

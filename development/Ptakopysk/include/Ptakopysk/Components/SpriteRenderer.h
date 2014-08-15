@@ -9,7 +9,8 @@ namespace Ptakopysk
 {
 
     META_COMPONENT(
-        META_ATTR_DESCRIPTION( "Sprite renderer component." )
+        META_ATTR_DESCRIPTION( "Sprite renderer component." ),
+        META_ATTR_FUNCTIONALITY_TRIGGERS( "Centralize origin" )
     )
     class SpriteRenderer
     : public virtual XeCore::Common::IRtti
@@ -96,6 +97,7 @@ namespace Ptakopysk
         virtual void onRender( sf::RenderTarget*& target );
         virtual void onTextureChanged( const sf::Texture* a, bool addedOrRemoved );
         virtual void onShaderChanged( const sf::Shader* a, bool addedOrRemoved );
+        virtual bool onTriggerFunctionality( const std::string& name );
 
     private:
         sf::Vector2f m_size;

@@ -43,5 +43,6 @@
       "ValueType": "bool",
       "DefaultValue": "false"
     }
-  ]
+  ],
+  "FunctionalityTriggers": []
 }

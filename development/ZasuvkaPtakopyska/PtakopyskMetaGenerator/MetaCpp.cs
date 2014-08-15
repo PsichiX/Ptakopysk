@@ -11,6 +11,7 @@ namespace PtakopyskMetaGenerator
         private static readonly string META_ATTR_VALUE_TYPE = "META_ATTR_VALUE_TYPE";
         private static readonly string META_ATTR_DESCRIPTION = "META_ATTR_DESCRIPTION";
         private static readonly string META_ATTR_DEFAULT_VALUE = "META_ATTR_DEFAULT_VALUE";
+        private static readonly string META_ATTR_FUNCTIONALITY_TRIGGERS = "META_ATTR_FUNCTIONALITY_TRIGGERS";
         private static readonly string XECORE_COMMON_PROPERTY = "XeCore::Common::Property";
 
         private static readonly string RULE_NAME_UNNAMED = "_unnamed_";
@@ -112,6 +113,12 @@ namespace PtakopyskMetaGenerator
                                         meta.Name = attr[key];
                                     else if (key == META_ATTR_DESCRIPTION)
                                         meta.Description = attr[key];
+                                    else if (key == META_ATTR_FUNCTIONALITY_TRIGGERS)
+                                    {
+                                        string[] triggers = string.IsNullOrEmpty(attr[key]) ? null : attr[key].Split('|');
+                                        if (triggers != null && triggers.Length > 0)
+                                            meta.FunctionalityTriggers.AddRange(triggers);
+                                    }
                                 }
                             }
                             meta.Properties = SearchDownForProperties(parent);

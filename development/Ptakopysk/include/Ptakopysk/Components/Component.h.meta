@@ -13,5 +13,6 @@
       "ValueType": "bool",
       "DefaultValue": "true"
     }
-  ]
+  ],
+  "FunctionalityTriggers": []
 }

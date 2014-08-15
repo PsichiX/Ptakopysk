@@ -97,5 +97,10 @@
       "ValueType": "float",
       "DefaultValue": "0"
     }
+  ],
+  "FunctionalityTriggers": [
+    "Make as circle",
+    "Make as box from SpriteRenderer",
+    "Make as box from TextRenderer"
   ]
 }

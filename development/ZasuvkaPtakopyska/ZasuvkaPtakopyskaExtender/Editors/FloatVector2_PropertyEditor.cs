@@ -2,6 +2,7 @@
 using MetroFramework.Controls;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace ZasuvkaPtakopyskaExtender.Editors
 {
@@ -26,16 +27,18 @@ namespace ZasuvkaPtakopyskaExtender.Editors
             if (!ValidateValue())
                 return;
 
-            m_xTextBox.Text = Value[0].ToString();
-            m_yTextBox.Text = Value[1].ToString();
+            var ov = Value;
+            m_xTextBox.Text = ov[0].ToString(Settings.DEFAULT_STRING_FORMAT, Settings.DefaultFormatProvider);
+            m_yTextBox.Text = ov[1].ToString(Settings.DEFAULT_STRING_FORMAT, Settings.DefaultFormatProvider);
         }
 
         private bool ValidateValue()
         {
             var ov = Value;
+            var dv = DefaultValue;
             if (ov == null)
             {
-                Value = new List<float>(DefaultValue);
+                Value = dv == null || dv.Count < 2 ? new List<float>(new float[] { 0.0f, 0.0f }) : new List<float>(dv);
                 ov = Value;
             }
             return ov != null && ov.Count >= 2;
@@ -91,7 +94,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
 
             var ov = Value;
             float v = ov[0];
-            if (float.TryParse(m_xTextBox.Text, out v))
+            if (float.TryParse(m_xTextBox.Text, Settings.DefaultNumberStyle, Settings.DefaultFormatProvider, out v))
                 Value = new List<float>(new float[] { v, ov[1] });
         }
 
@@ -102,7 +105,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
 
             var ov = Value;
             float v = Value[1];
-            if (float.TryParse(m_yTextBox.Text, out v))
+            if (float.TryParse(m_yTextBox.Text, Settings.DefaultNumberStyle, Settings.DefaultFormatProvider, out v))
                 Value = new List<float>(new float[] { ov[0], v });
         }
     }

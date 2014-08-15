@@ -275,6 +275,17 @@ namespace ZasuvkaPtakopyskaExtender
             catch (Exception ex) { LogException(ex); return false; }
         }
 
+        public bool TriggerGameObjectComponentFunctionality(int handle, bool isPrefab, string compId, string funcName)
+        {
+            try
+            {
+                bool status = _TriggerGameObjectComponentFunctionality(handle, isPrefab, compId, funcName);
+                Console.Write(_PopErrors());
+                return status;
+            }
+            catch (Exception ex) { LogException(ex); return false; }
+        }
+
         public bool ApplyJsonToGameObject(int handle, bool isPrefab, string json)
         {
             try
@@ -734,6 +745,17 @@ namespace ZasuvkaPtakopyskaExtender
         [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
         [return: MarshalAs(UnmanagedType.U1)]
         private static extern bool _DuplicateGameObject(int handleFrom, bool isPrefabFrom, int handleTo, bool isPrefabTo);
+
+        [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
+        [return: MarshalAs(UnmanagedType.U1)]
+        private static extern bool _TriggerGameObjectComponentFunctionality(
+            int handle,
+            bool isPrefab,
+            [MarshalAs(UnmanagedType.LPStr)]
+            string compId,
+            [MarshalAs(UnmanagedType.LPStr)]
+            string funcName
+            );
 
         [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
         [return: MarshalAs(UnmanagedType.U1)]

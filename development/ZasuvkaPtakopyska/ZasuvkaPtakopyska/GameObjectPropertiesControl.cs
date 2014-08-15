@@ -253,6 +253,35 @@ namespace ZasuvkaPtakopyska
             Controls.Add(componentButton);
             y = componentButton.Bottom + DEFAULT_SEPARATOR;
 
+            if (meta.FunctionalityTriggers != null && meta.FunctionalityTriggers.Count > 0)
+            {
+                MetroLabel label = new MetroLabel();
+                MetroSkinManager.ApplyMetroStyle(label);
+                label.Text = "Functionality Triggers";
+                label.FontWeight = MetroLabelWeight.Bold;
+                label.FontSize = MetroLabelSize.Small;
+                label.Top = y;
+                label.Width = Width;
+                label.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+                Controls.Add(label);
+                y = label.Bottom;
+
+                foreach (string func in meta.FunctionalityTriggers)
+                {
+                    MetroButton btn = new MetroButton();
+                    MetroSkinManager.ApplyMetroStyle(btn);
+                    btn.Tag = meta.Name;
+                    btn.Text = func;
+                    btn.Top = y;
+                    btn.Width = Width - 20;
+                    btn.Left = 10;
+                    btn.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+                    btn.Click += new EventHandler(triggerFunctionality_Click);
+                    Controls.Add(btn);
+                    y = btn.Bottom + DEFAULT_SEPARATOR;
+                }
+            }
+
             List<MetaProperty> props = MetaComponentsManager.Instance.GetFlattenPropertiesOf(meta);
             if (props == null || props.Count == 0)
                 return y;
@@ -384,6 +413,23 @@ namespace ZasuvkaPtakopyska
             menu.Items.Add(menuItem);
 
             menu.Show(btn, new Point(0, btn.Height));
+        }
+
+        private void triggerFunctionality_Click(object sender, EventArgs e)
+        {
+            MetroButton btn = sender as MetroButton;
+            if (btn == null || !(btn.Tag is string))
+                return;
+
+            if (PtakopyskInterface.Instance.TriggerGameObjectComponentFunctionality(m_goHandle, m_goIsPrefab, btn.Tag as string, btn.Text))
+            {
+                MainForm mainForm = FindForm() as MainForm;
+                if (mainForm != null)
+                {
+                    mainForm.ExploreGameObjectProperties(m_goHandle, m_goIsPrefab);
+                    mainForm.RefreshSceneView();
+                }
+            }
         }
 
         private void addComponentButton_Click(object sender, EventArgs e)

@@ -8,7 +8,8 @@ namespace Ptakopysk
 {
 
     META_COMPONENT(
-        META_ATTR_DESCRIPTION( "Physics body component." )
+        META_ATTR_DESCRIPTION( "Physics body component." ),
+        META_ATTR_FUNCTIONALITY_TRIGGERS( "Make as circle|Make as box from SpriteRenderer|Make as box from TextRenderer" )
     )
     class Body
     : public virtual XeCore::Common::IRtti
@@ -60,7 +61,9 @@ namespace Ptakopysk
         FORCEINLINE float getGravityScale() { return m_body ? m_body->GetGravityScale() : m_bodyDef.gravityScale; };
         FORCEINLINE void setGravityScale( float v ) { if( m_body ) m_body->SetGravityScale( v ); else m_bodyDef.gravityScale = v; };
         FORCEINLINE b2Vec2 getPosition() { return m_body ? m_body->GetPosition() : m_bodyDef.position; };
+        FORCEINLINE void setPosition( const b2Vec2& v ) { if( m_body ) m_body->SetTransform( v, getAngle() ); else m_bodyDef.position = v; };
         FORCEINLINE float getAngle() { return m_body ? m_body->GetAngle() : m_bodyDef.angle; };
+        FORCEINLINE void setAngle( float v ) { if( m_body ) m_body->SetTransform( getPosition(), v ); else m_bodyDef.angle = v; };
 
         META_PROPERTY(
             META_ATTR_DESCRIPTION( "Contains array of body shape vertices." ),
@@ -159,7 +162,9 @@ namespace Ptakopysk
         virtual void onDestroy();
         virtual void onUpdate( float dt );
         virtual void onDuplicate( Component* dst );
+        virtual void onRenderEditor( sf::RenderTarget* target );
         virtual void onFixtureGoodbye( b2Fixture* fixture );
+        virtual bool onTriggerFunctionality( const std::string& name );
 
     private:
         float m_radius;

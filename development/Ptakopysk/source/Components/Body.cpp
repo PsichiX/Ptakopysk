@@ -1,7 +1,10 @@
 #include "../../include/Ptakopysk/Components/Body.h"
 #include "../../include/Ptakopysk/Components/Transform.h"
+#include "../../include/Ptakopysk/Components/SpriteRenderer.h"
+#include "../../include/Ptakopysk/Components/TextRenderer.h"
 #include "../../include/Ptakopysk/System/GameObject.h"
 #include "../../include/Ptakopysk/System/GameManager.h"
+#include <XeCore/Common/Logger.h>
 
 namespace Ptakopysk
 {
@@ -61,7 +64,7 @@ namespace Ptakopysk
         if( &verts != &m_verts )
         {
             m_verts.resize( 0 );
-            if( !verts.empty() )
+            if( !verts.empty() && verts.size() >= 3 )
                 m_verts.assign( verts.begin(), verts.end() );
         }
         applyVertices();
@@ -251,9 +254,18 @@ namespace Ptakopysk
         Transform* trans = getGameObject()->getComponent< Transform >();
         if( trans )
         {
-            b2Vec2 pos = getPosition();
-            trans->setPosition( sf::Vector2f( pos.x, pos.y ) );
-            trans->setRotation( RADTODEG( getAngle() ) );
+            if( GameManager::isEditMode() )
+            {
+                sf::Vector2f pos = trans->getPosition();
+                setPosition( b2Vec2( pos.x, pos.y ) );
+                setAngle( DEGTORAD( trans->getRotation() ) );
+            }
+            else
+            {
+                b2Vec2 pos = getPosition();
+                trans->setPosition( sf::Vector2f( pos.x, pos.y ) );
+                trans->setRotation( RADTODEG( getAngle() ) );
+            }
         }
     }
 
@@ -282,6 +294,43 @@ namespace Ptakopysk
         c->setGravityScale( getGravityScale() );
     }
 
+    void Body::onRenderEditor( sf::RenderTarget* target )
+    {
+        if( !target || !m_body )
+            return;
+
+        sf::Color col = sf::Color(
+            m_body->IsBullet() ? 255 : 0,
+            m_body->IsFixedRotation() ? 255 : 0,
+            m_body->IsSleepingAllowed() ? 255 : 0,
+            32
+            );
+        b2Vec2 pos = getPosition();
+        float rot = RADTODEG( getAngle() );
+        sf::Transform t;
+        t.translate( pos.x, pos.y );
+        t.rotate( rot );
+        sf::RenderStates states;
+        states.transform = t;
+
+        if( isCircleShape() )
+        {
+            float r = getRadius();
+            sf::CircleShape circle;
+            circle.setRadius( r );
+            circle.setFillColor( col );
+            circle.setOrigin( r, r );
+            target->draw( circle, states );
+        }
+        else if( m_verts.size() >= 3 )
+        {
+            sf::VertexArray va( sf::TrianglesFan, 0 );
+            for( VerticesData::iterator it = m_verts.begin(); it != m_verts.end(); it++ )
+                va.append( sf::Vertex( sf::Vector2f( it->x, it->y ), col ) );
+            target->draw( va, states );
+        }
+    }
+
     void Body::onFixtureGoodbye( b2Fixture* fixture )
     {
         if( fixture == m_fixture )
@@ -290,6 +339,49 @@ namespace Ptakopysk
             if( getGameObject() )
                 getGameObject()->removeComponent( this, true );
         }
+    }
+
+    bool Body::onTriggerFunctionality( const std::string& name )
+    {
+        if( name == "Make as circle" )
+        {
+            VerticesData data;
+            setVertices( data );
+            return true;
+        }
+        else if( name == "Make as box from SpriteRenderer" )
+        {
+            SpriteRenderer* sprite = getGameObject() ? getGameObject()->getComponent< SpriteRenderer >() : 0;
+            if( sprite )
+            {
+                sf::Vector2f origin = sprite->getRenderer()->getOrigin();
+                sf::Vector2f size = sprite->getRenderer()->getSize();
+                VerticesData data;
+                data.push_back( b2Vec2( -origin.x, -origin.y ) );
+                data.push_back( b2Vec2( -origin.x + size.x, -origin.y ) );
+                data.push_back( b2Vec2( -origin.x + size.x, -origin.y + size.y ) );
+                data.push_back( b2Vec2( -origin.x, -origin.y + size.y ) );
+                setVertices( data );
+                return true;
+            }
+        }
+        else if( name == "Make as box from TextRenderer" )
+        {
+            TextRenderer* text = getGameObject() ? getGameObject()->getComponent< TextRenderer >() : 0;
+            if( text )
+            {
+                sf::Vector2f origin = text->getRenderer()->getOrigin();
+                sf::FloatRect rect = text->getRenderer()->getLocalBounds();
+                VerticesData data;
+                data.push_back( b2Vec2( -origin.x + rect.left, -origin.y + rect.top ) );
+                data.push_back( b2Vec2( -origin.x + rect.left + rect.width, -origin.y + rect.top ) );
+                data.push_back( b2Vec2( -origin.x + rect.left + rect.width, -origin.y + rect.top + rect.height ) );
+                data.push_back( b2Vec2( -origin.x + rect.left, -origin.y + rect.top + rect.height ) );
+                setVertices( data );
+                return true;
+            }
+        }
+        return false;
     }
 
 }

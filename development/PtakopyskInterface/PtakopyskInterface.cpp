@@ -305,6 +305,36 @@ bool PtakopyskInterface::duplicateGameObject( int handleFrom, bool isPrefabFrom,
     return false;
 }
 
+bool PtakopyskInterface::triggerGameObjectComponentFunctionality( int handle, bool isPrefab, const std::string& compId, const std::string& funcName )
+{
+    GameObject* go = findGameObject( handle, isPrefab );
+    XeCore::Common::IRtti::Derivation ct = GameManager::findComponentFactoryTypeById( compId );
+    if( go && ct )
+    {
+        Component* c = go->getComponent( ct );
+        if( c )
+        {
+            if( c->triggerFunctionality( funcName ) )
+                return true;
+            else
+            {
+                m_errors << "Failed triggering functionality: " << funcName.c_str() << "!\n";
+                return false;
+            }
+        }
+        else
+        {
+            m_errors << "Cannot find component by id: " << compId.c_str() << "!\n";
+            return false;
+        }
+    }
+    else
+    {
+        m_errors << "Cannot find GameObject or Component id!\n";
+        return false;
+    }
+}
+
 bool PtakopyskInterface::applyJsonToGameObject( int handle, bool isPrefab, const std::string& json )
 {
     GameObject* go = findGameObject( handle, isPrefab );

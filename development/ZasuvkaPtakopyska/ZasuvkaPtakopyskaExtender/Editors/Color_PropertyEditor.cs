@@ -71,9 +71,10 @@ namespace ZasuvkaPtakopyskaExtender.Editors
         private bool ValidateValue()
         {
             var ov = Value;
+            var dv = DefaultValue;
             if (ov == null)
             {
-                Value = DefaultValue;
+                Value = dv == null || dv.Count < 4 ? new List<int>(new int[] { 255, 255, 255, 255 }) : new List<int>(dv);
                 ov = Value;
             }
             return ov != null && ov.Count >= 4;
@@ -116,7 +117,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
         private void m_aTextBox_TextChanged(object sender, EventArgs e)
         {
             int v = m_aTrack.Value;
-            if (!int.TryParse(m_aTextBox.Text, out v))
+            if (!int.TryParse(m_aTextBox.Text, Settings.DefaultNumberStyle, Settings.DefaultFormatProvider, out v))
                 return;
 
             v = Math.Max(m_aTrack.Minimum, Math.Min(m_aTrack.Maximum, v));
@@ -135,7 +136,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
         private void m_aTrack_ValueChanged(object sender, EventArgs e)
         {
             m_aTextBox.TextChanged -= new EventHandler(m_aTextBox_TextChanged);
-            m_aTextBox.Text = m_aTrack.Value.ToString();
+            m_aTextBox.Text = m_aTrack.Value.ToString(Settings.DEFAULT_STRING_FORMAT, Settings.DefaultFormatProvider);
             m_aTextBox.TextChanged += new EventHandler(m_aTextBox_TextChanged);
 
             if (!ValidateValue())

@@ -15,6 +15,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
             internal class FieldContainer : MetroPanel
             {
                 private static readonly int DEFAULT_BUTTON_SIZE = 16;
+
                 private CollectionPropertyEditorUtils.CollectionType m_collectionType;
                 private Func<Dictionary<string, string>, string, PropertyEditor<T>> m_creator;
                 private MetroTextBox m_memberTextBox;

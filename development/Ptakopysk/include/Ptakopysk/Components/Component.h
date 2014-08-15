@@ -58,6 +58,7 @@ namespace Ptakopysk
 
         void fromJson( const Json::Value& root );
         Json::Value toJson( Component* omitFrom = 0 );
+        FORCEINLINE bool triggerFunctionality( const std::string& name ) { return onTriggerFunctionality( name ); };
 
         XeCore::Common::Property< Type, Component > TypeFlags;
 
@@ -89,6 +90,7 @@ namespace Ptakopysk
         virtual void onSoundChanged( const sf::Sound* a, bool addedOrRemoved ) {};
         virtual void onMusicChanged( const sf::Music* a, bool addedOrRemoved ) {};
         virtual void onFontChanged( const sf::Font* a, bool addedOrRemoved ) {};
+        virtual bool onTriggerFunctionality( const std::string& name ) { return false; };
 
     private:
         void setGameObject( GameObject* gameObject );
