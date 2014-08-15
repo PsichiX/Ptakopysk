@@ -251,6 +251,7 @@ namespace ZasuvkaPtakopyska
         {
             m_gameObjectsTree.Nodes.Clear();
             BuildSceneTreeNodes(m_gameObjectsTree.Nodes);
+            m_gameObjectsTree.ExpandAll();
 
             MainForm mainForm = FindForm() as MainForm;
             if (mainForm != null)
@@ -408,7 +409,7 @@ namespace ZasuvkaPtakopyska
             MetroSkinManager.ApplyMetroStyle(menu);
             ToolStripMenuItem menuItem;
 
-            menuItem = new ToolStripMenuItem("Add Game Object");
+            menuItem = new ToolStripMenuItem("Add new Game Object");
             menuItem.Click += new EventHandler(menuItem_gameObjectAdd_Click);
             menu.Items.Add(menuItem);
 
@@ -581,20 +582,34 @@ namespace ZasuvkaPtakopyska
 
                 menuItem = new ToolStripMenuItem("Remove");
                 menuItem.Tag = node.Tag;
-                menuItem.Click += new System.EventHandler(menuItem_Click);
+                menuItem.Click += new System.EventHandler(menuItem_nodeRemove_Click);
+                menu.Items.Add(menuItem);
+
+                menuItem = new ToolStripMenuItem("Add new Game Object");
+                menuItem.Tag = node.Tag;
+                menuItem.Click += new System.EventHandler(menuItem_nodeAdd_Click);
                 menu.Items.Add(menuItem);
 
                 menu.Show(m_gameObjectsTree, e.Location);
             }
         }
 
-        private void menuItem_Click(object sender, System.EventArgs e)
+        private void menuItem_nodeRemove_Click(object sender, System.EventArgs e)
         {
             ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
             if (menuItem == null || !(menuItem.Tag is int))
                 return;
 
             RemoveGameObject((int)menuItem.Tag, IsGameObjectsPrefabsMode);
+        }
+
+        private void menuItem_nodeAdd_Click(object sender, System.EventArgs e)
+        {
+            ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
+            if (menuItem == null || !(menuItem.Tag is int))
+                return;
+
+            AddNewGameObject(IsGameObjectsPrefabsMode, (int)menuItem.Tag);
         }
 
         #endregion
