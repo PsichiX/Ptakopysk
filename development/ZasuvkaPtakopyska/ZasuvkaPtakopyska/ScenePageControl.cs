@@ -425,8 +425,8 @@ namespace ZasuvkaPtakopyska
             menuItem.Click += new EventHandler(menuItem_gameObjectAdd_Click);
             menu.Items.Add(menuItem);
 
-            menuItem = new ToolStripMenuItem("Destroy all Game Objects");
-            menuItem.Click += new EventHandler(menuItem_gameObjectsDestroy_Click);
+            menuItem = new ToolStripMenuItem("Remove all Game Objects");
+            menuItem.Click += new EventHandler(menuItem_gameObjectsRemove_Click);
             menu.Items.Add(menuItem);
 
             menu.Show(btn, new Point(0, btn.Height));
@@ -505,7 +505,7 @@ namespace ZasuvkaPtakopyska
             AddNewGameObject(IsGameObjectsPrefabsMode, 0);
         }
 
-        private void menuItem_gameObjectsDestroy_Click(object sender, EventArgs e)
+        private void menuItem_gameObjectsRemove_Click(object sender, EventArgs e)
         {
             RemoveAllGameObjects(IsGameObjectsPrefabsMode);
         }
