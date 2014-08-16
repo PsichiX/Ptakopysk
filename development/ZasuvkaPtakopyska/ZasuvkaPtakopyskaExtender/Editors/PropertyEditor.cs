@@ -24,6 +24,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
 
         public override string Text { get { return m_label.Text; } set { m_label.Text = value; } }
         public IEditorJsonValueChangedCallback EditorJsonValueChangedCallback { get; set; }
+        public bool IsRaisingEditorJsonValueChangedCallback { get; set; }
         public bool IsProxyEditor { get; set; }
         public string PropertyName { get { return m_propertyKey != null ? m_propertyKey : null; } }
         public string JsonDefaultValue { get { return m_defaultJson; } set { m_defaultJson = value; } }
@@ -41,7 +42,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
                 if (m_propertyKey != null && m_properties != null)
                 {
                     m_properties[m_propertyKey] = value;
-                    if (EditorJsonValueChangedCallback != null)
+                    if (IsRaisingEditorJsonValueChangedCallback && EditorJsonValueChangedCallback != null)
                         EditorJsonValueChangedCallback.OnEditorValueChanged(this, m_propertyKey, value);
                 }
             }
@@ -91,6 +92,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
         {
             m_properties = properties;
             m_propertyKey = m_properties == null ? null : propertyName;
+            IsRaisingEditorJsonValueChangedCallback = true;
             DefaultValue = default(T);
 
             InitializeComponent(propertyName);

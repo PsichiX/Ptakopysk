@@ -806,7 +806,7 @@
 
 1394306355 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\serialized.inl
 
-1408128425 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gameobject.h
+1408174044 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gameobject.h
 	<XeCore/Common/Property.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -820,7 +820,7 @@
 	<string>
 	"../Serialization/Serialized.h"
 
-1407945958 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gamemanager.h
+1408174113 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gamemanager.h
 	<XeCore/Common/Property.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -837,14 +837,14 @@
 	"../../include/Ptakopysk/System/GameObject.h"
 	"../../include/Ptakopysk/System/GameManager.h"
 
-1408137097 source:d:\git\ptakopysk\development\ptakopysk\source\components\spriterenderer.cpp
+1408173268 source:d:\git\ptakopysk\development\ptakopysk\source\components\spriterenderer.cpp
 	"../../include/Ptakopysk/Components/SpriteRenderer.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/System/GameManager.h"
 	"../../include/Ptakopysk/System/GameObject.h"
 	"../../include/Ptakopysk/System/Assets.h"
 
-1408131842 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\spriterenderer.h
+1408170205 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\spriterenderer.h
 	"Component.h"
 	<SFML/Graphics.hpp>
 	"../System/RenderMaterial.h"
@@ -936,13 +936,13 @@
 	<SFML/Graphics/View.hpp>
 	<SFML/Graphics/RenderTexture.hpp>
 
-1408137085 source:d:\git\ptakopysk\development\ptakopysk\source\components\textrenderer.cpp
+1408173257 source:d:\git\ptakopysk\development\ptakopysk\source\components\textrenderer.cpp
 	"../../include/Ptakopysk/Components/TextRenderer.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/System/GameObject.h"
 	"../../include/Ptakopysk/System/Assets.h"
 
-1408131977 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\textrenderer.h
+1408171794 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\textrenderer.h
 	"Component.h"
 	<SFML/Graphics.hpp>
 	"../System/RenderMaterial.h"

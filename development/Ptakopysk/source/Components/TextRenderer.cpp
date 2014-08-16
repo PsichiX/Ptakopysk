@@ -17,6 +17,8 @@ namespace Ptakopysk
     , Text( this, &TextRenderer::getText, &TextRenderer::setText )
     , Font( this, &TextRenderer::getFont, &TextRenderer::setFont )
     , Size( this, &TextRenderer::getSize, &TextRenderer::setSize )
+    , Origin( this, &TextRenderer::getOrigin, &TextRenderer::setOrigin )
+    , OriginPercent( this, &TextRenderer::getOriginPercent, &TextRenderer::setOriginPercent )
     , Style( this, &TextRenderer::getStyle, &TextRenderer::setStyle )
     , Color( this, &TextRenderer::getColor, &TextRenderer::setColor )
     , RenderStates( this, &TextRenderer::getRenderStates, &TextRenderer::setRenderStates )
@@ -33,12 +35,29 @@ namespace Ptakopysk
         serializableProperty( "Style" );
         serializableProperty( "Color" );
         serializableProperty( "Text" );
+        serializableProperty( "OriginPercent" );
+        serializableProperty( "Origin" );
         m_text = xnew sf::Text();
     }
 
     TextRenderer::~TextRenderer()
     {
         DELETE_OBJECT( m_text );
+    }
+
+    sf::Vector2f TextRenderer::getOriginPercent()
+    {
+        sf::Vector2f o = getOrigin();
+        sf::Vector2f s = getDimensions();
+        o.x = s.x > 0.0f ? o.x / s.x : 0.0f;
+        o.y = s.y > 0.0f ? o.y / s.y : 0.0f;
+        return o;
+    }
+
+    void TextRenderer::setOriginPercent( sf::Vector2f origin )
+    {
+        sf::Vector2f s = getDimensions();
+        setOrigin( sf::Vector2f( s.x * origin.x, s.y * origin.y ) );
     }
 
     Json::Value TextRenderer::onSerialize( const std::string& property )
@@ -49,6 +68,22 @@ namespace Ptakopysk
             return Json::Value( Assets::use().findFont( getFont() ) );
         else if( property == "Size" )
             return Json::Value( getSize() );
+        else if( property == "Origin" )
+        {
+            sf::Vector2f o = getOrigin();
+            Json::Value v;
+            v.append( Json::Value( o.x ) );
+            v.append( Json::Value( o.y ) );
+            return v;
+        }
+        else if( property == "OriginPercent" )
+        {
+            sf::Vector2f o = getOriginPercent();
+            Json::Value v;
+            v.append( Json::Value( o.x ) );
+            v.append( Json::Value( o.y ) );
+            return v;
+        }
         else if( property == "Style" )
         {
             Serialized::ICustomSerializer* s = Serialized::getCustomSerializer( "Style" );
@@ -92,6 +127,20 @@ namespace Ptakopysk
             setFont( Assets::use().getFont( root.asString() ) );
         else if( property == "Size" && root.isUInt() )
             setSize( root.asUInt() );
+        else if( property == "Origin" && root.isArray() && root.size() == 2 )
+        {
+            setOrigin( sf::Vector2f(
+                (float)root[ 0u ].asDouble(),
+                (float)root[ 1u ].asDouble()
+            ) );
+        }
+        else if( property == "OriginPercent" && root.isArray() && root.size() == 2 )
+        {
+            setOriginPercent( sf::Vector2f(
+                (float)root[ 0u ].asDouble(),
+                (float)root[ 1u ].asDouble()
+            ) );
+        }
         else if( property == "Style" && root.isArray() )
         {
             Serialized::ICustomSerializer* s = Serialized::getCustomSerializer( "Style" );
@@ -141,6 +190,7 @@ namespace Ptakopysk
         c->setText( getText() );
         c->setFont( getFont() );
         c->setSize( getSize() );
+        c->setOrigin( getOrigin() );
         c->setStyle( getStyle() );
         c->setColor( getColor() );
         c->setRenderStates( getRenderStates() );
@@ -168,6 +218,16 @@ namespace Ptakopysk
     {
         if( m_text && m_text->getFont() == a )
             m_text->setFont( *a );
+    }
+
+    bool TextRenderer::onTriggerFunctionality( const std::string& name )
+    {
+        if( name == "Centralize origin" )
+        {
+            setOriginPercent( sf::Vector2f( 0.5f, 0.5f ) );
+            return true;
+        }
+        return false;
     }
 
     bool TextRenderer::onCheckContainsPoint( const sf::Vector2f& worldPos )

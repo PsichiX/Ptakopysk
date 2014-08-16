@@ -9,6 +9,7 @@
         string JsonDefaultValue { get; set; }
         string JsonValue { get; set; }
         IEditorJsonValueChangedCallback EditorJsonValueChangedCallback { get; set; }
+        bool IsRaisingEditorJsonValueChangedCallback { get; set; }
         
         #endregion
 

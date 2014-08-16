@@ -87,9 +87,17 @@ namespace ZasuvkaPtakopyska
             m_goData.Clear();
             foreach (string key in result.Keys)
                 m_goData.Add(key, result[key]);
+            bool irc;
             foreach (IEditorJsonValue e in m_editors)
+            {
                 if (e.PropertyName != property && result.ContainsKey(e.PropertyName))
+                {
+                    irc = e.IsRaisingEditorJsonValueChangedCallback;
+                    e.IsRaisingEditorJsonValueChangedCallback = false;
                     e.UpdateEditorValue();
+                    e.IsRaisingEditorJsonValueChangedCallback = irc;
+                }
+            }
             MainForm mainForm = FindForm() as MainForm;
             if (mainForm != null)
             {
@@ -106,9 +114,17 @@ namespace ZasuvkaPtakopyska
             m_goData.Clear();
             foreach (string key in result.Keys)
                 m_goData.Add(key, result[key]);
+            bool irc;
             foreach (IEditorJsonValue e in m_editors)
+            {
                 if (result.ContainsKey(e.PropertyName))
+                {
+                    irc = e.IsRaisingEditorJsonValueChangedCallback;
+                    e.IsRaisingEditorJsonValueChangedCallback = false;
                     e.UpdateEditorValue();
+                    e.IsRaisingEditorJsonValueChangedCallback = irc;
+                }
+            }
             MainForm mainForm = FindForm() as MainForm;
             if (mainForm != null)
                 mainForm.RefreshSceneView();

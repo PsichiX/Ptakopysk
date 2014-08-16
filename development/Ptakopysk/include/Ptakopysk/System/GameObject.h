@@ -77,7 +77,9 @@ namespace Ptakopysk
         FORCEINLINE T* getOrCreateComponent() { return (T*)getOrCreateComponent( RTTI_CLASS_TYPE( T ) ); };
         FORCEINLINE unsigned int componentsCount() { return m_components.size(); };
         FORCEINLINE Components::iterator componentAtBegin() { return m_components.begin(); };
+        FORCEINLINE Components::reverse_iterator componentAtReversedBegin() { return m_components.rbegin(); };
         FORCEINLINE Components::iterator componentAtEnd() { return m_components.end(); };
+        FORCEINLINE Components::reverse_iterator componentAtReversedEnd() { return m_components.rend(); };
         void processRemovingDelayedComponents();
         bool isWaitingToRemoveDelayedComponent( Component* c );
         bool isWaitingToRemoveDelayedComponent( XeCore::Common::IRtti::Derivation d );
@@ -96,7 +98,9 @@ namespace Ptakopysk
         GameObject* findGameObject( const std::string& path );
         FORCEINLINE unsigned int gameObjectsCount() { return m_gameObjects.size(); };
         FORCEINLINE List::iterator gameObjectAtBegin() { return m_gameObjects.begin(); };
+        FORCEINLINE List::reverse_iterator gameObjectAtReversedBegin() { return m_gameObjects.rbegin(); };
         FORCEINLINE List::iterator gameObjectAtEnd() { return m_gameObjects.end(); };
+        FORCEINLINE List::reverse_iterator gameObjectAtReversedEnd() { return m_gameObjects.rend(); };
         void processAdding();
         void processRemoving();
         bool isWaitingToAdd( GameObject* go );

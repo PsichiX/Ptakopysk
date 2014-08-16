@@ -337,7 +337,7 @@ namespace ZasuvkaPtakopyska
             m_toolbarContent.HorizontalScroll.LargeChange = m_toolbarContentScrollbarH.LargeChange;
         }
 
-        private void AddNewGameObject(bool isPrefab, int parent)
+        private void AddNewGameObject(bool isPrefab, int parent, string prefabSource = "")
         {
             if (string.IsNullOrEmpty(m_scenePath))
                 return;
@@ -348,7 +348,7 @@ namespace ZasuvkaPtakopyska
             DialogResult result = prompt.ShowDialog();
             if (result == DialogResult.OK && !string.IsNullOrEmpty(prompt.Value))
             {
-                int handle = PtakopyskInterface.Instance.CreateGameObject(isPrefab, parent, "", prompt.Value);
+                int handle = PtakopyskInterface.Instance.CreateGameObject(isPrefab, parent, prefabSource, prompt.Value);
                 if (handle != 0)
                 {
                     RebuildSceneTree();
@@ -611,6 +611,14 @@ namespace ZasuvkaPtakopyska
                 menuItem.Click += new System.EventHandler(menuItem_nodeAdd_Click);
                 menu.Items.Add(menuItem);
 
+                if (IsGameObjectsPrefabsMode)
+                {
+                    menuItem = new ToolStripMenuItem("Instantiate on scene");
+                    menuItem.Tag = node.Text;
+                    menuItem.Click += new System.EventHandler(menuItem_nodeInstantiate_Click);
+                    menu.Items.Add(menuItem);
+                }
+
                 menu.Show(m_gameObjectsTree, e.Location);
             }
         }
@@ -631,6 +639,15 @@ namespace ZasuvkaPtakopyska
                 return;
 
             AddNewGameObject(IsGameObjectsPrefabsMode, (int)menuItem.Tag);
+        }
+
+        private void menuItem_nodeInstantiate_Click(object sender, System.EventArgs e)
+        {
+            ToolStripMenuItem menuItem = sender as ToolStripMenuItem;
+            if (menuItem == null || !(menuItem.Tag is string))
+                return;
+
+            AddNewGameObject(false, 0, menuItem.Tag as string);
         }
 
         #endregion

@@ -20,6 +20,18 @@
       "DefaultValue": null
     },
     {
+      "Name": "Origin",
+      "Description": "Origin (local anchor point).",
+      "ValueType": "sf::Vector2f",
+      "DefaultValue": "[0, 0]"
+    },
+    {
+      "Name": "OriginPercent",
+      "Description": "Origin percent (local anchor point in unit-space).",
+      "ValueType": "sf::Vector2f",
+      "DefaultValue": "[0, 0]"
+    },
+    {
       "Name": "Color",
       "Description": "Color.",
       "ValueType": "sf::Color",
@@ -44,5 +56,7 @@
       "DefaultValue": "false"
     }
   ],
-  "FunctionalityTriggers": []
+  "FunctionalityTriggers": [
+    "Centralize origin"
+  ]
 }

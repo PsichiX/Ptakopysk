@@ -95,7 +95,9 @@ namespace Ptakopysk
         GameObject* findGameObject( const std::string& path );
         FORCEINLINE unsigned int gameObjectsCount( bool prefab = false ) { return prefab ? m_prefabGameObjects.size() : m_gameObjects.size(); };
         GameObject::List::iterator gameObjectAtBegin( bool prefab = false );
+        GameObject::List::reverse_iterator gameObjectAtReversedBegin( bool prefab = false );
         GameObject::List::iterator gameObjectAtEnd( bool prefab = false );
+        GameObject::List::reverse_iterator gameObjectAtReversedEnd( bool prefab = false );
         GameObject* gameObjectAt( unsigned int index );
         GameObject* instantiatePrefab( const std::string& id );
 

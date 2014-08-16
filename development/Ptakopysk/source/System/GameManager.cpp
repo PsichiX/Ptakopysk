@@ -693,10 +693,22 @@ namespace Ptakopysk
         return cgo.begin();
     }
 
+    GameObject::List::reverse_iterator GameManager::gameObjectAtReversedBegin( bool prefab )
+    {
+        GameObject::List& cgo = prefab ? m_prefabGameObjects : m_gameObjects;
+        return cgo.rbegin();
+    }
+
     GameObject::List::iterator GameManager::gameObjectAtEnd( bool prefab )
     {
         GameObject::List& cgo = prefab ? m_prefabGameObjects : m_gameObjects;
         return cgo.end();
+    }
+
+    GameObject::List::reverse_iterator GameManager::gameObjectAtReversedEnd( bool prefab )
+    {
+        GameObject::List& cgo = prefab ? m_prefabGameObjects : m_gameObjects;
+        return cgo.rend();
     }
 
     GameObject* GameManager::gameObjectAt( unsigned int index )

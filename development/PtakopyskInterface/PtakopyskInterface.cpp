@@ -257,6 +257,7 @@ int PtakopyskInterface::createGameObject( bool isPrefab, int parent, const std::
             GameObject* go = m_gameManager->instantiatePrefab( prefabSource );
             if( go )
             {
+                go->setId( id );
                 p->addGameObject( go );
                 p->processAdding();
                 return (int)go;
@@ -267,6 +268,7 @@ int PtakopyskInterface::createGameObject( bool isPrefab, int parent, const std::
             GameObject* go = m_gameManager->instantiatePrefab( prefabSource );
             if( go )
             {
+                go->setId( id );
                 m_gameManager->addGameObject( go, isPrefab );
                 m_gameManager->processAdding();
                 return (int)go;
@@ -1529,7 +1531,7 @@ GameObject* PtakopyskInterface::findGameObjectAtPosition( const sf::Vector2f& po
     if( parent )
     {
         GameObject* go = 0;
-        for( GameObject::List::iterator it = parent->gameObjectAtBegin(); it != parent->gameObjectAtEnd(); it++ )
+        for( GameObject::List::reverse_iterator it = parent->gameObjectAtReversedBegin(); it != parent->gameObjectAtReversedEnd(); it++ )
         {
             go = *it;
             if( !go->isActive() )
@@ -1547,7 +1549,7 @@ GameObject* PtakopyskInterface::findGameObjectAtPosition( const sf::Vector2f& po
     else
     {
         GameObject* go = 0;
-        for( GameObject::List::iterator it = m_gameManager->gameObjectAtBegin(); it != m_gameManager->gameObjectAtEnd(); it++ )
+        for( GameObject::List::reverse_iterator it = m_gameManager->gameObjectAtReversedBegin(); it != m_gameManager->gameObjectAtReversedEnd(); it++ )
         {
             go = *it;
             if( !go->isActive() )

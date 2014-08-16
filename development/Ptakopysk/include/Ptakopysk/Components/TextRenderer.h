@@ -9,7 +9,8 @@ namespace Ptakopysk
 {
 
     META_COMPONENT(
-        META_ATTR_DESCRIPTION( "Text renderer component." )
+        META_ATTR_DESCRIPTION( "Text renderer component." ),
+        META_ATTR_FUNCTIONALITY_TRIGGERS( "Centralize origin" )
     )
     class TextRenderer
     : public virtual XeCore::Common::IRtti
@@ -31,6 +32,12 @@ namespace Ptakopysk
         FORCEINLINE void setFont( sf::Font* v ) { m_text->setFont( *v ); };
         FORCEINLINE unsigned int getSize() { return m_text->getCharacterSize(); };
         FORCEINLINE void setSize( unsigned int v ) { m_text->setCharacterSize( v ); };
+        FORCEINLINE sf::FloatRect measureText() { return m_text->getLocalBounds(); };
+        FORCEINLINE sf::Vector2f getDimensions() { sf::FloatRect r = measureText(); return sf::Vector2f( r.left + r.width, r.top + r.height ); };
+        FORCEINLINE sf::Vector2f getOrigin() { return m_text->getOrigin(); };
+        FORCEINLINE void setOrigin( sf::Vector2f origin ) { m_text->setOrigin( origin ); };
+        sf::Vector2f getOriginPercent();
+        void setOriginPercent( sf::Vector2f origin );
         FORCEINLINE unsigned int getStyle() { return m_text->getStyle(); };
         FORCEINLINE void setStyle( unsigned int v ) { m_text->setStyle( v ); };
         FORCEINLINE sf::Color getColor() { return m_text->getColor(); };
@@ -57,6 +64,18 @@ namespace Ptakopysk
             META_ATTR_DESCRIPTION( "Font size." ),
         )
         XeCore::Common::Property< unsigned int, TextRenderer > Size;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Origin (local anchor point)." ),
+            META_ATTR_DEFAULT_VALUE( "[0, 0]" )
+        )
+        XeCore::Common::Property< sf::Vector2f, TextRenderer > Origin;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Origin percent (local anchor point in unit-space)." ),
+            META_ATTR_DEFAULT_VALUE( "[0, 0]" )
+        )
+        XeCore::Common::Property< sf::Vector2f, TextRenderer > OriginPercent;
 
         META_PROPERTY(
             META_ATTR_DESCRIPTION( "Style." ),
@@ -94,6 +113,7 @@ namespace Ptakopysk
         virtual void onRender( sf::RenderTarget*& target );
         virtual void onShaderChanged( const sf::Shader* a, bool addedOrRemoved );
         virtual void onFontChanged( const sf::Font* a, bool addedOrRemoved );
+        virtual bool onTriggerFunctionality( const std::string& name );
         virtual bool onCheckContainsPoint( const sf::Vector2f& worldPos );
 
     private:

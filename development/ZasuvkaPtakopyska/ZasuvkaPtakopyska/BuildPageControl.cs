@@ -302,7 +302,7 @@ namespace ZasuvkaPtakopyska
                     mainForm.ProjectModel.ActiveTargetWorkingDirectory = target[2];
                     mainForm.ReloadScene();
                     if (mainForm.ProjectModel.ActiveTarget != lastTarget)
-                        mainForm.RebuildEditorComponents(!string.IsNullOrEmpty(lastTarget));
+                        mainForm.RebuildEditorComponents(true);
                 }
             }
         }
