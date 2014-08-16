@@ -961,8 +961,19 @@ namespace ZasuvkaPtakopyska
         {
             if (ProjectModel != null)
             {
-                if (Path.GetExtension(e.FullPath) == ".h" && ProjectModel.Files.Contains(e.FullPath))
-                    RemoveMetaFile(e.FullPath);
+                if ((Path.GetExtension(e.FullPath) == ".h" || Path.GetExtension(e.FullPath) == ".cpp") && ProjectModel.Files.Contains(e.FullPath))
+                {
+                    string hfile = Path.ChangeExtension(e.FullPath, ".h");
+                    string cppfile = Path.ChangeExtension(e.FullPath, ".cpp");
+                    RemoveMetaFile(hfile);
+                    ProjectModel.Files.Remove(hfile);
+                    ProjectModel.Files.Remove(cppfile);
+                    ProjectModel.ApplyToCbp(SettingsModel);
+                    if (File.Exists(hfile))
+                        File.Delete(hfile);
+                    if (File.Exists(cppfile))
+                        File.Delete(cppfile);
+                }
                 if (m_projectFilesPanel != null)
                     m_projectFilesPanel.DoOnUiThread(() => m_projectFilesPanel.RebuildList());
             }

@@ -94,6 +94,7 @@ namespace ZasuvkaPtakopyska
                 btn.Width = Width - btn.Height;
                 btn.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
                 btn.Click += new EventHandler(btn_Click);
+                btn.MouseUp += new MouseEventHandler(btn_MouseUp);
                 m_filesPanel.Controls.Add(btn);
 
                 icon = new MetroTile();
@@ -107,7 +108,7 @@ namespace ZasuvkaPtakopyska
                 icon.TileTextFontWeight = MetroTileTextWeight.Bold;
                 icon.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
                 m_filesPanel.Controls.Add(icon);
-                
+
                 y = btn.Bottom;
             }
         }
@@ -142,7 +143,7 @@ namespace ZasuvkaPtakopyska
             string cbpPath = mainForm.ProjectModel.WorkingDirectory + @"\" + mainForm.ProjectModel.CbpPath;
             if (!Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
-            
+
             bool somethingChanged = false;
             if (!File.Exists(dir + @"\dllmain.cpp"))
             {
@@ -397,8 +398,39 @@ namespace ZasuvkaPtakopyska
         {
             MainForm mainForm = FindForm() as MainForm;
             MetroButton btn = sender as MetroButton;
-            if (mainForm != null && btn != null)
+            if (mainForm != null && btn != null && btn.Tag is string)
                 mainForm.OpenEditFile(btn.Tag as string);
+        }
+
+        private void btn_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                MetroButton btn = sender as MetroButton;
+
+                MetroContextMenu menu = new MetroContextMenu(null);
+                MetroSkinManager.ApplyMetroStyle(menu);
+                ToolStripMenuItem menuItem;
+
+                menuItem = new ToolStripMenuItem("Remove from project");
+                menuItem.Tag = btn.Tag;
+                menuItem.Click += new EventHandler(menuItem_removeFromProject_Click);
+                menu.Items.Add(menuItem);
+
+                menu.Show(btn, new Point(btn.Width, 0));
+            }
+        }
+
+        private void menuItem_removeFromProject_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem btn = sender as ToolStripMenuItem;
+            MainForm mainForm = FindForm() as MainForm;
+            if (btn != null && btn.Tag is string && mainForm != null && mainForm.ProjectModel != null && mainForm.ProjectModel.Files != null)
+            {
+                string hfile = Path.ChangeExtension(btn.Tag as string, ".h");
+                if (mainForm.ProjectModel.Files.Contains(hfile) && File.Exists(hfile))
+                    File.Delete(btn.Tag as string);
+            }
         }
 
         #endregion
