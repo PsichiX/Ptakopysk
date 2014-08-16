@@ -67,7 +67,9 @@ public:
     FORCEINLINE float getSceneViewZoom() { return m_cameraZoom; };
     FORCEINLINE void setSceneViewZoom( float v ) { m_cameraZoom = v; m_sceneView.setSize( m_cameraSize ); m_sceneView.zoom( m_cameraZoom ); };
     FORCEINLINE std::string popErrors() { std::string err = m_errors.str(); m_errors.str( "" ); return err; };
+    sf::Vector2f convertPointFromScreenToWorldSpace( sf::Vector2i p );
     bool clearScene();
+    bool clearSceneGameObjects( bool isPrefab );
     bool applyJsonToScene( const std::string& json );
     std::string convertSceneToJson();
     int createGameObject( bool isPrefab, int parent, const std::string& prefabSource, const std::string& id );
@@ -91,6 +93,8 @@ public:
     bool startQueryIteratedGameObject();
     bool endIterateGameObjects();
     int findGameObjectHandleById( const std::string& id, bool isPrefab, int parent );
+    int findGameObjectHandleAtPosition( float x, float y, int parent );
+    int findGameObjectHandleAtScreenPosition( int x, int y, int parent );
     void startIterateAssets( AssetType type );
     bool canIterateAssetsNext( AssetType type );
     bool iterateAssetsNext( AssetType type );
@@ -115,6 +119,7 @@ private:
     void renderGrid( sf::RenderWindow* target, sf::Vector2f gridSize );
     GameObject* findGameObject( int handle, bool isPrefab, GameObject* parent = 0 );
     GameObject* findGameObjectById( const std::string& id, bool isPrefab, GameObject* parent = 0 );
+    GameObject* findGameObjectAtPosition( const sf::Vector2f& pos, GameObject* parent );
 
     std::stringstream                               m_errors;
     sf::RenderWindow*                               m_renderWindow;

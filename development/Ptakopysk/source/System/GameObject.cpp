@@ -333,6 +333,26 @@ namespace Ptakopysk
         return false;
     }
 
+    bool GameObject::componentsContainsPoint( const sf::Vector2f& worldPos, bool all )
+    {
+        if( all )
+        {
+            for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
+                if( it->second->getTypeFlags() & Component::tShape )
+                    if( !it->second->onCheckContainsPoint( worldPos ) )
+                        return false;
+            return true;
+        }
+        else
+        {
+            for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
+                if( it->second->getTypeFlags() & Component::tShape )
+                    if( it->second->onCheckContainsPoint( worldPos ) )
+                        return true;
+            return false;
+        }
+    }
+
     void GameObject::addGameObject( GameObject* go )
     {
         if( !go || go->getType() != RTTI_CLASS_TYPE( GameObject ) || hasGameObject( go ) || isWaitingToAdd( go ) )

@@ -198,11 +198,38 @@ namespace ZasuvkaPtakopyskaExtender
             catch (Exception ex) { LogException(ex); }
         }
 
+        public void ConvertPointFromScreenToWorldSpace(int x, int y, out float outX, out float outY)
+        {
+            try
+            {
+                _ConvertPointFromScreenToWorldSpace(x, y);
+                outX = _GetConvertedPointX();
+                outY = _GetConvertedPointY();
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                outX = 0.0f;
+                outY = 0.0f;
+            }
+        }
+
         public bool ClearScene()
         {
             try
             {
                 bool status = _ClearScene();
+                Console.Write(_PopErrors());
+                return status;
+            }
+            catch (Exception ex) { LogException(ex); return false; }
+        }
+
+        public bool ClearSceneGameObjects(bool isPrefab)
+        {
+            try
+            {
+                bool status = _ClearSceneGameObjects(isPrefab);
                 Console.Write(_PopErrors());
                 return status;
             }
@@ -325,9 +352,7 @@ namespace ZasuvkaPtakopyskaExtender
             {
                 bool status = _QueryGameObject(query);
                 Console.Write(_PopErrors());
-                if (!status)
-                    return null;
-                if (_QueriedGameObjectResultsCount() == 0)
+                if (!status || _QueriedGameObjectResultsCount() == 0)
                     return null;
                 Dictionary<string, string> result = new Dictionary<string, string>();
                 do { result[_QueriedGameObjectResultKey()] = _QueriedGameObjectResultValue(); }
@@ -433,6 +458,28 @@ namespace ZasuvkaPtakopyskaExtender
             try
             {
                 int result = _FindGameObjectHandleById(id, isPrefab, parent);
+                Console.Write(_PopErrors());
+                return result;
+            }
+            catch (Exception ex) { LogException(ex); return 0; }
+        }
+
+        public int FindGameObjectHandleAtPosition(float x, float y, int parent)
+        {
+            try
+            {
+                int result = _FindGameObjectHandleAtPosition(x, y, parent);
+                Console.Write(_PopErrors());
+                return result;
+            }
+            catch (Exception ex) { LogException(ex); return 0; }
+        }
+
+        public int FindGameObjectHandleAtScreenPosition(int x, int y, int parent)
+        {
+            try
+            {
+                int result = _FindGameObjectHandleAtScreenPosition(x, y, parent);
                 Console.Write(_PopErrors());
                 return result;
             }
@@ -710,7 +757,23 @@ namespace ZasuvkaPtakopyskaExtender
 
         [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
         [return: MarshalAs(UnmanagedType.U1)]
+        private static extern void _ConvertPointFromScreenToWorldSpace(int x, int y);
+
+        [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
+        [return: MarshalAs(UnmanagedType.R4)]
+        private static extern float _GetConvertedPointX();
+
+        [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
+        [return: MarshalAs(UnmanagedType.R4)]
+        private static extern float _GetConvertedPointY();
+
+        [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
+        [return: MarshalAs(UnmanagedType.U1)]
         private static extern bool _ClearScene();
+
+        [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
+        [return: MarshalAs(UnmanagedType.U1)]
+        private static extern bool _ClearSceneGameObjects(bool isPrefab);
 
         [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
         [return: MarshalAs(UnmanagedType.U1)]
@@ -832,6 +895,14 @@ namespace ZasuvkaPtakopyskaExtender
             bool isPrefab,
             int parent
             );
+
+        [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
+        [return: MarshalAs(UnmanagedType.I4)]
+        private static extern int _FindGameObjectHandleAtPosition(float x, float y, int parent);
+
+        [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
+        [return: MarshalAs(UnmanagedType.I4)]
+        private static extern int _FindGameObjectHandleAtScreenPosition(int x, int y, int parent);
 
         [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
         private static extern void _StartIterateAssets(int type);

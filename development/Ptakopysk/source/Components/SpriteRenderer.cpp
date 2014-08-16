@@ -14,7 +14,7 @@ namespace Ptakopysk
 
     SpriteRenderer::SpriteRenderer()
     : RTTI_CLASS_DEFINE( SpriteRenderer )
-    , Component( Component::tTransform | Component::tRender )
+    , Component( Component::tTransform | Component::tRender | Component::tShape )
     , Texture( this, &SpriteRenderer::getTexture, &SpriteRenderer::setTexture )
     , Size( this, &SpriteRenderer::getSize, &SpriteRenderer::setSize )
     , Origin( this, &SpriteRenderer::getOrigin, &SpriteRenderer::setOrigin )
@@ -243,6 +243,12 @@ namespace Ptakopysk
             return true;
         }
         return false;
+    }
+
+    bool SpriteRenderer::onCheckContainsPoint( const sf::Vector2f& worldPos )
+    {
+        sf::Vector2f p = m_renderStates.transform.getInverse().transformPoint( worldPos );
+        return m_shape->getGlobalBounds().contains( p );
     }
 
 }

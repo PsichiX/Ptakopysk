@@ -100,6 +100,20 @@ namespace ZasuvkaPtakopyska
             }
         }
 
+        public void UpdateEditorsValues()
+        {
+            Dictionary<string, string> result = PtakopyskInterface.Instance.QueryGameObject(m_goHandle, m_goIsPrefab, "{ \"get\": null }");
+            m_goData.Clear();
+            foreach (string key in result.Keys)
+                m_goData.Add(key, result[key]);
+            foreach (IEditorJsonValue e in m_editors)
+                if (result.ContainsKey(e.PropertyName))
+                    e.UpdateEditorValue();
+            MainForm mainForm = FindForm() as MainForm;
+            if (mainForm != null)
+                mainForm.RefreshSceneView();
+        }
+
         #endregion
 
 
@@ -422,14 +436,7 @@ namespace ZasuvkaPtakopyska
                 return;
 
             if (PtakopyskInterface.Instance.TriggerGameObjectComponentFunctionality(m_goHandle, m_goIsPrefab, btn.Tag as string, btn.Text))
-            {
-                MainForm mainForm = FindForm() as MainForm;
-                if (mainForm != null)
-                {
-                    mainForm.ExploreGameObjectProperties(m_goHandle, m_goIsPrefab);
-                    mainForm.RefreshSceneView();
-                }
-            }
+                UpdateEditorsValues();
         }
 
         private void addComponentButton_Click(object sender, EventArgs e)
@@ -452,7 +459,7 @@ namespace ZasuvkaPtakopyska
                 menuItem.Click += new EventHandler(menuItem_addNewComponent_Click);
                 menu.Items.Add(menuItem);
             }
-            
+
             menu.Show(btn, new Point(0, btn.Height));
         }
 

@@ -94,6 +94,7 @@ namespace Ptakopysk
         virtual void onRender( sf::RenderTarget*& target );
         virtual void onShaderChanged( const sf::Shader* a, bool addedOrRemoved );
         virtual void onFontChanged( const sf::Font* a, bool addedOrRemoved );
+        virtual bool onCheckContainsPoint( const sf::Vector2f& worldPos );
 
     private:
         sf::Text* m_text;

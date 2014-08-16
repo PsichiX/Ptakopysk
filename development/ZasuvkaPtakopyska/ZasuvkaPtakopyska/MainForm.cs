@@ -266,6 +266,15 @@ namespace ZasuvkaPtakopyska
             m_rightPanel.Unroll();
         }
 
+        public void UpdateGameObjectProperties()
+        {
+            if (m_rightPanel == null || m_rightPanel.Content.Controls.Count == 0 || !(m_rightPanel.Content.Controls[0] is GameObjectPropertiesControl))
+                return;
+
+            GameObjectPropertiesControl editor = m_rightPanel.Content.Controls[0] as GameObjectPropertiesControl;
+            editor.UpdateEditorsValues();
+        }
+
         public void WatchProjectFileSystem()
         {
             UnwatchProjectFileSystem();

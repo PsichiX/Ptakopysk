@@ -152,6 +152,30 @@ bool PtakopyskInterface::setVerticalSyncEnabled( bool enabled )
     return true;
 }
 
+sf::Vector2f PtakopyskInterface::convertPointFromScreenToWorldSpace( sf::Vector2i point )
+{
+    if( !m_renderWindow )
+    {
+        m_errors << "Render window cannot be null!\n";
+        return sf::Vector2f();
+    }
+
+    return m_renderWindow->mapPixelToCoords( point, m_sceneView );
+}
+
+bool PtakopyskInterface::clearSceneGameObjects( bool isPrefab )
+{
+    if( !m_gameManager )
+    {
+        m_errors << "Game manager is null!\n";
+        return false;
+    }
+
+    m_gameManager->removeAllGameObjects( isPrefab );
+    m_gameManager->processRemoving();
+    return true;
+}
+
 bool PtakopyskInterface::clearScene()
 {
     if( !m_gameManager )
@@ -559,7 +583,7 @@ bool PtakopyskInterface::queryGameObject( const std::string& query )
                         for( Json::Value::Members::iterator it = m.begin(); it != m.end(); it++ )
                         {
                             item = components[ *it ];
-                            XeCore::Common::IRtti::Derivation type = GameManager::findComponentFactoryTypeById( item.asString() );
+                            XeCore::Common::IRtti::Derivation type = GameManager::findComponentFactoryTypeById( *it );
                             s = m_queriedGameObject->getComponent( type );
                             if( s )
                             {
@@ -572,7 +596,7 @@ bool PtakopyskInterface::queryGameObject( const std::string& query )
                                         s->serializeProperty( *_it, v );
                                         ss.str( "" );
                                         ss.clear();
-                                        ss << "components/" << item.asString() << "/" << (*_it);
+                                        ss << "components/" << *it << "/" << (*_it);
                                         m_queriedGameObjectResult[ ss.str() ] = v;
                                     }
                                 }
@@ -588,7 +612,7 @@ bool PtakopyskInterface::queryGameObject( const std::string& query )
                                             s->serializeProperty( _item.asString(), v );
                                             ss.str( "" );
                                             ss.clear();
-                                            ss << "components/" << item.asString() << "/" << _item.asString();
+                                            ss << "components/" << *it << "/" << _item.asString();
                                             m_queriedGameObjectResult[ ss.str() ] = v;
                                         }
                                     }
@@ -790,6 +814,23 @@ int PtakopyskInterface::findGameObjectHandleById( const std::string& id, bool is
 {
     GameObject* p = parent ? findGameObject( parent, isPrefab ) : 0;
     return (int)findGameObjectById( id, isPrefab, p );
+}
+
+int PtakopyskInterface::findGameObjectHandleAtPosition( float x, float y, int parent )
+{
+    return (int)findGameObjectAtPosition( sf::Vector2f( x, y ), (GameObject*)parent );
+}
+
+int PtakopyskInterface::findGameObjectHandleAtScreenPosition( int x, int y, int parent )
+{
+    if( !m_renderWindow )
+    {
+        m_errors << "Render window cannot be null!\n";
+        return 0;
+    }
+
+    sf::Vector2f worldPos = m_renderWindow->mapPixelToCoords( sf::Vector2i( x, y ), m_sceneView );
+    return (int)findGameObjectAtPosition( worldPos, (GameObject*)parent );
 }
 
 void PtakopyskInterface::startIterateAssets( AssetType type )
@@ -1468,6 +1509,54 @@ GameObject* PtakopyskInterface::findGameObjectById( const std::string& id, bool 
             else
             {
                 go = findGameObjectById( id, isPrefab, go );
+                if( go )
+                    return go;
+            }
+        }
+    }
+
+    return 0;
+}
+
+GameObject* PtakopyskInterface::findGameObjectAtPosition( const sf::Vector2f& pos, GameObject* parent )
+{
+    if( !m_gameManager )
+    {
+        m_errors << "Game manager is null!\n";
+        return 0;
+    }
+
+    if( parent )
+    {
+        GameObject* go = 0;
+        for( GameObject::List::iterator it = parent->gameObjectAtBegin(); it != parent->gameObjectAtEnd(); it++ )
+        {
+            go = *it;
+            if( !go->isActive() )
+                continue;
+            if( go->componentsContainsPoint( pos ) )
+                return go;
+            else
+            {
+                go = findGameObjectAtPosition( pos, go );
+                if( go )
+                    return go;
+            }
+        }
+    }
+    else
+    {
+        GameObject* go = 0;
+        for( GameObject::List::iterator it = m_gameManager->gameObjectAtBegin(); it != m_gameManager->gameObjectAtEnd(); it++ )
+        {
+            go = *it;
+            if( !go->isActive() )
+                continue;
+            if( go->componentsContainsPoint( pos ) )
+                return go;
+            else
+            {
+                go = findGameObjectAtPosition( pos, go );
                 if( go )
                     return go;
             }

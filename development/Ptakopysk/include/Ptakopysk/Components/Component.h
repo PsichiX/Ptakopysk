@@ -43,6 +43,7 @@ namespace Ptakopysk
             tRender = 1 << 2,
             tPhysics = 1 << 3,
             tTransform = 1 << 4,
+            tShape = 1 << 5,
             tAll = -1
         };
 
@@ -91,6 +92,7 @@ namespace Ptakopysk
         virtual void onMusicChanged( const sf::Music* a, bool addedOrRemoved ) {};
         virtual void onFontChanged( const sf::Font* a, bool addedOrRemoved ) {};
         virtual bool onTriggerFunctionality( const std::string& name ) { return false; };
+        virtual bool onCheckContainsPoint( const sf::Vector2f& worldPos ) { return false; };
 
     private:
         void setGameObject( GameObject* gameObject );

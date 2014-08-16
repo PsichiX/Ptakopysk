@@ -83,6 +83,7 @@ namespace Ptakopysk
         bool isWaitingToRemoveDelayedComponent( XeCore::Common::IRtti::Derivation d );
         template< typename T >
         FORCEINLINE bool isWaitingToRemoveDelayedComponent() { return isWaitingToRemoveDelayedComponent( RTTI_CLASS_TYPE( T ) ); };
+        bool componentsContainsPoint( const sf::Vector2f& worldPos, bool all = false );
 
         void addGameObject( GameObject* go );
         void removeGameObject( GameObject* go );

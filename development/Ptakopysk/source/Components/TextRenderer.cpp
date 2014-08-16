@@ -13,7 +13,7 @@ namespace Ptakopysk
 
     TextRenderer::TextRenderer()
     : RTTI_CLASS_DEFINE( TextRenderer )
-    , Component( Component::tTransform | Component::tRender )
+    , Component( Component::tTransform | Component::tRender | Component::tShape )
     , Text( this, &TextRenderer::getText, &TextRenderer::setText )
     , Font( this, &TextRenderer::getFont, &TextRenderer::setFont )
     , Size( this, &TextRenderer::getSize, &TextRenderer::setSize )
@@ -168,6 +168,12 @@ namespace Ptakopysk
     {
         if( m_text && m_text->getFont() == a )
             m_text->setFont( *a );
+    }
+
+    bool TextRenderer::onCheckContainsPoint( const sf::Vector2f& worldPos )
+    {
+        sf::Vector2f p = m_renderStates.transform.getInverse().transformPoint( worldPos );
+        return m_text->getGlobalBounds().contains( p );
     }
 
 }

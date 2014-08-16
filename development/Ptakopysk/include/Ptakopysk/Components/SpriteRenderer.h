@@ -98,6 +98,7 @@ namespace Ptakopysk
         virtual void onTextureChanged( const sf::Texture* a, bool addedOrRemoved );
         virtual void onShaderChanged( const sf::Shader* a, bool addedOrRemoved );
         virtual bool onTriggerFunctionality( const std::string& name );
+        virtual bool onCheckContainsPoint( const sf::Vector2f& worldPos );
 
     private:
         sf::Vector2f m_size;

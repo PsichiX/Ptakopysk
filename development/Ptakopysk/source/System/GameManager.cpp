@@ -536,9 +536,9 @@ namespace Ptakopysk
         if( contentFlags & GameManager::Assets )
             Assets::use().freeAll();
         if( contentFlags & GameManager::PrefabGameObjects )
-            removeAllGameObjects( false );
-        if( contentFlags & GameManager::GameObjects )
             removeAllGameObjects( true );
+        if( contentFlags & GameManager::GameObjects )
+            removeAllGameObjects( false );
         if( contentFlags & GameManager::PhysicsSettings )
             m_filters.clear();
     }

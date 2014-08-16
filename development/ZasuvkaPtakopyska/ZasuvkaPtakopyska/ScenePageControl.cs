@@ -309,7 +309,7 @@ namespace ZasuvkaPtakopyska
 
         private void UpdateLayout()
         {
-            int left = m_gameObjectsPanel != null && m_gameObjectsPanel.IsRolled ? 0 : m_gameObjectsPanel.Width - MetroSidePanel.ROLLED_PART_SIZE;
+            int left = m_gameObjectsPanel != null && m_gameObjectsPanel.IsRolled ? MetroSidePanel.ROLLED_PART_SIZE : m_gameObjectsPanel.Width;
             m_renderer.Left = left;
             m_renderer.Width = Width - left;
         }
@@ -369,6 +369,18 @@ namespace ZasuvkaPtakopyska
             }
         }
 
+        private void RemoveAllGameObjects(bool isPrefab)
+        {
+            if (string.IsNullOrEmpty(m_scenePath))
+                return;
+
+            if (PtakopyskInterface.Instance.ClearSceneGameObjects(isPrefab))
+            {
+                RebuildSceneTree();
+                RefreshSceneView();
+            }
+        }
+
         #endregion
 
 
@@ -411,6 +423,10 @@ namespace ZasuvkaPtakopyska
 
             menuItem = new ToolStripMenuItem("Add new Game Object");
             menuItem.Click += new EventHandler(menuItem_gameObjectAdd_Click);
+            menu.Items.Add(menuItem);
+
+            menuItem = new ToolStripMenuItem("Destroy all Game Objects");
+            menuItem.Click += new EventHandler(menuItem_gameObjectsDestroy_Click);
             menu.Items.Add(menuItem);
 
             menu.Show(btn, new Point(0, btn.Height));
@@ -487,6 +503,11 @@ namespace ZasuvkaPtakopyska
         private void menuItem_gameObjectAdd_Click(object sender, EventArgs e)
         {
             AddNewGameObject(IsGameObjectsPrefabsMode, 0);
+        }
+
+        private void menuItem_gameObjectsDestroy_Click(object sender, EventArgs e)
+        {
+            RemoveAllGameObjects(IsGameObjectsPrefabsMode);
         }
 
         private void menuItem_saveScene_Click(object sender, EventArgs e)

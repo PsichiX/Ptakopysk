@@ -3,6 +3,7 @@
 
 static std::string s_lastErrors;
 static std::string s_lastString;
+static sf::Vector2f s_convertedPoint;
 
 const char* DLL_EXPORT _PopErrors()
 {
@@ -106,9 +107,29 @@ void DLL_EXPORT _SetSceneViewZoom( float zoom )
     PtakopyskInterface::use().setSceneViewZoom( zoom );
 }
 
+void DLL_EXPORT _ConvertPointFromScreenToWorldSpace( int x, int y )
+{
+    s_convertedPoint = PtakopyskInterface::use().convertPointFromScreenToWorldSpace( sf::Vector2i( x, y ) );
+}
+
+float DLL_EXPORT _GetConvertedPointX()
+{
+    return s_convertedPoint.x;
+}
+
+float DLL_EXPORT _GetConvertedPointY()
+{
+    return s_convertedPoint.y;
+}
+
 bool DLL_EXPORT _ClearScene()
 {
     return PtakopyskInterface::use().clearScene();
+}
+
+bool DLL_EXPORT _ClearSceneGameObjects( bool isPrefab )
+{
+    return PtakopyskInterface::use().clearSceneGameObjects( isPrefab );
 }
 
 bool DLL_EXPORT _ApplyJsonToScene( const char* json )
@@ -236,6 +257,16 @@ int DLL_EXPORT _FindGameObjectHandleById( const char* id, bool isPrefab, int par
 {
     std::string i = id;
     return PtakopyskInterface::use().findGameObjectHandleById( i, isPrefab, parent );
+}
+
+int DLL_EXPORT _FindGameObjectHandleAtPosition( float x, float y, int parent )
+{
+    return PtakopyskInterface::use().findGameObjectHandleAtPosition( x, y, parent );
+}
+
+int DLL_EXPORT _FindGameObjectHandleAtScreenPosition( int x, int y, int parent )
+{
+    return PtakopyskInterface::use().findGameObjectHandleAtScreenPosition( x, y, parent );
 }
 
 void DLL_EXPORT _StartIterateAssets( int type )
