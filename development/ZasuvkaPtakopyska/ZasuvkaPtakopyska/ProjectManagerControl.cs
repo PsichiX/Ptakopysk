@@ -159,6 +159,9 @@ namespace ZasuvkaPtakopyska
             MetaComponent meta;
             foreach (string key in mainForm.ProjectModel.MetaComponentPaths.Keys)
             {
+                if (!key.StartsWith(mainForm.ProjectModel.WorkingDirectory + @"\"))
+                    continue;
+
                 includeContent += "#include \"" + key + "\"\r\n";
                 meta = mainForm.ProjectModel.MetaComponentPaths[key];
                 if (meta != null)
