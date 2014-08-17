@@ -12,6 +12,8 @@ namespace ZasuvkaPtakopyska
         #region Public Static Data.
 
         public readonly static int CURRENT_PROJECT_VERSION = 1;
+        public readonly static string INCLUDE_COMPONENTS_FILE = "_include_components.h";
+        public readonly static string REGISTER_COMPONENTS_FILE = "_register_components.inl";
 
         #endregion
 

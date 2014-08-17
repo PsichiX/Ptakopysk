@@ -824,6 +824,7 @@ namespace ZasuvkaPtakopyska
                     }
                     if (m_projectManagerPanel != null)
                         m_projectManagerPanel.UpdateFile(path);
+                    GenerateProjectComponentsCodeFiles();
                 }
             }
             else if (action.Id == "RemoveMetaData" && action.Params != null && action.Params.Length > 0)
@@ -836,6 +837,7 @@ namespace ZasuvkaPtakopyska
                     ProjectModel.MetaComponentPaths.Remove(path);
                     if (m_projectManagerPanel != null)
                         m_projectManagerPanel.UpdateFile(path);
+                    GenerateProjectComponentsCodeFiles();
                 }
             }
             else if (action.Id == "GameObjectIdChanged" && action.Params != null && action.Params.Length > 0)
@@ -843,6 +845,41 @@ namespace ZasuvkaPtakopyska
                 if (m_scenePage != null)
                     m_scenePage.SceneTreeChangeGameObjectId((int)action.Params[0]);
             }
+        }
+
+        private void GenerateProjectComponentsCodeFiles()
+        {
+            if (ProjectModel == null)
+                return;
+
+            string include = "";
+            string register = "";
+            foreach (var kv in ProjectModel.MetaComponentPaths)
+            {
+                if (!kv.Key.StartsWith(ProjectModel.WorkingDirectory + @"\"))
+                    continue;
+
+                include += "#include \"" + kv.Key + "\"\n";
+                register += "Ptakopysk::GameManager::registerComponentFactory( \"" + kv.Value.Name + "\", RTTI_CLASS_TYPE( " + kv.Value.Name + " ), " + kv.Value.Name + "::onBuildComponent );\n";
+            }
+
+            string path = ProjectModel.WorkingDirectory + @"\" + ProjectModel.INCLUDE_COMPONENTS_FILE;
+            if (File.Exists(path))
+            {
+                if (File.ReadAllText(path) != include)
+                    File.WriteAllText(path, include);
+            }
+            else
+                File.WriteAllText(path, include);
+
+            path = ProjectModel.WorkingDirectory + @"\" + ProjectModel.REGISTER_COMPONENTS_FILE;
+            if (File.Exists(path))
+            {
+                if (File.ReadAllText(path) != register)
+                    File.WriteAllText(path, register);
+            }
+            else
+                File.WriteAllText(path, register);
         }
 
         #endregion

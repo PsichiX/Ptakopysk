@@ -5,7 +5,7 @@
 #include <XeCore/Common/Logger.h>
 #include <XeCore/Common/Concurrent/Thread.h>
 #include <XeCore/Common/Timer.h>
-#include "TemplateComponent.h"
+#include "_include_components.h"
 
 using namespace Ptakopysk;
 
@@ -20,28 +20,28 @@ void onEvent( Events::Event* ev )
 
 int main()
 {
-    /// initialization
+    /// initialization.
     LOG_SETUP( "log.log" );
     Events::use().setCallback( &onEvent );
     GameManager::initialize();
-	GameManager::registerComponentFactory( "TemplateComponent", RTTI_CLASS_TYPE( TemplateComponent ), TemplateComponent::onBuildComponent );
+#include "_register_components.inl"
 
-    /// scene
+    /// create window.
     sf::RenderWindow* window = xnew sf::RenderWindow(
         sf::VideoMode( WINDOW_WIDTH, WINDOW_HEIGHT ),
         APP_NAME,
         sf::Style::Titlebar | sf::Style::Close
     );
 
-    /// game manager
+    /// create game manager.
     GameManager* gameManager = xnew GameManager();
 	gameManager->RenderWindow = window;
-    /// deserialize JSON to scene
+    /// deserialize JSON to scene.
     gameManager->jsonToScene( GameManager::loadJson( "template_game.json" ) );
     //GameManager::saveJson( "template_game.bin", GameManager::loadJson( "template_game.json" ), true, MAXDWORD );
     //gameManager->jsonToScene( GameManager::loadJson( "template_game.bin", true, MAXDWORD ) );
 
-    /// main loop
+    /// main loop.
     srand( time( 0 ) );
     XeCore::Common::Timer timer;
     timer.start();
@@ -52,12 +52,13 @@ int main()
         sf::Event event;
         while( window->pollEvent( event ) )
         {
+            gameManager->processEvents( event );
             if( event.type == sf::Event::Closed )
                 window->close();
             else if( event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape )
 				window->close();
         }
-        /// timers update
+        /// timers update.
         timer.update();
         float dt = timer.deltaSeconds();
         fixedStepAccum += dt;
@@ -68,7 +69,7 @@ int main()
             fixedStepAccum -= fixedStep;
         }
 
-        /// process frame
+        /// process frame.
         Events::use().dispatch();
         if( processFixedStep )
         {
@@ -83,7 +84,7 @@ int main()
     }
     timer.stop();
 
-    /// serialize scene to JSON
+    /// serialize scene to JSON.
     GameManager::saveJson( "_template_game.json", gameManager->sceneToJson() );
 
     DELETE_OBJECT( window );
@@ -92,6 +93,6 @@ int main()
     Events::destroy();
 	Tweener::destroy();
     GameManager::cleanup();
-	
+
     return 0;
 }

@@ -6,14 +6,14 @@
 			<Cursor1 position="1614" topLine="46" />
 		</Cursor>
 	</File>
-	<File name="TemplateComponent.h" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="TemplateComponent.h" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="699" topLine="12" />
+			<Cursor1 position="211" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="TemplateMain.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2479" topLine="69" />
+			<Cursor1 position="735" topLine="17" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

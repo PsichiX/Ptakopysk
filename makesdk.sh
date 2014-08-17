@@ -202,6 +202,7 @@ fi
 echo "Copying templates..."
 mkdir -p ./sdk/templates/
 cp ./templates/*.h ./sdk/templates/
+cp ./templates/*.inl ./sdk/templates/
 cp ./templates/*.cpp ./sdk/templates/
 cp ./templates/*.cbp ./sdk/templates/
 cp ./templates/make_new_project.sh ./sdk/templates/
