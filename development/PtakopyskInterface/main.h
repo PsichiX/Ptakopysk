@@ -17,7 +17,7 @@ extern "C"
 #endif
 
 const char* DLL_EXPORT _PopErrors();
-bool DLL_EXPORT _Initialize( int windowHandle, bool editMode );
+bool DLL_EXPORT _Initialize( int64_t windowHandle, bool editMode );
 void DLL_EXPORT _Release();
 void DLL_EXPORT _SetAssetsFileSystemRoot( const char* path );
 bool DLL_EXPORT _ProcessEvents();

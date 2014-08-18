@@ -212,7 +212,8 @@ namespace ZasuvkaPtakopyska
 
             private void applyButton_Click(object sender, EventArgs e)
             {
-                string query = "{ \"free\": [ \"" + m_lastId + "\" ], \"load\": [ " + JsonValue + " ] }";
+                string freeQuery = "\"free\": [ \"" + m_lastId + "\" ], ";
+                string query = "{ " + (string.IsNullOrEmpty(m_lastId) ? "" : freeQuery) + "\"load\": [ " + JsonValue + " ] }";
                 if (PtakopyskInterface.Instance.QueryAssets(m_assetType, query))
                 {
                     MainForm mainForm = FindForm() as MainForm;

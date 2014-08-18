@@ -47,7 +47,7 @@ namespace ZasuvkaPtakopyskaExtender
 
         #region Public Functionality.
 
-        public bool Initialize(int windowHandle, bool editMode = true)
+        public bool Initialize(long windowHandle, bool editMode = true)
         {
             try
             {
@@ -684,7 +684,7 @@ namespace ZasuvkaPtakopyskaExtender
 
         [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
         [return: MarshalAs(UnmanagedType.U1)]
-        private static extern bool _Initialize(int windowHandle, bool editMode);
+        private static extern bool _Initialize(long windowHandle, bool editMode);
 
         [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
         private static extern void _Release();

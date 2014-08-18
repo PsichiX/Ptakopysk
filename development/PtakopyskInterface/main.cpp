@@ -11,7 +11,7 @@ const char* DLL_EXPORT _PopErrors()
     return s_lastErrors.c_str();
 }
 
-bool DLL_EXPORT _Initialize( int windowHandle, bool editMode )
+bool DLL_EXPORT _Initialize( int64_t windowHandle, bool editMode )
 {
     return PtakopyskInterface::use().initialize( windowHandle, editMode );
 }

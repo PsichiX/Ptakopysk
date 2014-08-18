@@ -25,7 +25,7 @@ PtakopyskInterface::~PtakopyskInterface()
     release();
 }
 
-bool PtakopyskInterface::initialize( int windowHandle, bool editMode )
+bool PtakopyskInterface::initialize( int64_t windowHandle, bool editMode )
 {
     if( !windowHandle )
     {
@@ -41,6 +41,7 @@ bool PtakopyskInterface::initialize( int windowHandle, bool editMode )
     m_renderWindow = xnew sf::RenderWindow( (sf::WindowHandle)windowHandle );
     m_gameManager = xnew GameManager();
     m_gameManager->RenderWindow = m_renderWindow;
+    Assets::use().setAssetsLoadingMode( Assets::LoadIfFilesExists );
 
     return true;
 }
@@ -1115,40 +1116,37 @@ bool PtakopyskInterface::queryAssets( AssetType type, const std::string& query )
                             sid = id.asString();
                             if( type == atTexture )
                             {
-                                Assets::use().jsonToTexture( item );
-                                if( Assets::use().getTexture( sid ) )
+                                if( Assets::use().jsonToTexture( item ) )
                                     m_errors << "Texture loaded: " << sid << "!\n";
                                 else
                                     m_errors << "Cannot load texture: " << sid << "!\n";
                             }
                             else if( type == atShader )
                             {
-                                Assets::use().jsonToShader( item );
-                                if( Assets::use().getShader( sid ) )
+                                if( !Assets::use().shadersAvailable() )
+                                    m_errors << "Shaders are not supported!\n";
+                                if( Assets::use().jsonToShader( item ) )
                                     m_errors << "Shader loaded: " << sid << "!\n";
                                 else
                                     m_errors << "Cannot load shader: " << sid << "!\n";
                             }
                             else if( type == atSound )
                             {
-                                Assets::use().jsonToSound( item );
-                                if( Assets::use().getSound( sid ) )
+                                if( Assets::use().jsonToSound( item ) )
                                     m_errors << "Sound loaded: " << sid << "!\n";
                                 else
                                     m_errors << "Cannot load sound: " << sid << "!\n";
                             }
                             else if( type == atMusic )
                             {
-                                Assets::use().jsonToMusic( item );
-                                if( Assets::use().getMusic( sid ) )
+                                if( Assets::use().jsonToMusic( item ) )
                                     m_errors << "Music loaded: " << sid << "!\n";
                                 else
                                     m_errors << "Cannot load music: " << sid << "!\n";
                             }
                             else if( type == atFont )
                             {
-                                Assets::use().jsonToFont( item );
-                                if( Assets::use().getFont( sid ) )
+                                if( Assets::use().jsonToFont( item ) )
                                     m_errors << "Font loaded: " << sid << "!\n";
                                 else
                                     m_errors << "Cannot load font: " << sid << "!\n";

@@ -50,7 +50,7 @@ public:
     PtakopyskInterface();
     virtual ~PtakopyskInterface();
 
-    bool initialize( int windowHandle, bool editMode );
+    bool initialize( int64_t windowHandle, bool editMode );
     void release();
     void setAssetsFileSystemRoot( const std::string& path );
     bool processEvents();

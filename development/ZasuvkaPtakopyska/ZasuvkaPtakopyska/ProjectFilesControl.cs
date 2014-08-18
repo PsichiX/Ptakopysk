@@ -52,8 +52,8 @@ namespace ZasuvkaPtakopyska
                 return rect;
             }
         }
-        public string RootPath { get { return m_rootPath; } set { m_rootPath = value; RebuildList(); } }
-        public string ViewPath { get { return m_viewPath; } set { m_viewPath = value; RebuildList(); } }
+        public string RootPath { get { return m_rootPath; } set { m_rootPath = value; this.DoOnUiThread(() => RebuildList()); } }
+        public string ViewPath { get { return m_viewPath; } set { m_viewPath = value; this.DoOnUiThread(() => RebuildList()); } }
         public int VerticalScrollValue { get { return m_content.VerticalScroll.Value; } set { m_content.VerticalScroll.Value = value; } }
         public int VerticalScrollMaximum { get { return m_content.VerticalScroll.Maximum; } set { m_content.VerticalScroll.Maximum = value; } }
         public int VerticalScrollLargeChange { get { return m_content.VerticalScroll.LargeChange; } set { m_content.VerticalScroll.LargeChange = value; } }

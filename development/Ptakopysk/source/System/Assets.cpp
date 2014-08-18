@@ -1,5 +1,7 @@
 #include "../../include/Ptakopysk/System/Assets.h"
 #include <XeCore/Common/String.h>
+#include <XeCore/Common/Logger.h>
+#include <fstream>
 
 namespace Ptakopysk
 {
@@ -10,10 +12,12 @@ namespace Ptakopysk
 
     Assets::Assets()
     : RTTI_CLASS_DEFINE( Assets )
+    , m_loadingMode( LoadOnlyValidAssets )
     , m_assetsChangedListener( 0 )
     {
         m_defaultTexture = xnew sf::Texture();
         m_defaultTexture->create( 1, 1 );
+        m_defaultTexture->update( &sf::Color::White.r );
     }
 
     Assets::~Assets()
@@ -402,13 +406,30 @@ namespace Ptakopysk
         sf::Texture* t = getTexture( id );
         if( !t )
         {
-            std::stringstream ss;
-            ss << m_fileSystemRoot << path;
             t = xnew sf::Texture();
-            if( !t->loadFromFile( path ) && !t->loadFromFile( ss.str() ) )
+            if( m_fileSystemRoot.empty() )
             {
-                DELETE_OBJECT( t );
-                return 0;
+                if( !t->loadFromFile( path ) )
+                {
+                    if( m_loadingMode != LoadIfFilesExists || !fileExists( path ) )
+                    {
+                        DELETE_OBJECT( t );
+                        return 0;
+                    }
+                }
+            }
+            else
+            {
+                std::stringstream ss;
+                ss << m_fileSystemRoot.c_str() << path;
+                if( !t->loadFromFile( ss.str() ) )
+                {
+                    if( m_loadingMode != LoadIfFilesExists || !fileExists( ss.str() ) )
+                    {
+                        DELETE_OBJECT( t );
+                        return 0;
+                    }
+                }
             }
             m_textures[ id ] = t;
             m_metaTextures[ id ] = path;
@@ -423,15 +444,34 @@ namespace Ptakopysk
         sf::Shader* t = getShader( id );
         if( !t )
         {
-            std::stringstream ssv;
-            ssv << m_fileSystemRoot << vspath;
-            std::stringstream ssf;
-            ssf << m_fileSystemRoot << fspath;
-            t = xnew sf::Shader();
-            if( !t->loadFromFile( vspath, fspath ) && !t->loadFromFile( ssf.str(), ssf.str() ) )
-            {
-                DELETE_OBJECT( t );
+            if( !sf::Shader::isAvailable() && m_loadingMode == LoadOnlyValidAssets )
                 return 0;
+            t = xnew sf::Shader();
+            if( m_fileSystemRoot.empty() )
+            {
+                if( !t->loadFromFile( vspath, fspath ) )
+                {
+                    if( m_loadingMode != LoadIfFilesExists || !fileExists( vspath ) || !fileExists( fspath ) )
+                    {
+                        DELETE_OBJECT( t );
+                        return 0;
+                    }
+                }
+            }
+            else
+            {
+                std::stringstream ssv;
+                ssv << m_fileSystemRoot.c_str() << vspath;
+                std::stringstream ssf;
+                ssf << m_fileSystemRoot.c_str() << fspath;
+                if( !t->loadFromFile( ssv.str(), ssf.str() ) )
+                {
+                    if( m_loadingMode != LoadIfFilesExists || !fileExists( ssv.str() ) || !fileExists( ssf.str() ) )
+                    {
+                        DELETE_OBJECT( t );
+                        return 0;
+                    }
+                }
             }
             m_shaders[ id ] = t;
             m_metaShaders[ id ] = vspath + "|" + fspath;
@@ -449,13 +489,30 @@ namespace Ptakopysk
         sf::Sound* t = getSound( id );
         if( !t )
         {
-            std::stringstream ss;
-            ss << m_fileSystemRoot << path;
             sf::SoundBuffer* tb = xnew sf::SoundBuffer();
-            if( !tb->loadFromFile( path ) && !tb->loadFromFile( ss.str() ) )
+            if( m_fileSystemRoot.empty() )
             {
-                DELETE_OBJECT( tb );
-                return 0;
+                if( !tb->loadFromFile( path ) )
+                {
+                    if( m_loadingMode != LoadIfFilesExists || !fileExists( path ) )
+                    {
+                        DELETE_OBJECT( tb );
+                        return 0;
+                    }
+                }
+            }
+            else
+            {
+                std::stringstream ss;
+                ss << m_fileSystemRoot.c_str() << path;
+                if( !tb->loadFromFile( ss.str() ) )
+                {
+                    if( m_loadingMode != LoadIfFilesExists || !fileExists( ss.str() ) )
+                    {
+                        DELETE_OBJECT( tb );
+                        return 0;
+                    }
+                }
             }
             m_soundsBuffs[ id ] = tb;
             t = xnew sf::Sound();
@@ -473,13 +530,30 @@ namespace Ptakopysk
         sf::Music* t = getMusic( id );
         if( !t )
         {
-            std::stringstream ss;
-            ss << m_fileSystemRoot << path;
             t = xnew sf::Music();
-            if( !t->openFromFile( path ) && !t->openFromFile( ss.str() ) )
+            if( m_fileSystemRoot.empty() )
             {
-                DELETE_OBJECT( t );
-                return 0;
+                if( !t->openFromFile( path ) )
+                {
+                    if( m_loadingMode != LoadIfFilesExists || !fileExists( path ) )
+                    {
+                        DELETE_OBJECT( t );
+                        return 0;
+                    }
+                }
+            }
+            else
+            {
+                std::stringstream ss;
+                ss << m_fileSystemRoot.c_str() << path;
+                if( !t->openFromFile( ss.str() ) )
+                {
+                    if( m_loadingMode != LoadIfFilesExists || !fileExists( ss.str() ) )
+                    {
+                        DELETE_OBJECT( t );
+                        return 0;
+                    }
+                }
             }
             m_musics[ id ] = t;
             m_metaMusics[ id ] = path;
@@ -494,13 +568,30 @@ namespace Ptakopysk
         sf::Font* t = getFont( id );
         if( !t )
         {
-            std::stringstream ss;
-            ss << m_fileSystemRoot << path;
             t = xnew sf::Font();
-            if( !t->loadFromFile( path ) && !t->loadFromFile( ss.str() ) )
+            if( m_fileSystemRoot.empty() )
             {
-                DELETE_OBJECT( t );
-                return 0;
+                if( !t->loadFromFile( path ) )
+                {
+                    if( m_loadingMode != LoadIfFilesExists || !fileExists( path ) )
+                    {
+                        DELETE_OBJECT( t );
+                        return 0;
+                    }
+                }
+            }
+            else
+            {
+                std::stringstream ss;
+                ss << m_fileSystemRoot.c_str() << path;
+                if( !t->loadFromFile( ss.str() ) )
+                {
+                    if( m_loadingMode != LoadIfFilesExists || !fileExists( ss.str() ) )
+                    {
+                        DELETE_OBJECT( t );
+                        return 0;
+                    }
+                }
             }
             m_fonts[ id ] = t;
             m_metaFonts[ id ] = path;
@@ -583,6 +674,11 @@ namespace Ptakopysk
             if( it->second == ptr )
                 return it->first;
         return "";
+    }
+
+    bool Assets::shadersAvailable()
+    {
+        return sf::Shader::isAvailable();
     }
 
     void Assets::freeTexture( const std::string& id )
@@ -765,6 +861,14 @@ namespace Ptakopysk
         for( std::vector< std::string >::iterator it = inArray.begin(); it != inArray.end(); it++ )
             root.append( *it );
         return root;
+    }
+
+    bool Assets::fileExists( const std::string& path )
+    {
+        std::ifstream f( path.c_str() );
+        bool status = f.good();
+        f.close();
+        return status;
     }
 
 }

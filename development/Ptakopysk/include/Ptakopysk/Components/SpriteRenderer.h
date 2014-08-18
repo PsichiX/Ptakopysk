@@ -95,6 +95,7 @@ namespace Ptakopysk
         virtual void onDuplicate( Component* dst );
         virtual void onTransform( const sf::Transform& inTrans, sf::Transform& outTrans );
         virtual void onRender( sf::RenderTarget*& target );
+        virtual void onRenderEditor( sf::RenderTarget* target );
         virtual void onTextureChanged( const sf::Texture* a, bool addedOrRemoved );
         virtual void onShaderChanged( const sf::Shader* a, bool addedOrRemoved );
         virtual bool onTriggerFunctionality( const std::string& name );

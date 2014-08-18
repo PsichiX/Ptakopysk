@@ -97,7 +97,7 @@ namespace ZasuvkaPtakopyska
 
         private void RendererSurfaceControl_Load(object sender, EventArgs e)
         {
-            PtakopyskInterface.Instance.Initialize(Handle.ToInt32());
+            PtakopyskInterface.Instance.Initialize(Handle.ToInt64());
             PtakopyskInterface.Instance.SetVerticalSyncEnabled(false);
         }
 

@@ -208,6 +208,14 @@ namespace Ptakopysk
         target->draw( *m_text, m_renderStates );
     }
 
+    void TextRenderer::onRenderEditor( sf::RenderTarget* target )
+    {
+        const sf::Shader* s = m_renderStates.shader;
+        m_renderStates.shader = 0;
+        target->draw( *m_text, m_renderStates );
+        m_renderStates.shader = s;
+    }
+
     void TextRenderer::onShaderChanged( const sf::Shader* a, bool addedOrRemoved )
     {
         if( m_renderStates.shader == a )

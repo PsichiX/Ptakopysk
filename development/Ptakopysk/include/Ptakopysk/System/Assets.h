@@ -33,11 +33,19 @@ namespace Ptakopysk
         RTTI_CLASS_DECLARE( Assets );
 
     public:
+        enum AssetsLoadingMode
+        {
+            LoadOnlyValidAssets,
+            LoadIfFilesExists
+        };
+
         Assets();
         virtual ~Assets();
 
         FORCEINLINE void setFileSystemRoot( const std::string& path ) { m_fileSystemRoot = path; };
         FORCEINLINE std::string getFileSystemRoot() { return m_fileSystemRoot; };
+        FORCEINLINE void setAssetsLoadingMode( AssetsLoadingMode mode ) { m_loadingMode = mode; };
+        FORCEINLINE AssetsLoadingMode getAssetsLoadingMode() { return m_loadingMode; };
         FORCEINLINE void setAssetsChangedListener( AssetsChangedListener* listener ) { m_assetsChangedListener = listener; };
         FORCEINLINE AssetsChangedListener* getAssetsChangedListener() { return m_assetsChangedListener; };
 
@@ -86,6 +94,7 @@ namespace Ptakopysk
         sf::Font* getFont( const std::string& id );
 
         FORCEINLINE sf::Texture* getDefaultTexture() { return m_defaultTexture; };
+        bool shadersAvailable();
 
         std::string findTexture( const sf::Texture* ptr );
         std::string findShader( const sf::Shader* ptr );
@@ -138,7 +147,9 @@ namespace Ptakopysk
     private:
         void parseTags( const Json::Value& inRoot, std::vector< std::string >& outArray );
         Json::Value jsonTags( std::vector< std::string >& inArray );
+        bool fileExists( const std::string& path );
 
+        AssetsLoadingMode m_loadingMode;
         std::string m_fileSystemRoot;
         std::map< std::string, sf::Texture* > m_textures;
         std::map< std::string, sf::Shader* > m_shaders;

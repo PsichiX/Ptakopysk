@@ -223,6 +223,14 @@ namespace Ptakopysk
         target->draw( *m_shape, m_renderStates );
     }
 
+    void SpriteRenderer::onRenderEditor( sf::RenderTarget* target )
+    {
+        const sf::Shader* s = m_renderStates.shader;
+        m_renderStates.shader = 0;
+        target->draw( *m_shape, m_renderStates );
+        m_renderStates.shader = s;
+    }
+
     void SpriteRenderer::onTextureChanged( const sf::Texture* a, bool addedOrRemoved )
     {
         if( m_shape && m_shape->getTexture() == a )
