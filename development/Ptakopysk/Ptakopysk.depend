@@ -856,7 +856,7 @@
 	<SFML/System/Vector2.hpp>
 	<SFML/Graphics/Transform.hpp>
 
-1408814464 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\assets.h
+1408819583 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\assets.h
 	<XeCore/Common/Base.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -879,7 +879,7 @@
 1407739469 source:d:\git\ptakopysk\development\ptakopysk\source\serialization\serialized.cpp
 	"../../include/Ptakopysk/Serialization/Serialized.h"
 
-1408814669 source:d:\git\ptakopysk\development\ptakopysk\source\system\assets.cpp
+1408819601 source:d:\git\ptakopysk\development\ptakopysk\source\system\assets.cpp
 	"../../include/Ptakopysk/System/Assets.h"
 	<XeCore/Common/String.h>
 	<XeCore/Common/Logger.h>

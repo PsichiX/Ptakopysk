@@ -24,7 +24,7 @@ namespace Ptakopysk
         typedef ICustomAsset* ( *OnBuildCustomAssetCallback )();
 
         ICustomAsset();
-        virtual ~ICustomAsset() = 0;
+        virtual ~ICustomAsset();
 
     protected:
         virtual bool onLoad( const std::string& path ) = 0;

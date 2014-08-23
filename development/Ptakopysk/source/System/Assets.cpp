@@ -16,6 +16,10 @@ namespace Ptakopysk
     {
     }
 
+    ICustomAsset::~ICustomAsset()
+    {
+    }
+
     RTTI_CLASS_DERIVATIONS( Assets,
                             RTTI_DERIVATIONS_END
                             )
