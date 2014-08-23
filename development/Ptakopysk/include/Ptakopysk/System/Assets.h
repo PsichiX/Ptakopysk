@@ -60,6 +60,10 @@ namespace Ptakopysk
         Assets();
         virtual ~Assets();
 
+        Json::Value loadJson( const std::string& path, bool binary = false, dword binaryKeyHash = 0 );
+        bool saveJson( const std::string& path, const Json::Value& root, bool binary = false, dword binaryKeyHash = 0 );
+        std::string loadText( const std::string& path );
+        bool saveText( const std::string& path, const std::string& content );
         bool registerCustomAssetFactory( const std::string& id, XeCore::Common::IRtti::Derivation type, ICustomAsset::OnBuildCustomAssetCallback builder );
         bool unregisterCustomAssetFactory( const std::string& id );
         bool unregisterCustomAssetFactory( XeCore::Common::IRtti::Derivation type );
@@ -73,6 +77,7 @@ namespace Ptakopysk
         ICustomAsset::OnBuildCustomAssetCallback findCustomAssetFactoryBuilderByType( XeCore::Common::IRtti::Derivation type );
         ICustomAsset* buildCustomAsset( const std::string& id );
         ICustomAsset* buildCustomAsset( XeCore::Common::IRtti::Derivation type );
+
         FORCEINLINE void setFileSystemRoot( const std::string& path ) { m_fileSystemRoot = path; };
         FORCEINLINE std::string getFileSystemRoot() { return m_fileSystemRoot; };
         FORCEINLINE void setAssetsLoadingMode( AssetsLoadingMode mode ) { m_loadingMode = mode; };

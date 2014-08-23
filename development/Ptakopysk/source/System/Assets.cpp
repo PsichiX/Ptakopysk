@@ -2,6 +2,7 @@
 #include <XeCore/Common/String.h>
 #include <XeCore/Common/Logger.h>
 #include <fstream>
+#include <BinaryJson/BinaryJson.h>
 
 namespace Ptakopysk
 {
@@ -33,6 +34,155 @@ namespace Ptakopysk
     {
         freeAll();
         DELETE_OBJECT( m_defaultTexture );
+    }
+
+    Json::Value Assets::loadJson( const std::string& path, bool binary, dword binaryKeyHash )
+    {
+        std::ifstream file;
+        if( m_fileSystemRoot.empty() )
+        {
+            file.open( path.c_str(), std::ifstream::in | std::ifstream::binary );
+            if( !file.good() )
+            {
+                file.close();
+                return Json::Value::null;
+            }
+        }
+        else
+        {
+            std::stringstream ss;
+            ss << m_fileSystemRoot.c_str() << path;
+            file.open( ss.str().c_str(), std::ifstream::in | std::ifstream::binary );
+            if( !file.good() )
+            {
+                file.close();
+                return Json::Value::null;
+            }
+        }
+        file.seekg( 0, std::ifstream::end );
+        unsigned int fsize = file.tellg();
+        file.seekg( 0, std::ifstream::beg );
+        Json::Value root;
+        std::string content;
+        if( binary )
+        {
+            BinaryJson::Buffer buffer;
+            buffer.resize( fsize );
+            file.read( (char*)buffer.data(), fsize );
+            BinaryJson::binaryToJson( &buffer, root, binaryKeyHash );
+        }
+        else
+        {
+            content.resize( fsize + 1, 0 );
+            file.read( (char*)content.c_str(), fsize );
+        }
+        file.close();
+        Json::Reader reader;
+        reader.parse( content, root );
+        return root;
+    }
+
+    bool Assets::saveJson( const std::string& path, const Json::Value& root, bool binary, dword binaryKeyHash )
+    {
+        std::ofstream file;
+        if( m_fileSystemRoot.empty() )
+        {
+            file.open( path.c_str(), std::ofstream::out | std::ofstream::binary );
+            if( !file.good() )
+            {
+                file.close();
+                return false;
+            }
+        }
+        else
+        {
+            std::stringstream ss;
+            ss << m_fileSystemRoot.c_str() << path;
+            file.open( ss.str().c_str(), std::ofstream::out | std::ofstream::binary );
+            if( !file.good() )
+            {
+                file.close();
+                return false;
+            }
+        }
+        if( binary )
+        {
+            BinaryJson::Buffer buffer;
+            buffer.setAutoResize();
+            BinaryJson::jsonToBinary( (Json::Value&)root, &buffer, binaryKeyHash );
+            unsigned int pos = buffer.position();
+            buffer.reposition();
+            file.write( (char*)buffer.data(), pos );
+        }
+        else
+        {
+            Json::StyledWriter writer;
+            std::string content = writer.write( root );
+            file.write( content.c_str(), content.length() );
+        }
+        file.close();
+        return true;
+    }
+
+    std::string Assets::loadText( const std::string& path )
+    {
+        std::ifstream file;
+        if( m_fileSystemRoot.empty() )
+        {
+            file.open( path.c_str(), std::ifstream::in | std::ifstream::binary );
+            if( !file.good() )
+            {
+                file.close();
+                return "";
+            }
+        }
+        else
+        {
+            std::stringstream ss;
+            ss << m_fileSystemRoot.c_str() << path;
+            file.open( ss.str().c_str(), std::ifstream::in | std::ifstream::binary );
+            if( !file.good() )
+            {
+                file.close();
+                return "";
+            }
+        }
+        file.seekg( 0, std::ifstream::end );
+        unsigned int fsize = file.tellg();
+        file.seekg( 0, std::ifstream::beg );
+        std::string content;
+        content.resize( fsize + 1, 0 );
+        file.read( (char*)content.c_str(), fsize );
+        file.close();
+        return content;
+    }
+
+    bool Assets::saveText( const std::string& path, const std::string& content )
+    {
+        std::ofstream file;
+        if( m_fileSystemRoot.empty() )
+        {
+            file.open( path.c_str(), std::ofstream::out | std::ofstream::binary );
+            if( !file.good() )
+            {
+                file.close();
+                return false;
+            }
+        }
+        else
+        {
+            std::stringstream ss;
+            ss << m_fileSystemRoot.c_str() << path;
+            file.open( ss.str().c_str(), std::ofstream::out | std::ofstream::binary );
+            if( !file.good() )
+            {
+                file.close();
+                return false;
+            }
+        }
+        file.write( content.c_str(), content.length() );
+        file.close();
+        return true;
     }
 
     bool Assets::registerCustomAssetFactory( const std::string& id, XeCore::Common::IRtti::Derivation type, ICustomAsset::OnBuildCustomAssetCallback builder )

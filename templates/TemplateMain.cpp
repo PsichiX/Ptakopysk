@@ -37,9 +37,9 @@ int main()
     GameManager* gameManager = xnew GameManager();
 	gameManager->RenderWindow = window;
     /// deserialize JSON to scene.
-    gameManager->jsonToScene( GameManager::loadJson( "template_game.json" ) );
-    //GameManager::saveJson( "template_game.bin", GameManager::loadJson( "template_game.json" ), true, MAXDWORD );
-    //gameManager->jsonToScene( GameManager::loadJson( "template_game.bin", true, MAXDWORD ) );
+    gameManager->jsonToScene( Assets::use().loadJson( "template_game.json" ) );
+    //Assets::use().saveJson( "template_game.bin", Assets::use().loadJson( "template_game.json" ), true, MAXDWORD );
+    //gameManager->jsonToScene( Assets::use().loadJson( "template_game.bin", true, MAXDWORD ) );
 
     /// main loop.
     srand( time( 0 ) );
@@ -85,7 +85,7 @@ int main()
     timer.stop();
 
     /// serialize scene to JSON.
-    GameManager::saveJson( "_template_game.json", gameManager->sceneToJson() );
+    Assets::use().saveJson( "_template_game.json", gameManager->sceneToJson() );
 
     DELETE_OBJECT( window );
     DELETE_OBJECT( gameManager );
