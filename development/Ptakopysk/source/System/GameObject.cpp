@@ -732,6 +732,14 @@ namespace Ptakopysk
             (*it)->onFontChanged( a, addedOrRemoved );
     }
 
+    void GameObject::onCustomAssetChanged( const ICustomAsset* a, bool addedOrRemoved )
+    {
+        for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
+            it->second->onCustomAssetChanged( a, addedOrRemoved );
+        for( GameObject::List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            (*it)->onCustomAssetChanged( a, addedOrRemoved );
+    }
+
     void GameObject::setPrefab( bool mode )
     {
         m_prefab = mode;

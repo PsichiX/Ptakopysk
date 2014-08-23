@@ -35,6 +35,7 @@ namespace Ptakopysk
         void onSoundChanged( const std::string& id, const sf::Sound* asset, bool addedOrRemoved ) { if( m_owner ) m_owner->processSoundChanged( asset, addedOrRemoved ); };
         void onMusicChanged( const std::string& id, const sf::Music* asset, bool addedOrRemoved ) { if( m_owner ) m_owner->processMusicChanged( asset, addedOrRemoved ); };
         void onFontChanged( const std::string& id, const sf::Font* asset, bool addedOrRemoved ) { if( m_owner ) m_owner->processFontChanged( asset, addedOrRemoved ); };
+        void onCustomAssetChanged( const std::string& id, const ICustomAsset* asset, bool addedOrRemoved ) { if( m_owner ) m_owner->processCustomAssetChanged( asset, addedOrRemoved ); };
 
     private:
         GameManager* m_owner;
@@ -880,6 +881,12 @@ namespace Ptakopysk
     {
         for( GameObject::List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
             (*it)->onFontChanged( p, addedOrRemoved );
+    }
+
+    void GameManager::processCustomAssetChanged( const ICustomAsset* p, bool addedOrRemoved )
+    {
+        for( GameObject::List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            (*it)->onCustomAssetChanged( p, addedOrRemoved );
     }
 
     GameManager::SceneContentType operator|( GameManager::SceneContentType a, GameManager::SceneContentType b )

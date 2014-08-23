@@ -75,9 +75,10 @@ namespace ZasuvkaPtakopyskaExtender
                 }
             }
 
-            foreach (MetaProperty p in component.Properties)
-                if (!result.Exists(item => item.Name == p.Name))
-                    result.Add(p);
+            if (component.Properties != null && component.Properties.Count > 0)
+                foreach (MetaProperty p in component.Properties)
+                    if (!result.Exists(item => item.Name == p.Name))
+                        result.Add(p);
 
             return result;
         }

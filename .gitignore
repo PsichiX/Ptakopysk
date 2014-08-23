@@ -1,4 +1,5 @@
 obj/
+sdk/
 
 examples/RiskOfDance/
 examples/LogicOnGPU/

@@ -13,6 +13,7 @@
 #include <string>
 #include "../Serialization/Serialized.h"
 #include "../System/Meta.h"
+#include "../System/Assets.h"
 
 class b2Contact;
 class b2Joint;
@@ -91,6 +92,7 @@ namespace Ptakopysk
         virtual void onSoundChanged( const sf::Sound* a, bool addedOrRemoved ) {};
         virtual void onMusicChanged( const sf::Music* a, bool addedOrRemoved ) {};
         virtual void onFontChanged( const sf::Font* a, bool addedOrRemoved ) {};
+        virtual void onCustomAssetChanged( const ICustomAsset* a, bool addedOrRemoved ) {};
         virtual bool onTriggerFunctionality( const std::string& name ) { return false; };
         virtual bool onCheckContainsPoint( const sf::Vector2f& worldPos ) { return false; };
 

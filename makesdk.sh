@@ -225,3 +225,6 @@ cp -r ./development/ZasuvkaPtakopyska/ZasuvkaPtakopyska/bin/Release/*.dll ./sdk/
 cp -r ./development/ZasuvkaPtakopyska/ZasuvkaPtakopyska/bin/Release/ZasuvkaPtakopyska.exe ./sdk/IDE/
 mkdir -p ./sdk/IDE/tools/
 cp -r ./development/ZasuvkaPtakopyska/ConsoleMetaGenerator/bin/Release/ConsoleMetaGenerator.exe ./sdk/IDE/tools/
+cp -r ./development/ZasuvkaPtakopyska/ConsoleMetaGenerator/bin/Release/*.dll ./sdk/IDE/tools/
+cp -r ./development/ZasuvkaPtakopyska/xml2json/bin/Release/xml2json.exe ./sdk/IDE/tools/
+cp -r ./development/ZasuvkaPtakopyska/xml2json/bin/Release/*.dll ./sdk/IDE/tools/

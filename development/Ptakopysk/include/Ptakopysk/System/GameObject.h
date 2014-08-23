@@ -13,6 +13,7 @@
 #include <list>
 #include <string>
 #include "../Serialization/Serialized.h"
+#include "Assets.h"
 
 class b2Contact;
 class b2Joint;
@@ -131,6 +132,7 @@ namespace Ptakopysk
         void onSoundChanged( const sf::Sound* a, bool addedOrRemoved );
         void onMusicChanged( const sf::Music* a, bool addedOrRemoved );
         void onFontChanged( const sf::Font* a, bool addedOrRemoved );
+        void onCustomAssetChanged( const ICustomAsset* a, bool addedOrRemoved );
 
     private:
         FORCEINLINE void setGameManager( GameManager* gm ) { m_gameManager = gm; };

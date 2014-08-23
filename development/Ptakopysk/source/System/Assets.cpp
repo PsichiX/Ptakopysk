@@ -6,6 +6,15 @@
 namespace Ptakopysk
 {
 
+    RTTI_CLASS_DERIVATIONS( ICustomAsset,
+                            RTTI_DERIVATIONS_END
+                            )
+
+    ICustomAsset::ICustomAsset()
+    : RTTI_CLASS_DEFINE( ICustomAsset )
+    {
+    }
+
     RTTI_CLASS_DERIVATIONS( Assets,
                             RTTI_DERIVATIONS_END
                             )
@@ -26,6 +35,119 @@ namespace Ptakopysk
         DELETE_OBJECT( m_defaultTexture );
     }
 
+    bool Assets::registerCustomAssetFactory( const std::string& id, XeCore::Common::IRtti::Derivation type, ICustomAsset::OnBuildCustomAssetCallback builder )
+    {
+        if( id.empty() || m_customFactory.count( id ) || !type || !builder )
+            return false;
+        CustomAssetFactoryData d;
+        d.type = type;
+        d.builder = builder;
+        m_customFactory[ id ] = d;
+        return true;
+    }
+
+    bool Assets::unregisterCustomAssetFactory( const std::string& id )
+    {
+        if( m_customFactory.count( id ) )
+        {
+            m_customFactory.erase( id );
+            return true;
+        }
+        return false;
+    }
+
+    bool Assets::unregisterCustomAssetFactory( XeCore::Common::IRtti::Derivation type )
+    {
+        for( std::map< std::string, CustomAssetFactoryData >::iterator it = m_customFactory.begin(); it != m_customFactory.end(); it++ )
+        {
+            if( it->second.type == type )
+            {
+                m_customFactory.erase( it );
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool Assets::unregisterCustomAssetFactory( ICustomAsset::OnBuildCustomAssetCallback builder )
+    {
+        for( std::map< std::string, CustomAssetFactoryData >::iterator it = m_customFactory.begin(); it != m_customFactory.end(); it++ )
+        {
+            if( it->second.builder == builder )
+            {
+                m_customFactory.erase( it );
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void Assets::unregisterAllCustomAssetFactories()
+    {
+        m_customFactory.clear();
+    }
+
+    XeCore::Common::IRtti::Derivation Assets::findCustomAssetFactoryTypeById( const std::string& id )
+    {
+        if( m_customFactory.count( id ) )
+            return m_customFactory[ id ].type;
+        return 0;
+    }
+
+    XeCore::Common::IRtti::Derivation Assets::findCustomAssetFactoryTypeByBuilder( ICustomAsset::OnBuildCustomAssetCallback builder )
+    {
+        for( std::map< std::string, CustomAssetFactoryData >::iterator it = m_customFactory.begin(); it != m_customFactory.end(); it++ )
+            if( it->second.builder == builder )
+                return it->second.type;
+        return 0;
+    }
+
+    std::string Assets::findCustomAssetFactoryIdByType( XeCore::Common::IRtti::Derivation type )
+    {
+        for( std::map< std::string, CustomAssetFactoryData >::iterator it = m_customFactory.begin(); it != m_customFactory.end(); it++ )
+            if( it->second.type == type )
+                return it->first;
+        return std::string();
+    }
+
+    std::string Assets::findCustomAssetFactoryIdByBuilder( ICustomAsset::OnBuildCustomAssetCallback builder )
+    {
+        for( std::map< std::string, CustomAssetFactoryData >::iterator it = m_customFactory.begin(); it != m_customFactory.end(); it++ )
+            if( it->second.builder == builder )
+                return it->first;
+        return std::string();
+    }
+
+    ICustomAsset::OnBuildCustomAssetCallback Assets::findCustomAssetFactoryBuilderById( const std::string& id )
+    {
+        if( m_customFactory.count( id ) )
+            return m_customFactory[ id ].builder;
+        return 0;
+    }
+
+    ICustomAsset::OnBuildCustomAssetCallback Assets::findCustomAssetFactoryBuilderByType( XeCore::Common::IRtti::Derivation type )
+    {
+        for( std::map< std::string, CustomAssetFactoryData >::iterator it = m_customFactory.begin(); it != m_customFactory.end(); it++ )
+            if( it->second.type == type )
+                return it->second.builder;
+        return 0;
+    }
+
+    ICustomAsset* Assets::buildCustomAsset( const std::string& id )
+    {
+        if( m_customFactory.count( id ) )
+            return m_customFactory[ id ].builder();
+        return 0;
+    }
+
+    ICustomAsset* Assets::buildCustomAsset( XeCore::Common::IRtti::Derivation type )
+    {
+        for( std::map< std::string, CustomAssetFactoryData >::iterator it = m_customFactory.begin(); it != m_customFactory.end(); it++ )
+            if( it->second.type == type )
+                return it->second.builder();
+        return 0;
+    }
+
     void Assets::jsonToAssets( const Json::Value& root )
     {
         if( !root.isObject() )
@@ -35,6 +157,7 @@ namespace Ptakopysk
         jsonToSounds( root[ "sounds" ] );
         jsonToMusics( root[ "musics" ] );
         jsonToFonts( root[ "fonts" ] );
+        jsonToCustomAssets( root[ "custom" ] );
     }
 
     void Assets::jsonToTextures( const Json::Value& root )
@@ -75,6 +198,14 @@ namespace Ptakopysk
             return;
         for( unsigned int i = 0; i < root.size(); i++ )
             jsonToFont( root[ i ] );
+    }
+
+    void Assets::jsonToCustomAssets( const Json::Value& root )
+    {
+        if( !root.isArray() )
+            return;
+        for( unsigned int i = 0; i < root.size(); i++ )
+            jsonToCustomAsset( root[ i ] );
     }
 
     sf::Texture* Assets::jsonToTexture( const Json::Value& root )
@@ -170,6 +301,23 @@ namespace Ptakopysk
         return 0;
     }
 
+    ICustomAsset* Assets::jsonToCustomAsset( const Json::Value& root )
+    {
+        if( !root.isObject() )
+            return 0;
+        Json::Value id = root[ "id" ];
+        Json::Value type = root[ "type" ];
+        Json::Value path = root[ "path" ];
+        if( id.isString() && type.isString() && m_customFactory.count( type.asString() ) && path.isString() )
+        {
+            Json::Value tags = root[ "tags" ];
+            if( tags.isArray() && tags.size() )
+                parseTags( tags, m_tagsCustom[ id.asString() ] );
+            return loadCustomAsset( id.asString(), type.asString(), path.asString() );
+        }
+        return 0;
+    }
+
     Json::Value Assets::assetsToJson()
     {
         Json::Value textures = texturesToJson();
@@ -177,6 +325,7 @@ namespace Ptakopysk
         Json::Value sounds = soundsToJson();
         Json::Value musics = musicsToJson();
         Json::Value fonts = fontsToJson();
+        Json::Value custom = customAssetsToJson();
         Json::Value root;
         if( !textures.isNull() )
             root[ "textures" ] = textures;
@@ -188,6 +337,8 @@ namespace Ptakopysk
             root[ "musics" ] = musics;
         if( !fonts.isNull() )
             root[ "fonts" ] = fonts;
+        if( !custom.isNull() )
+            root[ "custom" ] = custom;
         return root;
     }
 
@@ -250,6 +401,19 @@ namespace Ptakopysk
         for( std::map< std::string, std::string >::iterator it = m_metaFonts.begin(); it != m_metaFonts.end(); it++ )
         {
             item = fontToJson( it->first );
+            if( !item.isNull() )
+                root.append( item );
+        }
+        return root;
+    }
+
+    Json::Value Assets::customAssetsToJson()
+    {
+        Json::Value root;
+        Json::Value item;
+        for( std::map< std::string, std::string >::iterator it = m_metaCustom.begin(); it != m_metaCustom.end(); it++ )
+        {
+            item = customAssetToJson( it->first );
             if( !item.isNull() )
                 root.append( item );
         }
@@ -335,6 +499,28 @@ namespace Ptakopysk
         return root;
     }
 
+    Json::Value Assets::customAssetToJson( const std::string& id )
+    {
+        if( !m_metaCustom.count( id ) )
+            return Json::Value::null;
+        Json::Value root;
+        root[ "id" ] = id;
+        XeCore::Common::String meta = m_metaCustom[ id ];
+        unsigned int mc = 0;
+        XeCore::Common::String* m = meta.explode( "|", mc, false );
+        if( m && mc == 2 )
+        {
+            root[ "type" ] = m[ 0 ];
+            root[ "path" ] = m[ 1 ];
+            if( m_tagsCustom.count( id ) )
+                root[ "tags" ] = jsonTags( m_tagsCustom[ id ] );
+        }
+        else
+            root = Json::Value::null;
+        DELETE_ARRAY( m );
+        return root;
+    }
+
     sf::Texture* Assets::addTexture( const std::string& id, const sf::Texture* ptr )
     {
         sf::Texture* t = getTexture( id );
@@ -397,6 +583,19 @@ namespace Ptakopysk
             m_fonts[ id ] = t;
             if( m_assetsChangedListener )
                 m_assetsChangedListener->onFontChanged( id, ptr, true );
+        }
+        return t;
+    }
+
+    ICustomAsset* Assets::addCustomAsset( const std::string& id, const ICustomAsset* ptr )
+    {
+        ICustomAsset* t = getCustomAsset( id );
+        if( !t && ptr )
+        {
+            t = (ICustomAsset*)ptr;
+            m_custom[ id ] = t;
+            if( m_assetsChangedListener )
+                m_assetsChangedListener->onCustomAssetChanged( id, ptr, true );
         }
         return t;
     }
@@ -601,6 +800,46 @@ namespace Ptakopysk
         return t;
     }
 
+    ICustomAsset* Assets::loadCustomAsset( const std::string& id, const std::string& type, const std::string& path )
+    {
+        ICustomAsset* t = getCustomAsset( id );
+        if( !t && m_customFactory.count( type ) )
+        {
+            t = m_customFactory[ type ].builder();
+            if( !t )
+                return 0;
+            if( m_fileSystemRoot.empty() )
+            {
+                if( !t->onLoad( path ) )
+                {
+                    if( m_loadingMode != LoadIfFilesExists || !fileExists( path ) )
+                    {
+                        DELETE_OBJECT( t );
+                        return 0;
+                    }
+                }
+            }
+            else
+            {
+                std::stringstream ss;
+                ss << m_fileSystemRoot.c_str() << path;
+                if( !t->onLoad( ss.str() ) )
+                {
+                    if( m_loadingMode != LoadIfFilesExists || !fileExists( ss.str() ) )
+                    {
+                        DELETE_OBJECT( t );
+                        return 0;
+                    }
+                }
+            }
+            m_custom[ id ] = t;
+            m_metaCustom[ id ] = type + "|" + path;
+            if( m_assetsChangedListener )
+                m_assetsChangedListener->onCustomAssetChanged( id, t, true );
+        }
+        return t;
+    }
+
     sf::Texture* Assets::getTexture( const std::string& id )
     {
         return m_textures.count( id ) ? m_textures[ id ] : 0;
@@ -624,6 +863,11 @@ namespace Ptakopysk
     sf::Font* Assets::getFont( const std::string& id )
     {
         return m_fonts.count( id ) ? m_fonts[ id ] : 0;
+    }
+
+    ICustomAsset* Assets::getCustomAsset( const std::string& id )
+    {
+        return m_custom.count( id ) ? m_custom[ id ] : 0;
     }
 
     std::string Assets::findTexture( const sf::Texture* ptr )
@@ -671,6 +915,16 @@ namespace Ptakopysk
         if( !ptr )
             return "";
         for( std::map< std::string, sf::Font* >::iterator it = m_fonts.begin(); it != m_fonts.end(); it++ )
+            if( it->second == ptr )
+                return it->first;
+        return "";
+    }
+
+    std::string Assets::findCustomAsset( const ICustomAsset* ptr )
+    {
+        if( !ptr )
+            return "";
+        for( std::map< std::string, ICustomAsset* >::iterator it = m_custom.begin(); it != m_custom.end(); it++ )
             if( it->second == ptr )
                 return it->first;
         return "";
@@ -769,6 +1023,22 @@ namespace Ptakopysk
             m_tagsFonts.erase( id );
     }
 
+    void Assets::freeCustomAsset( const std::string& id )
+    {
+        if( m_custom.count( id ) )
+        {
+            ICustomAsset* t = m_custom[ id ];
+            if( m_assetsChangedListener )
+                m_assetsChangedListener->onCustomAssetChanged( id, t, false );
+            DELETE_OBJECT( t );
+            m_custom.erase( id );
+        }
+        if( m_metaCustom.count( id ) )
+            m_metaCustom.erase( id );
+        if( m_tagsCustom.count( id ) )
+            m_tagsCustom.erase( id );
+    }
+
     void Assets::freeAllTextures()
     {
         for( std::map< std::string, sf::Texture* >::iterator it = m_textures.begin(); it != m_textures.end(); it++ )
@@ -838,6 +1108,19 @@ namespace Ptakopysk
         m_tagsFonts.clear();
     }
 
+    void Assets::freeAllCustomAssets()
+    {
+        for( std::map< std::string, ICustomAsset* >::iterator it = m_custom.begin(); it != m_custom.end(); it++ )
+        {
+            if( m_assetsChangedListener )
+                m_assetsChangedListener->onCustomAssetChanged( it->first, it->second, false );
+            DELETE_OBJECT( it->second );
+        }
+        m_custom.clear();
+        m_metaCustom.clear();
+        m_tagsCustom.clear();
+    }
+
     void Assets::freeAll()
     {
         freeAllTextures();
@@ -845,6 +1128,7 @@ namespace Ptakopysk
         freeAllSounds();
         freeAllMusics();
         freeAllFonts();
+        freeAllCustomAssets();
     }
 
     void Assets::parseTags( const Json::Value& inRoot, std::vector< std::string >& outArray )

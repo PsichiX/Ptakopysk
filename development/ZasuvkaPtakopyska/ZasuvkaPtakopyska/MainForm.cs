@@ -817,9 +817,10 @@ namespace ZasuvkaPtakopyska
                         {
                             MetaComponentsManager.Instance.RegisterMetaComponent(meta);
                             ProjectModel.MetaComponentPaths.Add(path, meta);
-                            foreach (MetaProperty prop in meta.Properties)
-                                if (PropertyEditorsManager.Instance.FindPropertyEditorByValueType(prop.ValueType) == null)
-                                    Console.WriteLine("Property editor for type: \"{0}\" (component: \"{1}\", property: \"{2}\") not found!", prop.ValueType, meta.Name, prop.Name);
+                            if (meta.Properties != null && meta.Properties.Count > 0)
+                                foreach (MetaProperty prop in meta.Properties)
+                                    if (PropertyEditorsManager.Instance.FindPropertyEditorByValueType(prop.ValueType) == null)
+                                        Console.WriteLine("Property editor for type: \"{0}\" (component: \"{1}\", property: \"{2}\") not found!", prop.ValueType, meta.Name, prop.Name);
                         }
                     }
                     if (m_projectManagerPanel != null)

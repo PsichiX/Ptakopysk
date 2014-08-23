@@ -19,13 +19,6 @@ namespace ConsoleMetaGenerator
         {
             Console.WriteLine("> Ptakopysk Meta File Generator");
 
-            /*string a = "";
-            for (int i = 0; i < args.Length; ++i)
-                a += args[i].Replace("\"", "").Replace("'", "") + " ";
-            a = a.Trim();
-            char[] splitBy = new char[]{' '};
-            args = a.Split(splitBy, StringSplitOptions.RemoveEmptyEntries);*/
-            
             for (int i = 0; i < args.Length; ++i)
                 args[i] = args[i].Replace("\"", "").Replace("'", "");
 

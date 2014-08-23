@@ -135,6 +135,7 @@ namespace Ptakopysk
         void processSoundChanged( const sf::Sound* p, bool addedOrRemoved );
         void processMusicChanged( const sf::Music* p, bool addedOrRemoved );
         void processFontChanged( const sf::Font* p, bool addedOrRemoved );
+        void processCustomAssetChanged( const ICustomAsset* p, bool addedOrRemoved );
 
         static std::map< std::string, ComponentFactoryData > s_componentsFactory;
         static bool s_editMode;
