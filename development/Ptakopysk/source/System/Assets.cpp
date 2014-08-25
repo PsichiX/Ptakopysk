@@ -11,8 +11,9 @@ namespace Ptakopysk
                             RTTI_DERIVATIONS_END
                             )
 
-    ICustomAsset::ICustomAsset()
+    ICustomAsset::ICustomAsset( Assets* owner )
     : RTTI_CLASS_DEFINE( ICustomAsset )
+    , m_owner( owner )
     {
     }
 
@@ -290,7 +291,7 @@ namespace Ptakopysk
     ICustomAsset* Assets::buildCustomAsset( const std::string& id )
     {
         if( m_customFactory.count( id ) )
-            return m_customFactory[ id ].builder();
+            return m_customFactory[ id ].builder( this );
         return 0;
     }
 
@@ -298,8 +299,32 @@ namespace Ptakopysk
     {
         for( std::map< std::string, CustomAssetFactoryData >::iterator it = m_customFactory.begin(); it != m_customFactory.end(); it++ )
             if( it->second.type == type )
-                return it->second.builder();
+                return it->second.builder( this );
         return 0;
+    }
+
+    unsigned int Assets::getCustomAssetsIds( std::vector< std::string >& result )
+    {
+        result.clear();
+        for( std::map< std::string, CustomAssetFactoryData >::iterator it = m_customFactory.begin(); it != m_customFactory.end(); it++ )
+            result.push_back( it->first );
+        return result.size();
+    }
+
+    unsigned int Assets::getCustomAssetsTypes( std::vector< XeCore::Common::IRtti::Derivation >& result )
+    {
+        result.clear();
+        for( std::map< std::string, CustomAssetFactoryData >::iterator it = m_customFactory.begin(); it != m_customFactory.end(); it++ )
+            result.push_back( it->second.type );
+        return result.size();
+    }
+
+    unsigned int Assets::getCustomAssetsBuilders( std::vector< ICustomAsset::OnBuildCustomAssetCallback >& result )
+    {
+        result.clear();
+        for( std::map< std::string, CustomAssetFactoryData >::iterator it = m_customFactory.begin(); it != m_customFactory.end(); it++ )
+            result.push_back( it->second.builder );
+        return result.size();
     }
 
     void Assets::jsonToAssets( const Json::Value& root )
@@ -959,7 +984,7 @@ namespace Ptakopysk
         ICustomAsset* t = getCustomAsset( id );
         if( !t && m_customFactory.count( type ) )
         {
-            t = m_customFactory[ type ].builder();
+            t = m_customFactory[ type ].builder( this );
             if( !t )
                 return 0;
             if( m_fileSystemRoot.empty() )

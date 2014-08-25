@@ -497,6 +497,10 @@ namespace ZasuvkaPtakopyska
             menuItem.Click += new EventHandler(menuItem_fonts_Click);
             menu.Items.Add(menuItem);
 
+            menuItem = new ToolStripMenuItem("Custom Assets");
+            menuItem.Click += new EventHandler(menuItem_custom_Click);
+            menu.Items.Add(menuItem);
+
             menu.Show(btn, new Point(0, btn.Height));
         }
 
@@ -574,6 +578,13 @@ namespace ZasuvkaPtakopyska
             MainForm mainForm = FindForm() as MainForm;
             if (mainForm != null)
                 mainForm.ExploreAssetsProperties(PtakopyskInterface.AssetType.Font);
+        }
+
+        private void menuItem_custom_Click(object sender, EventArgs e)
+        {
+            MainForm mainForm = FindForm() as MainForm;
+            if (mainForm != null)
+                mainForm.ExploreAssetsProperties(PtakopyskInterface.AssetType.CustomAsset);
         }
 
         private void m_gameObjectsPanel_RollUnroll(object sender, EventArgs e)

@@ -7,6 +7,7 @@ namespace PtakopyskMetaGenerator
     {
         private static readonly string META_COMPONENT = "META_COMPONENT";
         private static readonly string META_PROPERTY = "META_PROPERTY";
+        private static readonly string META_ASSET = "META_ASSET";
         private static readonly string META_ATTR_NAME = "META_ATTR_NAME";
         private static readonly string META_ATTR_VALUE_TYPE = "META_ATTR_VALUE_TYPE";
         private static readonly string META_ATTR_DESCRIPTION = "META_ATTR_DESCRIPTION";
@@ -36,6 +37,18 @@ namespace PtakopyskMetaGenerator
         {
             ParseNode root = GenerateCppAst(cppContent, out status);
             return root == null ? null : FindMetaComponent(root);
+        }
+
+        public static string GenerateMetaAssetJson(string cppContent, out string status)
+        {
+            MetaAsset meta = GenerateMetaAsset(cppContent, out status);
+            return meta == null ? null : Newtonsoft.Json.JsonConvert.SerializeObject(meta, Newtonsoft.Json.Formatting.Indented);
+        }
+
+        public static MetaAsset GenerateMetaAsset(string cppContent, out string status)
+        {
+            ParseNode root = GenerateCppAst(cppContent, out status);
+            return root == null ? null : FindMetaAsset(root);
         }
 
         public static string GenerateCppAstJson(string cppContent, out string status)
@@ -150,6 +163,58 @@ namespace PtakopyskMetaGenerator
             foreach (ParseNode child in node)
             {
                 meta = SearchDownForMetaComponent(child);
+                if (meta != null)
+                    return meta;
+            }
+
+            return null;
+        }
+
+        public static MetaAsset FindMetaAsset(ParseNode node)
+        {
+            return node == null ? null : SearchDownForMetaAsset(node);
+        }
+
+        private static MetaAsset SearchDownForMetaAsset(ParseNode node)
+        {
+            if (node == null)
+                return null;
+
+            MetaAsset meta;
+            if (node.RuleName == RULE_NAME_CLASS_DECL && node.Count >= 2 && node[0].RuleName == RULE_NAME_CLASS)
+            {
+                ParseNode className = SearchDownFor(node[1], RULE_NAME_IDENTIFIER);
+                if (className != null)
+                {
+                    ParseNode parent = SearchUpForDeclarationContent(node);
+                    if (parent != null)
+                    {
+                        int i = 0;
+                        while (i < parent.Count && !HasRuleWithValue(parent[i], RULE_NAME_IDENTIFIER, META_ASSET)) ++i;
+                        ++i;
+                        if (i < parent.Count)
+                        {
+                            meta = new MetaAsset(className.Value);
+                            Dictionary<string, string> attr = SearchDownForAttributes(parent[i]);
+                            if (attr != null)
+                            {
+                                foreach (string key in attr.Keys)
+                                {
+                                    if (key == META_ATTR_NAME)
+                                        meta.Name = attr[key];
+                                    else if (key == META_ATTR_DESCRIPTION)
+                                        meta.Description = attr[key];
+                                }
+                            }
+                            return meta;
+                        }
+                    }
+                }
+            }
+
+            foreach (ParseNode child in node)
+            {
+                meta = SearchDownForMetaAsset(child);
                 if (meta != null)
                     return meta;
             }

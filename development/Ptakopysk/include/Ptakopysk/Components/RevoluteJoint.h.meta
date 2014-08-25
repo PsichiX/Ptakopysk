@@ -1,4 +1,5 @@
 {
+  "Type": "Component",
   "Name": "RevoluteJoint",
   "Description": "Physics revolute joint component.",
   "BaseClasses": [

@@ -13,7 +13,7 @@ namespace ConsoleMetaGenerator
         /// Generates meta-files from cpp header files.
         /// </summary>
         /// <param name="args">
-        /// ConsoleMetaGenerator.exe inputDirectoryOrFilePath [outputDirectoryOrFilePath]
+        /// ConsoleMetaGenerator.exe -type inputDirectoryOrFilePath [outputDirectoryOrFilePath]
         /// </param>
         static void Main(string[] args)
         {
@@ -22,28 +22,29 @@ namespace ConsoleMetaGenerator
             for (int i = 0; i < args.Length; ++i)
                 args[i] = args[i].Replace("\"", "").Replace("'", "");
 
-            if (args != null && args.Length > 0)
+            if (args != null && args.Length > 1)
             {
-                string input = args[0];
-                string output = args.Length > 1 ? args[1] : "";
-
+                string type = args[0];
+                string input = args[1];
+                string output = args.Length > 2 ? args[2] : null;
+                
                 if (File.Exists(input))
-                    ProcessFile(input, output);
+                    ProcessFile(input, output, type);
                 else if (Directory.Exists(input))
-                    ProcessDirectory(input, output);
+                    ProcessDirectory(input, output, type);
             }
             else
             {
                 Console.WriteLine(@"# Example of usage:");
-                Console.WriteLine(@"# ConsoleMetaGenerator.exe Path\to\input\file\or\directory [Path\to\output\file\or\directory]");
+                Console.WriteLine(@"# ConsoleMetaGenerator.exe -MetaType Path\to\input\file\or\directory Path\to\output\file\or\directory");
             }
         }
 
-        private static void ProcessFile(string input, string output)
+        private static void ProcessFile(string input, string output, string type)
         {
-            if (String.IsNullOrEmpty(output))
+            if (string.IsNullOrEmpty(output))
                 output = input;
-            else if (!Path.IsPathRooted(output))
+            if (!Path.IsPathRooted(output))
                 output = Path.GetDirectoryName(input) + @"\" + output;
 
             if (Path.GetExtension(output) != ".meta")
@@ -51,7 +52,11 @@ namespace ConsoleMetaGenerator
 
             string content = File.ReadAllText(input);
             string log = "";
-            string json = MetaCpp.GenerateMetaComponentJson(content, out log);
+            string json = null;
+            if (type == "-component" || type == "-c")
+                json = MetaCpp.GenerateMetaComponentJson(content, out log);
+            else if (type == "-asset" || type == "-a")
+                json = MetaCpp.GenerateMetaAssetJson(content, out log);
             if (json != null)
             {
                 Console.WriteLine();
@@ -61,13 +66,16 @@ namespace ConsoleMetaGenerator
             }
         }
 
-        private static void ProcessDirectory(string input, string output)
+        private static void ProcessDirectory(string input, string output, string type)
         {
             DirectoryInfo dir = new DirectoryInfo(input);
+            if (!dir.Exists)
+                return;
+
             foreach (FileInfo info in dir.GetFiles("*.h"))
-                ProcessFile(input + @"\" + info.Name, output);
+                ProcessFile(input + @"\" + info.Name, output, type);
             foreach (DirectoryInfo info in dir.GetDirectories())
-                ProcessDirectory(input + @"\" + info.Name, output);
+                ProcessDirectory(input + @"\" + info.Name, output, type);
         }
     }
 }

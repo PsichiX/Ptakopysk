@@ -55,7 +55,7 @@ namespace ZasuvkaPtakopyska
         {
             PtakopyskInterface.Instance.ProcessEvents();
             PtakopyskInterface.Instance.ProcessUpdate(0, true);
-            PtakopyskInterface.Instance.ProcessRender(false);
+            PtakopyskInterface.Instance.ProcessRender();
 
             Brush brushBg = new SolidBrush(Color.FromArgb(64, 0, 0, 0));
             Brush brush = new SolidBrush(Color.White);

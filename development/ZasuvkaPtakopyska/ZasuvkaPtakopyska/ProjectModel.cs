@@ -14,6 +14,8 @@ namespace ZasuvkaPtakopyska
         public readonly static int CURRENT_PROJECT_VERSION = 1;
         public readonly static string INCLUDE_COMPONENTS_FILE = "_include_components.h";
         public readonly static string REGISTER_COMPONENTS_FILE = "_register_components.inl";
+        public readonly static string INCLUDE_ASSETS_FILE = "_include_assets.h";
+        public readonly static string REGISTER_ASSETS_FILE = "_register_assets.inl";
 
         #endregion
 
@@ -25,7 +27,7 @@ namespace ZasuvkaPtakopyska
         [JsonIgnore]
         public string EditorCbpPath { get; set; }
         [JsonIgnore]
-        public string EditorComponentsPluginPath { get; set; }
+        public string EditorPluginPath { get; set; }
         public int Version { get; set; }
         [JsonIgnore]
         public string Name { get; set; }
@@ -39,6 +41,8 @@ namespace ZasuvkaPtakopyska
         public List<string> Files { get; set; }
         [JsonIgnore]
         public Dictionary<string, MetaComponent> MetaComponentPaths { get; set; }
+        [JsonIgnore]
+        public Dictionary<string, MetaAsset> MetaAssetsPaths { get; set; }
 
         #endregion
 
@@ -50,7 +54,7 @@ namespace ZasuvkaPtakopyska
         {
             CbpPath = cbpPath;
             EditorCbpPath = "";
-            EditorComponentsPluginPath = "";
+            EditorPluginPath = "";
             Version = CURRENT_PROJECT_VERSION;
             Name = "";
             WorkingDirectory = "";
@@ -59,6 +63,7 @@ namespace ZasuvkaPtakopyska
             ActiveTargetWorkingDirectory = "";
             Files = new List<string>();
             MetaComponentPaths = new Dictionary<string, MetaComponent>();
+            MetaAssetsPaths = new Dictionary<string, MetaAsset>();
         }
 
         #endregion

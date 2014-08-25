@@ -47,6 +47,7 @@
     <Compile Include="BaseGrammar.cs" />
     <Compile Include="CppBaseGrammar.cs" />
     <Compile Include="CppStructuralGrammar.cs" />
+    <Compile Include="MetaAsset.cs" />
     <Compile Include="MetaComponent.cs" />
     <Compile Include="MetaCpp.cs" />
     <Compile Include="MetaProperty.cs" />

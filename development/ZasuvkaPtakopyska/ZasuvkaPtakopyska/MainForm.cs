@@ -378,14 +378,22 @@ namespace ZasuvkaPtakopyska
         public void LoadMetaFilesFrom(string dir)
         {
             DirectoryInfo info = new DirectoryInfo(dir);
+            if (!info.Exists)
+                return;
+
             DirectoryInfo[] dirs = info.GetDirectories();
             if (dirs != null && dirs.Length > 0)
                 foreach (DirectoryInfo d in dirs)
                     LoadMetaFilesFrom(d.FullName);
             FileInfo[] files = info.GetFiles("*.meta");
             if (files != null && files.Length > 0)
+            {
                 foreach (FileInfo f in files)
-                    DoAction(new Action("LoadMetaData", f.FullName.Substring(0, f.FullName.Length - 5)), true);
+                {
+                    DoAction(new Action("LoadMetaComponent", f.FullName.Substring(0, f.FullName.Length - 5)), true);
+                    DoAction(new Action("LoadMetaAsset", f.FullName.Substring(0, f.FullName.Length - 5)), true);
+                }
+            }
         }
 
         public void LoadSdkMetaFiles()
@@ -413,11 +421,19 @@ namespace ZasuvkaPtakopyska
             string log = "";
             string json = MetaCpp.GenerateMetaComponentJson(content, out log);
             if (String.IsNullOrEmpty(json))
-                DoAction(new Action("RemoveMetaData", path), true);
+                DoAction(new Action("RemoveMetaComponent", path), true);
             else
             {
                 File.WriteAllText(path + ".meta", json);
-                DoAction(new Action("LoadMetaData", path), true);
+                DoAction(new Action("LoadMetaComponent", path), true);
+            }
+            json = MetaCpp.GenerateMetaAssetJson(content, out log);
+            if (String.IsNullOrEmpty(json))
+                DoAction(new Action("RemoveMetaAsset", path), true);
+            else
+            {
+                File.WriteAllText(path + ".meta", json);
+                DoAction(new Action("LoadMetaAsset", path), true);
             }
         }
 
@@ -427,18 +443,21 @@ namespace ZasuvkaPtakopyska
                 return;
 
             File.Delete(path + ".meta");
-            DoAction(new Action("RemoveMetaData", path), true);
+            DoAction(new Action("RemoveMetaComponent", path), true);
+            DoAction(new Action("RemoveMetaAsset", path), true);
         }
 
         public void RenameMetaFile(string oldPath, string newPath)
         {
-            DoAction(new Action("RemoveMetaData", oldPath), true);
+            DoAction(new Action("RemoveMetaComponent", oldPath), true);
+            DoAction(new Action("RemoveMetaAsset", oldPath), true);
 
             if (!File.Exists(newPath) || Path.GetExtension(newPath) != ".h" || !File.Exists(oldPath + ".meta"))
                 return;
 
             File.Move(oldPath + ".meta", newPath + ".meta");
-            DoAction(new Action("LoadMetaData", newPath), true);
+            DoAction(new Action("LoadMetaComponent", newPath), true);
+            DoAction(new Action("LoadMetaAsset", newPath), true);
         }
 
         public void OpenEditFile(string path, int line = -1)
@@ -498,7 +517,7 @@ namespace ZasuvkaPtakopyska
         public void RebuildEditorComponents(bool forced = false)
         {
             if (m_projectManagerPanel != null)
-                m_projectManagerPanel.RebuildEditorComponents(forced);
+                m_projectManagerPanel.RebuildEditorPlugin(forced);
         }
 
         #endregion
@@ -775,9 +794,9 @@ namespace ZasuvkaPtakopyska
                 Console.WriteLine("Editor CBP project file changed!");
                 if (m_buildPage != null && !m_buildPage.IsBatchProcessRunning && ProjectModel != null && !string.IsNullOrEmpty(ProjectModel.EditorCbpPath))
                 {
-                    if (!string.IsNullOrEmpty(ProjectModel.EditorComponentsPluginPath))
-                        PtakopyskInterface.Instance.PluginUnloadComponentsByPath(
-                            ProjectModel.WorkingDirectory + @"\" + ProjectModel.EditorComponentsPluginPath
+                    if (!string.IsNullOrEmpty(ProjectModel.EditorPluginPath))
+                        PtakopyskInterface.Instance.PluginUnloadByPath(
+                            ProjectModel.WorkingDirectory + @"\" + ProjectModel.EditorPluginPath
                             );
                     m_buildPage.BatchOperationProject(
                         BuildPageControl.BatchOperationMode.Build,
@@ -789,23 +808,23 @@ namespace ZasuvkaPtakopyska
             else if (action.Id == "EditorComponentsPluginChanged")
             {
                 Console.WriteLine("Editor components plugin changed!");
-                if (ProjectModel != null && !string.IsNullOrEmpty(ProjectModel.EditorComponentsPluginPath))
+                if (ProjectModel != null && !string.IsNullOrEmpty(ProjectModel.EditorPluginPath))
                 {
-                    string pluginPath = ProjectModel.WorkingDirectory + @"\" + ProjectModel.EditorComponentsPluginPath;
-                    PtakopyskInterface.Instance.PluginUnloadComponentsByPath(pluginPath);
-                    PtakopyskInterface.Instance.PluginLoadComponents(pluginPath);
+                    string pluginPath = ProjectModel.WorkingDirectory + @"\" + ProjectModel.EditorPluginPath;
+                    PtakopyskInterface.Instance.PluginUnloadByPath(pluginPath);
+                    PtakopyskInterface.Instance.PluginLoad(pluginPath);
                     List<string> clist = PtakopyskInterface.Instance.GetComponentsIds();
                     foreach (string c in clist)
                         Console.WriteLine("Registered component: " + c);
                     ReloadScene();
                 }
             }
-            else if (action.Id == "LoadMetaData" && action.Params != null && action.Params.Length > 0)
+            else if (action.Id == "LoadMetaComponent" && action.Params != null && action.Params.Length > 0)
             {
                 string path = action.Params[0] as string;
                 if (!String.IsNullOrEmpty(path) && ProjectModel != null)
                 {
-                    Console.WriteLine("Load meta-data for: \"{0}\"", path);
+                    Console.WriteLine("Load meta-component for: \"{0}\"", path);
                     string metaPath = path + ".meta";
                     if (File.Exists(metaPath))
                     {
@@ -825,20 +844,57 @@ namespace ZasuvkaPtakopyska
                     }
                     if (m_projectManagerPanel != null)
                         m_projectManagerPanel.UpdateFile(path);
-                    GenerateProjectComponentsCodeFiles();
+                    GenerateProjectCodeFiles();
                 }
             }
-            else if (action.Id == "RemoveMetaData" && action.Params != null && action.Params.Length > 0)
+            else if (action.Id == "RemoveMetaComponent" && action.Params != null && action.Params.Length > 0)
             {
                 string path = action.Params[0] as string;
                 if (!String.IsNullOrEmpty(path) && ProjectModel != null && ProjectModel.MetaComponentPaths.ContainsKey(path))
                 {
-                    Console.WriteLine("Remove meta-data for: \"{0}\"", path);
+                    Console.WriteLine("Remove meta-component for: \"{0}\"", path);
                     MetaComponentsManager.Instance.UnregisterMetaComponent(ProjectModel.MetaComponentPaths[path]);
                     ProjectModel.MetaComponentPaths.Remove(path);
                     if (m_projectManagerPanel != null)
                         m_projectManagerPanel.UpdateFile(path);
-                    GenerateProjectComponentsCodeFiles();
+                    GenerateProjectCodeFiles();
+                }
+            }
+            else if (action.Id == "LoadMetaAsset" && action.Params != null && action.Params.Length > 0)
+            {
+                string path = action.Params[0] as string;
+                if (!String.IsNullOrEmpty(path) && ProjectModel != null)
+                {
+                    Console.WriteLine("Load meta-asset for: \"{0}\"", path);
+                    string metaPath = path + ".meta";
+                    if (File.Exists(metaPath))
+                    {
+                        string json = File.ReadAllText(metaPath);
+                        MetaAsset meta = Newtonsoft.Json.JsonConvert.DeserializeObject<MetaAsset>(json);
+                        MetaAssetsManager.Instance.UnregisterMetaAsset(meta);
+                        ProjectModel.MetaAssetsPaths.Remove(path);
+                        if (meta != null)
+                        {
+                            MetaAssetsManager.Instance.RegisterMetaAsset(meta);
+                            ProjectModel.MetaAssetsPaths.Add(path, meta);
+                        }
+                    }
+                    if (m_projectManagerPanel != null)
+                        m_projectManagerPanel.UpdateFile(path);
+                    GenerateProjectCodeFiles();
+                }
+            }
+            else if (action.Id == "RemoveMetaAsset" && action.Params != null && action.Params.Length > 0)
+            {
+                string path = action.Params[0] as string;
+                if (!String.IsNullOrEmpty(path) && ProjectModel != null && ProjectModel.MetaAssetsPaths.ContainsKey(path))
+                {
+                    Console.WriteLine("Remove meta-asset for: \"{0}\"", path);
+                    MetaAssetsManager.Instance.UnregisterMetaAsset(ProjectModel.MetaAssetsPaths[path]);
+                    ProjectModel.MetaAssetsPaths.Remove(path);
+                    if (m_projectManagerPanel != null)
+                        m_projectManagerPanel.UpdateFile(path);
+                    GenerateProjectCodeFiles();
                 }
             }
             else if (action.Id == "GameObjectIdChanged" && action.Params != null && action.Params.Length > 0)
@@ -848,39 +904,67 @@ namespace ZasuvkaPtakopyska
             }
         }
 
-        private void GenerateProjectComponentsCodeFiles()
+        private void GenerateProjectCodeFiles()
         {
             if (ProjectModel == null)
                 return;
 
-            string include = "";
-            string register = "";
+            string includeCoponents = "";
+            string registerComponents = "";
+            string includeAssets = "";
+            string registerAssets = "";
             foreach (var kv in ProjectModel.MetaComponentPaths)
             {
                 if (!kv.Key.StartsWith(ProjectModel.WorkingDirectory + @"\"))
                     continue;
 
-                include += "#include \"" + kv.Key + "\"\n";
-                register += "Ptakopysk::GameManager::registerComponentFactory( \"" + kv.Value.Name + "\", RTTI_CLASS_TYPE( " + kv.Value.Name + " ), " + kv.Value.Name + "::onBuildComponent );\n";
+                includeCoponents += "#include \"" + kv.Key + "\"\n";
+                registerComponents += "Ptakopysk::GameManager::registerComponentFactory( \"" + kv.Value.Name + "\", RTTI_CLASS_TYPE( " + kv.Value.Name + " ), " + kv.Value.Name + "::onBuildComponent );\n";
+            }
+            foreach (var kv in ProjectModel.MetaAssetsPaths)
+            {
+                if (!kv.Key.StartsWith(ProjectModel.WorkingDirectory + @"\"))
+                    continue;
+
+                includeAssets += "#include \"" + kv.Key + "\"\n";
+                registerAssets += "Ptakopysk::Assets::use().registerCustomAssetFactory( \"" + kv.Value.Name + "\", RTTI_CLASS_TYPE( " + kv.Value.Name + " ), " + kv.Value.Name + "::onBuildCustomAsset );\n";
             }
 
             string path = ProjectModel.WorkingDirectory + @"\" + ProjectModel.INCLUDE_COMPONENTS_FILE;
             if (File.Exists(path))
             {
-                if (File.ReadAllText(path) != include)
-                    File.WriteAllText(path, include);
+                if (File.ReadAllText(path) != includeCoponents)
+                    File.WriteAllText(path, includeCoponents);
             }
             else
-                File.WriteAllText(path, include);
+                File.WriteAllText(path, includeCoponents);
 
             path = ProjectModel.WorkingDirectory + @"\" + ProjectModel.REGISTER_COMPONENTS_FILE;
             if (File.Exists(path))
             {
-                if (File.ReadAllText(path) != register)
-                    File.WriteAllText(path, register);
+                if (File.ReadAllText(path) != registerComponents)
+                    File.WriteAllText(path, registerComponents);
             }
             else
-                File.WriteAllText(path, register);
+                File.WriteAllText(path, registerComponents);
+
+            path = ProjectModel.WorkingDirectory + @"\" + ProjectModel.INCLUDE_ASSETS_FILE;
+            if (File.Exists(path))
+            {
+                if (File.ReadAllText(path) != includeAssets)
+                    File.WriteAllText(path, includeAssets);
+            }
+            else
+                File.WriteAllText(path, includeAssets);
+
+            path = ProjectModel.WorkingDirectory + @"\" + ProjectModel.REGISTER_ASSETS_FILE;
+            if (File.Exists(path))
+            {
+                if (File.ReadAllText(path) != registerAssets)
+                    File.WriteAllText(path, registerAssets);
+            }
+            else
+                File.WriteAllText(path, registerAssets);
         }
 
         #endregion
@@ -973,7 +1057,7 @@ namespace ZasuvkaPtakopyska
                     DoAction(new Action("CbpChanged"));
                 else if (e.FullPath == ProjectModel.WorkingDirectory + @"\" + ProjectModel.EditorCbpPath)
                     DoAction(new Action("EditorCbpChanged"));
-                else if (e.FullPath == ProjectModel.WorkingDirectory + @"\" + ProjectModel.EditorComponentsPluginPath)
+                else if (e.FullPath == ProjectModel.WorkingDirectory + @"\" + ProjectModel.EditorPluginPath)
                     DoAction(new Action("EditorComponentsPluginChanged"));
                 else if (Path.GetExtension(e.FullPath) == ".h" && ProjectModel.Files.Contains(e.FullPath))
                     Parallel.Invoke(() => GenerateMetaFile(e.FullPath));
@@ -986,7 +1070,7 @@ namespace ZasuvkaPtakopyska
             {
                 if (e.FullPath == ProjectModel.WorkingDirectory + @"\" + ProjectModel.EditorCbpPath)
                     DoAction(new Action("EditorCbpChanged"));
-                else if (e.FullPath == ProjectModel.WorkingDirectory + @"\" + ProjectModel.EditorComponentsPluginPath)
+                else if (e.FullPath == ProjectModel.WorkingDirectory + @"\" + ProjectModel.EditorPluginPath)
                     DoAction(new Action("EditorComponentsPluginChanged"));
                 else if (Path.GetExtension(e.FullPath) == ".h" && ProjectModel.Files.Contains(e.FullPath))
                     Parallel.Invoke(() => GenerateMetaFile(e.FullPath));

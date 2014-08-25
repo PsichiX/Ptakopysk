@@ -1,4 +1,5 @@
 {
+  "Type": "Component",
   "Name": "TextRenderer",
   "Description": "Text renderer component.",
   "BaseClasses": [

@@ -13,6 +13,8 @@
 namespace Ptakopysk
 {
 
+    class Assets;
+
     class ICustomAsset
     : public virtual XeCore::Common::IRtti
     , public virtual XeCore::Common::MemoryManager::Manageable
@@ -21,13 +23,18 @@ namespace Ptakopysk
         friend class Assets;
 
     public:
-        typedef ICustomAsset* ( *OnBuildCustomAssetCallback )();
+        typedef ICustomAsset* ( *OnBuildCustomAssetCallback )( Assets* owner );
 
-        ICustomAsset();
+        ICustomAsset( Assets* owner );
         virtual ~ICustomAsset();
+
+        FORCEINLINE Assets* getOwner() { return m_owner; };
 
     protected:
         virtual bool onLoad( const std::string& path ) = 0;
+
+    private:
+        Assets* m_owner;
     };
 
     class AssetsChangedListener
@@ -77,6 +84,9 @@ namespace Ptakopysk
         ICustomAsset::OnBuildCustomAssetCallback findCustomAssetFactoryBuilderByType( XeCore::Common::IRtti::Derivation type );
         ICustomAsset* buildCustomAsset( const std::string& id );
         ICustomAsset* buildCustomAsset( XeCore::Common::IRtti::Derivation type );
+        unsigned int getCustomAssetsIds( std::vector< std::string >& result );
+        unsigned int getCustomAssetsTypes( std::vector< XeCore::Common::IRtti::Derivation >& result );
+        unsigned int getCustomAssetsBuilders( std::vector< ICustomAsset::OnBuildCustomAssetCallback >& result );
 
         FORCEINLINE void setFileSystemRoot( const std::string& path ) { m_fileSystemRoot = path; };
         FORCEINLINE std::string getFileSystemRoot() { return m_fileSystemRoot; };

@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ControlExtension.cs" />
+    <Compile Include="MetaAssetsManager.cs" />
     <Compile Include="Editors\AssetPropertyEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -60,6 +61,9 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Editors\BodyType_PropertyEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editors\CustomAsset_PropertyEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Editors\Filter_PropertyEditor.cs">

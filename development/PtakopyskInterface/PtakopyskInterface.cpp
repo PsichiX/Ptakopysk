@@ -1,8 +1,8 @@
 #include "PtakopyskInterface.h"
 #include <json/json.h>
 
-typedef bool (CALLBACK* _UnregisterComponents)();
-typedef bool (CALLBACK* _RegisterComponents)( int );
+typedef bool (CALLBACK* _UnregisterPlugin)();
+typedef bool (CALLBACK* _RegisterPlugin)( int );
 
 RTTI_CLASS_DERIVATIONS( PtakopyskInterface,
                         RTTI_DERIVATIONS_END
@@ -12,6 +12,7 @@ PtakopyskInterface::PtakopyskInterface()
 : RTTI_CLASS_DEFINE( PtakopyskInterface )
 , m_renderWindow( 0 )
 , m_gameManager( 0 )
+, m_assets( 0 )
 , m_queriedGameObject( 0 )
 , m_gameObjectIsIterating( false )
 , m_gridSize( sf::Vector2f( 64.0f, 64.0f ) )
@@ -41,7 +42,8 @@ bool PtakopyskInterface::initialize( int64_t windowHandle, bool editMode )
     m_renderWindow = xnew sf::RenderWindow( (sf::WindowHandle)windowHandle );
     m_gameManager = xnew GameManager();
     m_gameManager->RenderWindow = m_renderWindow;
-    Assets::use().setAssetsLoadingMode( Assets::LoadIfFilesExists );
+    m_assets = Assets::instance();
+    m_assets->setAssetsLoadingMode( Assets::LoadIfFilesExists );
 
     return true;
 }
@@ -57,9 +59,14 @@ void PtakopyskInterface::release()
     GameManager::cleanup();
 }
 
+Assets* PtakopyskInterface::getAssetsInstance()
+{
+    return m_assets;
+}
+
 void PtakopyskInterface::setAssetsFileSystemRoot( const std::string& path )
 {
-    Assets::use().setFileSystemRoot( path );
+    m_assets->setFileSystemRoot( path );
 }
 
 bool PtakopyskInterface::processEvents()
@@ -839,29 +846,33 @@ int PtakopyskInterface::findGameObjectHandleAtScreenPosition( int x, int y, int 
 void PtakopyskInterface::startIterateAssets( AssetType type )
 {
     if( type == atTexture )
-        m_assetTextureIterator = Assets::use().getTextureAtBegin();
+        m_assetTextureIterator = m_assets->getTextureAtBegin();
     else if( type == atShader )
-        m_assetShaderIterator = Assets::use().getShaderAtBegin();
+        m_assetShaderIterator = m_assets->getShaderAtBegin();
     else if( type == atSound )
-        m_assetSoundIterator = Assets::use().getSoundAtBegin();
+        m_assetSoundIterator = m_assets->getSoundAtBegin();
     else if( type == atMusic )
-        m_assetMusicIterator = Assets::use().getMusicAtBegin();
+        m_assetMusicIterator = m_assets->getMusicAtBegin();
     else if( type == atFont )
-        m_assetFontIterator = Assets::use().getFontAtBegin();
+        m_assetFontIterator = m_assets->getFontAtBegin();
+    else if( type == atCustom )
+        m_assetCustomIterator = m_assets->getCustomAssetAtBegin();
 }
 
 bool PtakopyskInterface::canIterateAssetsNext( AssetType type )
 {
     if( type == atTexture )
-        return m_assetTextureIterator != Assets::use().getTextureAtEnd();
+        return m_assetTextureIterator != m_assets->getTextureAtEnd();
     else if( type == atShader )
-        return m_assetShaderIterator != Assets::use().getShaderAtEnd();
+        return m_assetShaderIterator != m_assets->getShaderAtEnd();
     else if( type == atSound )
-        return m_assetSoundIterator != Assets::use().getSoundAtEnd();
+        return m_assetSoundIterator != m_assets->getSoundAtEnd();
     else if( type == atMusic )
-        return m_assetMusicIterator != Assets::use().getMusicAtEnd();
+        return m_assetMusicIterator != m_assets->getMusicAtEnd();
     else if( type == atFont )
-        return m_assetFontIterator != Assets::use().getFontAtEnd();
+        return m_assetFontIterator != m_assets->getFontAtEnd();
+    else if( type == atCustom )
+        return m_assetCustomIterator != m_assets->getCustomAssetAtEnd();
     else
         return false;
 }
@@ -870,7 +881,7 @@ bool PtakopyskInterface::iterateAssetsNext( AssetType type )
 {
     if( type == atTexture )
     {
-        if( m_assetTextureIterator != Assets::use().getTextureAtEnd() )
+        if( m_assetTextureIterator != m_assets->getTextureAtEnd() )
         {
             m_assetTextureIterator++;
             return true;
@@ -878,7 +889,7 @@ bool PtakopyskInterface::iterateAssetsNext( AssetType type )
     }
     else if( type == atShader )
     {
-        if( m_assetShaderIterator != Assets::use().getShaderAtEnd() )
+        if( m_assetShaderIterator != m_assets->getShaderAtEnd() )
         {
             m_assetShaderIterator++;
             return true;
@@ -886,7 +897,7 @@ bool PtakopyskInterface::iterateAssetsNext( AssetType type )
     }
     else if( type == atSound )
     {
-        if( m_assetSoundIterator != Assets::use().getSoundAtEnd() )
+        if( m_assetSoundIterator != m_assets->getSoundAtEnd() )
         {
             m_assetSoundIterator++;
             return true;
@@ -894,7 +905,7 @@ bool PtakopyskInterface::iterateAssetsNext( AssetType type )
     }
     else if( type == atMusic )
     {
-        if( m_assetMusicIterator != Assets::use().getMusicAtEnd() )
+        if( m_assetMusicIterator != m_assets->getMusicAtEnd() )
         {
             m_assetMusicIterator++;
             return true;
@@ -902,9 +913,17 @@ bool PtakopyskInterface::iterateAssetsNext( AssetType type )
     }
     else if( type == atFont )
     {
-        if( m_assetFontIterator != Assets::use().getFontAtEnd() )
+        if( m_assetFontIterator != m_assets->getFontAtEnd() )
         {
             m_assetFontIterator++;
+            return true;
+        }
+    }
+    else if( type == atCustom )
+    {
+        if( m_assetCustomIterator != m_assets->getCustomAssetAtEnd() )
+        {
+            m_assetCustomIterator++;
             return true;
         }
     }
@@ -915,28 +934,33 @@ std::string PtakopyskInterface::getIteratedAssetId( AssetType type )
 {
     if( type == atTexture )
     {
-        if( m_assetTextureIterator != Assets::use().getTextureAtEnd() )
+        if( m_assetTextureIterator != m_assets->getTextureAtEnd() )
             return m_assetTextureIterator->first;
     }
     else if( type == atShader )
     {
-        if( m_assetShaderIterator != Assets::use().getShaderAtEnd() )
+        if( m_assetShaderIterator != m_assets->getShaderAtEnd() )
             return m_assetShaderIterator->first;
     }
     else if( type == atSound )
     {
-        if( m_assetSoundIterator != Assets::use().getSoundAtEnd() )
+        if( m_assetSoundIterator != m_assets->getSoundAtEnd() )
             return m_assetSoundIterator->first;
     }
     else if( type == atMusic )
     {
-        if( m_assetMusicIterator != Assets::use().getMusicAtEnd() )
+        if( m_assetMusicIterator != m_assets->getMusicAtEnd() )
             return m_assetMusicIterator->first;
     }
     else if( type == atFont )
     {
-        if( m_assetFontIterator != Assets::use().getFontAtEnd() )
+        if( m_assetFontIterator != m_assets->getFontAtEnd() )
             return m_assetFontIterator->first;
+    }
+    else if( type == atCustom )
+    {
+        if( m_assetCustomIterator != m_assets->getCustomAssetAtEnd() )
+            return m_assetCustomIterator->first;
     }
     return "";
 }
@@ -945,28 +969,33 @@ std::string PtakopyskInterface::getIteratedAssetMeta( AssetType type )
 {
     if( type == atTexture )
     {
-        if( m_assetTextureIterator != Assets::use().getTextureAtEnd() )
-            return Assets::use().getTextureMeta( m_assetTextureIterator->first );
+        if( m_assetTextureIterator != m_assets->getTextureAtEnd() )
+            return m_assets->getTextureMeta( m_assetTextureIterator->first );
     }
     else if( type == atShader )
     {
-        if( m_assetShaderIterator != Assets::use().getShaderAtEnd() )
-            return Assets::use().getShaderMeta( m_assetShaderIterator->first );
+        if( m_assetShaderIterator != m_assets->getShaderAtEnd() )
+            return m_assets->getShaderMeta( m_assetShaderIterator->first );
     }
     else if( type == atSound )
     {
-        if( m_assetSoundIterator != Assets::use().getSoundAtEnd() )
-            return Assets::use().getSoundMeta( m_assetSoundIterator->first );
+        if( m_assetSoundIterator != m_assets->getSoundAtEnd() )
+            return m_assets->getSoundMeta( m_assetSoundIterator->first );
     }
     else if( type == atMusic )
     {
-        if( m_assetMusicIterator != Assets::use().getMusicAtEnd() )
-            return Assets::use().getMusicMeta( m_assetMusicIterator->first );
+        if( m_assetMusicIterator != m_assets->getMusicAtEnd() )
+            return m_assets->getMusicMeta( m_assetMusicIterator->first );
     }
     else if( type == atFont )
     {
-        if( m_assetFontIterator != Assets::use().getFontAtEnd() )
-            return Assets::use().getFontMeta( m_assetFontIterator->first );
+        if( m_assetFontIterator != m_assets->getFontAtEnd() )
+            return m_assets->getFontMeta( m_assetFontIterator->first );
+    }
+    else if( type == atCustom )
+    {
+        if( m_assetCustomIterator != m_assets->getCustomAssetAtEnd() )
+            return m_assets->getCustomAssetMeta( m_assetCustomIterator->first );
     }
     return "";
 }
@@ -976,28 +1005,33 @@ std::string PtakopyskInterface::getIteratedAssetTags( AssetType type )
     std::vector< std::string >* tags = 0;
     if( type == atTexture )
     {
-        if( m_assetTextureIterator != Assets::use().getTextureAtEnd() )
-            tags = Assets::use().accessTextureTags( m_assetTextureIterator->first );
+        if( m_assetTextureIterator != m_assets->getTextureAtEnd() )
+            tags = m_assets->accessTextureTags( m_assetTextureIterator->first );
     }
     else if( type == atShader )
     {
-        if( m_assetShaderIterator != Assets::use().getShaderAtEnd() )
-            tags = Assets::use().accessShaderTags( m_assetShaderIterator->first );
+        if( m_assetShaderIterator != m_assets->getShaderAtEnd() )
+            tags = m_assets->accessShaderTags( m_assetShaderIterator->first );
     }
     else if( type == atSound )
     {
-        if( m_assetSoundIterator != Assets::use().getSoundAtEnd() )
-            tags = Assets::use().accessSoundTags( m_assetSoundIterator->first );
+        if( m_assetSoundIterator != m_assets->getSoundAtEnd() )
+            tags = m_assets->accessSoundTags( m_assetSoundIterator->first );
     }
     else if( type == atMusic )
     {
-        if( m_assetMusicIterator != Assets::use().getMusicAtEnd() )
-            tags = Assets::use().accessMusicTags( m_assetMusicIterator->first );
+        if( m_assetMusicIterator != m_assets->getMusicAtEnd() )
+            tags = m_assets->accessMusicTags( m_assetMusicIterator->first );
     }
     else if( type == atFont )
     {
-        if( m_assetFontIterator != Assets::use().getFontAtEnd() )
-            tags = Assets::use().accessFontTags( m_assetFontIterator->first );
+        if( m_assetFontIterator != m_assets->getFontAtEnd() )
+            tags = m_assets->accessFontTags( m_assetFontIterator->first );
+    }
+    else if( type == atCustom )
+    {
+        if( m_assetCustomIterator != m_assets->getCustomAssetAtEnd() )
+            tags = m_assets->accessCustomAssetTags( m_assetCustomIterator->first );
     }
 
     if( tags && !tags->empty() )
@@ -1020,15 +1054,17 @@ std::string PtakopyskInterface::getIteratedAssetTags( AssetType type )
 void PtakopyskInterface::endIterateAssets( AssetType type )
 {
     if( type == atTexture )
-        m_assetTextureIterator = Assets::use().getTextureAtEnd();
+        m_assetTextureIterator = m_assets->getTextureAtEnd();
     else if( type == atShader )
-        m_assetShaderIterator = Assets::use().getShaderAtEnd();
+        m_assetShaderIterator = m_assets->getShaderAtEnd();
     else if( type == atSound )
-        m_assetSoundIterator = Assets::use().getSoundAtEnd();
+        m_assetSoundIterator = m_assets->getSoundAtEnd();
     else if( type == atMusic )
-        m_assetMusicIterator = Assets::use().getMusicAtEnd();
+        m_assetMusicIterator = m_assets->getMusicAtEnd();
     else if( type == atFont )
-        m_assetFontIterator = Assets::use().getFontAtEnd();
+        m_assetFontIterator = m_assets->getFontAtEnd();
+    else if( type == atCustom )
+        m_assetCustomIterator = m_assets->getCustomAssetAtEnd();
 }
 
 bool PtakopyskInterface::queryAssets( AssetType type, const std::string& query )
@@ -1055,43 +1091,51 @@ bool PtakopyskInterface::queryAssets( AssetType type, const std::string& query )
                     {
                         if( type == atTexture )
                         {
-                            Assets::use().freeTexture( item.asString() );
-                            if( Assets::use().getTexture( item.asString() ) )
+                            m_assets->freeTexture( item.asString() );
+                            if( m_assets->getTexture( item.asString() ) )
                                 m_errors << "Cannot release texture: " << item.asString() << "!\n";
                             else
                                 m_errors << "Texture released: " << item.asString() << "!\n";
                         }
                         else if( type == atShader )
                         {
-                            Assets::use().freeShader( item.asString() );
-                            if( Assets::use().getShader( item.asString() ) )
+                            m_assets->freeShader( item.asString() );
+                            if( m_assets->getShader( item.asString() ) )
                                 m_errors << "Cannot release shader: " << item.asString() << "!\n";
                             else
                                 m_errors << "Shader released: " << item.asString() << "!\n";
                         }
                         else if( type == atSound )
                         {
-                            Assets::use().freeSound( item.asString() );
-                            if( Assets::use().getSound( item.asString() ) )
+                            m_assets->freeSound( item.asString() );
+                            if( m_assets->getSound( item.asString() ) )
                                 m_errors << "Cannot release sound: " << item.asString() << "!\n";
                             else
                                 m_errors << "Sound released: " << item.asString() << "!\n";
                         }
                         else if( type == atMusic )
                         {
-                            Assets::use().freeMusic( item.asString() );
-                            if( Assets::use().getMusic( item.asString() ) )
+                            m_assets->freeMusic( item.asString() );
+                            if( m_assets->getMusic( item.asString() ) )
                                 m_errors << "Cannot release music: " << item.asString() << "!\n";
                             else
                                 m_errors << "Music released: " << item.asString() << "!\n";
                         }
                         else if( type == atFont )
                         {
-                            Assets::use().freeFont( item.asString() );
-                            if( Assets::use().getFont( item.asString() ) )
+                            m_assets->freeFont( item.asString() );
+                            if( m_assets->getFont( item.asString() ) )
                                 m_errors << "Cannot release font: " << item.asString() << "!\n";
                             else
                                 m_errors << "Font released: " << item.asString() << "!\n";
+                        }
+                        else if( type == atCustom )
+                        {
+                            m_assets->freeCustomAsset( item.asString() );
+                            if( m_assets->getCustomAsset( item.asString() ) )
+                                m_errors << "Cannot release custom asset: " << item.asString() << "!\n";
+                            else
+                                m_errors << "Custom asset released: " << item.asString() << "!\n";
                         }
                     }
                 }
@@ -1116,40 +1160,47 @@ bool PtakopyskInterface::queryAssets( AssetType type, const std::string& query )
                             sid = id.asString();
                             if( type == atTexture )
                             {
-                                if( Assets::use().jsonToTexture( item ) )
+                                if( m_assets->jsonToTexture( item ) )
                                     m_errors << "Texture loaded: " << sid << "!\n";
                                 else
                                     m_errors << "Cannot load texture: " << sid << "!\n";
                             }
                             else if( type == atShader )
                             {
-                                if( !Assets::use().shadersAvailable() )
+                                if( !m_assets->shadersAvailable() )
                                     m_errors << "Shaders are not supported!\n";
-                                if( Assets::use().jsonToShader( item ) )
+                                if( m_assets->jsonToShader( item ) )
                                     m_errors << "Shader loaded: " << sid << "!\n";
                                 else
                                     m_errors << "Cannot load shader: " << sid << "!\n";
                             }
                             else if( type == atSound )
                             {
-                                if( Assets::use().jsonToSound( item ) )
+                                if( m_assets->jsonToSound( item ) )
                                     m_errors << "Sound loaded: " << sid << "!\n";
                                 else
                                     m_errors << "Cannot load sound: " << sid << "!\n";
                             }
                             else if( type == atMusic )
                             {
-                                if( Assets::use().jsonToMusic( item ) )
+                                if( m_assets->jsonToMusic( item ) )
                                     m_errors << "Music loaded: " << sid << "!\n";
                                 else
                                     m_errors << "Cannot load music: " << sid << "!\n";
                             }
                             else if( type == atFont )
                             {
-                                if( Assets::use().jsonToFont( item ) )
+                                if( m_assets->jsonToFont( item ) )
                                     m_errors << "Font loaded: " << sid << "!\n";
                                 else
                                     m_errors << "Cannot load font: " << sid << "!\n";
+                            }
+                            else if( type == atCustom )
+                            {
+                                if( m_assets->jsonToCustomAsset( item ) )
+                                    m_errors << "Custom asset loaded: " << sid << "!\n";
+                                else
+                                    m_errors << "Cannot load custom asset: " << sid << "!\n";
                             }
                         }
                     }
@@ -1161,7 +1212,7 @@ bool PtakopyskInterface::queryAssets( AssetType type, const std::string& query )
     return false;
 }
 
-int PtakopyskInterface::pluginLoadComponents( const std::string& path )
+int PtakopyskInterface::pluginLoad( const std::string& path )
 {
     if( m_plugins.count( path ) )
     {
@@ -1176,16 +1227,17 @@ int PtakopyskInterface::pluginLoadComponents( const std::string& path )
         return 0;
     }
 
-    _RegisterComponents registerComponents = (_RegisterComponents)GetProcAddress( plugin, "_RegisterComponents" );
-    if( !registerComponents )
+    _RegisterPlugin registerPlugin = (_RegisterPlugin)GetProcAddress( plugin, "_RegisterPlugin" );
+    if( !registerPlugin )
     {
         FreeLibrary( plugin );
-        m_errors << "Cannot find _RegisterComponents function in plugin: " << path.c_str() << "!\n";
+        m_errors << "Cannot find _RegisterPlugin function in plugin: " << path.c_str() << "!\n";
         return 0;
     }
 
     m_componentsPending.clear();
-    if( registerComponents( (int)this ) )
+    m_assetsPending.clear();
+    if( registerPlugin( (int)this ) )
     {
         for( std::vector< ComponentData >::iterator it = m_componentsPending.begin(); it != m_componentsPending.end(); it++ )
         {
@@ -1206,33 +1258,54 @@ int PtakopyskInterface::pluginLoadComponents( const std::string& path )
             }
         }
         m_componentsPending.clear();
+        for( std::vector< AssetData >::iterator it = m_assetsPending.begin(); it != m_assetsPending.end(); it++ )
+        {
+            m_errors << "Try to register pending asset - id: " << it->id << "; type: " << it->type << "; builder: " << (void*)it->builder << ".\n";
+            if( it->id.empty() )
+                m_errors << "Cannot register undefined asset!\n";
+            else
+            {
+                if( it->type && it->builder )
+                {
+                    if( m_assets->registerCustomAssetFactory( it->id, it->type, it->builder ) )
+                        m_errors << "Registered!\n";
+                    else
+                        m_errors << "Cannot register!\n";
+                }
+                else
+                    m_errors << "Incomplete asset information!\n";
+            }
+        }
+        m_assetsPending.clear();
         m_plugins[ path ] = plugin;
         return (int)plugin;
     }
     else
     {
         m_componentsPending.clear();
+        m_assetsPending.clear();
         FreeLibrary( plugin );
-        m_errors << "Cannot register components from plugin: " << path.c_str() << "!\n";
+        m_errors << "Cannot register plugin: " << path.c_str() << "!\n";
         return 0;
     }
 }
 
-bool PtakopyskInterface::pluginUnloadComponents( int handle )
+bool PtakopyskInterface::pluginUnload( int handle )
 {
     for( std::map< std::string, HINSTANCE >::iterator it = m_plugins.begin(); it != m_plugins.end(); it++ )
     {
         if( it->second == (HINSTANCE)handle )
         {
-            _UnregisterComponents unregisterComponents = (_UnregisterComponents)GetProcAddress( it->second, "_UnregisterComponents" );
-            if( !unregisterComponents )
+            _UnregisterPlugin unregisterPlugin = (_UnregisterPlugin)GetProcAddress( it->second, "_UnregisterPlugin" );
+            if( !unregisterPlugin )
             {
-                m_errors << "Cannot find _UnregisterComponents function in plugin: " << it->first.c_str() << "!\n";
+                m_errors << "Cannot find _UnregisterPlugin function in plugin: " << it->first.c_str() << "!\n";
                 return false;
             }
 
             m_componentsPending.clear();
-            if( unregisterComponents() )
+            m_assetsPending.clear();
+            if( unregisterPlugin() )
             {
                 for( std::vector< ComponentData >::iterator _it = m_componentsPending.begin(); _it != m_componentsPending.end(); _it++ )
                 {
@@ -1248,6 +1321,20 @@ bool PtakopyskInterface::pluginUnloadComponents( int handle )
                     }
                 }
                 m_componentsPending.clear();
+                for( std::vector< AssetData >::iterator _it = m_assetsPending.begin(); _it != m_assetsPending.end(); _it++ )
+                {
+                    m_errors << "Try to unregister pending asset - id: " << _it->id << ".\n";
+                    if( _it->id.empty() )
+                        m_errors << "Cannot unregister undefined asset!\n";
+                    else
+                    {
+                        if( m_assets->unregisterCustomAssetFactory( _it->id ) )
+                            m_errors << "Unregistered!\n";
+                        else
+                            m_errors << "Cannot unregister!\n";
+                    }
+                }
+                m_assetsPending.clear();
                 FreeLibrary( it->second );
                 m_plugins.erase( it );
                 return true;
@@ -1255,7 +1342,8 @@ bool PtakopyskInterface::pluginUnloadComponents( int handle )
             else
             {
                 m_componentsPending.clear();
-                m_errors << "Cannot unregister components from plugin: " << it->first.c_str() << "!\n";
+                m_assetsPending.clear();
+                m_errors << "Cannot unregister plugin: " << it->first.c_str() << "!\n";
                 return false;
             }
         }
@@ -1264,21 +1352,22 @@ bool PtakopyskInterface::pluginUnloadComponents( int handle )
     return false;
 }
 
-bool PtakopyskInterface::pluginUnloadComponentsByPath( const std::string& path )
+bool PtakopyskInterface::pluginUnloadByPath( const std::string& path )
 {
     for( std::map< std::string, HINSTANCE >::iterator it = m_plugins.begin(); it != m_plugins.end(); it++ )
     {
         if( it->first == path )
         {
-            _UnregisterComponents unregisterComponents = (_UnregisterComponents)GetProcAddress( it->second, "_UnregisterComponents" );
-            if( !unregisterComponents )
+            _UnregisterPlugin unregisterPlugin = (_UnregisterPlugin)GetProcAddress( it->second, "_UnregisterPlugin" );
+            if( !unregisterPlugin )
             {
-                m_errors << "Cannot find _UnregisterComponents function in plugin: " << path.c_str() << "!\n";
+                m_errors << "Cannot find _UnregisterPlugin function in plugin: " << it->first.c_str() << "!\n";
                 return false;
             }
 
             m_componentsPending.clear();
-            if( unregisterComponents() )
+            m_assetsPending.clear();
+            if( unregisterPlugin() )
             {
                 for( std::vector< ComponentData >::iterator _it = m_componentsPending.begin(); _it != m_componentsPending.end(); _it++ )
                 {
@@ -1294,6 +1383,20 @@ bool PtakopyskInterface::pluginUnloadComponentsByPath( const std::string& path )
                     }
                 }
                 m_componentsPending.clear();
+                for( std::vector< AssetData >::iterator _it = m_assetsPending.begin(); _it != m_assetsPending.end(); _it++ )
+                {
+                    m_errors << "Try to unregister pending asset - id: " << _it->id << ".\n";
+                    if( _it->id.empty() )
+                        m_errors << "Cannot unregister undefined asset!\n";
+                    else
+                    {
+                        if( m_assets->unregisterCustomAssetFactory( _it->id ) )
+                            m_errors << "Unregistered!\n";
+                        else
+                            m_errors << "Cannot unregister!\n";
+                    }
+                }
+                m_assetsPending.clear();
                 FreeLibrary( it->second );
                 m_plugins.erase( it );
                 return true;
@@ -1301,7 +1404,8 @@ bool PtakopyskInterface::pluginUnloadComponentsByPath( const std::string& path )
             else
             {
                 m_componentsPending.clear();
-                m_errors << "Cannot unregister components from plugin: " << path.c_str() << "!\n";
+                m_assetsPending.clear();
+                m_errors << "Cannot unregister plugin: " << it->first.c_str() << "!\n";
                 return false;
             }
         }
@@ -1315,10 +1419,10 @@ void PtakopyskInterface::pluginUnloadAll()
     m_componentsPending.clear();
     for( std::map< std::string, HINSTANCE >::iterator it = m_plugins.begin(); it != m_plugins.end(); it++ )
     {
-        _UnregisterComponents unregisterComponents = (_UnregisterComponents)GetProcAddress( it->second, "_UnregisterComponents" );
-        if( unregisterComponents )
+        _UnregisterPlugin unregisterPlugin = (_UnregisterPlugin)GetProcAddress( it->second, "_UnregisterPlugin" );
+        if( unregisterPlugin )
         {
-            if( unregisterComponents() )
+            if( unregisterPlugin() )
             {
                 for( std::vector< ComponentData >::iterator _it = m_componentsPending.begin(); _it != m_componentsPending.end(); _it++ )
                 {
@@ -1333,12 +1437,27 @@ void PtakopyskInterface::pluginUnloadAll()
                             m_errors << "Cannot unregister!\n";
                     }
                 }
+                for( std::vector< AssetData >::iterator _it = m_assetsPending.begin(); _it != m_assetsPending.end(); _it++ )
+                {
+                    m_errors << "Try to unregister pending asset - id: " << _it->id << ".\n";
+                    if( _it->id.empty() )
+                        m_errors << "Cannot unregister undefined asset!\n";
+                    else
+                    {
+                        if( m_assets->unregisterCustomAssetFactory( _it->id ) )
+                            m_errors << "Unregistered!\n";
+                        else
+                            m_errors << "Cannot unregister!\n";
+                    }
+                }
             }
         }
         m_componentsPending.clear();
+        m_assetsPending.clear();
         FreeLibrary( it->second );
     }
     m_componentsPending.clear();
+    m_assetsPending.clear();
     m_plugins.clear();
 }
 
@@ -1352,22 +1471,32 @@ void PtakopyskInterface::pluginUnregisterComponent( const std::string& id )
     m_componentsPending.push_back( ComponentData( id, 0, 0 ) );
 }
 
+void PtakopyskInterface::pluginRegisterAsset( const std::string& id, XeCore::Common::IRtti::Derivation type, ICustomAsset::OnBuildCustomAssetCallback creator )
+{
+    m_assetsPending.push_back( AssetData( id, type, creator ) );
+}
+
+void PtakopyskInterface::pluginUnregisterAsset( const std::string& id )
+{
+    m_assetsPending.push_back( AssetData( id, 0, 0 ) );
+}
+
 void PtakopyskInterface::startIterateComponents()
 {
-    GameManager::getComponentsIds( m_queruedComponentsIds );
-    m_queruedComponentsIdsIterator = m_queruedComponentsIds.begin();
+    GameManager::getComponentsIds( m_queriedComponentsIds );
+    m_queriedComponentsIdsIterator = m_queriedComponentsIds.begin();
 }
 
 bool PtakopyskInterface::canIterateComponentsNext()
 {
-    return m_queruedComponentsIdsIterator != m_queruedComponentsIds.end();
+    return m_queriedComponentsIdsIterator != m_queriedComponentsIds.end();
 }
 
 bool PtakopyskInterface::iterateComponentsNext()
 {
-    if( m_queruedComponentsIdsIterator != m_queruedComponentsIds.end() )
+    if( m_queriedComponentsIdsIterator != m_queriedComponentsIds.end() )
     {
-        m_queruedComponentsIdsIterator++;
+        m_queriedComponentsIdsIterator++;
         return true;
     }
     return false;
@@ -1375,16 +1504,51 @@ bool PtakopyskInterface::iterateComponentsNext()
 
 std::string PtakopyskInterface::getIteratedComponentId()
 {
-    if( m_queruedComponentsIdsIterator != m_queruedComponentsIds.end() )
-        return *m_queruedComponentsIdsIterator;
+    if( m_queriedComponentsIdsIterator != m_queriedComponentsIds.end() )
+        return *m_queriedComponentsIdsIterator;
     else
         return std::string();
 }
 
 void PtakopyskInterface::endIterateComponents()
 {
-    m_queruedComponentsIds.clear();
-    m_queruedComponentsIdsIterator = m_queruedComponentsIds.end();
+    m_queriedComponentsIds.clear();
+    m_queriedComponentsIdsIterator = m_queriedComponentsIds.end();
+}
+
+void PtakopyskInterface::startIterateCustomAssets()
+{
+    m_assets->getCustomAssetsIds( m_queriedCustomAssetsIds );
+    m_queriedCustomAssetsIdsIterator = m_queriedCustomAssetsIds.begin();
+}
+
+bool PtakopyskInterface::canIterateCustomAssetsNext()
+{
+    return m_queriedCustomAssetsIdsIterator != m_queriedCustomAssetsIds.end();
+}
+
+bool PtakopyskInterface::iterateCustomAssetsNext()
+{
+    if( m_queriedCustomAssetsIdsIterator != m_queriedCustomAssetsIds.end() )
+    {
+        m_queriedCustomAssetsIdsIterator++;
+        return true;
+    }
+    return false;
+}
+
+std::string PtakopyskInterface::getIteratedCustomAssetId()
+{
+    if( m_queriedCustomAssetsIdsIterator != m_queriedCustomAssetsIds.end() )
+        return *m_queriedCustomAssetsIdsIterator;
+    else
+        return std::string();
+}
+
+void PtakopyskInterface::endIterateCustomAssets()
+{
+    m_queriedCustomAssetsIds.clear();
+    m_queriedCustomAssetsIdsIterator = m_queriedCustomAssetsIds.end();
 }
 
 void PtakopyskInterface::renderGrid( sf::RenderWindow* target, sf::Vector2f gridSize )

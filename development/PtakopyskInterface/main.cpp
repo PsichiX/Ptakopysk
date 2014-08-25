@@ -1,5 +1,4 @@
 #include "main.h"
-#include "PtakopyskInterface.h"
 
 static std::string s_lastErrors;
 static std::string s_lastString;
@@ -313,21 +312,21 @@ bool DLL_EXPORT _QueryAssets( int type, const char* query )
     return PtakopyskInterface::use().queryAssets( (PtakopyskInterface::AssetType)type, q );
 }
 
-int DLL_EXPORT _PluginLoadComponents( const char* path )
+int DLL_EXPORT _PluginLoad( const char* path )
 {
     std::string p = path;
-    return PtakopyskInterface::use().pluginLoadComponents( p );
+    return PtakopyskInterface::use().pluginLoad( p );
 }
 
-bool DLL_EXPORT _PluginUnloadComponents( int handle )
+bool DLL_EXPORT _PluginUnload( int handle )
 {
-    return PtakopyskInterface::use().pluginUnloadComponents( handle );
+    return PtakopyskInterface::use().pluginUnload( handle );
 }
 
-bool DLL_EXPORT _PluginUnloadComponentsByPath( const char* path )
+bool DLL_EXPORT _PluginUnloadByPath( const char* path )
 {
     std::string p = path;
-    return PtakopyskInterface::use().pluginUnloadComponentsByPath( p );
+    return PtakopyskInterface::use().pluginUnloadByPath( p );
 }
 
 void DLL_EXPORT _StartIterateComponents()
@@ -354,6 +353,32 @@ const char* DLL_EXPORT _GetIteratedComponentId()
 void DLL_EXPORT _EndIterateComponents()
 {
     PtakopyskInterface::use().endIterateComponents();
+}
+
+void DLL_EXPORT _StartIterateCustomAssets()
+{
+    PtakopyskInterface::use().startIterateCustomAssets();
+}
+
+bool DLL_EXPORT _CanIterateCustomAssetsNext()
+{
+    return PtakopyskInterface::use().canIterateCustomAssetsNext();
+}
+
+bool DLL_EXPORT _IterateCustomAssetsNext()
+{
+    return PtakopyskInterface::use().iterateCustomAssetsNext();
+}
+
+const char* DLL_EXPORT _GetIteratedCustomAssetId()
+{
+    s_lastString = PtakopyskInterface::use().getIteratedCustomAssetId();
+    return s_lastString.c_str();
+}
+
+void DLL_EXPORT _EndIterateCustomAssets()
+{
+    PtakopyskInterface::use().endIterateCustomAssets();
 }
 
 ///

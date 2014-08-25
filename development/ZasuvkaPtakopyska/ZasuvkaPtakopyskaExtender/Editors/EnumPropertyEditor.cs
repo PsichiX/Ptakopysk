@@ -22,7 +22,12 @@ namespace ZasuvkaPtakopyskaExtender.Editors
                 UpdateEditorValue();
             }
         }
-        
+
+        public EnumPropertyEditor(Dictionary<string, string> properties, string propertyName)
+            : this(properties, propertyName, null)
+        {
+        }
+
         public EnumPropertyEditor(Dictionary<string, string> properties, string propertyName, string[] values)
             : base(properties, propertyName)
         {

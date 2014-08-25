@@ -12,6 +12,7 @@ namespace XeCore
 			static T&	use();
 			static T*	instance();
 			static void	destroy();
+			static void makeSharedFrom( T* source );
 
 		protected:
 						Singleton() {}
@@ -20,6 +21,7 @@ namespace XeCore
 
 		private:
 			static T*	m_instance;
+			static bool m_isShared;
 		};
 	}
 }

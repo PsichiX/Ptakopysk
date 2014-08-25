@@ -14,7 +14,8 @@ namespace ZasuvkaPtakopyskaExtender
             Shader = 1,
             Sound = 2,
             Music = 3,
-            Font = 4
+            Font = 4,
+            CustomAsset = 5
         }
 
         #endregion
@@ -103,11 +104,11 @@ namespace ZasuvkaPtakopyskaExtender
             catch (Exception ex) { LogException(ex); return false; }
         }
 
-        public bool ProcessRender(bool liveOrEditor)
+        public bool ProcessRender()
         {
             try
             {
-                bool status = _ProcessRender(liveOrEditor);
+                bool status = _ProcessRender();
                 Console.Write(_PopErrors());
                 return status;
             }
@@ -564,33 +565,33 @@ namespace ZasuvkaPtakopyskaExtender
             catch (Exception ex) { LogException(ex); return false; }
         }
 
-        public int PluginLoadComponents(string path)
+        public int PluginLoad(string path)
         {
             try
             {
-                int result = _PluginLoadComponents(path);
+                int result = _PluginLoad(path);
                 Console.Write(_PopErrors());
                 return result;
             }
             catch (Exception ex) { LogException(ex); return 0; }
         }
 
-        public bool PluginUnloadComponents(int handle)
+        public bool PluginUnload(int handle)
         {
             try
             {
-                bool status = _PluginUnloadComponents(handle);
+                bool status = _PluginUnload(handle);
                 Console.Write(_PopErrors());
                 return status;
             }
             catch (Exception ex) { LogException(ex); return false; }
         }
 
-        public bool PluginUnloadComponentsByPath(string path)
+        public bool PluginUnloadByPath(string path)
         {
             try
             {
-                bool status = _PluginUnloadComponentsByPath(path);
+                bool status = _PluginUnloadByPath(path);
                 Console.Write(_PopErrors());
                 return status;
             }
@@ -655,6 +656,64 @@ namespace ZasuvkaPtakopyskaExtender
             return result;
         }
 
+        public void StartIterateCustomAssets()
+        {
+            try { _StartIterateCustomAssets(); }
+            catch (Exception ex) { LogException(ex); }
+        }
+
+        public bool CanIterateCustomAssetsNext()
+        {
+            try
+            {
+                bool status = _CanIterateCustomAssetsNext();
+                Console.Write(_PopErrors());
+                return status;
+            }
+            catch (Exception ex) { LogException(ex); return false; }
+        }
+
+        public bool IterateCustomAssetsNext()
+        {
+            try
+            {
+                bool status = _IterateCustomAssetsNext();
+                Console.Write(_PopErrors());
+                return status;
+            }
+            catch (Exception ex) { LogException(ex); return false; }
+        }
+
+        public string GetIteratedCustomAssetId()
+        {
+            try
+            {
+                string result = _GetIteratedCustomAssetId();
+                Console.Write(_PopErrors());
+                return result;
+            }
+            catch (Exception ex) { LogException(ex); return null; }
+        }
+
+        public void EndIterateCustomAssets()
+        {
+            try { _EndIterateCustomAssets(); }
+            catch (Exception ex) { LogException(ex); }
+        }
+
+        public List<string> GetCustomAssetsIds()
+        {
+            List<string> result = new List<string>();
+            StartIterateCustomAssets();
+            while (CanIterateCustomAssetsNext())
+            {
+                result.Add(GetIteratedCustomAssetId());
+                IterateCustomAssetsNext();
+            }
+            EndIterateCustomAssets();
+            return result;
+        }
+
         #endregion
 
 
@@ -709,7 +768,7 @@ namespace ZasuvkaPtakopyskaExtender
 
         [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
         [return: MarshalAs(UnmanagedType.U1)]
-        private static extern bool _ProcessRender(bool liveOrEditor);
+        private static extern bool _ProcessRender();
 
         [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
         [return: MarshalAs(UnmanagedType.U1)]
@@ -940,18 +999,18 @@ namespace ZasuvkaPtakopyskaExtender
 
         [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
         [return: MarshalAs(UnmanagedType.I4)]
-        private static extern int _PluginLoadComponents(
+        private static extern int _PluginLoad(
             [MarshalAs(UnmanagedType.LPStr)]
             string path
             );
 
         [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
         [return: MarshalAs(UnmanagedType.I1)]
-        private static extern bool _PluginUnloadComponents(int handle);
+        private static extern bool _PluginUnload(int handle);
 
         [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
         [return: MarshalAs(UnmanagedType.I1)]
-        private static extern bool _PluginUnloadComponentsByPath(
+        private static extern bool _PluginUnloadByPath(
             [MarshalAs(UnmanagedType.LPStr)]
             string path
             );
@@ -973,6 +1032,24 @@ namespace ZasuvkaPtakopyskaExtender
 
         [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
         private static extern void _EndIterateComponents();
+
+        [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
+        private static extern void _StartIterateCustomAssets();
+
+        [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
+        [return: MarshalAs(UnmanagedType.I1)]
+        private static extern bool _CanIterateCustomAssetsNext();
+
+        [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
+        [return: MarshalAs(UnmanagedType.I1)]
+        private static extern bool _IterateCustomAssetsNext();
+
+        [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
+        [return: MarshalAs(UnmanagedType.LPStr)]
+        private static extern string _GetIteratedCustomAssetId();
+
+        [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
+        private static extern void _EndIterateCustomAssets();
 
         #endregion
     }

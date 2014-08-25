@@ -67,6 +67,7 @@
 		<Linker>
 			<Add directory="../../sdk/lib" />
 		</Linker>
+		<Unit filename="../../sdk/templates/TemplateAsset.cpp" />
 		<Unit filename="../../sdk/templates/TemplateComponent.cpp" />
 		<Unit filename="dllmain.cpp" />
 		<Extensions>

@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 ## usage example:
-### ./make_new_project.sh -o /destination/path/ -c NewComponentName
+### ./make_new_component.sh -o /destination/path/ -c NewComponentName
 
 
 # setup

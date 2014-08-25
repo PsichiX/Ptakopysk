@@ -111,6 +111,9 @@ namespace ZasuvkaPtakopyska
             MetroTileIcon tile;
             bool isRoot = path.Length == root.Length;
             DirectoryInfo dir = new DirectoryInfo(path);
+            if (!dir.Exists)
+                return;
+
             if (!isRoot)
             {
                 tile = new MetroTileIcon();
@@ -247,6 +250,9 @@ namespace ZasuvkaPtakopyska
             if (Directory.Exists(path))
             {
                 DirectoryInfo info = new DirectoryInfo(path);
+                if (!info.Exists)
+                    return;
+
                 MetroPromptBox dialog = new MetroPromptBox();
                 dialog.Title = "Rename Directory";
                 dialog.Message = "Type new directory name:";
@@ -258,6 +264,9 @@ namespace ZasuvkaPtakopyska
             else if (File.Exists(path))
             {
                 FileInfo info = new FileInfo(path);
+                if (!info.Exists)
+                    return;
+
                 MetroPromptBox dialog = new MetroPromptBox();
                 dialog.Title = "Rename File";
                 dialog.Message = "Type new file name:";
@@ -278,6 +287,9 @@ namespace ZasuvkaPtakopyska
             if (Directory.Exists(path))
             {
                 DirectoryInfo info = new DirectoryInfo(path);
+                if (!info.Exists)
+                    return;
+
                 DialogResult result = MetroMessageBox.Show(FindForm(), info.FullName, "Are you sure to delete directory?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.Yes)
                     info.Delete(true);
@@ -285,6 +297,9 @@ namespace ZasuvkaPtakopyska
             else if (File.Exists(path))
             {
                 FileInfo info = new FileInfo(path);
+                if (!info.Exists)
+                    return;
+
                 DialogResult result = MetroMessageBox.Show(FindForm(), info.FullName, "Are you sure to delete file?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.Yes)
                     info.Delete();

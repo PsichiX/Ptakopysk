@@ -423,6 +423,27 @@ namespace ZasuvkaPtakopyska
                         pathEditor.RootPath = projectModel.WorkingDirectory + @"\" + projectModel.ActiveTargetWorkingDirectory;
                 }
             }
+            else if (m_type == PtakopyskInterface.AssetType.CustomAsset)
+            {
+                editor = new Asset_PropertyEditor(m_properties, id, m_type,
+                    new Asset_PropertyEditor.MetaEditorInfo[] {
+                        new Asset_PropertyEditor.MetaEditorInfo("type", typeof(EnumPropertyEditor)),
+                        new Asset_PropertyEditor.MetaEditorInfo("path", typeof(Path_PropertyEditor))
+                    }, id, meta, tags);
+                EnumPropertyEditor typeEditor = editor == null ? null : editor.GetMetaEditor<EnumPropertyEditor>("type");
+                if (typeEditor != null)
+                {
+                    List<string> values = PtakopyskInterface.Instance.GetCustomAssetsIds();
+                    typeEditor.ValuesSource = values == null ? null : values.ToArray();
+                }
+                Path_PropertyEditor pathEditor = editor == null ? null : editor.GetMetaEditor<Path_PropertyEditor>("path");
+                if (pathEditor != null)
+                {
+                    pathEditor.FileFilter = "Custom asset files (*.*)|*.*";
+                    if (projectModel != null)
+                        pathEditor.RootPath = projectModel.WorkingDirectory + @"\" + projectModel.ActiveTargetWorkingDirectory;
+                }
+            }
             if (editor != null)
             {
                 editor.Text = id;

@@ -1,4 +1,5 @@
 {
+  "Type": "Component",
   "Name": "Component",
   "Description": "Base component.",
   "BaseClasses": [

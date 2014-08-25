@@ -1,10 +1,13 @@
 #include <windows.h>
 #include <PtakopyskInterface/PtakopyskInterface.h>
 #include "__components_headers_list__generated__.h"
+#include "__assets_headers_list__generated__.h"
 
 #define DLL_EXPORT __declspec(dllexport) __stdcall
 #define REGISTER_COMPONENT(id, typename) g_interface->pluginRegisterComponent( id, RTTI_CLASS_TYPE( typename ), typename::onBuildComponent )
 #define UNREGISTER_COMPONENT(id) g_interface->pluginUnregisterComponent( id )
+#define REGISTER_ASSET(id, typename) g_interface->pluginRegisterAsset( id, RTTI_CLASS_TYPE( typename ), typename::onBuildCustomAsset )
+#define UNREGISTER_ASSET(id) g_interface->pluginUnregisterAsset( id )
 
 PtakopyskInterface* g_interface;
 
@@ -13,26 +16,28 @@ extern "C"
 {
 #endif
 
-DLL_EXPORT bool _UnregisterComponents()
+DLL_EXPORT bool _UnregisterPlugin()
 {
     if( !g_interface )
         return false;
 
 #include "__unregister_components__generated__.inl"
+#include "__unregister_assets__generated__.inl"
 
     g_interface = 0;
     return true;
 }
 
-DLL_EXPORT bool _RegisterComponents( int interfacePtr )
+DLL_EXPORT bool _RegisterPlugin( int interfacePtr )
 {
-    _UnregisterComponents();
     g_interface = (PtakopyskInterface*)interfacePtr;
     if( !g_interface )
         return false;
 
 #include "__register_components__generated__.inl"
+#include "__register_assets__generated__.inl"
 
+    Ptakopysk::Assets::makeSharedFrom( g_interface->getAssetsInstance() );
     return true;
 }
 

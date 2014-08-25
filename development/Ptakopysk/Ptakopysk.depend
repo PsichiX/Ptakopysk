@@ -13,30 +13,30 @@
 	<json/json.h>
 	<map>
 
-1407725731 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\base.h
+1408974496 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\base.h
 	<stdarg.h>
 	<cmath>
 	<algorithm>
 
-1407725732 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\irtti.h
+1408974496 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\irtti.h
 	"Base.h"
 	"IRtti.inl"
 
-1407725732 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\irtti.inl
+1408974496 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\irtti.inl
 
-1407725732 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\memorymanager.h
+1408974496 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\memorymanager.h
 	<new>
 	"IRtti.h"
 	"Singleton.h"
 	"MemoryManager.inl"
 
-1407725732 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\singleton.h
+1408974497 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\singleton.h
 	"Singleton.inl"
 
-1407725732 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\singleton.inl
+1408974497 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\singleton.inl
 	"MemoryManager.h"
 
-1407725732 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\memorymanager.inl
+1408974496 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\memorymanager.inl
 
 1367997278 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics.hpp
 	<SFML/Window.hpp>
@@ -475,13 +475,13 @@
 	<string>
 	<iostream>
 
-1407725732 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\string.h
+1408974497 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\string.h
 	<string>
 	"IRtti.h"
 	"MemoryManager.h"
 	"String.inl"
 
-1407725732 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\string.inl
+1408974497 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\string.inl
 	<sstream>
 
 1393667343 source:d:\git\ptakopysk\development\ptakopysk\source\body.cpp
@@ -501,11 +501,11 @@
 	<string>
 	"Serialized.h"
 
-1407725732 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\property.h
+1408974496 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\property.h
 	"Base.h"
 	"Property.inl"
 
-1407725732 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\property.inl
+1408974497 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\property.inl
 
 1393670444 d:\git\ptakopysk\development\ptakopysk\include\serialized.h
 	<XeCore/Common/IRtti.h>
@@ -747,7 +747,7 @@
 	<XeCore/Common/Logger.h>
 	<sstream>
 
-1407725732 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\logger.h
+1408974496 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\logger.h
 	<cstdio>
 	"Base.h"
 	"Singleton.h"
@@ -856,7 +856,7 @@
 	<SFML/System/Vector2.hpp>
 	<SFML/Graphics/Transform.hpp>
 
-1408819583 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\assets.h
+1408954004 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\assets.h
 	<XeCore/Common/Base.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -879,7 +879,7 @@
 1407739469 source:d:\git\ptakopysk\development\ptakopysk\source\serialization\serialized.cpp
 	"../../include/Ptakopysk/Serialization/Serialized.h"
 
-1408819601 source:d:\git\ptakopysk\development\ptakopysk\source\system\assets.cpp
+1408954092 source:d:\git\ptakopysk\development\ptakopysk\source\system\assets.cpp
 	"../../include/Ptakopysk/System/Assets.h"
 	<XeCore/Common/String.h>
 	<XeCore/Common/Logger.h>
@@ -1031,11 +1031,11 @@
 	<XeCore/Common/Buffer.h>
 	<json/json.h>
 
-1407725731 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\buffer.h
+1408974496 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\buffer.h
 	"Base.h"
 	"Buffer.inl"
 
-1407725731 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\buffer.inl
+1408974496 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\buffer.inl
 	<cstring>
 	<algorithm>
 	"MemoryManager.h"
@@ -1054,5 +1054,5 @@
 1400482278 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gameobject.inl
 	"../Components/Component.h"
 
-1408057792 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\meta.h
+1408864814 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\meta.h
 

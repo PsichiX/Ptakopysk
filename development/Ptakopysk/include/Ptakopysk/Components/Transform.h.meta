@@ -1,4 +1,5 @@
 {
+  "Type": "Component",
   "Name": "Transform",
   "Description": "Transform component.",
   "BaseClasses": [

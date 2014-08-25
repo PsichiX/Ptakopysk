@@ -74,14 +74,19 @@ const char* DLL_EXPORT _GetIteratedAssetMeta( int type );
 const char* DLL_EXPORT _GetIteratedAssetTags( int type );
 void DLL_EXPORT _EndIterateAssets( int type );
 bool DLL_EXPORT _QueryAssets( int type, const char* query );
-int DLL_EXPORT _PluginLoadComponents( const char* path );
-bool DLL_EXPORT _PluginUnloadComponents( int handle );
-bool DLL_EXPORT _PluginUnloadComponentsByPath( const char* path );
+int DLL_EXPORT _PluginLoad( const char* path );
+bool DLL_EXPORT _PluginUnload( int handle );
+bool DLL_EXPORT _PluginUnloadByPath( const char* path );
 void DLL_EXPORT _StartIterateComponents();
 bool DLL_EXPORT _CanIterateComponentsNext();
 bool DLL_EXPORT _IterateComponentsNext();
 const char* DLL_EXPORT _GetIteratedComponentId();
 void DLL_EXPORT _EndIterateComponents();
+void DLL_EXPORT _StartIterateCustomAssets();
+bool DLL_EXPORT _CanIterateCustomAssetsNext();
+bool DLL_EXPORT _IterateCustomAssetsNext();
+const char* DLL_EXPORT _GetIteratedCustomAssetId();
+void DLL_EXPORT _EndIterateCustomAssets();
 
 #ifdef __cplusplus
 }

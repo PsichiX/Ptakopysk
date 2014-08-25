@@ -79,7 +79,11 @@ namespace ZasuvkaPtakopyska
             int type = 0;
             foreach (string file in mainForm.ProjectModel.Files)
             {
-                if (mainForm.ProjectModel.MetaComponentPaths.ContainsKey(file) ||
+                if (mainForm.ProjectModel.MetaAssetsPaths.ContainsKey(file) ||
+                    (Path.GetExtension(file) == ".cpp" && mainForm.ProjectModel.MetaAssetsPaths.ContainsKey(Path.ChangeExtension(file, ".h")))
+                    )
+                    type = 2;
+                else if (mainForm.ProjectModel.MetaComponentPaths.ContainsKey(file) ||
                     (Path.GetExtension(file) == ".cpp" && mainForm.ProjectModel.MetaComponentPaths.ContainsKey(Path.ChangeExtension(file, ".h")))
                     )
                     type = 1;
@@ -99,7 +103,12 @@ namespace ZasuvkaPtakopyska
 
                 icon = new MetroTile();
                 MetroSkinManager.ApplyMetroStyle(icon);
-                icon.Text = type == 1 ? "C" : "";
+                if (type == 2)
+                    icon.Text = "A";
+                else if (type == 1)
+                    icon.Text = "C";
+                else
+                    icon.Text = "";
                 icon.TextAlign = ContentAlignment.MiddleCenter;
                 icon.Tag = file;
                 icon.Location = new Point(0, y);
@@ -120,17 +129,33 @@ namespace ZasuvkaPtakopyska
                 return;
 
             string cppfile = Path.ChangeExtension(file, ".cpp");
-            int type = 0;
-            if (mainForm.ProjectModel.MetaComponentPaths.ContainsKey(file) ||
+            int type = -1;
+            if (mainForm.ProjectModel.MetaAssetsPaths.ContainsKey(file) ||
+                (Path.GetExtension(file) == ".cpp" && mainForm.ProjectModel.MetaAssetsPaths.ContainsKey(cppfile))
+                )
+                type = 2;
+            else if (mainForm.ProjectModel.MetaComponentPaths.ContainsKey(file) ||
                 (Path.GetExtension(file) == ".cpp" && mainForm.ProjectModel.MetaComponentPaths.ContainsKey(cppfile))
                 )
                 type = 1;
+            else
+                type = 0;
+
             foreach (Control c in m_filesPanel.Controls)
+            {
                 if (c is MetroTile && c.Tag is string && (c.Tag.Equals(file) || c.Tag.Equals(cppfile)))
-                    c.Text = type == 1 ? "C" : "";
+                {
+                    if (type == 2)
+                        c.Text = "A";
+                    else if (type == 1)
+                        c.Text = "C";
+                    else
+                        c.Text = "";
+                }
+            }
         }
 
-        public void RebuildEditorComponents(bool forced = false)
+        public void RebuildEditorPlugin(bool forced = false)
         {
             MainForm mainForm = FindForm() as MainForm;
             if (mainForm == null || mainForm.SettingsModel == null || mainForm.ProjectModel == null)
@@ -150,46 +175,81 @@ namespace ZasuvkaPtakopyska
                 File.Copy(mainForm.SettingsModel.SdkPath + @"\templates\dllmain.cpp", dir + @"\dllmain.cpp");
                 somethingChanged = true;
             }
-            string includeFilePath = dir + @"\__components_headers_list__generated__.h";
-            string registerFilePath = dir + @"\__register_components__generated__.inl";
-            string unregisterFilePath = dir + @"\__unregister_components__generated__.inl";
-            string includeContent = "";
-            string registerContent = "";
-            string unregisterContent = "";
-            MetaComponent meta;
+            string includeComponentsFilePath = dir + @"\__components_headers_list__generated__.h";
+            string registerComponentsFilePath = dir + @"\__register_components__generated__.inl";
+            string unregisterComponentsFilePath = dir + @"\__unregister_components__generated__.inl";
+            string includeAssetsFilePath = dir + @"\__assets_headers_list__generated__.h";
+            string registerAssetsFilePath = dir + @"\__register_assets__generated__.inl";
+            string unregisterAssetsFilePath = dir + @"\__unregister_assets__generated__.inl";
+            string includeComponentsContent = "";
+            string registerComponentsContent = "";
+            string unregisterComponentsContent = "";
+            string includeAssetsContent = "";
+            string registerAssetsContent = "";
+            string unregisterAssetsContent = "";
+            MetaComponent metaComponent;
             foreach (string key in mainForm.ProjectModel.MetaComponentPaths.Keys)
             {
                 if (!key.StartsWith(mainForm.ProjectModel.WorkingDirectory + @"\"))
                     continue;
 
-                includeContent += "#include \"" + key + "\"\r\n";
-                meta = mainForm.ProjectModel.MetaComponentPaths[key];
-                if (meta != null)
+                includeComponentsContent += "#include \"" + key + "\"\r\n";
+                metaComponent = mainForm.ProjectModel.MetaComponentPaths[key];
+                if (metaComponent != null)
                 {
-                    registerContent += "REGISTER_COMPONENT( \"" + meta.Name + "\", " + meta.Name + " );\r\n";
-                    unregisterContent += "UNREGISTER_COMPONENT( \"" + meta.Name + "\" );\r\n";
+                    registerComponentsContent += "REGISTER_COMPONENT( \"" + metaComponent.Name + "\", " + metaComponent.Name + " );\r\n";
+                    unregisterComponentsContent += "UNREGISTER_COMPONENT( \"" + metaComponent.Name + "\" );\r\n";
+                }
+            }
+            MetaAsset metaAsset;
+            foreach (string key in mainForm.ProjectModel.MetaAssetsPaths.Keys)
+            {
+                if (!key.StartsWith(mainForm.ProjectModel.WorkingDirectory + @"\"))
+                    continue;
+
+                includeAssetsContent += "#include \"" + key + "\"\r\n";
+                metaAsset = mainForm.ProjectModel.MetaAssetsPaths[key];
+                if (metaAsset != null)
+                {
+                    registerAssetsContent += "REGISTER_ASSET( \"" + metaAsset.Name + "\", " + metaAsset.Name + " );\r\n";
+                    unregisterAssetsContent += "UNREGISTER_ASSET( \"" + metaAsset.Name + "\" );\r\n";
                 }
             }
             // dummy way to check if generated files have the same content as new ones.
-            if (!File.Exists(includeFilePath) || File.ReadAllText(includeFilePath) != includeContent)
+            if (!File.Exists(includeComponentsFilePath) || File.ReadAllText(includeComponentsFilePath) != includeComponentsContent)
             {
-                File.WriteAllText(includeFilePath, includeContent);
+                File.WriteAllText(includeComponentsFilePath, includeComponentsContent);
                 somethingChanged = true;
             }
-            if (!File.Exists(registerFilePath) || File.ReadAllText(registerFilePath) != registerContent)
+            if (!File.Exists(registerComponentsFilePath) || File.ReadAllText(registerComponentsFilePath) != registerComponentsContent)
             {
-                File.WriteAllText(registerFilePath, registerContent);
+                File.WriteAllText(registerComponentsFilePath, registerComponentsContent);
                 somethingChanged = true;
             }
-            if (!File.Exists(unregisterFilePath) || File.ReadAllText(unregisterFilePath) != unregisterContent)
+            if (!File.Exists(unregisterComponentsFilePath) || File.ReadAllText(unregisterComponentsFilePath) != unregisterComponentsContent)
             {
-                File.WriteAllText(unregisterFilePath, unregisterContent);
+                File.WriteAllText(unregisterComponentsFilePath, unregisterComponentsContent);
+                somethingChanged = true;
+            }
+            if (!File.Exists(includeAssetsFilePath) || File.ReadAllText(includeAssetsFilePath) != includeAssetsContent)
+            {
+                File.WriteAllText(includeAssetsFilePath, includeAssetsContent);
+                somethingChanged = true;
+            }
+            if (!File.Exists(registerAssetsFilePath) || File.ReadAllText(registerAssetsFilePath) != registerAssetsContent)
+            {
+                File.WriteAllText(registerAssetsFilePath, registerAssetsContent);
+                somethingChanged = true;
+            }
+            if (!File.Exists(unregisterAssetsFilePath) || File.ReadAllText(unregisterAssetsFilePath) != unregisterAssetsContent)
+            {
+                File.WriteAllText(unregisterAssetsFilePath, unregisterAssetsContent);
                 somethingChanged = true;
             }
             if (!forced && !somethingChanged && File.Exists(mainForm.ProjectModel.WorkingDirectory + @"\" + pluginFilePath))
             {
                 mainForm.ProjectModel.EditorCbpPath = editorCbpPath;
-                mainForm.ProjectModel.EditorComponentsPluginPath = pluginFilePath;
+                mainForm.ProjectModel.EditorPluginPath = pluginFilePath;
                 mainForm.DoAction(new MainForm.Action("EditorComponentsPluginChanged"));
                 return;
             }
@@ -283,7 +343,7 @@ namespace ZasuvkaPtakopyska
             }
 
             mainForm.ProjectModel.EditorCbpPath = editorCbpPath;
-            mainForm.ProjectModel.EditorComponentsPluginPath = pluginFilePath;
+            mainForm.ProjectModel.EditorPluginPath = pluginFilePath;
             doc.Save(mainForm.ProjectModel.WorkingDirectory + @"\" + editorCbpPath);
         }
 
@@ -328,7 +388,49 @@ namespace ZasuvkaPtakopyska
                 mainForm.ProjectModel.ApplyToCbp(mainForm.SettingsModel);
                 if (File.Exists(hPath))
                 {
-                    DialogResult result = MetroMessageBox.Show(mainForm, "Open created component file?", "Open component", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    DialogResult result = MetroMessageBox.Show(mainForm, "Open created component file?", "Open component to edit", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (result == DialogResult.Yes)
+                        mainForm.OpenEditFile(hPath);
+                }
+            }
+        }
+
+        private void CreateNewAsset(string path, string name)
+        {
+            MainForm mainForm = FindForm() as MainForm;
+            if (mainForm == null || mainForm.SettingsModel == null || mainForm.ProjectModel == null)
+                return;
+
+            if (!File.Exists(mainForm.SettingsModel.BashBinPath))
+            {
+                MetroMessageBox.Show(mainForm, "Bash executable not found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            path = Path.GetFullPath(path);
+            string unixPath = Utils.ConvertWindowsToUnixPath(path);
+            string wrkdir = mainForm.SettingsModel.SdkPath + @"\templates";
+            Process proc = new Process();
+            ProcessStartInfo info = new ProcessStartInfo();
+            info.WorkingDirectory = Path.GetFullPath(wrkdir);
+            info.FileName = Path.GetFullPath(mainForm.SettingsModel.BashBinPath);
+            info.Arguments = "-l -c './make_new_asset.sh -o \"" + unixPath + "\" -a \"" + name + "\"'";
+            info.UseShellExecute = false;
+            info.CreateNoWindow = true;
+            //info.RedirectStandardOutput = true;
+            proc.StartInfo = info;
+            if (File.Exists(info.FileName))
+            {
+                proc.Start();
+                proc.WaitForExit();
+                string cppPath = path + @"\" + name + ".cpp";
+                string hPath = path + @"\" + name + ".h";
+                mainForm.ProjectModel.Files.Add(cppPath);
+                mainForm.ProjectModel.Files.Add(hPath);
+                mainForm.ProjectModel.ApplyToCbp(mainForm.SettingsModel);
+                if (File.Exists(hPath))
+                {
+                    DialogResult result = MetroMessageBox.Show(mainForm, "Open created asset code file?", "Open asset to edit", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (result == DialogResult.Yes)
                         mainForm.OpenEditFile(hPath);
                 }
@@ -351,11 +453,11 @@ namespace ZasuvkaPtakopyska
             MetroSkinManager.ApplyMetroStyle(menu);
             ToolStripMenuItem menuItem;
 
-            menuItem = new ToolStripMenuItem("Build Editor Components");
+            menuItem = new ToolStripMenuItem("Build editor plugin");
             menuItem.Click += new EventHandler(menuItem_buildEditorComponents_Click);
             menu.Items.Add(menuItem);
 
-            menuItem = new ToolStripMenuItem("Rebuild Editor Components");
+            menuItem = new ToolStripMenuItem("Rebuild editor plugin");
             menuItem.Click += new EventHandler(menuItem_rebuildEditorComponents_Click);
             menu.Items.Add(menuItem);
 
@@ -363,7 +465,21 @@ namespace ZasuvkaPtakopyska
             menuItem.Click += new EventHandler(menuItem_newCppComponent_Click);
             menu.Items.Add(menuItem);
 
+            menuItem = new ToolStripMenuItem("New C++ asset");
+            menuItem.Click += new EventHandler(menuItem_newCppAsset_Click);
+            menu.Items.Add(menuItem);
+
             menu.Show(m_optionsTile, new Point(m_optionsTile.Width, 0));
+        }
+
+        private void menuItem_buildEditorComponents_Click(object sender, EventArgs e)
+        {
+            RebuildEditorPlugin();
+        }
+
+        private void menuItem_rebuildEditorComponents_Click(object sender, EventArgs e)
+        {
+            RebuildEditorPlugin(true);
         }
 
         private void menuItem_newCppComponent_Click(object sender, EventArgs e)
@@ -387,14 +503,25 @@ namespace ZasuvkaPtakopyska
             }
         }
 
-        private void menuItem_buildEditorComponents_Click(object sender, EventArgs e)
+        private void menuItem_newCppAsset_Click(object sender, EventArgs e)
         {
-            RebuildEditorComponents();
-        }
+            MainForm mainForm = FindForm() as MainForm;
+            if (mainForm == null || mainForm.ProjectModel == null)
+                return;
 
-        private void menuItem_rebuildEditorComponents_Click(object sender, EventArgs e)
-        {
-            RebuildEditorComponents(true);
+            FolderBrowserDialog dialog = new FolderBrowserDialog();
+            dialog.ShowNewFolderButton = true;
+            dialog.SelectedPath = mainForm.ProjectModel.WorkingDirectory;
+            DialogResult result = dialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                MetroPromptBox prompt = new MetroPromptBox();
+                prompt.Title = "Enter asset name:";
+                prompt.Value = "UserAsset";
+                result = prompt.ShowDialog();
+                if (result == DialogResult.OK)
+                    CreateNewAsset(dialog.SelectedPath, prompt.Value);
+            }
         }
 
         private void btn_Click(object sender, EventArgs e)

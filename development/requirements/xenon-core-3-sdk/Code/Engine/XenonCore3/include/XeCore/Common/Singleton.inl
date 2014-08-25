@@ -11,6 +11,9 @@ namespace XeCore
 		T* Singleton< T >::m_instance = 0;
 
 		template< class T >
+		bool Singleton< T >::m_isShared = false;
+
+		template< class T >
 		T& Singleton< T >::use()
 		{
 			return( *instance() );
@@ -27,7 +30,21 @@ namespace XeCore
 		template< class T >
 		void Singleton< T >::destroy()
 		{
-			DELETE_OBJECT( Singleton< T >::m_instance );
+			if( m_isShared )
+            {
+                Singleton< T >::m_instance = 0;
+                Singleton< T >::m_isShared = false;
+            }
+            else
+                DELETE_OBJECT( Singleton< T >::m_instance );
+		}
+
+		template< class T >
+		void Singleton< T >::makeSharedFrom( T* source )
+		{
+		    Singleton< T >::destroy();
+		    Singleton< T >::m_instance = source;
+		    Singleton< T >::m_isShared = true;
 		}
 	}
 }

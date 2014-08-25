@@ -1,4 +1,5 @@
 {
+  "Type": "Component",
   "Name": "Body",
   "Description": "Physics body component.",
   "BaseClasses": [

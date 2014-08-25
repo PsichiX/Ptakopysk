@@ -6,6 +6,7 @@
 #include <XeCore/Common/Concurrent/Thread.h>
 #include <XeCore/Common/Timer.h>
 #include "_include_components.h"
+#include "_include_assets.h"
 
 using namespace Ptakopysk;
 
@@ -25,6 +26,7 @@ int main()
     Events::use().setCallback( &onEvent );
     GameManager::initialize();
 #include "_register_components.inl"
+#include "_register_assets.inl"
 
     /// create window.
     sf::RenderWindow* window = xnew sf::RenderWindow(
