@@ -1,1 +1,0 @@
-UNREGISTER_COMPONENT( "TemplateComponent" );

@@ -33,11 +33,9 @@ namespace ZasuvkaPtakopyska
             MouseDown += new MouseEventHandler(RendererSurfaceControl_MouseDown);
             MouseMove += new MouseEventHandler(RendererSurfaceControl_MouseMove);
             MouseUp += new MouseEventHandler(RendererSurfaceControl_MouseUp);
+            MouseLeave += new EventHandler(RendererSurfaceControl_MouseLeave);
 
             Font = new Font("Verdana", 8, FontStyle.Bold);
-
-            PtakopyskInterface.Instance.SetSceneViewZoom(m_cameraZoom);
-            PtakopyskInterface.Instance.SetSceneViewCenter(m_cameraCenter.X, m_cameraCenter.Y);
 
             m_timer = new Timer();
             m_timer.Interval = 1000 / 20;
@@ -53,17 +51,31 @@ namespace ZasuvkaPtakopyska
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            PtakopyskInterface.Instance.ProcessEvents();
-            PtakopyskInterface.Instance.ProcessUpdate(0, true);
-            PtakopyskInterface.Instance.ProcessRender();
+            if (SceneViewPlugin.IsLoaded && SceneViewPlugin.IsInitialized)
+            {
+                SceneViewPlugin.ProcessEvents();
+                SceneViewPlugin.ProcessUpdate(0, true);
+                SceneViewPlugin.ProcessRender();
 
-            Brush brushBg = new SolidBrush(Color.FromArgb(64, 0, 0, 0));
-            Brush brush = new SolidBrush(Color.White);
-            float zoom = m_cameraZoom > 0.0f ? 1.0f / m_cameraZoom : 0.0f;
-            string text = "Zoom: " + zoom.ToString("P2", Settings.DefaultFormatProvider);
-            SizeF size = e.Graphics.MeasureString(text, Font);
-            e.Graphics.FillRectangle(brushBg, 0, 0, size.Width + 20, size.Height + 20);
-            e.Graphics.DrawString(text, Font, brush, new PointF(10.0f, 10.0f));
+                Brush brushBg = new SolidBrush(Color.FromArgb(64, 0, 0, 0));
+                Brush brush = new SolidBrush(Color.White);
+                float zoom = m_cameraZoom > 0.0f ? 1.0f / m_cameraZoom : 0.0f;
+                string text = "Zoom: " + zoom.ToString("P2", Settings.DefaultFormatProvider);
+                SizeF size = e.Graphics.MeasureString(text, Font);
+                e.Graphics.FillRectangle(brushBg, 0, 0, size.Width + 20, size.Height + 20);
+                e.Graphics.DrawString(text, Font, brush, new PointF(10.0f, 10.0f));
+            }
+            else
+            {
+                Brush brushBg = new SolidBrush(Color.FromArgb(255, 64, 64, 64));
+                Brush brush = new SolidBrush(Color.White);
+                e.Graphics.FillRectangle(brushBg, e.ClipRectangle);
+                string text = SceneViewPlugin.IsInitialized ? "Scene View Plugin is not loaded..." : "Scene View Plugin is not initialized...";
+                StringFormat format = new StringFormat();
+                format.LineAlignment = StringAlignment.Center;
+                format.Alignment = StringAlignment.Center;
+                e.Graphics.DrawString(text, Font, brush, e.ClipRectangle, format);
+            }
         }
 
         protected override void OnPaintBackground(PaintEventArgs pevent)
@@ -81,11 +93,26 @@ namespace ZasuvkaPtakopyska
 
         #region Public Functionality.
 
+        public bool ReinitializeRenderer()
+        {
+            if (SceneViewPlugin.Initialize(Handle.ToInt64()))
+            {
+                SceneViewPlugin.SetSceneViewSize(Width, Height);
+                SceneViewPlugin.SetSceneViewCenter(m_cameraCenter.X, m_cameraCenter.Y);
+                SceneViewPlugin.SetSceneViewZoom(m_cameraZoom);
+                return true;
+            }
+            return false;
+        }
+
         public void RebuildSceneView(string json)
         {
-            PtakopyskInterface.Instance.ClearScene();
+            if (!SceneViewPlugin.IsLoaded)
+                return;
+
+            SceneViewPlugin.ClearScene();
             if (!string.IsNullOrEmpty(json))
-                PtakopyskInterface.Instance.ApplyJsonToScene(json);
+                SceneViewPlugin.ApplyJsonToScene(json);
             Invalidate();
         }
 
@@ -97,18 +124,18 @@ namespace ZasuvkaPtakopyska
 
         private void RendererSurfaceControl_Load(object sender, EventArgs e)
         {
-            PtakopyskInterface.Instance.Initialize(Handle.ToInt64());
-            PtakopyskInterface.Instance.SetVerticalSyncEnabled(false);
+            SceneViewPlugin.Initialize(Handle.ToInt64());
         }
 
         private void RendererSurfaceControl_Disposed(object sender, EventArgs e)
         {
-            PtakopyskInterface.Instance.Release();
+            SceneViewPlugin.Release();
         }
 
         private void RendererSurfaceControl_Resize(object sender, EventArgs e)
         {
-            PtakopyskInterface.Instance.SetSceneViewSize(Width, Height);
+            if (SceneViewPlugin.IsLoaded)
+                SceneViewPlugin.SetSceneViewSize(Width, Height);
         }
 
         private void m_timer_Tick(object sender, EventArgs e)
@@ -118,9 +145,12 @@ namespace ZasuvkaPtakopyska
 
         private void RendererSurfaceControl_MouseDown(object sender, MouseEventArgs e)
         {
+            if (!SceneViewPlugin.IsLoaded)
+                return;
+
             if (e.Button == MouseButtons.Left)
             {
-                int handle = PtakopyskInterface.Instance.FindGameObjectHandleAtScreenPosition(e.X, e.Y, 0);
+                int handle = SceneViewPlugin.FindGameObjectHandleAtScreenPosition(e.X, e.Y);
                 if (handle != m_lastClickedGameObject)
                 {
                     MainForm mainForm = FindForm() as MainForm;
@@ -141,6 +171,9 @@ namespace ZasuvkaPtakopyska
 
         private void RendererSurfaceControl_MouseMove(object sender, MouseEventArgs e)
         {
+            if (!SceneViewPlugin.IsLoaded)
+                return;
+
             if (m_isDragging)
             {
                 float dx = (float)(m_lastDragPosition.X - e.X);
@@ -156,7 +189,7 @@ namespace ZasuvkaPtakopyska
                     else
                         m_cameraZoom = m_lastCameraZoom;
                     m_cameraZoom = Math.Max(m_cameraZoom, 0.001f);
-                    PtakopyskInterface.Instance.SetSceneViewZoom(m_cameraZoom);
+                    SceneViewPlugin.SetSceneViewZoom(m_cameraZoom);
                     Invalidate();
                 }
                 else
@@ -164,7 +197,7 @@ namespace ZasuvkaPtakopyska
                     m_lastDragPosition = e.Location;
                     m_cameraCenter.X += dx * m_cameraZoom;
                     m_cameraCenter.Y += dy * m_cameraZoom;
-                    PtakopyskInterface.Instance.SetSceneViewCenter(m_cameraCenter.X, m_cameraCenter.Y);
+                    SceneViewPlugin.SetSceneViewCenter(m_cameraCenter.X, m_cameraCenter.Y);
                     Invalidate();
                     m_lastCameraZoom = m_cameraZoom;
                 }
@@ -172,7 +205,7 @@ namespace ZasuvkaPtakopyska
             else if (m_isDraggingGameObject != 0)
             {
                 string query = "{ \"get\": { \"components\": { \"Transform\": [ \"Position\" ] } } }";
-                Dictionary<string, string> result = PtakopyskInterface.Instance.QueryGameObject(m_isDraggingGameObject, false, query);
+                Dictionary<string, string> result = SceneViewPlugin.QueryGameObject(m_isDraggingGameObject, false, query);
                 if (result != null && result.Count > 0)
                 {
                     float[] pos = null;
@@ -181,14 +214,14 @@ namespace ZasuvkaPtakopyska
                     if (pos != null && pos.Length >= 2)
                     {
                         float lx, ly;
-                        PtakopyskInterface.Instance.ConvertPointFromScreenToWorldSpace(m_lastDragPosition.X, m_lastDragPosition.Y, out lx, out ly);
+                        SceneViewPlugin.ConvertPointFromScreenToWorldSpace(m_lastDragPosition.X, m_lastDragPosition.Y, out lx, out ly);
                         m_lastDragPosition = e.Location;
                         float cx, cy;
-                        PtakopyskInterface.Instance.ConvertPointFromScreenToWorldSpace(m_lastDragPosition.X, m_lastDragPosition.Y, out cx, out cy);
+                        SceneViewPlugin.ConvertPointFromScreenToWorldSpace(m_lastDragPosition.X, m_lastDragPosition.Y, out cx, out cy);
                         string scx = (pos[0] + (cx - lx)).ToString(Settings.DEFAULT_STRING_FORMAT, Settings.DefaultFormatProvider);
                         string scy = (pos[1] + (cy - ly)).ToString(Settings.DEFAULT_STRING_FORMAT, Settings.DefaultFormatProvider);
                         query = "{ \"set\": { \"components\": { \"Transform\": { \"Position\": [ " + scx + ", " + scy + " ] } } } }";
-                        result = PtakopyskInterface.Instance.QueryGameObject(m_isDraggingGameObject, false, query);
+                        result = SceneViewPlugin.QueryGameObject(m_isDraggingGameObject, false, query);
                         Invalidate();
                         MainForm mainForm = FindForm() as MainForm;
                         if (mainForm != null)
@@ -204,6 +237,13 @@ namespace ZasuvkaPtakopyska
             m_isDraggingGameObject = 0;
             m_lastCameraZoom = m_cameraZoom;
             m_lastDragPosition = e.Location;
+        }
+
+        private void RendererSurfaceControl_MouseLeave(object sender, EventArgs e)
+        {
+            m_isDragging = false;
+            m_isDraggingGameObject = 0;
+            m_lastCameraZoom = m_cameraZoom;
         }
 
         #endregion

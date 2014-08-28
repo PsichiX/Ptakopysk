@@ -1,0 +1,9 @@
+EXPORTS
+    DllMain = DllMain@12 @1
+    DllMain@12 @2
+    _QueryPlugin = _QueryPlugin@4 @3
+    _QueryPlugin@4 @4
+    _RegisterPlugin = _RegisterPlugin@0 @5
+    _RegisterPlugin@0 @6
+    _UnregisterPlugin = _UnregisterPlugin@0 @7
+    _UnregisterPlugin@0 @8

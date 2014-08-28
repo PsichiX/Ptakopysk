@@ -1,0 +1,1 @@
+UNREGISTER_ASSET( "TemplateAsset" );

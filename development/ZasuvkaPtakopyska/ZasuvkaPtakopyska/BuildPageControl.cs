@@ -300,7 +300,8 @@ namespace ZasuvkaPtakopyska
                     string lastTarget = mainForm.ProjectModel.ActiveTarget;
                     mainForm.ProjectModel.ActiveTarget = target[0];
                     mainForm.ProjectModel.ActiveTargetWorkingDirectory = target[2];
-                    mainForm.ReloadScene();
+                    // TODO: check if it's needed.
+                    //mainForm.ReloadScene();
                     if (mainForm.ProjectModel.ActiveTarget != lastTarget)
                         mainForm.RebuildEditorComponents(true);
                 }

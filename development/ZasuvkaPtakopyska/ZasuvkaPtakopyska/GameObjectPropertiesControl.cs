@@ -63,7 +63,7 @@ namespace ZasuvkaPtakopyska
 
             m_goHandle = handle;
             m_goIsPrefab = isPrefab;
-            m_goData = PtakopyskInterface.Instance.QueryGameObject(handle, isPrefab, "{ \"get\": null }");
+            m_goData = SceneViewPlugin.QueryGameObject(handle, isPrefab, "{ \"get\": null }");
 
             MetroSkinManager.ApplyMetroStyle(this);
 
@@ -83,10 +83,10 @@ namespace ZasuvkaPtakopyska
         public void OnEditorValueChanged(IEditorJsonValue editor, string property, string jsonValue)
         {
             string query = PrepareSetQuery(property, jsonValue);
-            Dictionary<string, string> result = PtakopyskInterface.Instance.QueryGameObject(m_goHandle, m_goIsPrefab, query);
+            Dictionary<string, string> result = SceneViewPlugin.QueryGameObject(m_goHandle, m_goIsPrefab, query);
             m_goData.Clear();
-            foreach (string key in result.Keys)
-                m_goData.Add(key, result[key]);
+            foreach (var kv in result)
+                m_goData.Add(kv.Key, kv.Value);
             bool irc;
             foreach (IEditorJsonValue e in m_editors)
             {
@@ -110,7 +110,7 @@ namespace ZasuvkaPtakopyska
 
         public void UpdateEditorsValues()
         {
-            Dictionary<string, string> result = PtakopyskInterface.Instance.QueryGameObject(m_goHandle, m_goIsPrefab, "{ \"get\": null }");
+            Dictionary<string, string> result = SceneViewPlugin.QueryGameObject(m_goHandle, m_goIsPrefab, "{ \"get\": null }");
             m_goData.Clear();
             foreach (string key in result.Keys)
                 m_goData.Add(key, result[key]);
@@ -409,7 +409,7 @@ namespace ZasuvkaPtakopyska
             MetroButton button = sender as MetroButton;
             if (mainForm != null && button != null && button.Tag is string)
             {
-                int handle = PtakopyskInterface.Instance.FindGameObjectHandleById(button.Tag as string, true, 0);
+                int handle = SceneViewPlugin.FindGameObjectHandleById(button.Tag as string, true, 0);
                 if (handle != 0)
                     mainForm.ExploreGameObjectProperties(handle, true);
             }
@@ -421,9 +421,9 @@ namespace ZasuvkaPtakopyska
             MetroButton button = sender as MetroButton;
             if (mainForm != null && button != null && button.Tag is string)
             {
-                int handle = PtakopyskInterface.Instance.FindGameObjectHandleById(button.Tag as string, true, 0);
+                int handle = SceneViewPlugin.FindGameObjectHandleById(button.Tag as string, true, 0);
                 if (handle != 0)
-                    PtakopyskInterface.Instance.DuplicateGameObject(m_goHandle, m_goIsPrefab, handle, true);
+                    SceneViewPlugin.DuplicateGameObject(m_goHandle, m_goIsPrefab, handle, true);
             }
         }
 
@@ -451,7 +451,7 @@ namespace ZasuvkaPtakopyska
             if (btn == null || !(btn.Tag is string))
                 return;
 
-            if (PtakopyskInterface.Instance.TriggerGameObjectComponentFunctionality(m_goHandle, m_goIsPrefab, btn.Tag as string, btn.Text))
+            if (SceneViewPlugin.TriggerGameObjectComponentFunctionality(m_goHandle, m_goIsPrefab, btn.Tag as string, btn.Text))
                 UpdateEditorsValues();
         }
 
@@ -461,7 +461,7 @@ namespace ZasuvkaPtakopyska
             if (btn == null)
                 return;
 
-            List<string> components = PtakopyskInterface.Instance.GetComponentsIds();
+            List<string> components = SceneViewPlugin.ListComponents();
             if (components == null || components.Count == 0)
                 return;
 
@@ -486,7 +486,7 @@ namespace ZasuvkaPtakopyska
                 return;
 
             string query = "{ \"set\": { \"components\": { \"" + (menuItem.Tag as string) + "\": null } } }";
-            Dictionary<string, string> result = PtakopyskInterface.Instance.QueryGameObject(m_goHandle, m_goIsPrefab, query);
+            Dictionary<string, string> result = SceneViewPlugin.QueryGameObject(m_goHandle, m_goIsPrefab, query);
             MainForm mainForm = FindForm() as MainForm;
             if (mainForm != null)
             {
@@ -502,7 +502,7 @@ namespace ZasuvkaPtakopyska
                 return;
 
             string query = "{ \"set\": { \"components\": { \"" + menuItem.Text + "\": 0 } } }";
-            Dictionary<string, string> result = PtakopyskInterface.Instance.QueryGameObject(m_goHandle, m_goIsPrefab, query);
+            Dictionary<string, string> result = SceneViewPlugin.QueryGameObject(m_goHandle, m_goIsPrefab, query);
             MainForm mainForm = FindForm() as MainForm;
             if (mainForm != null)
             {

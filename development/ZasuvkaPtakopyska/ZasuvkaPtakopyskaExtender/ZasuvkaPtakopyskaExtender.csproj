@@ -138,6 +138,7 @@
     <Compile Include="Editors\PtakopyskPropertyEditorAttribute.cs" />
     <Compile Include="MetaComponentsManager.cs" />
     <Compile Include="MetroSkinManager.cs" />
+    <Compile Include="PluginsInterface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Editors\String_PropertyEditor.cs">
       <SubType>UserControl</SubType>
@@ -148,7 +149,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="PtakopyskInterface.cs" />
+    <Compile Include="SceneViewPlugin.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="ZasuvkaPtakopyskaExtenderAttribute.cs" />
   </ItemGroup>

@@ -7,7 +7,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
     public class MusicAsset_PropertyEditor : AssetPropertyEditor
     {
         public MusicAsset_PropertyEditor(Dictionary<string, string> properties, string propertyName)
-            : base(properties, propertyName, PtakopyskInterface.AssetType.Music)
+            : base(properties, propertyName, SceneViewPlugin.AssetType.Music)
         {
         }
     }

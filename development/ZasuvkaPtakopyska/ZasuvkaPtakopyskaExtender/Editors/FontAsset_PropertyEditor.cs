@@ -7,7 +7,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
     public class FontAsset_PropertyEditor : AssetPropertyEditor
     {
         public FontAsset_PropertyEditor(Dictionary<string, string> properties, string propertyName)
-            : base(properties, propertyName, PtakopyskInterface.AssetType.Font)
+            : base(properties, propertyName, SceneViewPlugin.AssetType.Font)
         {
         }
     }

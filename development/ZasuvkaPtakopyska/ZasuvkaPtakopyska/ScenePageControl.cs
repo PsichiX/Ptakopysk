@@ -77,6 +77,11 @@ namespace ZasuvkaPtakopyska
 
         #region Public Functionality.
 
+        public bool ReinitializeRenderer()
+        {
+            return m_renderer.ReinitializeRenderer();
+        }
+
         public bool OpenScene(string path)
         {
             CloseScene();
@@ -85,10 +90,28 @@ namespace ZasuvkaPtakopyska
 
             MainForm mainForm = FindForm() as MainForm;
             if (mainForm != null)
-                PtakopyskInterface.Instance.SetAssetsFileSystemRoot(mainForm.ProjectModel.WorkingDirectory + @"\" + mainForm.ProjectModel.ActiveTargetWorkingDirectory);
+                SceneViewPlugin.SetAssetsFileSystemRoot(mainForm.ProjectModel.WorkingDirectory + @"\" + mainForm.ProjectModel.ActiveTargetWorkingDirectory);
             string json = File.ReadAllText(path);
             m_renderer.RebuildSceneView(json);
             m_scenePath = path;
+            RebuildSceneTree();
+            return true;
+        }
+
+        public bool OpenSceneBackup()
+        {
+            if (string.IsNullOrEmpty(m_scenePath))
+                return false;
+
+            string path = m_scenePath + ".backup";
+            if (!File.Exists(path))
+                return false;
+
+            MainForm mainForm = FindForm() as MainForm;
+            if (mainForm != null)
+                SceneViewPlugin.SetAssetsFileSystemRoot(mainForm.ProjectModel.WorkingDirectory + @"\" + mainForm.ProjectModel.ActiveTargetWorkingDirectory);
+            string json = File.ReadAllText(path);
+            m_renderer.RebuildSceneView(json);
             RebuildSceneTree();
             return true;
         }
@@ -98,7 +121,7 @@ namespace ZasuvkaPtakopyska
             if (string.IsNullOrEmpty(m_scenePath))
                 return false;
 
-            string json = PtakopyskInterface.Instance.ConvertSceneToJson();
+            string json = SceneViewPlugin.ConvertSceneToJson();
             File.WriteAllText(path, json);
             if (File.Exists(path))
             {
@@ -108,11 +131,22 @@ namespace ZasuvkaPtakopyska
             return false;
         }
 
+        public bool SaveSceneBackup()
+        {
+            if (string.IsNullOrEmpty(m_scenePath))
+                return false;
+
+            string path = m_scenePath + ".backup";
+            string json = SceneViewPlugin.ConvertSceneToJson();
+            File.WriteAllText(path, json);
+            return File.Exists(path);
+        }
+
         public void CloseScene()
         {
             m_renderer.RebuildSceneView(null);
             m_scenePath = null;
-            PtakopyskInterface.Instance.SetAssetsFileSystemRoot("");
+            SceneViewPlugin.SetAssetsFileSystemRoot("");
             RebuildSceneTree();
         }
 
@@ -258,28 +292,18 @@ namespace ZasuvkaPtakopyska
                 mainForm.ExploreGameObjectProperties(0, false);
         }
 
-        private void BuildSceneTreeNodes(TreeNodeCollection nodes)
+        private void BuildSceneTreeNodes(TreeNodeCollection nodes, List<SceneViewPlugin.GameObjectData> list = null)
         {
-            bool prefabs = IsGameObjectsPrefabsMode;
-            if (PtakopyskInterface.Instance.StartIterateGameObjects(prefabs))
+            if (list == null)
+                list = SceneViewPlugin.ListGameObjects(IsGameObjectsPrefabsMode);
+            if (list != null && list.Count > 0)
             {
-                while (PtakopyskInterface.Instance.CanIterateGameObjectsNext(prefabs))
+                foreach (var item in list)
                 {
-                    PtakopyskInterface.Instance.StartQueryIteratedGameObject();
-                    int handle = PtakopyskInterface.Instance.QueriedGameObjectHandle();
-                    Dictionary<string, string> info = PtakopyskInterface.Instance.QueryGameObject("{ \"get\": { \"properties\": [ \"Id\" ] } }");
-                    string id;
-                    if (info != null && info.ContainsKey("properties/Id"))
-                        id = Newtonsoft.Json.JsonConvert.DeserializeObject<string>(info["properties/Id"]);
-                    else
-                        id = handle.ToString();
-                    TreeNode node = nodes.Add(id);
-                    node.Tag = handle;
-                    BuildSceneTreeNodes(node.Nodes);
-                    PtakopyskInterface.Instance.IterateGameObjectsNext(prefabs);
+                    TreeNode node = nodes.Add(item.id);
+                    node.Tag = item.handle;
+                    BuildSceneTreeNodes(node.Nodes, item.childs);
                 }
-                PtakopyskInterface.Instance.EndIterateGameObjects();
-                PtakopyskInterface.Instance.EndQueryGameObject();
             }
         }
 
@@ -291,7 +315,7 @@ namespace ZasuvkaPtakopyska
             {
                 if (node.Tag.Equals(handle))
                 {
-                    Dictionary<string, string> info = PtakopyskInterface.Instance.QueryGameObject(
+                    Dictionary<string, string> info = SceneViewPlugin.QueryGameObject(
                         handle,
                         IsGameObjectsPrefabsMode,
                         "{ \"get\": { \"properties\": [ \"Id\" ] } }"
@@ -348,7 +372,7 @@ namespace ZasuvkaPtakopyska
             DialogResult result = prompt.ShowDialog();
             if (result == DialogResult.OK && !string.IsNullOrEmpty(prompt.Value))
             {
-                int handle = PtakopyskInterface.Instance.CreateGameObject(isPrefab, parent, prefabSource, prompt.Value);
+                int handle = SceneViewPlugin.CreateGameObject(isPrefab, parent, prefabSource, prompt.Value);
                 if (handle != 0)
                 {
                     RebuildSceneTree();
@@ -362,7 +386,7 @@ namespace ZasuvkaPtakopyska
             if (string.IsNullOrEmpty(m_scenePath))
                 return;
 
-            if (PtakopyskInterface.Instance.DestroyGameObject(handle, isPrefab))
+            if (SceneViewPlugin.DestroyGameObject(handle, isPrefab))
             {
                 RebuildSceneTree();
                 RefreshSceneView();
@@ -374,7 +398,7 @@ namespace ZasuvkaPtakopyska
             if (string.IsNullOrEmpty(m_scenePath))
                 return;
 
-            if (PtakopyskInterface.Instance.ClearSceneGameObjects(isPrefab))
+            if (SceneViewPlugin.ClearSceneGameObjects(isPrefab))
             {
                 RebuildSceneTree();
                 RefreshSceneView();
@@ -549,42 +573,42 @@ namespace ZasuvkaPtakopyska
         {
             MainForm mainForm = FindForm() as MainForm;
             if (mainForm != null)
-                mainForm.ExploreAssetsProperties(PtakopyskInterface.AssetType.Texture);
+                mainForm.ExploreAssetsProperties(SceneViewPlugin.AssetType.Texture);
         }
 
         private void menuItem_shaders_Click(object sender, EventArgs e)
         {
             MainForm mainForm = FindForm() as MainForm;
             if (mainForm != null)
-                mainForm.ExploreAssetsProperties(PtakopyskInterface.AssetType.Shader);
+                mainForm.ExploreAssetsProperties(SceneViewPlugin.AssetType.Shader);
         }
 
         private void menuItem_sounds_Click(object sender, EventArgs e)
         {
             MainForm mainForm = FindForm() as MainForm;
             if (mainForm != null)
-                mainForm.ExploreAssetsProperties(PtakopyskInterface.AssetType.Sound);
+                mainForm.ExploreAssetsProperties(SceneViewPlugin.AssetType.Sound);
         }
 
         private void menuItem_music_Click(object sender, EventArgs e)
         {
             MainForm mainForm = FindForm() as MainForm;
             if (mainForm != null)
-                mainForm.ExploreAssetsProperties(PtakopyskInterface.AssetType.Music);
+                mainForm.ExploreAssetsProperties(SceneViewPlugin.AssetType.Music);
         }
 
         private void menuItem_fonts_Click(object sender, EventArgs e)
         {
             MainForm mainForm = FindForm() as MainForm;
             if (mainForm != null)
-                mainForm.ExploreAssetsProperties(PtakopyskInterface.AssetType.Font);
+                mainForm.ExploreAssetsProperties(SceneViewPlugin.AssetType.Font);
         }
 
         private void menuItem_custom_Click(object sender, EventArgs e)
         {
             MainForm mainForm = FindForm() as MainForm;
             if (mainForm != null)
-                mainForm.ExploreAssetsProperties(PtakopyskInterface.AssetType.CustomAsset);
+                mainForm.ExploreAssetsProperties(SceneViewPlugin.AssetType.CustomAsset);
         }
 
         private void m_gameObjectsPanel_RollUnroll(object sender, EventArgs e)

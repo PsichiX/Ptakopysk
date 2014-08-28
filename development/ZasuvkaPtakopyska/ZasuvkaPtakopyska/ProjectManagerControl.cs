@@ -170,9 +170,12 @@ namespace ZasuvkaPtakopyska
                 Directory.CreateDirectory(dir);
 
             bool somethingChanged = false;
-            if (!File.Exists(dir + @"\dllmain.cpp"))
+            if (forced || !File.Exists(dir + @"\dllmain.cpp"))
             {
-                File.Copy(mainForm.SettingsModel.SdkPath + @"\templates\dllmain.cpp", dir + @"\dllmain.cpp");
+                if (!File.Exists(mainForm.SettingsModel.SdkPath + @"\templates\dllmain.cpp"))
+                    return;
+
+                File.Copy(mainForm.SettingsModel.SdkPath + @"\templates\dllmain.cpp", dir + @"\dllmain.cpp", true);
                 somethingChanged = true;
             }
             string includeComponentsFilePath = dir + @"\__components_headers_list__generated__.h";
@@ -246,11 +249,12 @@ namespace ZasuvkaPtakopyska
                 File.WriteAllText(unregisterAssetsFilePath, unregisterAssetsContent);
                 somethingChanged = true;
             }
-            if (!forced && !somethingChanged && File.Exists(mainForm.ProjectModel.WorkingDirectory + @"\" + pluginFilePath))
+            if (!somethingChanged && File.Exists(mainForm.ProjectModel.WorkingDirectory + @"\" + pluginFilePath))
             {
                 mainForm.ProjectModel.EditorCbpPath = editorCbpPath;
                 mainForm.ProjectModel.EditorPluginPath = pluginFilePath;
-                mainForm.DoAction(new MainForm.Action("EditorComponentsPluginChanged"));
+                mainForm.SaveSceneBackup();
+                mainForm.DoAction(new MainForm.Action("SceneViewPluginChanged"));
                 return;
             }
 
@@ -329,7 +333,7 @@ namespace ZasuvkaPtakopyska
                         {
                             node = doc.CreateElement("Add");
                             attr = doc.CreateAttribute("library");
-                            attr.Value = isDebug ? "libPtakopyskInterface-d.a" : "libPtakopyskInterface.a";
+                            attr.Value = isDebug ? "libSceneViewInterface-d.a" : "libSceneViewInterface.a";
                             node.Attributes.Append(attr);
                             _tnode.PrependChild(node);
                             node = doc.CreateElement("Add");
@@ -453,31 +457,31 @@ namespace ZasuvkaPtakopyska
             MetroSkinManager.ApplyMetroStyle(menu);
             ToolStripMenuItem menuItem;
 
-            menuItem = new ToolStripMenuItem("Build editor plugin");
-            menuItem.Click += new EventHandler(menuItem_buildEditorComponents_Click);
+            menuItem = new ToolStripMenuItem("Build Scene View plugin");
+            menuItem.Click += new EventHandler(menuItem_buildSceneViewPlugin_Click);
             menu.Items.Add(menuItem);
 
-            menuItem = new ToolStripMenuItem("Rebuild editor plugin");
-            menuItem.Click += new EventHandler(menuItem_rebuildEditorComponents_Click);
+            menuItem = new ToolStripMenuItem("Rebuild Scene View plugin");
+            menuItem.Click += new EventHandler(menuItem_rebuildSceneViewPlugin_Click);
             menu.Items.Add(menuItem);
 
             menuItem = new ToolStripMenuItem("New C++ component");
             menuItem.Click += new EventHandler(menuItem_newCppComponent_Click);
             menu.Items.Add(menuItem);
 
-            menuItem = new ToolStripMenuItem("New C++ asset");
-            menuItem.Click += new EventHandler(menuItem_newCppAsset_Click);
+            menuItem = new ToolStripMenuItem("New C++ custom asset");
+            menuItem.Click += new EventHandler(menuItem_newCppCustomAsset_Click);
             menu.Items.Add(menuItem);
 
             menu.Show(m_optionsTile, new Point(m_optionsTile.Width, 0));
         }
 
-        private void menuItem_buildEditorComponents_Click(object sender, EventArgs e)
+        private void menuItem_buildSceneViewPlugin_Click(object sender, EventArgs e)
         {
             RebuildEditorPlugin();
         }
 
-        private void menuItem_rebuildEditorComponents_Click(object sender, EventArgs e)
+        private void menuItem_rebuildSceneViewPlugin_Click(object sender, EventArgs e)
         {
             RebuildEditorPlugin(true);
         }
@@ -503,7 +507,7 @@ namespace ZasuvkaPtakopyska
             }
         }
 
-        private void menuItem_newCppAsset_Click(object sender, EventArgs e)
+        private void menuItem_newCppCustomAsset_Click(object sender, EventArgs e)
         {
             MainForm mainForm = FindForm() as MainForm;
             if (mainForm == null || mainForm.ProjectModel == null)

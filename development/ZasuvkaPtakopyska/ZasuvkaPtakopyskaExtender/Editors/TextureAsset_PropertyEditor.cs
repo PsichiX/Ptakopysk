@@ -7,7 +7,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
     public class TextureAsset_PropertyEditor : AssetPropertyEditor
     {
         public TextureAsset_PropertyEditor(Dictionary<string, string> properties, string propertyName)
-            : base(properties, propertyName, PtakopyskInterface.AssetType.Texture)
+            : base(properties, propertyName, SceneViewPlugin.AssetType.Texture)
         {
         }
     }

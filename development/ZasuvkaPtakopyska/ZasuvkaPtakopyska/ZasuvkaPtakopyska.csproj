@@ -145,7 +145,7 @@
       <ResourcesShadersFiles Include="$(ProjectDir).\resources\shaders\*" />
       <ResourcesFontsFiles Include="$(ProjectDir).\resources\fonts\*" />
       <ResourcesSettingsFiles Include="$(ProjectDir).\resources\settings\*" />
-      <DependenciesPtakopyskInterfaceFiles Include="$(ProjectDir)..\..\PtakopyskInterface\bin\Release\*.dll;$(ProjectDir)..\..\requirements\SFML-2.1\bin\libsndfile-1.dll;$(ProjectDir)..\..\requirements\SFML-2.1\bin\openal32.dll" />
+      <DependencesPluginsInterfaceFiles Include="$(ProjectDir)..\..\PluginsInterface\bin\Release\*.dll" />
     </ItemGroup>
     <MakeDir Directories="$(TargetDir).\resources\icons" />
     <Copy SourceFiles="@(ResourcesIconsFiles)" DestinationFolder="$(TargetDir).\resources\icons" />
@@ -153,6 +153,6 @@
     <Copy SourceFiles="@(ResourcesShadersFiles)" DestinationFolder="$(TargetDir).\resources\shaders" />
     <Copy SourceFiles="@(ResourcesFontsFiles)" DestinationFolder="$(TargetDir).\resources\fonts" />
     <Copy SourceFiles="@(ResourcesSettingsFiles)" DestinationFolder="$(TargetDir).\resources\settings" />
-    <Copy SourceFiles="@(DependenciesPtakopyskInterfaceFiles)" DestinationFolder="$(TargetDir)" />
+    <Copy SourceFiles="@(DependencesPluginsInterfaceFiles)" DestinationFolder="$(TargetDir)" />
   </Target>
 </Project>

@@ -7,7 +7,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
     public class ShaderAsset_PropertyEditor : AssetPropertyEditor
     {
         public ShaderAsset_PropertyEditor(Dictionary<string, string> properties, string propertyName)
-            : base(properties, propertyName, PtakopyskInterface.AssetType.Shader)
+            : base(properties, propertyName, SceneViewPlugin.AssetType.Shader)
         {
         }
     }

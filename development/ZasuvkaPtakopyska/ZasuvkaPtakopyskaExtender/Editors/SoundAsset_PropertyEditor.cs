@@ -7,7 +7,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
     public class SoundAsset_PropertyEditor : AssetPropertyEditor
     {
         public SoundAsset_PropertyEditor(Dictionary<string, string> properties, string propertyName)
-            : base(properties, propertyName, PtakopyskInterface.AssetType.Sound)
+            : base(properties, propertyName, SceneViewPlugin.AssetType.Sound)
         {
         }
     }

@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # useful cases:
-## overwrite only ptakopysk for include, lib and bin:
+## overwrite only ptakopysk for source, lib and bin:
 ### makesdk.sh -O -A -e -all -A -i p
 #
 
@@ -11,7 +11,9 @@ CP_BOX2D=(1 1 1)
 CP_JSONCPP=(1 1 1)
 CP_SFML=(1 1 1)
 CP_XECORE=(1 1 1)
-CP_INTERFACE=(1 1 1)
+CP_TEMPLATES=(1 1 1)
+CP_IDE=(1 1 1)
+CP_SCENEVIEWINTERFACE=(1 1 1)
 
 TYPE=-1
 MODE=1
@@ -27,7 +29,7 @@ for arg in ${@}; do
     TEST_ONLY=1
   elif [ ${arg} = "-O" ]; then
     OVERWRITE=1
-  elif [ ${arg} = "-I" ]; then
+  elif [ ${arg} = "-C" ]; then
     TYPE=0
     MODE=1
   elif [ ${arg} = "-L" ]; then
@@ -73,11 +75,23 @@ for arg in ${@}; do
 	else
 	  CP_XECORE[${TYPE}]=${MODE}
 	fi
-  elif [ ${arg} = "interface" ] || [ ${arg} = "i" ]; then
+  elif [ ${arg} = "template" ] || [ ${arg} = "t" ]; then
     if [ ${TYPE} = -1 ]; then
-	  CP_INTERFACE=(${MODE} ${MODE} ${MODE})
+	  CP_TEMPLATES=(${MODE} ${MODE} ${MODE})
 	else
-	  CP_INTERFACE[${TYPE}]=${MODE}
+	  CP_TEMPLATES[${TYPE}]=${MODE}
+	fi
+  elif [ ${arg} = "ide" ] || [ ${arg} = "i" ]; then
+    if [ ${TYPE} = -1 ]; then
+	  CP_IDE=(${MODE} ${MODE} ${MODE})
+	else
+	  CP_IDE[${TYPE}]=${MODE}
+	fi
+  elif [ ${arg} = "sceneviewinterface" ] || [ ${arg} = "svi" ]; then
+    if [ ${TYPE} = -1 ]; then
+	  CP_SCENEVIEWINTERFACE=(${MODE} ${MODE} ${MODE})
+	else
+	  CP_SCENEVIEWINTERFACE[${TYPE}]=${MODE}
 	fi
   elif [ ${arg} = "-all" ] || [ ${arg} = "-a" ]; then
     if [ ${TYPE} = -1 ]; then
@@ -86,14 +100,18 @@ for arg in ${@}; do
       CP_JSONCPP=(${MODE} ${MODE} ${MODE})
       CP_SFML=(${MODE} ${MODE} ${MODE})
       CP_XECORE=(${MODE} ${MODE} ${MODE})
-      CP_INTERFACE=(${MODE} ${MODE} ${MODE})
+      CP_TEMPLATES=(${MODE} ${MODE} ${MODE})
+      CP_IDE=(${MODE} ${MODE} ${MODE})
+      CP_SCENEVIEWINTERFACE=(${MODE} ${MODE} ${MODE})
 	else
 	  CP_PTAKOPYSK[${TYPE}]=${MODE}
       CP_BOX2D[${TYPE}]=${MODE}
       CP_JSONCPP[${TYPE}]=${MODE}
       CP_SFML[${TYPE}]=${MODE}
       CP_XECORE[${TYPE}]=${MODE}
-      CP_INTERFACE[${TYPE}]=${MODE}
+      CP_TEMPLATES[${TYPE}]=${MODE}
+      CP_IDE[${TYPE}]=${MODE}
+      CP_SCENEVIEWINTERFACE[${TYPE}]=${MODE}
 	fi
   else
 	echo "Unknown parameter: ${arg}"
@@ -122,8 +140,16 @@ if [ ${DEBUG} = 1 ]; then
   for val in ${CP_XECORE[*]}; do
     echo "${val}"
   done
-  echo "INTERFACE:"
-  for val in ${CP_INTERFACE[*]}; do
+  echo "TEMPLATES:"
+  for val in ${CP_TEMPLATES[*]}; do
+    echo "${val}"
+  done
+  echo "IDE:"
+  for val in ${CP_IDE[*]}; do
+    echo "${val}"
+  done
+  echo "SCENEVIEWINTERFACE:"
+  for val in ${CP_SCENEVIEWINTERFACE[*]}; do
     echo "${val}"
   done
 fi
@@ -141,9 +167,11 @@ fi
 mkdir -p ./sdk/
 cp ./LICENSE ./sdk/LICENSE
 
-# include
-echo "Copying includes..."
+# code
+echo "Copying code..."
 mkdir -p ./sdk/include/
+mkdir -p ./sdk/include/SceneViewInterface/
+mkdir -p ./sdk/templates/
 if [ ${CP_PTAKOPYSK[0]} = 1 ]; then
   cp -r ./development/Ptakopysk/include/* ./sdk/include/
 fi
@@ -160,9 +188,17 @@ fi
 if [ ${CP_XECORE[0]} = 1 ]; then
   cp -r ./development/requirements/xenon-core-3-sdk/Code/Engine/XenonCore3/include/* ./sdk/include/
 fi
-if [ ${CP_INTERFACE[0]} = 1 ]; then
-  mkdir -p ./sdk/include/PtakopyskInterface/
-  cp -r ./development/PtakopyskInterface/PtakopyskInterface.h ./sdk/include/PtakopyskInterface/
+if [ ${CP_TEMPLATES[0]} = 1 ]; then
+  cp ./templates/*.h ./sdk/templates/
+  cp ./templates/*.inl ./sdk/templates/
+  cp ./templates/*.cpp ./sdk/templates/
+  cp ./templates/*.cbp ./sdk/templates/
+  cp ./templates/make_new_project.sh ./sdk/templates/
+  cp ./templates/make_new_component.sh ./sdk/templates/
+  cp ./development/SceneViewPlugin/dllmain.cpp ./sdk/templates/
+fi
+if [ ${CP_SCENEVIEWINTERFACE[0]} = 1 ]; then
+  cp ./development/SceneViewInterface/*.h ./sdk/include/SceneViewInterface/
 fi
 
 # lib
@@ -186,45 +222,35 @@ fi
 if [ ${CP_XECORE[1]} = 1 ]; then
   cp ./development/requirements/xenon-core-3-sdk/Code/Engine/XenonCore3/libs/*.a ./sdk/lib/
 fi
-if [ ${CP_INTERFACE[1]} = 1 ]; then
-  cp ./development/PtakopyskInterface/bin/Debug/*.a ./sdk/lib/
-  cp ./development/PtakopyskInterface/bin/Release/*.a ./sdk/lib/
+if [ ${CP_SCENEVIEWINTERFACE[1]} = 1 ]; then
+  cp ./development/SceneViewInterface/bin/Debug/libSceneViewInterface.a ./sdk/lib/libSceneViewInterface-d.a
+  cp ./development/SceneViewInterface/bin/Release/libSceneViewInterface.a ./sdk/lib/libSceneViewInterface.a
 fi
 
 # bin
 echo "Copying binaries..."
 mkdir -p ./sdk/bin/
-if [ ${CP_SFML[1]} = 1 ]; then
+mkdir -p ./sdk/templates/bin/
+mkdir -p ./sdk/IDE/resources/icons/
+mkdir -p ./sdk/IDE/resources/settings/
+mkdir -p ./sdk/IDE/tools/
+if [ ${CP_SFML[2]} = 1 ]; then
   cp ./development/requirements/SFML-2.1/bin/*.dll ./sdk/bin/
 fi
-
-# templates
-echo "Copying templates..."
-mkdir -p ./sdk/templates/
-cp ./templates/*.h ./sdk/templates/
-cp ./templates/*.inl ./sdk/templates/
-cp ./templates/*.cpp ./sdk/templates/
-cp ./templates/*.cbp ./sdk/templates/
-cp ./templates/make_new_project.sh ./sdk/templates/
-cp ./templates/make_new_component.sh ./sdk/templates/
-cp ./development/EditorComponentsTemplate/dllmain.cpp ./sdk/templates/dllmain.cpp
-mkdir -p ./sdk/templates/bin/
-cp ./templates/bin/*.exe ./sdk/templates/bin/
-cp ./templates/bin/*.dll ./sdk/templates/bin/
-cp ./templates/bin/*.png ./sdk/templates/bin/
-cp ./templates/bin/*.ttf ./sdk/templates/bin/
-cp ./templates/bin/template_game.json ./sdk/templates/bin/
-
-# IDE
-echo "Copying IDE..."
-mkdir -p ./sdk/IDE/resources/icons/
-cp -r ./development/ZasuvkaPtakopyska/ZasuvkaPtakopyska/bin/Release/resources/icons/* ./sdk/IDE/resources/icons/
-mkdir -p ./sdk/IDE/resources/settings/
-cp -r ./development/ZasuvkaPtakopyska/ZasuvkaPtakopyska/bin/Release/resources/settings/* ./sdk/IDE/resources/settings/
-cp -r ./development/ZasuvkaPtakopyska/ZasuvkaPtakopyska/bin/Release/*.dll ./sdk/IDE/
-cp -r ./development/ZasuvkaPtakopyska/ZasuvkaPtakopyska/bin/Release/ZasuvkaPtakopyska.exe ./sdk/IDE/
-mkdir -p ./sdk/IDE/tools/
-cp -r ./development/ZasuvkaPtakopyska/ConsoleMetaGenerator/bin/Release/ConsoleMetaGenerator.exe ./sdk/IDE/tools/
-cp -r ./development/ZasuvkaPtakopyska/ConsoleMetaGenerator/bin/Release/*.dll ./sdk/IDE/tools/
-cp -r ./development/ZasuvkaPtakopyska/xml2json/bin/Release/xml2json.exe ./sdk/IDE/tools/
-cp -r ./development/ZasuvkaPtakopyska/xml2json/bin/Release/*.dll ./sdk/IDE/tools/
+if [ ${CP_TEMPLATES[2]} = 1 ]; then
+  cp ./templates/bin/*.exe ./sdk/templates/bin/
+  cp ./templates/bin/*.dll ./sdk/templates/bin/
+  cp ./templates/bin/*.png ./sdk/templates/bin/
+  cp ./templates/bin/*.ttf ./sdk/templates/bin/
+  cp ./templates/bin/template_game.json ./sdk/templates/bin/
+fi
+if [ ${CP_IDE[2]} = 1 ]; then
+  cp -r ./development/ZasuvkaPtakopyska/ZasuvkaPtakopyska/bin/Release/resources/icons/* ./sdk/IDE/resources/icons/
+  cp -r ./development/ZasuvkaPtakopyska/ZasuvkaPtakopyska/bin/Release/resources/settings/* ./sdk/IDE/resources/settings/
+  cp -r ./development/ZasuvkaPtakopyska/ZasuvkaPtakopyska/bin/Release/*.dll ./sdk/IDE/
+  cp -r ./development/ZasuvkaPtakopyska/ZasuvkaPtakopyska/bin/Release/ZasuvkaPtakopyska.exe ./sdk/IDE/
+  cp -r ./development/ZasuvkaPtakopyska/ConsoleMetaGenerator/bin/Release/ConsoleMetaGenerator.exe ./sdk/IDE/tools/
+  cp -r ./development/ZasuvkaPtakopyska/ConsoleMetaGenerator/bin/Release/*.dll ./sdk/IDE/tools/
+  cp -r ./development/ZasuvkaPtakopyska/xml2json/bin/Release/xml2json.exe ./sdk/IDE/tools/
+  cp -r ./development/ZasuvkaPtakopyska/xml2json/bin/Release/*.dll ./sdk/IDE/tools/
+fi

@@ -6,7 +6,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
     public class CustomAsset_PropertyEditor : AssetPropertyEditor
     {
         public CustomAsset_PropertyEditor(Dictionary<string, string> properties, string propertyName)
-            : base(properties, propertyName, PtakopyskInterface.AssetType.CustomAsset)
+            : base(properties, propertyName, SceneViewPlugin.AssetType.CustomAsset)
         {
         }
     }

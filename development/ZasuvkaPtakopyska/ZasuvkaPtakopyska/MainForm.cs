@@ -225,10 +225,10 @@ namespace ZasuvkaPtakopyska
             }
         }
 
-        public void ReloadScene()
+        public void SaveSceneBackup()
         {
             if (m_scenePage != null)
-                m_scenePage.ReloadScene();
+                m_scenePage.SaveSceneBackup();
         }
 
         public void RefreshSceneView()
@@ -253,7 +253,7 @@ namespace ZasuvkaPtakopyska
             }
         }
 
-        public void ExploreAssetsProperties(PtakopyskInterface.AssetType assetType)
+        public void ExploreAssetsProperties(SceneViewPlugin.AssetType assetType)
         {
             if (m_rightPanel == null)
                 return;
@@ -794,29 +794,34 @@ namespace ZasuvkaPtakopyska
                 Console.WriteLine("Editor CBP project file changed!");
                 if (m_buildPage != null && !m_buildPage.IsBatchProcessRunning && ProjectModel != null && !string.IsNullOrEmpty(ProjectModel.EditorCbpPath))
                 {
-                    if (!string.IsNullOrEmpty(ProjectModel.EditorPluginPath))
-                        PtakopyskInterface.Instance.PluginUnloadByPath(
-                            ProjectModel.WorkingDirectory + @"\" + ProjectModel.EditorPluginPath
-                            );
+                    if (m_scenePage != null)
+                        m_scenePage.SaveSceneBackup();
+                    SceneViewPlugin.Unload();
                     m_buildPage.BatchOperationProject(
-                        BuildPageControl.BatchOperationMode.Build,
+                        BuildPageControl.BatchOperationMode.Rebuild,
                         null,
                         ProjectModel.WorkingDirectory + @"\" + ProjectModel.EditorCbpPath
                         );
                 }
             }
-            else if (action.Id == "EditorComponentsPluginChanged")
+            else if (action.Id == "SceneViewPluginChanged")
             {
                 Console.WriteLine("Editor components plugin changed!");
                 if (ProjectModel != null && !string.IsNullOrEmpty(ProjectModel.EditorPluginPath))
                 {
                     string pluginPath = ProjectModel.WorkingDirectory + @"\" + ProjectModel.EditorPluginPath;
-                    PtakopyskInterface.Instance.PluginUnloadByPath(pluginPath);
-                    PtakopyskInterface.Instance.PluginLoad(pluginPath);
-                    List<string> clist = PtakopyskInterface.Instance.GetComponentsIds();
-                    foreach (string c in clist)
-                        Console.WriteLine("Registered component: " + c);
-                    ReloadScene();
+                    SceneViewPlugin.Unload();
+                    if (SceneViewPlugin.Load(pluginPath))
+                    {
+                        if (m_scenePage != null)
+                            m_scenePage.ReinitializeRenderer();
+                        List<string> clist = SceneViewPlugin.ListComponents();
+                        if (clist != null && clist.Count > 0)
+                            foreach (string c in clist)
+                                Console.WriteLine("Registered component: " + c);
+                        if (m_scenePage != null)
+                            m_scenePage.OpenSceneBackup();
+                    }
                 }
             }
             else if (action.Id == "LoadMetaComponent" && action.Params != null && action.Params.Length > 0)
@@ -1058,7 +1063,7 @@ namespace ZasuvkaPtakopyska
                 else if (e.FullPath == ProjectModel.WorkingDirectory + @"\" + ProjectModel.EditorCbpPath)
                     DoAction(new Action("EditorCbpChanged"));
                 else if (e.FullPath == ProjectModel.WorkingDirectory + @"\" + ProjectModel.EditorPluginPath)
-                    DoAction(new Action("EditorComponentsPluginChanged"));
+                    DoAction(new Action("SceneViewPluginChanged"));
                 else if (Path.GetExtension(e.FullPath) == ".h" && ProjectModel.Files.Contains(e.FullPath))
                     Parallel.Invoke(() => GenerateMetaFile(e.FullPath));
             }
@@ -1071,7 +1076,7 @@ namespace ZasuvkaPtakopyska
                 if (e.FullPath == ProjectModel.WorkingDirectory + @"\" + ProjectModel.EditorCbpPath)
                     DoAction(new Action("EditorCbpChanged"));
                 else if (e.FullPath == ProjectModel.WorkingDirectory + @"\" + ProjectModel.EditorPluginPath)
-                    DoAction(new Action("EditorComponentsPluginChanged"));
+                    DoAction(new Action("SceneViewPluginChanged"));
                 else if (Path.GetExtension(e.FullPath) == ".h" && ProjectModel.Files.Contains(e.FullPath))
                     Parallel.Invoke(() => GenerateMetaFile(e.FullPath));
                 if (m_projectFilesPanel != null)

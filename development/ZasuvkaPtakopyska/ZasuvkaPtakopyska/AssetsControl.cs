@@ -41,14 +41,14 @@ namespace ZasuvkaPtakopyska
                 }
             }
 
-            private PtakopyskInterface.AssetType m_assetType;
+            private SceneViewPlugin.AssetType m_assetType;
             private string m_lastId;
             private String_PropertyEditor m_idEditor;
             private List<KeyValuePair<string, IEditorJsonValue>> m_metaEditors = new List<KeyValuePair<string, IEditorJsonValue>>();
             private Tags_PropertyEditor m_tagsEditor;
             private Dictionary<string, string> m_subProperties = new Dictionary<string, string>();
 
-            public Asset_PropertyEditor(Dictionary<string, string> properties, string propertyName, PtakopyskInterface.AssetType assetType, MetaEditorInfo[] metaEditors, string id, string meta, string tags)
+            public Asset_PropertyEditor(Dictionary<string, string> properties, string propertyName, SceneViewPlugin.AssetType assetType, MetaEditorInfo[] metaEditors, string id, string meta, string tags)
                 : base(properties, propertyName)
             {
                 m_assetType = assetType;
@@ -214,7 +214,7 @@ namespace ZasuvkaPtakopyska
             {
                 string freeQuery = "\"free\": [ \"" + m_lastId + "\" ], ";
                 string query = "{ " + (string.IsNullOrEmpty(m_lastId) ? "" : freeQuery) + "\"load\": [ " + JsonValue + " ] }";
-                if (PtakopyskInterface.Instance.QueryAssets(m_assetType, query))
+                if (SceneViewPlugin.QueryAssets(m_assetType, query) != null)
                 {
                     MainForm mainForm = FindForm() as MainForm;
                     if (mainForm != null)
@@ -228,7 +228,7 @@ namespace ZasuvkaPtakopyska
             private void removeButton_Click(object sender, EventArgs e)
             {
                 string query = "{ \"free\": [ \"" + m_lastId + "\" ] }";
-                if (PtakopyskInterface.Instance.QueryAssets(m_assetType, query))
+                if (SceneViewPlugin.QueryAssets(m_assetType, query) != null)
                 {
                     MainForm mainForm = FindForm() as MainForm;
                     if (mainForm != null)
@@ -254,7 +254,7 @@ namespace ZasuvkaPtakopyska
 
         #region Private Data.
 
-        private PtakopyskInterface.AssetType m_type;
+        private SceneViewPlugin.AssetType m_type;
         private Dictionary<string, string> m_properties = new Dictionary<string, string>();
         private MetroButton m_addAssetButton;
         #endregion
@@ -286,7 +286,7 @@ namespace ZasuvkaPtakopyska
 
         #region Construction and Destruction.
 
-        public AssetsControl(PtakopyskInterface.AssetType type, ProjectModel projectModel)
+        public AssetsControl(SceneViewPlugin.AssetType type, ProjectModel projectModel)
         {
             m_type = type;
 
@@ -316,17 +316,11 @@ namespace ZasuvkaPtakopyska
         private int InitializeAssets(ProjectModel projectModel, int y)
         {
             Asset_PropertyEditor temp;
-            PtakopyskInterface.Instance.StartIterateAssets(m_type);
-            while (PtakopyskInterface.Instance.CanIterateAssetsNext(m_type))
-            {
-                string id = PtakopyskInterface.Instance.GetIteratedAssetId(m_type);
-                string meta = PtakopyskInterface.Instance.GetIteratedAssetMeta(m_type);
-                string tags = PtakopyskInterface.Instance.GetIteratedAssetTags(m_type);
-                y = AddAsset(id, meta, tags, projectModel, out temp, y);
-                PtakopyskInterface.Instance.IterateAssetsNext(m_type);
-            }
-            PtakopyskInterface.Instance.EndIterateAssets(m_type);
-
+            List<string> assets = SceneViewPlugin.ListAssets(m_type);
+            var data = SceneViewPlugin.GetAssets<SceneViewPlugin.AssetsCommonData>(m_type, assets);
+            foreach (var d in data)
+                y = AddAsset(d.id, d.meta, d.tags == null ? "" : string.Join("|", d.tags.ToArray()), projectModel, out temp, y);
+            
             m_addAssetButton = new MetroButton();
             MetroSkinManager.ApplyMetroStyle(m_addAssetButton);
             m_addAssetButton.Text = "Add New Asset";
@@ -345,7 +339,7 @@ namespace ZasuvkaPtakopyska
         {
             m_properties[id] = "null";
             Asset_PropertyEditor editor = null;
-            if (m_type == PtakopyskInterface.AssetType.Texture)
+            if (m_type == SceneViewPlugin.AssetType.Texture)
             {
                 editor = new Asset_PropertyEditor(m_properties, id, m_type,
                     new Asset_PropertyEditor.MetaEditorInfo[] {
@@ -359,7 +353,7 @@ namespace ZasuvkaPtakopyska
                         pathEditor.RootPath = projectModel.WorkingDirectory + @"\" + projectModel.ActiveTargetWorkingDirectory;
                 }
             }
-            else if (m_type == PtakopyskInterface.AssetType.Shader)
+            else if (m_type == SceneViewPlugin.AssetType.Shader)
             {
                 editor = new Asset_PropertyEditor(m_properties, id, m_type,
                     new Asset_PropertyEditor.MetaEditorInfo[] {
@@ -381,7 +375,7 @@ namespace ZasuvkaPtakopyska
                         fspathEditor.RootPath = projectModel.WorkingDirectory + @"\" + projectModel.ActiveTargetWorkingDirectory;
                 }
             }
-            else if (m_type == PtakopyskInterface.AssetType.Sound)
+            else if (m_type == SceneViewPlugin.AssetType.Sound)
             {
                 editor = new Asset_PropertyEditor(m_properties, id, m_type,
                     new Asset_PropertyEditor.MetaEditorInfo[] {
@@ -395,7 +389,7 @@ namespace ZasuvkaPtakopyska
                         pathEditor.RootPath = projectModel.WorkingDirectory + @"\" + projectModel.ActiveTargetWorkingDirectory;
                 }
             }
-            else if (m_type == PtakopyskInterface.AssetType.Music)
+            else if (m_type == SceneViewPlugin.AssetType.Music)
             {
                 editor = new Asset_PropertyEditor(m_properties, id, m_type,
                     new Asset_PropertyEditor.MetaEditorInfo[] {
@@ -409,7 +403,7 @@ namespace ZasuvkaPtakopyska
                         pathEditor.RootPath = projectModel.WorkingDirectory + @"\" + projectModel.ActiveTargetWorkingDirectory;
                 }
             }
-            else if (m_type == PtakopyskInterface.AssetType.Font)
+            else if (m_type == SceneViewPlugin.AssetType.Font)
             {
                 editor = new Asset_PropertyEditor(m_properties, id, m_type,
                     new Asset_PropertyEditor.MetaEditorInfo[] {
@@ -423,7 +417,7 @@ namespace ZasuvkaPtakopyska
                         pathEditor.RootPath = projectModel.WorkingDirectory + @"\" + projectModel.ActiveTargetWorkingDirectory;
                 }
             }
-            else if (m_type == PtakopyskInterface.AssetType.CustomAsset)
+            else if (m_type == SceneViewPlugin.AssetType.CustomAsset)
             {
                 editor = new Asset_PropertyEditor(m_properties, id, m_type,
                     new Asset_PropertyEditor.MetaEditorInfo[] {
@@ -433,7 +427,7 @@ namespace ZasuvkaPtakopyska
                 EnumPropertyEditor typeEditor = editor == null ? null : editor.GetMetaEditor<EnumPropertyEditor>("type");
                 if (typeEditor != null)
                 {
-                    List<string> values = PtakopyskInterface.Instance.GetCustomAssetsIds();
+                    List<string> values = SceneViewPlugin.ListCustomAssets();
                     typeEditor.ValuesSource = values == null ? null : values.ToArray();
                 }
                 Path_PropertyEditor pathEditor = editor == null ? null : editor.GetMetaEditor<Path_PropertyEditor>("path");
