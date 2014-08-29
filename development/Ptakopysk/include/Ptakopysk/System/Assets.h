@@ -9,6 +9,7 @@
 #include <SFML/Audio.hpp>
 #include <json/json.h>
 #include <map>
+#include <sstream>
 
 namespace Ptakopysk
 {
@@ -67,6 +68,7 @@ namespace Ptakopysk
         Assets();
         virtual ~Assets();
 
+        FORCEINLINE std::string makePath( const std::string& path ) { std::stringstream ss; if( !m_fileSystemRoot.empty() ) ss << m_fileSystemRoot.c_str(); ss << path.c_str(); return ss.str(); };
         Json::Value loadJson( const std::string& path, bool binary = false, dword binaryKeyHash = 0 );
         bool saveJson( const std::string& path, const Json::Value& root, bool binary = false, dword binaryKeyHash = 0 );
         std::string loadText( const std::string& path );

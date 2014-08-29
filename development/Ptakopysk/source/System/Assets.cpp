@@ -1,8 +1,8 @@
 #include "../../include/Ptakopysk/System/Assets.h"
 #include <XeCore/Common/String.h>
 #include <XeCore/Common/Logger.h>
-#include <fstream>
 #include <BinaryJson/BinaryJson.h>
+#include <fstream>
 
 namespace Ptakopysk
 {
@@ -44,25 +44,12 @@ namespace Ptakopysk
     Json::Value Assets::loadJson( const std::string& path, bool binary, dword binaryKeyHash )
     {
         std::ifstream file;
-        if( m_fileSystemRoot.empty() )
+        std::string p = makePath( path );
+        file.open( p.c_str(), std::ifstream::in | std::ifstream::binary );
+        if( !file.good() )
         {
-            file.open( path.c_str(), std::ifstream::in | std::ifstream::binary );
-            if( !file.good() )
-            {
-                file.close();
-                return Json::Value::null;
-            }
-        }
-        else
-        {
-            std::stringstream ss;
-            ss << m_fileSystemRoot.c_str() << path;
-            file.open( ss.str().c_str(), std::ifstream::in | std::ifstream::binary );
-            if( !file.good() )
-            {
-                file.close();
-                return Json::Value::null;
-            }
+            file.close();
+            return Json::Value::null;
         }
         file.seekg( 0, std::ifstream::end );
         unsigned int fsize = file.tellg();
@@ -90,25 +77,12 @@ namespace Ptakopysk
     bool Assets::saveJson( const std::string& path, const Json::Value& root, bool binary, dword binaryKeyHash )
     {
         std::ofstream file;
-        if( m_fileSystemRoot.empty() )
+        std::string p = makePath( path );
+        file.open( p.c_str(), std::ofstream::out | std::ofstream::binary );
+        if( !file.good() )
         {
-            file.open( path.c_str(), std::ofstream::out | std::ofstream::binary );
-            if( !file.good() )
-            {
-                file.close();
-                return false;
-            }
-        }
-        else
-        {
-            std::stringstream ss;
-            ss << m_fileSystemRoot.c_str() << path;
-            file.open( ss.str().c_str(), std::ofstream::out | std::ofstream::binary );
-            if( !file.good() )
-            {
-                file.close();
-                return false;
-            }
+            file.close();
+            return false;
         }
         if( binary )
         {
@@ -132,25 +106,12 @@ namespace Ptakopysk
     std::string Assets::loadText( const std::string& path )
     {
         std::ifstream file;
-        if( m_fileSystemRoot.empty() )
+        std::string p = makePath( path );
+        file.open( p.c_str(), std::ifstream::in | std::ifstream::binary );
+        if( !file.good() )
         {
-            file.open( path.c_str(), std::ifstream::in | std::ifstream::binary );
-            if( !file.good() )
-            {
-                file.close();
-                return "";
-            }
-        }
-        else
-        {
-            std::stringstream ss;
-            ss << m_fileSystemRoot.c_str() << path;
-            file.open( ss.str().c_str(), std::ifstream::in | std::ifstream::binary );
-            if( !file.good() )
-            {
-                file.close();
-                return "";
-            }
+            file.close();
+            return "";
         }
         file.seekg( 0, std::ifstream::end );
         unsigned int fsize = file.tellg();
@@ -165,25 +126,12 @@ namespace Ptakopysk
     bool Assets::saveText( const std::string& path, const std::string& content )
     {
         std::ofstream file;
-        if( m_fileSystemRoot.empty() )
+        std::string p = makePath( path );
+        file.open( path.c_str(), std::ofstream::out | std::ofstream::binary );
+        if( !file.good() )
         {
-            file.open( path.c_str(), std::ofstream::out | std::ofstream::binary );
-            if( !file.good() )
-            {
-                file.close();
-                return false;
-            }
-        }
-        else
-        {
-            std::stringstream ss;
-            ss << m_fileSystemRoot.c_str() << path;
-            file.open( ss.str().c_str(), std::ofstream::out | std::ofstream::binary );
-            if( !file.good() )
-            {
-                file.close();
-                return false;
-            }
+            file.close();
+            return false;
         }
         file.write( content.c_str(), content.length() );
         file.close();
@@ -987,28 +935,12 @@ namespace Ptakopysk
             t = m_customFactory[ type ].builder( this );
             if( !t )
                 return 0;
-            if( m_fileSystemRoot.empty() )
+            if( !t->onLoad( path ) )
             {
-                if( !t->onLoad( path ) )
+                if( m_loadingMode != LoadIfFilesExists || !fileExists( path ) )
                 {
-                    if( m_loadingMode != LoadIfFilesExists || !fileExists( path ) )
-                    {
-                        DELETE_OBJECT( t );
-                        return 0;
-                    }
-                }
-            }
-            else
-            {
-                std::stringstream ss;
-                ss << m_fileSystemRoot.c_str() << path;
-                if( !t->onLoad( ss.str() ) )
-                {
-                    if( m_loadingMode != LoadIfFilesExists || !fileExists( ss.str() ) )
-                    {
-                        DELETE_OBJECT( t );
-                        return 0;
-                    }
+                    DELETE_OBJECT( t );
+                    return 0;
                 }
             }
             m_custom[ id ] = t;
