@@ -1,0 +1,27 @@
+{
+  "Type": "Component",
+  "Name": "SpriteAtlas",
+  "Description": "Sprite atlas component that apply subtexture into SpriteRenderer.",
+  "BaseClasses": [
+    "XeCore::Common::IRtti",
+    "XeCore::Common::MemoryManager::Manageable",
+    "Component"
+  ],
+  "Properties": [
+    {
+      "Name": "SpriteAtlasInstance",
+      "Description": "Sprite atlas asset.",
+      "ValueType": "ICustomAsset",
+      "DefaultValue": null
+    },
+    {
+      "Name": "SubTextureName",
+      "Description": "Subtexture name.",
+      "ValueType": "std::string",
+      "DefaultValue": null
+    }
+  ],
+  "FunctionalityTriggers": [
+    "Apply to SpriteRenderer"
+  ]
+}

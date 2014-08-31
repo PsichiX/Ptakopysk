@@ -5,17 +5,13 @@ RTTI_CLASS_DERIVATIONS( TemplateAsset,
 						RTTI_DERIVATIONS_END
 						)
 
-TemplateAsset::TemplateAsset( Assets* owner )
+TemplateAsset::TemplateAsset()
 : RTTI_CLASS_DEFINE( TemplateAsset )
-, ICustomAsset( owner )
 {
 }
 
 bool TemplateAsset::onLoad( const std::string& path )
 {
-	if( !getOwner() )
-		return false;
-    
-	m_content = getOwner()->loadText( path );
+	m_content = Assets::use().loadText( path );
     return true;
 }

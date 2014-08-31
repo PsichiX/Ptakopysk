@@ -856,7 +856,7 @@
 	<SFML/System/Vector2.hpp>
 	<SFML/Graphics/Transform.hpp>
 
-1409316241 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\assets.h
+1409419337 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\assets.h
 	<XeCore/Common/Base.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -880,7 +880,7 @@
 1407739469 source:d:\git\ptakopysk\development\ptakopysk\source\serialization\serialized.cpp
 	"../../include/Ptakopysk/Serialization/Serialized.h"
 
-1409316251 source:d:\git\ptakopysk\development\ptakopysk\source\system\assets.cpp
+1409419439 source:d:\git\ptakopysk\development\ptakopysk\source\system\assets.cpp
 	"../../include/Ptakopysk/System/Assets.h"
 	<XeCore/Common/String.h>
 	<XeCore/Common/Logger.h>
@@ -898,15 +898,17 @@
 	<string>
 	<list>
 
-1409077918 source:d:\git\ptakopysk\development\ptakopysk\source\system\gamemanager.cpp
+1409428471 source:d:\git\ptakopysk\development\ptakopysk\source\system\gamemanager.cpp
 	"../../include/Ptakopysk/System/GameManager.h"
-	"../../include/Ptakopysk/Components/Transform.h"
+	"../../include/Ptakopysk/Components/Body.h"
+	"../../include/Ptakopysk/Components/Camera.h"
+	"../../include/Ptakopysk/Components/RevoluteJoint.h"
+	"../../include/Ptakopysk/Components/SpriteAtlas.h"
 	"../../include/Ptakopysk/Components/SpriteRenderer.h"
 	"../../include/Ptakopysk/Components/TextRenderer.h"
-	"../../include/Ptakopysk/Components/Camera.h"
-	"../../include/Ptakopysk/Components/Body.h"
-	"../../include/Ptakopysk/Components/RevoluteJoint.h"
+	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/System/Assets.h"
+	"../../include/Ptakopysk/CustomAssets/SpriteAtlasAsset.h"
 	"../../include/Ptakopysk/Serialization/b2BodyTypeSerializer.h"
 	"../../include/Ptakopysk/Serialization/b2FilterSerializer.h"
 	"../../include/Ptakopysk/Serialization/BlendModeSerializer.h"
@@ -1056,4 +1058,23 @@
 	"../Components/Component.h"
 
 1409077918 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\meta.h
+
+1409420330 source:d:\git\ptakopysk\development\ptakopysk\source\components\spriteatlas.cpp
+	"../../include/Ptakopysk/Components/SpriteAtlas.h"
+	"../../include/Ptakopysk/System/GameObject.h"
+	"../../include/Ptakopysk/Components/SpriteRenderer.h"
+
+1409420194 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\spriteatlas.h
+	"Component.h"
+	"../CustomAssets/SpriteAtlasAsset.h"
+
+1409426084 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\customassets\spriteatlasasset.h
+	"../System/Assets.h"
+	"../Components/SpriteRenderer.h"
+	<SFML/Graphics/Rect.hpp>
+	<map>
+
+1409426094 source:d:\git\ptakopysk\development\ptakopysk\source\customassets\spriteatlasasset.cpp
+	"../../include/Ptakopysk/CustomAssets/SpriteAtlasAsset.h"
+	<sstream>
 

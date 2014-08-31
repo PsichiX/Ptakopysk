@@ -89,12 +89,12 @@ int main()
     /// serialize scene to JSON.
     Assets::use().saveJson( "_template_game.json", gameManager->sceneToJson() );
 
-    DELETE_OBJECT( window );
     DELETE_OBJECT( gameManager );
+    DELETE_OBJECT( window );
+    GameManager::cleanup();
     Assets::destroy();
     Events::destroy();
-	Tweener::destroy();
-    GameManager::cleanup();
+    Tweener::destroy();
 
     return 0;
 }

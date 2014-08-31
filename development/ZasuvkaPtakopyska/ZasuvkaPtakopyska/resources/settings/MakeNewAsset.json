@@ -1,0 +1,12 @@
+[
+	[ "makeDir", "@outputPath@" ],
+	[ "copyFile", "@inputPath@/TemplateAsset.h", "@outputPath@/@name@.h" ],
+	[ "replaceInFile", "@outputPath@/@name@.h", [
+		[ "TemplateAsset", "@name@" ],
+		[ "__TEMPLATE_ASSET__", "__@nameUpper@__" ]
+	] ],
+	[ "copyFile", "@inputPath@/TemplateAsset.cpp", "@outputPath@/@name@.cpp" ],
+	[ "replaceInFile", "@outputPath@/@name@.cpp", [
+		[ "TemplateAsset", "@name@" ]
+	] ]
+]

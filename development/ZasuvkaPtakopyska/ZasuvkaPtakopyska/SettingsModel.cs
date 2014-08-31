@@ -1,6 +1,7 @@
-﻿using System.IO;
-using System;
+﻿using System;
+using System.IO;
 using System.Windows.Forms;
+
 namespace ZasuvkaPtakopyska
 {
     public class SettingsModel
@@ -9,7 +10,6 @@ namespace ZasuvkaPtakopyska
 
         public string SdkPath { get; set; }
         public string CodeBlocksIdePath { get; set; }
-        public string BashBinPath { get; set; }
         public MetroFramework.MetroColorStyle UiStyle { get; set; }
         public MetroFramework.MetroThemeStyle UiTheme { get; set; }
         public FormWindowState WindowState { get; set; }
@@ -30,7 +30,6 @@ namespace ZasuvkaPtakopyska
         {
             SdkPath = "..";
             CodeBlocksIdePath = Utils.GetCodeBlocksInstallationPath();
-            BashBinPath = "";
             UiStyle = MetroFramework.MetroColorStyle.Orange;
             UiTheme = MetroFramework.MetroThemeStyle.Dark;
             WindowState = FormWindowState.Normal;
@@ -66,12 +65,6 @@ namespace ZasuvkaPtakopyska
             return  !String.IsNullOrEmpty(CodeBlocksIdePath)
                     && Directory.Exists(CodeBlocksIdePath)
                     && File.Exists(CodeBlocksIdePath + @"\codeblocks.exe");
-        }
-
-        public bool ValidateBashBinPath()
-        {
-            return  !String.IsNullOrEmpty(BashBinPath)
-                    && File.Exists(BashBinPath);
         }
 
         #endregion

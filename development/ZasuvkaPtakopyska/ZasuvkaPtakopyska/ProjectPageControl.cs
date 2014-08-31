@@ -167,37 +167,21 @@ namespace ZasuvkaPtakopyska
             if (mainForm == null || mainForm.SettingsModel == null)
                 return;
 
-            if (!File.Exists(mainForm.SettingsModel.BashBinPath))
-            {
-                MetroMessageBox.Show(mainForm, "Bash executable not found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
             path = Path.GetFullPath(path);
-            string unixPath = Utils.ConvertWindowsToUnixPath(path);
             string wrkdir = mainForm.SettingsModel.SdkPath + @"\templates";
-            Process proc = new Process();
-            ProcessStartInfo info = new ProcessStartInfo();
-            info.WorkingDirectory = Path.GetFullPath(wrkdir);
-            info.FileName = Path.GetFullPath(mainForm.SettingsModel.BashBinPath);
-            info.Arguments = "-l -c './make_new_project.sh -o \"" + unixPath + "\" -p \"" + name + "\"'";
-            info.UseShellExecute = false;
-            info.CreateNoWindow = true;
-            //info.RedirectStandardOutput = true;
-            proc.StartInfo = info;
-            if (File.Exists(info.FileName))
+
+            Newtonsoft.Json.Linq.JObject args = new Newtonsoft.Json.Linq.JObject();
+            args["inputPath"] = wrkdir;
+            args["outputPath"] = path;
+            args["name"] = name;
+            if(TemplateFilesManager.ProcessTemplates("resources/settings/MakeNewProject.json", args) && Directory.Exists(path))
             {
-                proc.Start();
-                proc.WaitForExit();
-                if (Directory.Exists(path))
-                {
-                    ProjectModel projectModel = new ProjectModel(name + ".cbp");
-                    projectModel.WorkingDirectory = Path.GetDirectoryName(path);
-                    projectModel.UpdateFromCbp();
-                    string json = JsonConvert.SerializeObject(projectModel, Formatting.Indented);
-                    File.WriteAllText(path + @"\project.zasuvka", json);
-                    OpenProject(path + @"\project.zasuvka");
-                }
+                ProjectModel projectModel = new ProjectModel(name + ".cbp");
+                projectModel.WorkingDirectory = Path.GetDirectoryName(path);
+                projectModel.UpdateFromCbp();
+                string json = JsonConvert.SerializeObject(projectModel, Formatting.Indented);
+                File.WriteAllText(path + @"\project.zasuvka", json);
+                OpenProject(path + @"\project.zasuvka");
             }
         }
 

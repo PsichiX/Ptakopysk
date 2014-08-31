@@ -17,9 +17,9 @@ class TemplateAsset
     RTTI_CLASS_DECLARE( TemplateAsset );
 
 public:
-    TemplateAsset( Assets* owner );
+    TemplateAsset();
 
-    FORCEINLINE static ICustomAsset* onBuildCustomAsset( Assets* owner ) { return xnew TemplateAsset( owner ); };
+    FORCEINLINE static ICustomAsset* onBuildCustomAsset() { return xnew TemplateAsset(); };
 
 	FORCEINLINE std::string getContent() { return m_content; };
 	

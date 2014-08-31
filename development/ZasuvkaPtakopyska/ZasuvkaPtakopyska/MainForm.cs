@@ -723,25 +723,6 @@ namespace ZasuvkaPtakopyska
                     SelectTabPage(TAB_NAME_SETTINGS);
                 return false;
             }
-            if (!SettingsModel.ValidateBashBinPath())
-            {
-                DialogResult result = MetroFramework.MetroMessageBox.Show(this, "Make sure that Bash Executable Location is correctly pointing at Bash Executable file!\nDo you want to download Msys GIT with Bash?", "Invalid Settings", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
-                if (result == DialogResult.Yes)
-                {
-                    string json = File.ReadAllText("resources/settings/InstallationSettings.json");
-                    InstallationSettings install = JsonConvert.DeserializeObject<InstallationSettings>(json);
-                    if (m_welcomePage != null && install != null)
-                    {
-                        m_welcomePage.Navigate(install.MsysGitBashDownloadUri);
-                        SelectTabPage(TAB_NAME_WELCOME);
-                    }
-                    else
-                        SelectTabPage(TAB_NAME_SETTINGS);
-                }
-                else
-                    SelectTabPage(TAB_NAME_SETTINGS);
-                return false;
-            }
             m_settingsValidated = true;
             return true;
         }

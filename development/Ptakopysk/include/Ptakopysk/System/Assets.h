@@ -24,18 +24,13 @@ namespace Ptakopysk
         friend class Assets;
 
     public:
-        typedef ICustomAsset* ( *OnBuildCustomAssetCallback )( Assets* owner );
+        typedef ICustomAsset* ( *OnBuildCustomAssetCallback )();
 
-        ICustomAsset( Assets* owner );
+        ICustomAsset();
         virtual ~ICustomAsset();
-
-        FORCEINLINE Assets* getOwner() { return m_owner; };
 
     protected:
         virtual bool onLoad( const std::string& path ) = 0;
-
-    private:
-        Assets* m_owner;
     };
 
     class AssetsChangedListener

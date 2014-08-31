@@ -42,10 +42,13 @@ namespace ConsoleMetaGenerator
 
         private static void ProcessFile(string input, string output, string type)
         {
+            if (string.IsNullOrEmpty(input))
+                return;
+            input = Path.GetFullPath(input);
             if (string.IsNullOrEmpty(output))
                 output = input;
-            if (!Path.IsPathRooted(output))
-                output = Path.GetDirectoryName(input) + @"\" + output;
+            //if (!Path.IsPathRooted(output))
+            //    output = Path.GetDirectoryName(input) + @"\" + output;
 
             if (Path.GetExtension(output) != ".meta")
                 output += ".meta";

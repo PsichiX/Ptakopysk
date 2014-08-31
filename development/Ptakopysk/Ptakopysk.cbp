@@ -64,9 +64,11 @@
 		<Unit filename="include/Ptakopysk/Components/Camera.h" />
 		<Unit filename="include/Ptakopysk/Components/Component.h" />
 		<Unit filename="include/Ptakopysk/Components/RevoluteJoint.h" />
+		<Unit filename="include/Ptakopysk/Components/SpriteAtlas.h" />
 		<Unit filename="include/Ptakopysk/Components/SpriteRenderer.h" />
 		<Unit filename="include/Ptakopysk/Components/TextRenderer.h" />
 		<Unit filename="include/Ptakopysk/Components/Transform.h" />
+		<Unit filename="include/Ptakopysk/CustomAssets/SpriteAtlasAsset.h" />
 		<Unit filename="include/Ptakopysk/Serialization/BitFieldSerializer.h" />
 		<Unit filename="include/Ptakopysk/Serialization/BlendModeSerializer.h" />
 		<Unit filename="include/Ptakopysk/Serialization/EnumSerializer.h" />
@@ -90,9 +92,11 @@
 		<Unit filename="source/Components/Camera.cpp" />
 		<Unit filename="source/Components/Component.cpp" />
 		<Unit filename="source/Components/RevoluteJoint.cpp" />
+		<Unit filename="source/Components/SpriteAtlas.cpp" />
 		<Unit filename="source/Components/SpriteRenderer.cpp" />
 		<Unit filename="source/Components/TextRenderer.cpp" />
 		<Unit filename="source/Components/Transform.cpp" />
+		<Unit filename="source/CustomAssets/SpriteAtlasAsset.cpp" />
 		<Unit filename="source/Serialization/BitFieldSerializer.cpp" />
 		<Unit filename="source/Serialization/EnumSerializer.cpp" />
 		<Unit filename="source/Serialization/Serialized.cpp" />

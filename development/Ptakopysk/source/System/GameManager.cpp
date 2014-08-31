@@ -1,11 +1,13 @@
 #include "../../include/Ptakopysk/System/GameManager.h"
-#include "../../include/Ptakopysk/Components/Transform.h"
+#include "../../include/Ptakopysk/Components/Body.h"
+#include "../../include/Ptakopysk/Components/Camera.h"
+#include "../../include/Ptakopysk/Components/RevoluteJoint.h"
+#include "../../include/Ptakopysk/Components/SpriteAtlas.h"
 #include "../../include/Ptakopysk/Components/SpriteRenderer.h"
 #include "../../include/Ptakopysk/Components/TextRenderer.h"
-#include "../../include/Ptakopysk/Components/Camera.h"
-#include "../../include/Ptakopysk/Components/Body.h"
-#include "../../include/Ptakopysk/Components/RevoluteJoint.h"
+#include "../../include/Ptakopysk/Components/Transform.h"
 #include "../../include/Ptakopysk/System/Assets.h"
+#include "../../include/Ptakopysk/CustomAssets/SpriteAtlasAsset.h"
 #include "../../include/Ptakopysk/Serialization/b2BodyTypeSerializer.h"
 #include "../../include/Ptakopysk/Serialization/b2FilterSerializer.h"
 #include "../../include/Ptakopysk/Serialization/BlendModeSerializer.h"
@@ -204,17 +206,20 @@ namespace Ptakopysk
         Serialized::registerCustomSerializer( "BlendMode", xnew BlendModeSerializer() );
         Serialized::registerCustomSerializer( "Style", xnew StyleSerializer() );
         Serialized::registerCustomSerializer( "Transform::ModeType", xnew TransformModeSerializer() );
-        registerComponentFactory( "Transform", RTTI_CLASS_TYPE( Transform ), Transform::onBuildComponent );
+        Assets::use().registerCustomAssetFactory( "SpriteAtlasAsset", RTTI_CLASS_TYPE( SpriteAtlasAsset ), SpriteAtlasAsset::onBuildCustomAsset );
+        registerComponentFactory( "Body", RTTI_CLASS_TYPE( Body ), Body::onBuildComponent );
+        registerComponentFactory( "Camera", RTTI_CLASS_TYPE( Camera ), Camera::onBuildComponent );
+        registerComponentFactory( "RevoluteJoint", RTTI_CLASS_TYPE( RevoluteJoint ), RevoluteJoint::onBuildComponent );
+        registerComponentFactory( "SpriteAtlas", RTTI_CLASS_TYPE( SpriteAtlas ), SpriteAtlas::onBuildComponent );
         registerComponentFactory( "SpriteRenderer", RTTI_CLASS_TYPE( SpriteRenderer ), SpriteRenderer::onBuildComponent );
         registerComponentFactory( "TextRenderer", RTTI_CLASS_TYPE( TextRenderer ), TextRenderer::onBuildComponent );
-        registerComponentFactory( "Camera", RTTI_CLASS_TYPE( Camera ), Camera::onBuildComponent );
-        registerComponentFactory( "Body", RTTI_CLASS_TYPE( Body ), Body::onBuildComponent );
-        registerComponentFactory( "RevoluteJoint", RTTI_CLASS_TYPE( RevoluteJoint ), RevoluteJoint::onBuildComponent );
+        registerComponentFactory( "Transform", RTTI_CLASS_TYPE( Transform ), Transform::onBuildComponent );
     }
 
     void GameManager::cleanup()
     {
         Serialized::unregisterAllCustomSerializers();
+        Assets::use().unregisterAllCustomAssetFactories();
         unregisterAllComponentFactories();
     }
 

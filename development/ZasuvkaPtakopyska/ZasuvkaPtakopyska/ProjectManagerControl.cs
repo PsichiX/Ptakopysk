@@ -363,28 +363,16 @@ namespace ZasuvkaPtakopyska
             if (mainForm == null || mainForm.SettingsModel == null || mainForm.ProjectModel == null)
                 return;
 
-            if (!File.Exists(mainForm.SettingsModel.BashBinPath))
-            {
-                MetroMessageBox.Show(mainForm, "Bash executable not found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
             path = Path.GetFullPath(path);
-            string unixPath = Utils.ConvertWindowsToUnixPath(path);
             string wrkdir = mainForm.SettingsModel.SdkPath + @"\templates";
-            Process proc = new Process();
-            ProcessStartInfo info = new ProcessStartInfo();
-            info.WorkingDirectory = Path.GetFullPath(wrkdir);
-            info.FileName = Path.GetFullPath(mainForm.SettingsModel.BashBinPath);
-            info.Arguments = "-l -c './make_new_component.sh -o \"" + unixPath + "\" -c \"" + name + "\"'";
-            info.UseShellExecute = false;
-            info.CreateNoWindow = true;
-            //info.RedirectStandardOutput = true;
-            proc.StartInfo = info;
-            if (File.Exists(info.FileName))
+
+            Newtonsoft.Json.Linq.JObject args = new Newtonsoft.Json.Linq.JObject();
+            args["inputPath"] = wrkdir;
+            args["outputPath"] = path;
+            args["name"] = name;
+            args["nameUpper"] = name.ToUpperInvariant();
+            if (TemplateFilesManager.ProcessTemplates("resources/settings/MakeNewComponent.json", args))
             {
-                proc.Start();
-                proc.WaitForExit();
                 string cppPath = path + @"\" + name + ".cpp";
                 string hPath = path + @"\" + name + ".h";
                 mainForm.ProjectModel.Files.Add(cppPath);
@@ -405,28 +393,15 @@ namespace ZasuvkaPtakopyska
             if (mainForm == null || mainForm.SettingsModel == null || mainForm.ProjectModel == null)
                 return;
 
-            if (!File.Exists(mainForm.SettingsModel.BashBinPath))
-            {
-                MetroMessageBox.Show(mainForm, "Bash executable not found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
             path = Path.GetFullPath(path);
-            string unixPath = Utils.ConvertWindowsToUnixPath(path);
             string wrkdir = mainForm.SettingsModel.SdkPath + @"\templates";
-            Process proc = new Process();
-            ProcessStartInfo info = new ProcessStartInfo();
-            info.WorkingDirectory = Path.GetFullPath(wrkdir);
-            info.FileName = Path.GetFullPath(mainForm.SettingsModel.BashBinPath);
-            info.Arguments = "-l -c './make_new_asset.sh -o \"" + unixPath + "\" -a \"" + name + "\"'";
-            info.UseShellExecute = false;
-            info.CreateNoWindow = true;
-            //info.RedirectStandardOutput = true;
-            proc.StartInfo = info;
-            if (File.Exists(info.FileName))
+            Newtonsoft.Json.Linq.JObject args = new Newtonsoft.Json.Linq.JObject();
+            args["inputPath"] = wrkdir;
+            args["outputPath"] = path;
+            args["name"] = name;
+            args["nameUpper"] = name.ToUpperInvariant();
+            if (TemplateFilesManager.ProcessTemplates("resources/settings/MakeNewAsset.json", args))
             {
-                proc.Start();
-                proc.WaitForExit();
                 string cppPath = path + @"\" + name + ".cpp";
                 string hPath = path + @"\" + name + ".h";
                 mainForm.ProjectModel.Files.Add(cppPath);
@@ -439,6 +414,22 @@ namespace ZasuvkaPtakopyska
                         mainForm.OpenEditFile(hPath);
                 }
             }
+        }
+
+        private void UpdateMainCpp()
+        {
+            MainForm mainForm = FindForm() as MainForm;
+            if (mainForm == null || mainForm.SettingsModel == null || mainForm.ProjectModel == null)
+                return;
+
+            string path = mainForm.ProjectModel.WorkingDirectory;
+            string name = mainForm.ProjectModel.Name;
+            string wrkdir = mainForm.SettingsModel.SdkPath + @"\templates";
+            Newtonsoft.Json.Linq.JObject args = new Newtonsoft.Json.Linq.JObject();
+            args["inputPath"] = wrkdir;
+            args["outputPath"] = path;
+            args["name"] = name;
+            TemplateFilesManager.ProcessTemplates("resources/settings/UpdateMainCpp.json", args);
         }
 
         #endregion
@@ -471,6 +462,10 @@ namespace ZasuvkaPtakopyska
 
             menuItem = new ToolStripMenuItem("New C++ custom asset");
             menuItem.Click += new EventHandler(menuItem_newCppCustomAsset_Click);
+            menu.Items.Add(menuItem);
+
+            menuItem = new ToolStripMenuItem("Update Main C++ file");
+            menuItem.Click += new EventHandler(menuItem_updateMainCppFile_Click);
             menu.Items.Add(menuItem);
 
             menu.Show(m_optionsTile, new Point(m_optionsTile.Width, 0));
@@ -526,6 +521,11 @@ namespace ZasuvkaPtakopyska
                 if (result == DialogResult.OK)
                     CreateNewAsset(dialog.SelectedPath, prompt.Value);
             }
+        }
+
+        private void menuItem_updateMainCppFile_Click(object sender, EventArgs e)
+        {
+            UpdateMainCpp();
         }
 
         private void btn_Click(object sender, EventArgs e)

@@ -133,35 +133,6 @@ namespace ZasuvkaPtakopyska
             MetroSkinManager.ApplyMetroStyle(label);
             label.Size = new Size();
             label.AutoSize = true;
-            label.Text = "Bash Executable Location:";
-            label.Location = new Point(DEFAULT_SEPARATOR, textBox.Bottom + DEFAULT_SEPARATOR);
-            Controls.Add(label);
-
-            textBox = new MetroTextBox();
-            MetroSkinManager.ApplyMetroStyle(textBox);
-            textBox.Location = new Point(DEFAULT_SEPARATOR, label.Bottom);
-            textBox.Width = Width - DEFAULT_SELECT_TILE_WIDTH - DEFAULT_SEPARATOR - DEFAULT_SEPARATOR;
-            textBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            textBox.Text = m_settingsModel.BashBinPath;
-            textBox.TextChanged += new EventHandler(textBox_TextChanged_sh);
-            Controls.Add(textBox);
-
-            button = new MetroTileIcon();
-            MetroSkinManager.ApplyMetroStyle(button);
-            button.Tag = textBox;
-            button.Location = new Point(textBox.Right, textBox.Top);
-            button.Width = DEFAULT_SELECT_TILE_WIDTH;
-            button.Height = textBox.Height;
-            button.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            button.Image = Bitmap.FromFile("resources/icons/appbar.select.mini.png");
-            button.ImageAlign = ContentAlignment.MiddleCenter;
-            button.Click += new EventHandler(button_Click_file);
-            Controls.Add(button);
-
-            label = new MetroLabel();
-            MetroSkinManager.ApplyMetroStyle(label);
-            label.Size = new Size();
-            label.AutoSize = true;
             label.Text = "Application Style:";
             label.Location = new Point(DEFAULT_SEPARATOR, textBox.Bottom + DEFAULT_SEPARATOR);
             Controls.Add(label);
@@ -252,11 +223,6 @@ namespace ZasuvkaPtakopyska
         private void textBox_TextChanged_cb(object sender, EventArgs e)
         {
             m_settingsModel.CodeBlocksIdePath = (sender as MetroTextBox).Text;
-        }
-
-        private void textBox_TextChanged_sh(object sender, EventArgs e)
-        {
-            m_settingsModel.BashBinPath = (sender as MetroTextBox).Text;
         }
 
         private void button_Click_dir(object sender, EventArgs e)

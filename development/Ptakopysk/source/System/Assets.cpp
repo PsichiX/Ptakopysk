@@ -11,9 +11,8 @@ namespace Ptakopysk
                             RTTI_DERIVATIONS_END
                             )
 
-    ICustomAsset::ICustomAsset( Assets* owner )
+    ICustomAsset::ICustomAsset()
     : RTTI_CLASS_DEFINE( ICustomAsset )
-    , m_owner( owner )
     {
     }
 
@@ -239,7 +238,7 @@ namespace Ptakopysk
     ICustomAsset* Assets::buildCustomAsset( const std::string& id )
     {
         if( m_customFactory.count( id ) )
-            return m_customFactory[ id ].builder( this );
+            return m_customFactory[ id ].builder();
         return 0;
     }
 
@@ -247,7 +246,7 @@ namespace Ptakopysk
     {
         for( std::map< std::string, CustomAssetFactoryData >::iterator it = m_customFactory.begin(); it != m_customFactory.end(); it++ )
             if( it->second.type == type )
-                return it->second.builder( this );
+                return it->second.builder();
         return 0;
     }
 
@@ -932,7 +931,7 @@ namespace Ptakopysk
         ICustomAsset* t = getCustomAsset( id );
         if( !t && m_customFactory.count( type ) )
         {
-            t = m_customFactory[ type ].builder( this );
+            t = m_customFactory[ type ].builder();
             if( !t )
                 return 0;
             if( !t->onLoad( path ) )

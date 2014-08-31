@@ -1,0 +1,12 @@
+[
+	[ "makeDir", "@outputPath@" ],
+	[ "copyFile", "@inputPath@/TemplateComponent.h", "@outputPath@/@name@.h" ],
+	[ "replaceInFile", "@outputPath@/@name@.h", [
+		[ "TemplateComponent", "@name@" ],
+		[ "__TEMPLATE_COMPONENT__", "__@nameUpper@__" ]
+	] ],
+	[ "copyFile", "@inputPath@/TemplateComponent.cpp", "@outputPath@/@name@.cpp" ],
+	[ "replaceInFile", "@outputPath@/@name@.cpp", [
+		[ "TemplateComponent", "@name@" ]
+	] ]
+]

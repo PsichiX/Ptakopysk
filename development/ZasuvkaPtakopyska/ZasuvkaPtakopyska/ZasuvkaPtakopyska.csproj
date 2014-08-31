@@ -101,6 +101,7 @@
     <Compile Include="MetroSidePanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="TemplateFilesManager.cs" />
     <Compile Include="Utils.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

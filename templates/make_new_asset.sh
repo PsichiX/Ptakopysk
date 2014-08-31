@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 ## usage example:
-### ./make_new_asset.sh -o /destination/path/ -c NewAssetName
+### ./make_new_asset.sh -o /destination/path/ -a NewAssetName
 
 
 # setup
@@ -38,7 +38,7 @@ mkdir -p "${OUTPUT_PATH}"
 
 # manage file tempates
 sed "s|TemplateAsset|${ASSET_NAME}|" < "TemplateAsset.h" > "${OUTPUT_PATH}/${ASSET_NAME}.h"
-sed "s|__TEMPLATE_COMPONENT__|__${ASSET_NAME_UPPER}__|" < "${OUTPUT_PATH}/${ASSET_NAME}.h" > "${OUTPUT_PATH}/${ASSET_NAME}.h_"
+sed "s|__TEMPLATE_ASSET__|__${ASSET_NAME_UPPER}__|" < "${OUTPUT_PATH}/${ASSET_NAME}.h" > "${OUTPUT_PATH}/${ASSET_NAME}.h_"
 sed '/\/\/<TEMPLATE/,/\/\/TEMPLATE>/d' < "${OUTPUT_PATH}/${ASSET_NAME}.h_" > "${OUTPUT_PATH}/${ASSET_NAME}.h"
 rm -f "${OUTPUT_PATH}/${ASSET_NAME}.h_"
 sed "s|TemplateAsset|${ASSET_NAME}|" < "TemplateAsset.cpp" > "${OUTPUT_PATH}/${ASSET_NAME}.cpp"

@@ -1,11 +1,58 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.RegularExpressions;
 using Microsoft.Win32;
-using System;
 
 namespace ZasuvkaPtakopyska
 {
     public class Utils
     {
+        #region Public Nested Classes.
+
+        public class ReplaceString
+        {
+            static readonly Dictionary<string, string> m_replaceDict = new Dictionary<string, string>();
+
+            const string ms_regexEscapes = @"[\a\b\f\n\r\t\v\\""]";
+
+            public static string StringLiteral(string i_string)
+            {
+                return Regex.Replace(i_string, ms_regexEscapes, Match);
+            }
+
+            public static string CharLiteral(char c)
+            {
+                return c == '\'' ? @"'\''" : string.Format("'{0}'", c);
+            }
+
+            private static string Match(Match m)
+            {
+                string match = m.ToString();
+                if (m_replaceDict.ContainsKey(match))
+                    return m_replaceDict[match];
+                throw new NotSupportedException();
+            }
+
+            static ReplaceString()
+            {
+                m_replaceDict.Add("\a", @"\a");
+                m_replaceDict.Add("\b", @"\b");
+                m_replaceDict.Add("\f", @"\f");
+                m_replaceDict.Add("\n", @"\n");
+                m_replaceDict.Add("\r", @"\r");
+                m_replaceDict.Add("\t", @"\t");
+                m_replaceDict.Add("\v", @"\v");
+                m_replaceDict.Add("\\", @"\\");
+                m_replaceDict.Add("\0", @"\0");
+                m_replaceDict.Add("\"", "\\\"");
+            }
+        }
+        
+        #endregion
+
+
+
         #region Public Static Functionality.
 
         public static string GetRelativePath(string path, string relativeTo)
