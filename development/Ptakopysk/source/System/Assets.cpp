@@ -1,4 +1,5 @@
 #include "../../include/Ptakopysk/System/Assets.h"
+#include "../../include/Ptakopysk/CustomAssets/SpriteAtlasAsset.h"
 #include <XeCore/Common/String.h>
 #include <XeCore/Common/Logger.h>
 #include <BinaryJson/BinaryJson.h>
@@ -29,6 +30,7 @@ namespace Ptakopysk
     , m_loadingMode( LoadOnlyValidAssets )
     , m_assetsChangedListener( 0 )
     {
+        registerCustomAssetFactory( "SpriteAtlasAsset", RTTI_CLASS_TYPE( SpriteAtlasAsset ), SpriteAtlasAsset::onBuildCustomAsset );
         m_defaultTexture = xnew sf::Texture();
         m_defaultTexture->create( 1, 1 );
         m_defaultTexture->update( &sf::Color::White.r );
@@ -38,6 +40,7 @@ namespace Ptakopysk
     {
         freeAll();
         DELETE_OBJECT( m_defaultTexture );
+        unregisterAllCustomAssetFactories();
     }
 
     Json::Value Assets::loadJson( const std::string& path, bool binary, dword binaryKeyHash )

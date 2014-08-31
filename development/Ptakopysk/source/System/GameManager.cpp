@@ -7,7 +7,6 @@
 #include "../../include/Ptakopysk/Components/TextRenderer.h"
 #include "../../include/Ptakopysk/Components/Transform.h"
 #include "../../include/Ptakopysk/System/Assets.h"
-#include "../../include/Ptakopysk/CustomAssets/SpriteAtlasAsset.h"
 #include "../../include/Ptakopysk/Serialization/b2BodyTypeSerializer.h"
 #include "../../include/Ptakopysk/Serialization/b2FilterSerializer.h"
 #include "../../include/Ptakopysk/Serialization/BlendModeSerializer.h"
@@ -206,7 +205,6 @@ namespace Ptakopysk
         Serialized::registerCustomSerializer( "BlendMode", xnew BlendModeSerializer() );
         Serialized::registerCustomSerializer( "Style", xnew StyleSerializer() );
         Serialized::registerCustomSerializer( "Transform::ModeType", xnew TransformModeSerializer() );
-        Assets::use().registerCustomAssetFactory( "SpriteAtlasAsset", RTTI_CLASS_TYPE( SpriteAtlasAsset ), SpriteAtlasAsset::onBuildCustomAsset );
         registerComponentFactory( "Body", RTTI_CLASS_TYPE( Body ), Body::onBuildComponent );
         registerComponentFactory( "Camera", RTTI_CLASS_TYPE( Camera ), Camera::onBuildComponent );
         registerComponentFactory( "RevoluteJoint", RTTI_CLASS_TYPE( RevoluteJoint ), RevoluteJoint::onBuildComponent );
@@ -219,7 +217,6 @@ namespace Ptakopysk
     void GameManager::cleanup()
     {
         Serialized::unregisterAllCustomSerializers();
-        Assets::use().unregisterAllCustomAssetFactories();
         unregisterAllComponentFactories();
     }
 
