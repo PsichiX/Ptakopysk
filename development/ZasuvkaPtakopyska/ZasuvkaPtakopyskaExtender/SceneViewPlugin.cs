@@ -262,7 +262,7 @@ namespace ZasuvkaPtakopyskaExtender
             if (!IsLoaded || !PluginsInterface.SetCurrent(s_path))
                 return null;
             var result = PluginsInterface.QueryFunction<object>("convertSceneToJson");
-            string json = Newtonsoft.Json.JsonConvert.SerializeObject(result.result);
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(result.result, Newtonsoft.Json.Formatting.Indented);
             return json;
         }
 
@@ -320,7 +320,7 @@ namespace ZasuvkaPtakopyskaExtender
             if (!IsLoaded || !PluginsInterface.SetCurrent(s_path))
                 return null;
             var result = PluginsInterface.QueryFunction<object>("convertGameObjectToJson", handle, isPrefab);
-            string json = Newtonsoft.Json.JsonConvert.SerializeObject(result.result);
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(result.result, Newtonsoft.Json.Formatting.Indented);
             return json;
         }
 
