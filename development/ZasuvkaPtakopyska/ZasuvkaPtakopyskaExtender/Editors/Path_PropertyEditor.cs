@@ -8,6 +8,7 @@ using MetroFramework;
 
 namespace ZasuvkaPtakopyskaExtender.Editors
 {
+    [PtakopyskPropertyEditor("@Path")]
     public class Path_PropertyEditor : PropertyEditor<string>
     {
         private static readonly int DEFAULT_SELECT_TILE_WIDTH = 48;

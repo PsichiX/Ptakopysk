@@ -67,7 +67,8 @@ namespace Ptakopysk
 
         META_PROPERTY(
             META_ATTR_DESCRIPTION( "Contains array of body shape vertices." ),
-            META_ATTR_DEFAULT_VALUE( "null" )
+            META_ATTR_DEFAULT_VALUE( "null" ),
+            META_ATTR_VALUE_TYPE( "@Mesh<System.Single>" )
         )
         XeCore::Common::Property< VerticesData&, Body > Vertices;
 
@@ -102,7 +103,8 @@ namespace Ptakopysk
 
         META_PROPERTY(
             META_ATTR_DESCRIPTION( "Body type." ),
-            META_ATTR_DEFAULT_VALUE( "\"b2_staticBody\"" )
+            META_ATTR_DEFAULT_VALUE( "\"b2_staticBody\"" ),
+            META_ATTR_VALUE_TYPE( "@Enum:[ \"b2_staticBody\", \"b2_kinematicBody\", \"b2_dynamicBody\" ]" )
         )
         XeCore::Common::Property< b2BodyType, Body > BodyType;
 

@@ -7,12 +7,23 @@ using System.Globalization;
 
 namespace ZasuvkaPtakopyskaExtender.Editors
 {
+    [PtakopyskPropertyEditor("@Parsable")]
+    [PtakopyskPropertyEditor("char", AliasValueType = "@Parsable<System.SByte>")]
+    [PtakopyskPropertyEditor("byte", AliasValueType = "@Parsable<System.Byte>")]
+    [PtakopyskPropertyEditor("short", AliasValueType = "@Parsable<System.Int16>")]
+    [PtakopyskPropertyEditor("word", AliasValueType = "@Parsable<System.UInt16>")]
+    [PtakopyskPropertyEditor("int", AliasValueType = "@Parsable<System.Int32>")]
+    [PtakopyskPropertyEditor("dword", AliasValueType = "@Parsable<System.UInt32>")]
+    [PtakopyskPropertyEditor("long", AliasValueType = "@Parsable<System.Int64>")]
+    [PtakopyskPropertyEditor("qword", AliasValueType = "@Parsable<System.UInt64>")]
+    [PtakopyskPropertyEditor("float", AliasValueType = "@Parsable<System.Single>")]
+    [PtakopyskPropertyEditor("double", AliasValueType = "@Parsable<System.Double>")]
     public class ParsablePropertyEditor<T> : PropertyEditor<T> where T : IFormattable
     {
         public string StringFormat { get; set; }
         public NumberStyles NumberStyle { get; set; }
         public IFormatProvider FormatProvider { get; set; }
-        
+
         private MetroTextBox m_textBox;
 
         public ParsablePropertyEditor(Dictionary<string, string> properties, string propertyName)
@@ -44,16 +55,9 @@ namespace ZasuvkaPtakopyskaExtender.Editors
 
         private void m_textBox_TextChanged(object sender, EventArgs e)
         {
-            MethodInfo method = null;
-            try { method = typeof(T).GetMethod("Parse", new Type[] { typeof(string), typeof(NumberStyles), typeof(IFormatProvider) }); }
-            catch { }
-            if (method == null)
-                return;
-
             T v = Value;
-            try { v = (T)method.Invoke(null, new object[] { m_textBox.Text, NumberStyle, FormatProvider }); }
-            catch { }
-            Value = v;
+            if (Utils.TryParse<T>(m_textBox.Text, out v, v, NumberStyle, FormatProvider))
+                Value = v;
         }
     }
 }

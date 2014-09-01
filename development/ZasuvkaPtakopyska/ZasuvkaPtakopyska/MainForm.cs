@@ -1,18 +1,17 @@
 ﻿using System;
-using System.Windows.Forms;
-using MetroFramework.Forms;
-using MetroFramework.Controls;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Collections.Generic;
+using System.Reflection;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using MetroFramework.Controls;
+using MetroFramework.Forms;
 using Newtonsoft.Json;
 using PtakopyskMetaGenerator;
-using System.Threading.Tasks;
 using ZasuvkaPtakopyskaExtender;
-using System.Diagnostics;
 using ZasuvkaPtakopyskaExtender.Editors;
-using System.Reflection;
-using MetroFramework.Drawing;
 
 namespace ZasuvkaPtakopyska
 {
@@ -824,7 +823,7 @@ namespace ZasuvkaPtakopyska
                             ProjectModel.MetaComponentPaths.Add(path, meta);
                             if (meta.Properties != null && meta.Properties.Count > 0)
                                 foreach (MetaProperty prop in meta.Properties)
-                                    if (PropertyEditorsManager.Instance.FindPropertyEditorByValueType(prop.ValueType) == null)
+                                    if (PropertyEditorsManager.Instance.FindPropertyEditor(prop.ValueType) == null)
                                         Console.WriteLine("Property editor for type: \"{0}\" (component: \"{1}\", property: \"{2}\") not found!", prop.ValueType, meta.Name, prop.Name);
                         }
                     }

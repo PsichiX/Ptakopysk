@@ -2,14 +2,40 @@
 using System.Collections.Generic;
 using MetroFramework.Controls;
 using System.Windows.Forms;
+using Newtonsoft.Json.Linq;
 
 namespace ZasuvkaPtakopyskaExtender.Editors
 {
+    [PtakopyskPropertyEditor("@Enum")]
     public class EnumPropertyEditor : PropertyEditor<string>
     {
         private MetroComboBox m_comboBox;
         private string[] m_values;
-        
+
+        public static List<object> GenerateAdditionalArguments(JToken data)
+        {
+            if (data == null)
+                return null;
+
+            JArray a = data as JArray;
+            if (a == null)
+                return null;
+
+            List<string> items = new List<string>();
+            foreach (var i in a)
+                if (i.Type == JTokenType.String)
+                    items.Add(i.ToObject<string>());
+
+            if (items.Count > 0)
+            {
+                List<object> result = new List<object>();
+                result.Add(items.ToArray());
+                return result;
+            }
+            else
+                return null;
+        }
+
         public string[] ValuesSource
         {
             get { return m_values; }

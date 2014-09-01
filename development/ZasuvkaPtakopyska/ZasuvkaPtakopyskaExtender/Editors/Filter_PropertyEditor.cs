@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Globalization;
+using Newtonsoft.Json.Linq;
 
 namespace ZasuvkaPtakopyskaExtender.Editors
 {
@@ -22,10 +23,10 @@ namespace ZasuvkaPtakopyskaExtender.Editors
         {
             try
             {
-                Newtonsoft.Json.Linq.JObject data = Newtonsoft.Json.JsonConvert.DeserializeObject<Newtonsoft.Json.Linq.JObject>(JsonValue);
+                JObject data = Newtonsoft.Json.JsonConvert.DeserializeObject<JObject>(JsonValue);
                 if (data != null)
                 {
-                    Newtonsoft.Json.Linq.JToken v;
+                    JToken v;
                     if (data.TryGetValue("category", out v))
                     {
                         m_subProperties["category"] = v.ToString(Newtonsoft.Json.Formatting.None);

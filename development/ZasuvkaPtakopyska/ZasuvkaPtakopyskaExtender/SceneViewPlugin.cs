@@ -30,7 +30,7 @@ namespace ZasuvkaPtakopyskaExtender
             public List<GameObjectData> childs;
         }
 
-        public class AssetsCommonData
+        public class AssetInfo
         {
             public string id;
             public string meta;
@@ -386,7 +386,7 @@ namespace ZasuvkaPtakopyskaExtender
 
         public static List<T> GetAssets<T>(AssetType type, List<string> ids)
         {
-            string json = "{ \"info\": [ ";
+            string json = "{ \"get\": [ ";
             if (ids != null && ids.Count > 0)
             {
                 int i = 0;
@@ -402,9 +402,22 @@ namespace ZasuvkaPtakopyskaExtender
             return QueryAssets<T>(type, json);
         }
 
-        public static List<object> GetAssets(AssetType type, List<string> ids)
+        public static List<AssetInfo> GetAssetsInfo(AssetType type, List<string> ids)
         {
-            return GetAssets<object>(type, ids);
+            string json = "{ \"info\": [ ";
+            if (ids != null && ids.Count > 0)
+            {
+                int i = 0;
+                foreach (string id in ids)
+                {
+                    json += "\"" + id + "\"";
+                    if (i < ids.Count - 1)
+                        json += ", ";
+                    i++;
+                }
+            }
+            json += " ] }";
+            return QueryAssets<AssetInfo>(type, json);
         }
 
         public static List<string> ListComponents()

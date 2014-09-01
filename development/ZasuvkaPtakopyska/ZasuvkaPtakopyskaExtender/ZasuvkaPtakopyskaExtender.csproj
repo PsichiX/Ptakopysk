@@ -53,14 +53,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ControlExtension.cs" />
+    <Compile Include="Editors\ArrayPropertyEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editors\StringMapPropertyEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editors\Vector2PropertyEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editors\RectPropertyEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="MetaAssetsManager.cs" />
     <Compile Include="Editors\AssetPropertyEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Editors\Bool_PropertyEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Editors\BodyType_PropertyEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Editors\CustomAsset_PropertyEditor.cs">
@@ -69,7 +78,7 @@
     <Compile Include="Editors\Filter_PropertyEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Editors\FloatVector2Collection_PropertyEditor.cs">
+    <Compile Include="Editors\MeshPropertyEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Editors\CollectionPropertyEditorUtils.cs" />
@@ -101,9 +110,6 @@
     <Compile Include="Editors\EnumPropertyEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Editors\FloatRect_PropertyEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="Editors\ErrorPropertyEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -112,18 +118,6 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Editors\TextureAsset_PropertyEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Editors\TransformModeType_PropertyEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Editors\FloatVector2_PropertyEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Editors\Float_PropertyEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Editors\Int_PropertyEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Editors\JsonStringPropertyEditor.cs">
@@ -151,6 +145,7 @@
     </Compile>
     <Compile Include="SceneViewPlugin.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="Utils.cs" />
     <Compile Include="ZasuvkaPtakopyskaExtenderAttribute.cs" />
   </ItemGroup>
   <ItemGroup>

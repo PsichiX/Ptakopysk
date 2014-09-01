@@ -29,7 +29,7 @@
     {
       "Name": "Mode",
       "Description": "Transform mode.",
-      "ValueType": "Transform::ModeType",
+      "ValueType": "@Enum:[ \\\"mHierarchy\\\", \\\"mParent\\\", \\\"mGlobal\\\" ]",
       "DefaultValue": "\"mHierarchy\""
     }
   ],

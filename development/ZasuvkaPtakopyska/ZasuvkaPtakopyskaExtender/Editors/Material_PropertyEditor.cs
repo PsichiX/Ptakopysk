@@ -26,7 +26,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
                 properties,
                 propertyName,
                 CollectionPropertyEditorUtils.CollectionType.JsonArray,
-                (pd, pn) => new Float_PropertyEditor(pd, pn)
+                (pd, pn) => new ParsablePropertyEditor<float>(pd, pn)
                 )
             {
             }

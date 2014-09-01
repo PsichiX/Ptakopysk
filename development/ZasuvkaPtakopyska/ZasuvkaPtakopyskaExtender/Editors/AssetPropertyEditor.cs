@@ -17,12 +17,26 @@ namespace ZasuvkaPtakopyskaExtender.Editors
             UpdateValuesSource();
         }
 
-        private void UpdateValuesSource()
+        virtual protected List<string> OnUpdateValuesSource(List<string> ids)
+        {
+            return ids;
+        }
+
+        protected void UpdateValuesSource()
         {
             List<string> values = SceneViewPlugin.ListAssets(m_assetType);
-            values.Add(NONE);
-            ValuesSource = values.ToArray();
-            UpdateEditorValue();
+            values = OnUpdateValuesSource(values);
+            if (values != null)
+            {
+                values.Insert(0, NONE);
+                ValuesSource = values.ToArray();
+                UpdateEditorValue();
+            }
+            else
+            {
+                ValuesSource = new string[]{};
+                UpdateEditorValue();
+            }
         }
     }
 }

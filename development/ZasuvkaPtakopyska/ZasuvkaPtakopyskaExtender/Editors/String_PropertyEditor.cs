@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 namespace ZasuvkaPtakopyskaExtender.Editors
 {
+    [PtakopyskPropertyEditor("char*")]
     [PtakopyskPropertyEditor("std::string")]
     [PtakopyskPropertyEditor("string", TypePriority = 1)]
     [PtakopyskPropertyEditor("sf::String")]

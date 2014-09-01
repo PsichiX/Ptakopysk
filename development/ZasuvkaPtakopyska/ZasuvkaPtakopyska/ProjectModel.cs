@@ -4,6 +4,7 @@ using System.Xml;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using PtakopyskMetaGenerator;
+using ZasuvkaPtakopyskaExtender;
 
 namespace ZasuvkaPtakopyska
 {

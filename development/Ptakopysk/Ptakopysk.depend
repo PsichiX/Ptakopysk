@@ -778,7 +778,7 @@
 	"../../include/Ptakopysk/System/GameManager.h"
 	<XeCore/Common/Logger.h>
 
-1409077918 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\body.h
+1409604109 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\body.h
 	"Component.h"
 	<Box2D/Box2D.h>
 
@@ -851,7 +851,7 @@
 	<SFML/Graphics.hpp>
 	"../System/RenderMaterial.h"
 
-1406476845 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\transform.h
+1409604557 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\transform.h
 	"Component.h"
 	<SFML/System/Vector2.hpp>
 	<SFML/Graphics/Transform.hpp>
@@ -880,8 +880,9 @@
 1407739469 source:d:\git\ptakopysk\development\ptakopysk\source\serialization\serialized.cpp
 	"../../include/Ptakopysk/Serialization/Serialized.h"
 
-1409419439 source:d:\git\ptakopysk\development\ptakopysk\source\system\assets.cpp
+1409499647 source:d:\git\ptakopysk\development\ptakopysk\source\system\assets.cpp
 	"../../include/Ptakopysk/System/Assets.h"
+	"../../include/Ptakopysk/CustomAssets/SpriteAtlasAsset.h"
 	<XeCore/Common/String.h>
 	<XeCore/Common/Logger.h>
 	<BinaryJson/BinaryJson.h>
@@ -898,7 +899,7 @@
 	<string>
 	<list>
 
-1409428471 source:d:\git\ptakopysk\development\ptakopysk\source\system\gamemanager.cpp
+1409499467 source:d:\git\ptakopysk\development\ptakopysk\source\system\gamemanager.cpp
 	"../../include/Ptakopysk/System/GameManager.h"
 	"../../include/Ptakopysk/Components/Body.h"
 	"../../include/Ptakopysk/Components/Camera.h"
@@ -908,7 +909,6 @@
 	"../../include/Ptakopysk/Components/TextRenderer.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/System/Assets.h"
-	"../../include/Ptakopysk/CustomAssets/SpriteAtlasAsset.h"
 	"../../include/Ptakopysk/Serialization/b2BodyTypeSerializer.h"
 	"../../include/Ptakopysk/Serialization/b2FilterSerializer.h"
 	"../../include/Ptakopysk/Serialization/BlendModeSerializer.h"
@@ -1064,7 +1064,7 @@
 	"../../include/Ptakopysk/System/GameObject.h"
 	"../../include/Ptakopysk/Components/SpriteRenderer.h"
 
-1409420194 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\spriteatlas.h
+1409604322 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\spriteatlas.h
 	"Component.h"
 	"../CustomAssets/SpriteAtlasAsset.h"
 

@@ -11,7 +11,7 @@
     {
       "Name": "Vertices",
       "Description": "Contains array of body shape vertices.",
-      "ValueType": "VerticesData",
+      "ValueType": "@Mesh<System.Single>",
       "DefaultValue": "null"
     },
     {
@@ -47,7 +47,7 @@
     {
       "Name": "BodyType",
       "Description": "Body type.",
-      "ValueType": "b2BodyType",
+      "ValueType": "@Enum:[ \\\"b2_staticBody\\\", \\\"b2_kinematicBody\\\", \\\"b2_dynamicBody\\\" ]",
       "DefaultValue": "\"b2_staticBody\""
     },
     {

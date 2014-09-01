@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 namespace ZasuvkaPtakopyskaExtender.Editors
 {
+    [PtakopyskPropertyEditor("@Json")]
     public class JsonStringPropertyEditor : PropertyEditor<object>
     {
         private MetroTextBox m_textBox;

@@ -33,7 +33,7 @@ namespace Ptakopysk
 
         META_PROPERTY(
             META_ATTR_DESCRIPTION( "Sprite atlas asset." ),
-            META_ATTR_VALUE_TYPE( "ICustomAsset" )
+            META_ATTR_VALUE_TYPE( "@CustomAsset:\"SpriteAtlasAsset\"" )
         )
         XeCore::Common::Property< SpriteAtlasAsset*, SpriteAtlas > SpriteAtlasInstance;
 

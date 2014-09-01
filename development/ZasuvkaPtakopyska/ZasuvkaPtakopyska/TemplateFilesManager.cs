@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
+using ZasuvkaPtakopyskaExtender;
 
 namespace ZasuvkaPtakopyska
 {
@@ -114,7 +115,7 @@ namespace ZasuvkaPtakopyska
         {
             if (!string.IsNullOrEmpty(input) && args != null && args.Count > 0)
                 foreach (var kv in args)
-                    input = input.Replace("@" + kv.Key + "@", Utils.ReplaceString.StringLiteral(kv.Value));
+                    input = input.Replace("@" + kv.Key + "@", Utils.EscapedString.Escape(kv.Value));
             return input;
         }
 

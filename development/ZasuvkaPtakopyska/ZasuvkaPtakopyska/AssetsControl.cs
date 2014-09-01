@@ -317,7 +317,7 @@ namespace ZasuvkaPtakopyska
         {
             Asset_PropertyEditor temp;
             List<string> assets = SceneViewPlugin.ListAssets(m_type);
-            var data = SceneViewPlugin.GetAssets<SceneViewPlugin.AssetsCommonData>(m_type, assets);
+            var data = SceneViewPlugin.GetAssetsInfo(m_type, assets);
             foreach (var d in data)
                 y = AddAsset(d.id, d.meta, d.tags == null ? "" : string.Join("|", d.tags.ToArray()), projectModel, out temp, y);
             

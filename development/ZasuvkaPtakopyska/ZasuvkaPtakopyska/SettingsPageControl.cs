@@ -8,6 +8,7 @@ using MetroFramework.Components;
 using MetroFramework;
 using System.Collections.Generic;
 using ZasuvkaPtakopyskaExtender;
+using System.Reflection;
 
 namespace ZasuvkaPtakopyska
 {
@@ -70,13 +71,22 @@ namespace ZasuvkaPtakopyska
             MetroTileIcon button;
 
             Width = 400;
-            
+
+            label = new MetroLabel();
+            MetroSkinManager.ApplyMetroStyle(label);
+            label.Size = new Size();
+            label.AutoSize = true;
+            label.Text = "Toolset version: " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            label.FontWeight = MetroLabelWeight.Bold;
+            label.Location = new Point(DEFAULT_SEPARATOR, DEFAULT_SEPARATOR);
+            Controls.Add(label);
+
             label = new MetroLabel();
             MetroSkinManager.ApplyMetroStyle(label);
             label.Size = new Size();
             label.AutoSize = true;
             label.Text = "Ptakopysk SDK Location:";
-            label.Location = new Point(DEFAULT_SEPARATOR, DEFAULT_SEPARATOR);
+            label.Location = new Point(DEFAULT_SEPARATOR, 64);
             Controls.Add(label);
 
             textBox = new MetroTextBox();

@@ -11,7 +11,7 @@
     {
       "Name": "SpriteAtlasInstance",
       "Description": "Sprite atlas asset.",
-      "ValueType": "ICustomAsset",
+      "ValueType": "@CustomAsset:\\\"SpriteAtlasAsset\\\"",
       "DefaultValue": null
     },
     {

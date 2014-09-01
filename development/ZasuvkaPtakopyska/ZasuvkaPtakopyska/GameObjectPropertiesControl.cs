@@ -208,7 +208,7 @@ namespace ZasuvkaPtakopyska
             m_editors.Add(activeEditor);
             y = activeEditor.Bottom + DEFAULT_SEPARATOR;
 
-            Int_PropertyEditor orderEditor = new Int_PropertyEditor(m_goData, "properties/Order");
+            ParsablePropertyEditor<int> orderEditor = new ParsablePropertyEditor<int>(m_goData, "properties/Order");
             orderEditor.Text = "Order";
             orderEditor.UpdateEditorValue();
             orderEditor.Top = y;
@@ -318,7 +318,7 @@ namespace ZasuvkaPtakopyska
 
             foreach (MetaProperty p in props)
             {
-                Type t = PropertyEditorsManager.Instance.FindPropertyEditorByValueType(p.ValueType);
+                Type t = PropertyEditorsManager.Instance.FindPropertyEditor(p.ValueType);
                 if (t == null)
                 {
                     string msg = string.Format("Property editor for type: \"{0}\" not found!", p.ValueType);
@@ -348,7 +348,7 @@ namespace ZasuvkaPtakopyska
 
             try
             {
-                object obj = Activator.CreateInstance(editorType, m_goData, propertyPath);
+                object obj = PropertyEditorsManager.Instance.CreatePropertyEditor(editorType, m_goData, propertyPath, property.ValueType);
                 MetroUserControl editor = obj as MetroUserControl;
                 IEditorJsonValue jvEditor = obj as IEditorJsonValue;
                 if (editor != null && jvEditor != null)
