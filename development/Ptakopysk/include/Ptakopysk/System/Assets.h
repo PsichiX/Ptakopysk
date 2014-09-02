@@ -63,11 +63,14 @@ namespace Ptakopysk
         Assets();
         virtual ~Assets();
 
-        FORCEINLINE std::string makePath( const std::string& path ) { std::stringstream ss; if( !m_fileSystemRoot.empty() ) ss << m_fileSystemRoot.c_str(); ss << path.c_str(); return ss.str(); };
-        Json::Value loadJson( const std::string& path, bool binary = false, dword binaryKeyHash = 0 );
-        bool saveJson( const std::string& path, const Json::Value& root, bool binary = false, dword binaryKeyHash = 0 );
-        std::string loadText( const std::string& path );
-        bool saveText( const std::string& path, const std::string& content );
+        FORCEINLINE static std::string makePath( const std::string& path ) { std::stringstream ss; if( !s_fileSystemRoot.empty() ) ss << s_fileSystemRoot.c_str(); ss << path.c_str(); return ss.str(); };
+        FORCEINLINE static void setFileSystemRoot( const std::string& path ) { s_fileSystemRoot = path; };
+        FORCEINLINE static std::string getFileSystemRoot() { return s_fileSystemRoot; };
+        static Json::Value loadJson( const std::string& path, bool binary = false, dword binaryKeyHash = 0 );
+        static bool saveJson( const std::string& path, const Json::Value& root, bool binary = false, dword binaryKeyHash = 0 );
+        static std::string loadText( const std::string& path );
+        static bool saveText( const std::string& path, const std::string& content );
+
         bool registerCustomAssetFactory( const std::string& id, XeCore::Common::IRtti::Derivation type, ICustomAsset::OnBuildCustomAssetCallback builder );
         bool unregisterCustomAssetFactory( const std::string& id );
         bool unregisterCustomAssetFactory( XeCore::Common::IRtti::Derivation type );
@@ -85,8 +88,6 @@ namespace Ptakopysk
         unsigned int getCustomAssetsTypes( std::vector< XeCore::Common::IRtti::Derivation >& result );
         unsigned int getCustomAssetsBuilders( std::vector< ICustomAsset::OnBuildCustomAssetCallback >& result );
 
-        FORCEINLINE void setFileSystemRoot( const std::string& path ) { m_fileSystemRoot = path; };
-        FORCEINLINE std::string getFileSystemRoot() { return m_fileSystemRoot; };
         FORCEINLINE void setAssetsLoadingMode( AssetsLoadingMode mode ) { m_loadingMode = mode; };
         FORCEINLINE AssetsLoadingMode getAssetsLoadingMode() { return m_loadingMode; };
         FORCEINLINE void setAssetsChangedListener( AssetsChangedListener* listener ) { m_assetsChangedListener = listener; };
@@ -213,8 +214,9 @@ namespace Ptakopysk
         Json::Value jsonTags( std::vector< std::string >& inArray );
         bool fileExists( const std::string& path );
 
+        static std::string s_fileSystemRoot;
+
         AssetsLoadingMode m_loadingMode;
-        std::string m_fileSystemRoot;
         std::map< std::string, CustomAssetFactoryData > m_customFactory;
         std::map< std::string, sf::Texture* > m_textures;
         std::map< std::string, sf::Shader* > m_shaders;

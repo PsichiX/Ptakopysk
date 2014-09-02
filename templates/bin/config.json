@@ -1,0 +1,1 @@
+{	"window": {		"color": [ 255, 255, 255, 255 ],		"videoMode": {			"width": 1024,			"height": 576		},		"name": "Template Application",		"style": [ "Titlebar", "Close" ]	},	"lifeCycle": {		"fixedFps": 30	},	"scenes": {		"main": "template_game.json"	}}

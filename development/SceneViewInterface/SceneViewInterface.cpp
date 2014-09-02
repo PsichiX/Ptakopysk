@@ -538,11 +538,9 @@ bool SceneViewInterface::initialize( int64_t windowHandle )
 void SceneViewInterface::release()
 {
     DELETE_OBJECT( m_gameManager );
-    if( m_renderWindow )
-        m_renderWindow->close();
-    DELETE_OBJECT( m_renderWindow );
-    Assets::destroy();
+    m_renderWindow = 0;
     GameManager::cleanup();
+    Assets::destroy();
 }
 
 bool SceneViewInterface::processEvents()

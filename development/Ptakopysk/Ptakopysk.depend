@@ -822,7 +822,7 @@
 	"../Serialization/Serialized.h"
 	"Assets.h"
 
-1409077918 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gamemanager.h
+1409627551 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gamemanager.h
 	<XeCore/Common/Property.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -856,7 +856,7 @@
 	<SFML/System/Vector2.hpp>
 	<SFML/Graphics/Transform.hpp>
 
-1409499574 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\assets.h
+1409628181 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\assets.h
 	<XeCore/Common/Base.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -880,7 +880,7 @@
 1407739469 source:d:\git\ptakopysk\development\ptakopysk\source\serialization\serialized.cpp
 	"../../include/Ptakopysk/Serialization/Serialized.h"
 
-1409499647 source:d:\git\ptakopysk\development\ptakopysk\source\system\assets.cpp
+1409628179 source:d:\git\ptakopysk\development\ptakopysk\source\system\assets.cpp
 	"../../include/Ptakopysk/System/Assets.h"
 	"../../include/Ptakopysk/CustomAssets/SpriteAtlasAsset.h"
 	<XeCore/Common/String.h>
@@ -899,8 +899,11 @@
 	<string>
 	<list>
 
-1409499467 source:d:\git\ptakopysk\development\ptakopysk\source\system\gamemanager.cpp
+1409627889 source:d:\git\ptakopysk\development\ptakopysk\source\system\gamemanager.cpp
 	"../../include/Ptakopysk/System/GameManager.h"
+	"../../include/Ptakopysk/System/Assets.h"
+	"../../include/Ptakopysk/System/Events.h"
+	"../../include/Ptakopysk/System/Tween.h"
 	"../../include/Ptakopysk/Components/Body.h"
 	"../../include/Ptakopysk/Components/Camera.h"
 	"../../include/Ptakopysk/Components/RevoluteJoint.h"
@@ -908,13 +911,14 @@
 	"../../include/Ptakopysk/Components/SpriteRenderer.h"
 	"../../include/Ptakopysk/Components/TextRenderer.h"
 	"../../include/Ptakopysk/Components/Transform.h"
-	"../../include/Ptakopysk/System/Assets.h"
 	"../../include/Ptakopysk/Serialization/b2BodyTypeSerializer.h"
 	"../../include/Ptakopysk/Serialization/b2FilterSerializer.h"
 	"../../include/Ptakopysk/Serialization/BlendModeSerializer.h"
 	"../../include/Ptakopysk/Serialization/StyleSerializer.h"
 	"../../include/Ptakopysk/Serialization/TransformModeSerializer.h"
 	<XeCore/Common/Logger.h>
+	<XeCore/Common/Concurrent/Thread.h>
+	<XeCore/Common/Timer.h>
 	<Box2D/Box2D.h>
 
 1393673981 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\b2bodytypeserializer.h
@@ -928,7 +932,7 @@
 	<XeCore/Common/Logger.h>
 	<sstream>
 
-1409077918 source:d:\git\ptakopysk\development\ptakopysk\source\components\camera.cpp
+1409620207 source:d:\git\ptakopysk\development\ptakopysk\source\components\camera.cpp
 	"../../include/Ptakopysk/Components/Camera.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/System/GameObject.h"
@@ -1077,4 +1081,29 @@
 1409426094 source:d:\git\ptakopysk\development\ptakopysk\source\customassets\spriteatlasasset.cpp
 	"../../include/Ptakopysk/CustomAssets/SpriteAtlasAsset.h"
 	<sstream>
+
+1408974496 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\concurrent\thread.h
+	"TinyThreads/tinythread.h"
+	"Synchronized.h"
+	"Runnable.h"
+
+1408974496 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\concurrent\tinythreads\tinythread.h
+	<windows.h>
+	<pthread.h>
+	<signal.h>
+	<sched.h>
+	<unistd.h>
+	<ostream>
+
+1408974496 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\concurrent\synchronized.h
+	"TinyThreads/tinythread.h"
+	"../MemoryManager.h"
+
+1408974496 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\concurrent\runnable.h
+	"../MemoryManager.h"
+
+1408974497 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\timer.h
+	<ctime>
+	"IRtti.h"
+	"MemoryManager.h"
 

@@ -242,6 +242,7 @@ if [ ${CP_TEMPLATES[2]} = 1 ]; then
   cp ./templates/bin/*.dll ./sdk/templates/bin/
   cp ./templates/bin/*.png ./sdk/templates/bin/
   cp ./templates/bin/*.ttf ./sdk/templates/bin/
+  cp ./templates/bin/config.json ./sdk/templates/bin/
   cp ./templates/bin/template_game.json ./sdk/templates/bin/
 fi
 if [ ${CP_IDE[2]} = 1 ]; then

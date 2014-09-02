@@ -46,11 +46,12 @@ namespace Ptakopysk
         };
 
         typedef std::map< std::string, b2Filter > FiltersMap;
+        typedef std::map< std::string, std::string > ScenesList;
 
         static const int DEFAULT_VEL_ITERS = 8;
         static const int DEFAULT_POS_ITERS = 3;
 
-        GameManager();
+        GameManager( const Json::Value& config = Json::Value::null );
         ~GameManager();
 
         static void initialize();
@@ -76,12 +77,22 @@ namespace Ptakopysk
 
         FORCEINLINE b2World* getPhysicsWorld() { return m_world; };
 
+        FORCEINLINE bool addScene( const std::string& id, const std::string& path ) { if( !m_scenes.count( id ) ) { m_scenes[ id ] = path; return true; } else return false; };
+        FORCEINLINE bool removeScene( const std::string& id ) { if( m_scenes.count( id ) ) { m_scenes.erase( id ); return true; } else return false; };
+        FORCEINLINE bool hasScene( const std::string& id ) { return m_scenes.count( id ); };
+        FORCEINLINE unsigned int scenesCount() { return m_scenes.size(); };
+        FORCEINLINE ScenesList::iterator sceneAtBegin() { return m_scenes.begin(); };
+        FORCEINLINE ScenesList::reverse_iterator sceneAtReverseBegin() { return m_scenes.rbegin(); };
+        FORCEINLINE ScenesList::iterator sceneAtEnd() { return m_scenes.end(); };
+        FORCEINLINE ScenesList::reverse_iterator sceneAtReverseEnd() { return m_scenes.rend(); };
+        std::string sceneAt( unsigned int index );
+        FORCEINLINE bool runScene( const std::string& id ) { if( m_scenes.count( id ) ) { m_sceneToRun = m_scenes[ id ]; return true; } else return false; };
         void jsonToScene( const Json::Value& root, SceneContentType contentFlags = All );
         void jsonToGameObjects( const Json::Value& root, bool prefab = false );
         Json::Value sceneToJson( SceneContentType contentFlags = All, bool omitDefaultValues = false );
         Json::Value gameObjectsToJson( bool prefab = false, bool omitDefaultValues = false );
-
         void removeScene( SceneContentType contentFlags = All );
+
         void addGameObject( GameObject* go, bool prefab = false );
         void removeGameObject( GameObject* go, bool prefab = false );
         void removeGameObject( const std::string& id, bool prefab = false );
@@ -105,6 +116,8 @@ namespace Ptakopysk
         FORCEINLINE void setRenderWindow( sf::RenderWindow* v ) { m_renderWindow = v; };
         FORCEINLINE FiltersMap& accessFilters() { return m_filters; }
 
+        void processLifeCycle();
+        void processRunningScene();
         void processEvents( const sf::Event& event );
         void processPhysics( float dt, int velIters = DEFAULT_VEL_ITERS, int posIters = DEFAULT_POS_ITERS );
         void processUpdate( float dt, bool sort = true );
@@ -125,6 +138,7 @@ namespace Ptakopysk
             Component::OnBuildComponentCallback builder;
         };
 
+        void setupFromConfig( const Json::Value& config );
         void processContact( bool beginOrEnd, GameObject* a, GameObject* b, b2Contact* contact );
         void processJointGoodbye( GameObject* o, b2Joint* joint );
         void processFixtureGoodbye( GameObject* o, b2Fixture* fixture );
@@ -148,6 +162,10 @@ namespace Ptakopysk
         GameObject::List m_gameObjectsToCreate;
         GameObject::List m_gameObjectsToDestroy;
         FiltersMap m_filters;
+        sf::Color m_bgColor;
+        float m_fixedStep;
+        ScenesList m_scenes;
+        std::string m_sceneToRun;
     };
 
     GameManager::SceneContentType operator|( GameManager::SceneContentType a, GameManager::SceneContentType b );

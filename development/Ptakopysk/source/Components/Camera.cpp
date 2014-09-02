@@ -198,6 +198,8 @@ namespace Ptakopysk
             s.x = (float)target->getSize().x;
         if( s.y < 0.0f )
             s.y = (float)target->getSize().y;
+        s.x *= m_zoomInv;
+        s.y *= m_zoomInv;
         sf::RectangleShape rect( s );
         rect.setOrigin( s * 0.5f );
         Transform* trans = getGameObject() ? getGameObject()->getComponent< Transform >() : 0;

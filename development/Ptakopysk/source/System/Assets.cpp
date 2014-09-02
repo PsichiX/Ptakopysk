@@ -25,6 +25,8 @@ namespace Ptakopysk
                             RTTI_DERIVATIONS_END
                             )
 
+    std::string Assets::s_fileSystemRoot( "" );
+
     Assets::Assets()
     : RTTI_CLASS_DEFINE( Assets )
     , m_loadingMode( LoadOnlyValidAssets )
@@ -735,7 +737,7 @@ namespace Ptakopysk
         if( !t )
         {
             t = xnew sf::Texture();
-            if( m_fileSystemRoot.empty() )
+            if( s_fileSystemRoot.empty() )
             {
                 if( !t->loadFromFile( path ) )
                 {
@@ -749,7 +751,7 @@ namespace Ptakopysk
             else
             {
                 std::stringstream ss;
-                ss << m_fileSystemRoot.c_str() << path;
+                ss << s_fileSystemRoot.c_str() << path;
                 if( !t->loadFromFile( ss.str() ) )
                 {
                     if( m_loadingMode != LoadIfFilesExists || !fileExists( ss.str() ) )
@@ -775,7 +777,7 @@ namespace Ptakopysk
             if( !sf::Shader::isAvailable() && m_loadingMode == LoadOnlyValidAssets )
                 return 0;
             t = xnew sf::Shader();
-            if( m_fileSystemRoot.empty() )
+            if( s_fileSystemRoot.empty() )
             {
                 if( !t->loadFromFile( vspath, fspath ) )
                 {
@@ -789,9 +791,9 @@ namespace Ptakopysk
             else
             {
                 std::stringstream ssv;
-                ssv << m_fileSystemRoot.c_str() << vspath;
+                ssv << s_fileSystemRoot.c_str() << vspath;
                 std::stringstream ssf;
-                ssf << m_fileSystemRoot.c_str() << fspath;
+                ssf << s_fileSystemRoot.c_str() << fspath;
                 if( !t->loadFromFile( ssv.str(), ssf.str() ) )
                 {
                     if( m_loadingMode != LoadIfFilesExists || !fileExists( ssv.str() ) || !fileExists( ssf.str() ) )
@@ -818,7 +820,7 @@ namespace Ptakopysk
         if( !t )
         {
             sf::SoundBuffer* tb = xnew sf::SoundBuffer();
-            if( m_fileSystemRoot.empty() )
+            if( s_fileSystemRoot.empty() )
             {
                 if( !tb->loadFromFile( path ) )
                 {
@@ -832,7 +834,7 @@ namespace Ptakopysk
             else
             {
                 std::stringstream ss;
-                ss << m_fileSystemRoot.c_str() << path;
+                ss << s_fileSystemRoot.c_str() << path;
                 if( !tb->loadFromFile( ss.str() ) )
                 {
                     if( m_loadingMode != LoadIfFilesExists || !fileExists( ss.str() ) )
@@ -859,7 +861,7 @@ namespace Ptakopysk
         if( !t )
         {
             t = xnew sf::Music();
-            if( m_fileSystemRoot.empty() )
+            if( s_fileSystemRoot.empty() )
             {
                 if( !t->openFromFile( path ) )
                 {
@@ -873,7 +875,7 @@ namespace Ptakopysk
             else
             {
                 std::stringstream ss;
-                ss << m_fileSystemRoot.c_str() << path;
+                ss << s_fileSystemRoot.c_str() << path;
                 if( !t->openFromFile( ss.str() ) )
                 {
                     if( m_loadingMode != LoadIfFilesExists || !fileExists( ss.str() ) )
@@ -897,7 +899,7 @@ namespace Ptakopysk
         if( !t )
         {
             t = xnew sf::Font();
-            if( m_fileSystemRoot.empty() )
+            if( s_fileSystemRoot.empty() )
             {
                 if( !t->loadFromFile( path ) )
                 {
@@ -911,7 +913,7 @@ namespace Ptakopysk
             else
             {
                 std::stringstream ss;
-                ss << m_fileSystemRoot.c_str() << path;
+                ss << s_fileSystemRoot.c_str() << path;
                 if( !t->loadFromFile( ss.str() ) )
                 {
                     if( m_loadingMode != LoadIfFilesExists || !fileExists( ss.str() ) )

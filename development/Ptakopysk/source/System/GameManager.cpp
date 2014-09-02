@@ -1,4 +1,7 @@
 #include "../../include/Ptakopysk/System/GameManager.h"
+#include "../../include/Ptakopysk/System/Assets.h"
+#include "../../include/Ptakopysk/System/Events.h"
+#include "../../include/Ptakopysk/System/Tween.h"
 #include "../../include/Ptakopysk/Components/Body.h"
 #include "../../include/Ptakopysk/Components/Camera.h"
 #include "../../include/Ptakopysk/Components/RevoluteJoint.h"
@@ -6,13 +9,14 @@
 #include "../../include/Ptakopysk/Components/SpriteRenderer.h"
 #include "../../include/Ptakopysk/Components/TextRenderer.h"
 #include "../../include/Ptakopysk/Components/Transform.h"
-#include "../../include/Ptakopysk/System/Assets.h"
 #include "../../include/Ptakopysk/Serialization/b2BodyTypeSerializer.h"
 #include "../../include/Ptakopysk/Serialization/b2FilterSerializer.h"
 #include "../../include/Ptakopysk/Serialization/BlendModeSerializer.h"
 #include "../../include/Ptakopysk/Serialization/StyleSerializer.h"
 #include "../../include/Ptakopysk/Serialization/TransformModeSerializer.h"
 #include <XeCore/Common/Logger.h>
+#include <XeCore/Common/Concurrent/Thread.h>
+#include <XeCore/Common/Timer.h>
 #include <Box2D/Box2D.h>
 
 namespace Ptakopysk
@@ -165,12 +169,15 @@ namespace Ptakopysk
     std::map< std::string, GameManager::ComponentFactoryData > GameManager::s_componentsFactory = std::map< std::string, GameManager::ComponentFactoryData >();
     bool GameManager::s_editMode = false;
 
-    GameManager::GameManager()
+    GameManager::GameManager( const Json::Value& config )
     : RTTI_CLASS_DEFINE( GameManager )
     , PhysicsGravity( this, &GameManager::getWorldGravity, &GameManager::setWorldGravity )
     , RenderWindow( this, &GameManager::getRenderWindow, &GameManager::setRenderWindow )
     , m_renderWindow( 0 )
+    , m_bgColor( sf::Color::Black )
+    , m_fixedStep( 1.0f / 30.0f )
     {
+        setupFromConfig( config );
         m_world = xnew b2World( b2Vec2( 0.0f, 0.0f ) );
         m_destructionListener = xnew DestructionListener( this );
         m_world->SetDestructionListener( m_destructionListener );
@@ -196,6 +203,7 @@ namespace Ptakopysk
         DELETE_OBJECT( m_world );
         DELETE_OBJECT( m_destructionListener );
         DELETE_OBJECT( m_contactListener );
+        DELETE_OBJECT( m_renderWindow );
     }
 
     void GameManager::initialize()
@@ -355,6 +363,17 @@ namespace Ptakopysk
         for( std::map< std::string, ComponentFactoryData >::iterator it = s_componentsFactory.begin(); it != s_componentsFactory.end(); it++ )
             result.push_back( it->second.builder );
         return result.size();
+    }
+
+    std::string GameManager::sceneAt( unsigned int index )
+    {
+        if( index >= m_scenes.size() )
+            return "";
+        unsigned int i = 0;
+        for( ScenesList::iterator it = m_scenes.begin(); it != m_scenes.end(); it++, i++ )
+            if( i == index )
+                return it->second;
+        return "";
     }
 
     void GameManager::jsonToScene( const Json::Value& root, SceneContentType contentFlags )
@@ -682,6 +701,58 @@ namespace Ptakopysk
         return go;
     }
 
+    void GameManager::processLifeCycle()
+    {
+        if( !m_renderWindow )
+            return;
+        XeCore::Common::Timer timer;
+        timer.start();
+        float fixedStepAccum = 0.0f;
+        while( m_renderWindow->isOpen() )
+        {
+            processRunningScene();
+            sf::Event event;
+            while( m_renderWindow->pollEvent( event ) )
+            {
+                processEvents( event );
+                if( event.type == sf::Event::Closed )
+                    m_renderWindow->close();
+            }
+            timer.update();
+            float dt = timer.deltaSeconds();
+            fixedStepAccum += dt;
+            bool processFixedStep = false;
+            while( fixedStepAccum > m_fixedStep )
+            {
+                processFixedStep = true;
+                fixedStepAccum -= m_fixedStep;
+            }
+
+            Events::use().dispatch();
+            if( processFixedStep )
+            {
+                Tweener::use().processTweens( m_fixedStep );
+                processPhysics( m_fixedStep );
+                processUpdate( m_fixedStep );
+            }
+            m_renderWindow->clear( m_bgColor );
+            processRender( m_renderWindow );
+            m_renderWindow->display();
+            XeCore::Common::Concurrent::Thread::sleep( (unsigned int)( 1000.0f * m_fixedStep ) );
+        }
+        timer.stop();
+    }
+
+    void GameManager::processRunningScene()
+    {
+        if( m_sceneToRun.empty() )
+            return;
+        removeScene();
+        Json::Value scene = Assets::loadJson( m_sceneToRun );
+        jsonToScene( scene );
+        m_sceneToRun.clear();
+    }
+
     void GameManager::processEvents( const sf::Event& event )
     {
         for( GameObject::List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
@@ -778,6 +849,131 @@ namespace Ptakopysk
             if( *it == go )
                 return true;
         return false;
+    }
+
+    void GameManager::setupFromConfig( const Json::Value& config )
+    {
+        if( !config.isNull() && config.isObject() )
+        {
+            if( config.isMember( "window" ) )
+            {
+                Json::Value window = config[ "window" ];
+                m_bgColor = sf::Color::White;
+                sf::VideoMode vm = sf::VideoMode::getDesktopMode();
+                std::string nm;
+                sf::Uint32 st = sf::Style::Default;
+                if( window.isMember( "color" ) )
+                {
+                    Json::Value color = window[ "color" ];
+                    if( color.isArray() && color.size() == 4 )
+                        m_bgColor = sf::Color(
+                            (sf::Uint8)color[ 0u ].asUInt(),
+                            (sf::Uint8)color[ 1u ].asUInt(),
+                            (sf::Uint8)color[ 2u ].asUInt(),
+                            (sf::Uint8)color[ 3u ].asUInt()
+                        );
+                }
+                if( window.isMember( "videoMode" ) )
+                {
+                    Json::Value videoMode = window[ "videoMode" ];
+                    if( videoMode.isObject() )
+                    {
+                        if( videoMode.isMember( "width" ) )
+                        {
+                            Json::Value width = videoMode[ "width" ];
+                            if( width.isNumeric() )
+                                vm.width = width.asUInt();
+                        }
+                        if( videoMode.isMember( "height" ) )
+                        {
+                            Json::Value height = videoMode[ "height" ];
+                            if( height.isNumeric() )
+                                vm.height = height.asUInt();
+                        }
+                        if( videoMode.isMember( "bitsPerPixel" ) )
+                        {
+                            Json::Value bitsPerPixel = videoMode[ "bitsPerPixel" ];
+                            if( bitsPerPixel.isNumeric() )
+                                vm.bitsPerPixel = bitsPerPixel.asUInt();
+                        }
+                    }
+                    else if( videoMode.isString() && videoMode.asString() == "fullscreen" )
+                    {
+                        const std::vector< sf::VideoMode >& f = sf::VideoMode::getFullscreenModes();
+                        if( f.size() > 0 )
+                            vm = f[ 0 ];
+                    }
+                }
+                if( window.isMember( "name" ) )
+                {
+                    Json::Value name = window[ "name" ];
+                    if( name.isString() )
+                        nm = name.asString();
+                }
+                if( window.isMember( "style" ) )
+                {
+                    Json::Value style = window[ "style" ];
+                    if( style.isArray() )
+                    {
+                        st = sf::Style::None;
+                        Json::Value item;
+                        for( unsigned int i = 0; i < style.size(); i++ )
+                        {
+                            item = style[ i ];
+                            if( item.isString() )
+                            {
+                                if( item.asString() == "Titlebar" )
+                                    st |= sf::Style::Titlebar;
+                                else if( item.asString() == "Resize" )
+                                    st |= sf::Style::Resize;
+                                else if( item.asString() == "Close" )
+                                    st |= sf::Style::Close;
+                                else if( item.asString() == "Fullscreen" )
+                                    st |= sf::Style::Fullscreen;
+                            }
+                        }
+                    }
+                }
+                m_renderWindow = xnew sf::RenderWindow( vm, nm, st );
+            }
+            if( config.isMember( "lifeCycle" ) )
+            {
+                Json::Value lifeCycle = config[ "lifeCycle" ];
+                if( lifeCycle.isObject() )
+                {
+                    if( lifeCycle.isMember( "fixedFps" ) )
+                    {
+                        Json::Value fixedFps = lifeCycle[ "fixedFps" ];
+                        if( fixedFps.isNumeric() )
+                        {
+                            float v = (float)fixedFps.asDouble();
+                            m_fixedStep = v > 0.0f ? 1.0f / v : 0.0f;
+                        }
+                    }
+                    if( lifeCycle.isMember( "fixedStep" ) )
+                    {
+                        Json::Value fixedStep = lifeCycle[ "fixedStep" ];
+                        if( fixedStep.isNumeric() )
+                            m_fixedStep = (float)fixedStep.asDouble();
+                    }
+                }
+            }
+            if( config.isMember( "scenes" ) )
+            {
+                Json::Value scenes = config[ "scenes" ];
+                if( scenes.isObject() )
+                {
+                    Json::Value::Members m = scenes.getMemberNames();
+                    Json::Value item;
+                    for( Json::Value::Members::iterator it = m.begin(); it != m.end(); it++ )
+                    {
+                        item = scenes[ *it ];
+                        if( item.isString() )
+                            m_scenes[ *it ] = item.asString();
+                    }
+                }
+            }
+        }
     }
 
     void GameManager::processContact( bool beginOrEnd, GameObject* a, GameObject* b, b2Contact* contact )
