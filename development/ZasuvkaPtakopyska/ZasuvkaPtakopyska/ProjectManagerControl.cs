@@ -178,6 +178,22 @@ namespace ZasuvkaPtakopyska
                 File.Copy(mainForm.SettingsModel.SdkPath + @"\templates\dllmain.cpp", dir + @"\dllmain.cpp", true);
                 somethingChanged = true;
             }
+            if (forced || !File.Exists(dir + @"\openal32.dll"))
+            {
+                if (!File.Exists(mainForm.SettingsModel.SdkPath + @"\bin\openal32.dll"))
+                    return;
+
+                File.Copy(mainForm.SettingsModel.SdkPath + @"\bin\openal32.dll", dir + @"\openal32.dll", true);
+                somethingChanged = true;
+            }
+            if (forced || !File.Exists(dir + @"\libsndfile-1.dll"))
+            {
+                if (!File.Exists(mainForm.SettingsModel.SdkPath + @"\bin\libsndfile-1.dll"))
+                    return;
+
+                File.Copy(mainForm.SettingsModel.SdkPath + @"\bin\libsndfile-1.dll", dir + @"\libsndfile-1.dll", true);
+                somethingChanged = true;
+            }
             string includeComponentsFilePath = dir + @"\__components_headers_list__generated__.h";
             string registerComponentsFilePath = dir + @"\__register_components__generated__.inl";
             string unregisterComponentsFilePath = dir + @"\__unregister_components__generated__.inl";

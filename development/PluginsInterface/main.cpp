@@ -1,6 +1,7 @@
 #include "main.h"
 #include <map>
 #include <sstream>
+#include <shlwapi.h>
 
 ///==========///
 
@@ -32,6 +33,31 @@ PluginData g_currentData;
 std::string g_currentPath;
 std::map< std::string, PluginData > g_plugins;
 std::string g_stringCache;
+std::stringstream g_errorsCache;
+
+///==========///
+
+std::string FormatLastError()
+{
+    DWORD errorCode = GetLastError();
+    if( !errorCode )
+        return "";
+    LPTSTR errorText = 0;
+    if( FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ALLOCATE_BUFFER, 0, errorCode, 0, errorText, 10240 + 1, 0 ) )
+    {
+        std::stringstream ss;
+        ss << errorCode << ": " << errorText;
+        if( errorText )
+            LocalFree( errorText );
+        return ss.str();
+    }
+    else
+    {
+        std::stringstream ss;
+        ss << "<cannot-format-last-error:" << errorCode << ";because-of-error:" << GetLastError() << ">";
+        return ss.str();
+    }
+}
 
 ///==========///
 
@@ -39,12 +65,25 @@ DLL_EXPORT bool _PluginLoad( const char* path )
 {
     std::string p = path;
     if( g_plugins.count( p ) )
+    {
+        g_errorsCache << "Plugin already exists: " << path << "\n";
         return false;
+    }
 
+    std::string tmpPath = path;
+    PathRemoveFileSpec( (LPSTR)tmpPath.c_str() );
+    TCHAR currDir[ MAX_PATH ];
+    GetCurrentDirectory( MAX_PATH, currDir );
+    SetCurrentDirectory( tmpPath.c_str() );
     PluginData plugin;
     plugin.instance = LoadLibrary( p.c_str() );
+    SetCurrentDirectory( currDir );
     if( !plugin.instance )
+    {
+        std::string lastError = FormatLastError();
+        g_errorsCache << "Cannot load plugin library: " << path << "\nMore details: " << lastError << "\n";
         return false;
+    }
 
     plugin.registerPlugin = (_RegisterPlugin)GetProcAddress( plugin.instance, "_RegisterPlugin" );
     plugin.unregisterPlugin = (_UnregisterPlugin)GetProcAddress( plugin.instance, "_UnregisterPlugin" );
@@ -53,6 +92,7 @@ DLL_EXPORT bool _PluginLoad( const char* path )
     if( !plugin.isValid() )
     {
         FreeLibrary( plugin.instance );
+        g_errorsCache << "Invalid plugin: " << path << "\n";
         return false;
     }
 
@@ -64,6 +104,7 @@ DLL_EXPORT bool _PluginLoad( const char* path )
     else
     {
         FreeLibrary( plugin.instance );
+        g_errorsCache << "Cannot register plugin: " << path << "\n";
         return false;
     }
 }
@@ -83,6 +124,7 @@ DLL_EXPORT bool _PluginUnload( const char* path )
             return true;
         }
     }
+    g_errorsCache << "Plugin does not exists: " << path << "\n";
     return false;
 }
 
@@ -125,6 +167,7 @@ DLL_EXPORT bool _PluginSetCurrent( const char* path )
         g_currentPath = p;
         return g_currentData.isValid();
     }
+    g_errorsCache << "Plugin does not exists: " << path << "\n";
     return false;
 }
 
@@ -141,6 +184,14 @@ DLL_EXPORT const char* _PluginQuery( const char* query )
         return g_stringCache.c_str();
     }
     return "";
+}
+
+DLL_EXPORT const char* _PluginErrors()
+{
+    g_stringCache = g_errorsCache.str();
+    g_errorsCache.clear();
+    g_errorsCache.str( "" );
+    return g_stringCache.c_str();
 }
 
 ///==========///

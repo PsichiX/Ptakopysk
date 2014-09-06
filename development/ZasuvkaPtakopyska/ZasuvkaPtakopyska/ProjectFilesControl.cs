@@ -16,7 +16,7 @@ namespace ZasuvkaPtakopyska
         #region Private Static Data.
 
         private static readonly int DEFAULT_SEPARATOR = 4;
-        private static readonly Size DEFAULT_TILE_SIZE = new Size(74, 74);
+        private static readonly Size DEFAULT_TILE_SIZE = new Size(148, 74);
 
         #endregion
 
@@ -140,7 +140,7 @@ namespace ZasuvkaPtakopyska
                 tile.Text = info.Name;
                 tile.TextAlign = ContentAlignment.BottomRight;
                 tile.TileTextFontSize = MetroTileTextSize.Small;
-                tile.TileTextFontWeight = MetroTileTextWeight.Light;
+                tile.TileTextFontWeight = MetroTileTextWeight.Regular;
                 tile.Image = m_dirImage;
                 tile.IsImageScaled = true;
                 tile.ImageScale = new PointF(0.85f, 0.85f);
@@ -165,7 +165,7 @@ namespace ZasuvkaPtakopyska
                 tile.Text = ext + "\n" + Path.GetFileNameWithoutExtension(info.Name);
                 tile.TextAlign = ContentAlignment.BottomRight;
                 tile.TileTextFontSize = MetroTileTextSize.Small;
-                tile.TileTextFontWeight = MetroTileTextWeight.Light;
+                tile.TileTextFontWeight = MetroTileTextWeight.Regular;
                 if (ext == ".h" || ext == ".cpp")
                     tile.Image = m_fileCodeImage;
                 else if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp")

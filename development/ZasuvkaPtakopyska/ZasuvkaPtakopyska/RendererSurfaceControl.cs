@@ -23,6 +23,15 @@ namespace ZasuvkaPtakopyska
 
 
 
+        #region Public Data.
+
+        public delegate void ZoomChangedHandler(RendererSurfaceControl sender, float zoom);
+        public event ZoomChangedHandler ZoomChanged;
+
+        #endregion
+
+
+
         #region Construction and Destruction.
 
         public RendererSurfaceControl()
@@ -56,14 +65,6 @@ namespace ZasuvkaPtakopyska
                 SceneViewPlugin.ProcessEvents();
                 SceneViewPlugin.ProcessUpdate(0, true);
                 SceneViewPlugin.ProcessRender();
-
-                Brush brushBg = new SolidBrush(Color.FromArgb(64, 0, 0, 0));
-                Brush brush = new SolidBrush(Color.White);
-                float zoom = m_cameraZoom > 0.0f ? 1.0f / m_cameraZoom : 0.0f;
-                string text = "Zoom: " + zoom.ToString("P2", Settings.DefaultFormatProvider);
-                SizeF size = e.Graphics.MeasureString(text, Font);
-                e.Graphics.FillRectangle(brushBg, 0, 0, size.Width + 20, size.Height + 20);
-                e.Graphics.DrawString(text, Font, brush, new PointF(10.0f, 10.0f));
             }
             else
             {
@@ -130,6 +131,7 @@ namespace ZasuvkaPtakopyska
         private void RendererSurfaceControl_Disposed(object sender, EventArgs e)
         {
             SceneViewPlugin.Release();
+            ZoomChanged = null;
         }
 
         private void RendererSurfaceControl_Resize(object sender, EventArgs e)
@@ -189,6 +191,8 @@ namespace ZasuvkaPtakopyska
                     else
                         m_cameraZoom = m_lastCameraZoom;
                     m_cameraZoom = Math.Max(m_cameraZoom, 0.001f);
+                    if (ZoomChanged != null)
+                        ZoomChanged(this, m_cameraZoom);
                     SceneViewPlugin.SetSceneViewZoom(m_cameraZoom);
                     Invalidate();
                 }

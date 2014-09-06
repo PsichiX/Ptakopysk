@@ -1,12 +1,11 @@
-﻿using MetroFramework.Forms;
-using ZasuvkaPtakopyskaExtender;
+﻿using MetroFramework;
+using MetroFramework.Controls;
+using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using MetroFramework.Controls;
+using ZasuvkaPtakopyskaExtender;
 using ZasuvkaPtakopyskaExtender.Editors;
-using System.Collections.Generic;
-using System;
-using MetroFramework;
 
 namespace ZasuvkaPtakopyska
 {
@@ -257,6 +256,7 @@ namespace ZasuvkaPtakopyska
         private SceneViewPlugin.AssetType m_type;
         private Dictionary<string, string> m_properties = new Dictionary<string, string>();
         private MetroButton m_addAssetButton;
+
         #endregion
 
 

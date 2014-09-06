@@ -1,9 +1,10 @@
 # depslib dependency file v1.0
-1409082773 source:d:\git\ptakopysk\development\pluginsinterface\main.cpp
+1410017762 source:d:\git\ptakopysk\development\pluginsinterface\main.cpp
 	"main.h"
 	<map>
-	<string>
+	<sstream>
+	<shlwapi.h>
 
-1409087158 d:\git\ptakopysk\development\pluginsinterface\main.h
+1409978455 d:\git\ptakopysk\development\pluginsinterface\main.h
 	<windows.h>
 

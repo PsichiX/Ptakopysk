@@ -175,7 +175,7 @@ namespace Ptakopysk
     , RenderWindow( this, &GameManager::getRenderWindow, &GameManager::setRenderWindow )
     , m_renderWindow( 0 )
     , m_bgColor( sf::Color::Black )
-    , m_fixedStep( 1.0f / 30.0f )
+    , m_fixedStep( 0.0f )
     {
         setupFromConfig( config );
         m_world = xnew b2World( b2Vec2( 0.0f, 0.0f ) );
@@ -881,19 +881,19 @@ namespace Ptakopysk
                         if( videoMode.isMember( "width" ) )
                         {
                             Json::Value width = videoMode[ "width" ];
-                            if( width.isNumeric() )
+                            if( width.isNumeric() && width.asUInt() > 0 )
                                 vm.width = width.asUInt();
                         }
                         if( videoMode.isMember( "height" ) )
                         {
                             Json::Value height = videoMode[ "height" ];
-                            if( height.isNumeric() )
+                            if( height.isNumeric() && height.asUInt() > 0 )
                                 vm.height = height.asUInt();
                         }
                         if( videoMode.isMember( "bitsPerPixel" ) )
                         {
                             Json::Value bitsPerPixel = videoMode[ "bitsPerPixel" ];
-                            if( bitsPerPixel.isNumeric() )
+                            if( bitsPerPixel.isNumeric() && bitsPerPixel.asUInt() > 0 )
                                 vm.bitsPerPixel = bitsPerPixel.asUInt();
                         }
                     }

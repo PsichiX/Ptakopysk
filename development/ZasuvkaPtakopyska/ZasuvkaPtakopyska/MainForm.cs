@@ -67,6 +67,7 @@ namespace ZasuvkaPtakopyska
         private static readonly string DEFAULT_APP_TITLE = "Zásuvka Ptakopyska";
         private static readonly string APP_CODE_BLOCKS = "Code::Blocks";
         private static readonly string APP_SCENE_EDITOR = "Scene Editor";
+        private static readonly string APP_CONFIG_EDITOR = "Game Config Editor";
 
         #endregion
 
@@ -260,6 +261,22 @@ namespace ZasuvkaPtakopyska
             m_rightPanel.Content.Controls.Clear();
 
             AssetsControl editor = new AssetsControl(assetType, ProjectModel);
+            editor.Dock = DockStyle.Fill;
+            m_rightPanel.Content.Controls.Add(editor);
+            m_rightPanel.Unroll();
+        }
+
+        public void ExploreConfigProperties(string path)
+        {
+            if (m_rightPanel == null)
+                return;
+
+            m_rightPanel.Content.Controls.Clear();
+
+            if (!File.Exists(path))
+                return;
+
+            ConfigControl editor = new ConfigControl(path);
             editor.Dock = DockStyle.Fill;
             m_rightPanel.Content.Controls.Add(editor);
             m_rightPanel.Unroll();
@@ -469,7 +486,7 @@ namespace ZasuvkaPtakopyska
             if (ext == ".h" || ext == ".cpp")
                 dialog = new OpenFileWithDialog(APP_CODE_BLOCKS, "Default Code Editor");
             else if (ext == ".json")
-                dialog = new OpenFileWithDialog(APP_SCENE_EDITOR, "Default JSON Editor");
+                dialog = new OpenFileWithDialog(new string[] { APP_SCENE_EDITOR, APP_CONFIG_EDITOR }, "Default JSON Editor");
             else
                 dialog = new OpenFileWithDialog();
             DialogResult result = dialog.OptionsCount > 0 ? dialog.ShowDialog() : DialogResult.OK;
@@ -499,6 +516,8 @@ namespace ZasuvkaPtakopyska
                         if (m_scenePage.OpenScene(path))
                             SelectTabPage(TAB_NAME_SCENE);
                 }
+                else if (dialog.ResultOption == APP_CONFIG_EDITOR)
+                    ExploreConfigProperties(path);
                 else
                 {
                     try

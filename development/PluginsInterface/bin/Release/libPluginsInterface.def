@@ -1,17 +1,19 @@
 EXPORTS
     DllMain = DllMain@12 @1
     DllMain@12 @2
-    _PluginGetCurrent = _PluginGetCurrent@0 @3
-    _PluginGetCurrent@0 @4
-    _PluginListAll = _PluginListAll@0 @5
-    _PluginListAll@0 @6
-    _PluginLoad = _PluginLoad@4 @7
-    _PluginLoad@4 @8
-    _PluginQuery = _PluginQuery@4 @9
-    _PluginQuery@4 @10
-    _PluginSetCurrent = _PluginSetCurrent@4 @11
-    _PluginSetCurrent@4 @12
-    _PluginUnload = _PluginUnload@4 @13
-    _PluginUnload@4 @14
-    _PluginUnloadAll = _PluginUnloadAll@0 @15
-    _PluginUnloadAll@0 @16
+    _PluginErrors = _PluginErrors@0 @3
+    _PluginErrors@0 @4
+    _PluginGetCurrent = _PluginGetCurrent@0 @5
+    _PluginGetCurrent@0 @6
+    _PluginListAll = _PluginListAll@0 @7
+    _PluginListAll@0 @8
+    _PluginLoad = _PluginLoad@4 @9
+    _PluginLoad@4 @10
+    _PluginQuery = _PluginQuery@4 @11
+    _PluginQuery@4 @12
+    _PluginSetCurrent = _PluginSetCurrent@4 @13
+    _PluginSetCurrent@4 @14
+    _PluginUnload = _PluginUnload@4 @15
+    _PluginUnload@4 @16
+    _PluginUnloadAll = _PluginUnloadAll@0 @17
+    _PluginUnloadAll@0 @18

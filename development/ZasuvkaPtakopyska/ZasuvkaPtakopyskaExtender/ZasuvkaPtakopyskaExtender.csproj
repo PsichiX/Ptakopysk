@@ -38,9 +38,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\requirements\Newtonsoft.Json\Net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="PtakopyskMetaGenerator">
-      <HintPath>..\PtakopyskMetaGenerator\bin\Release\PtakopyskMetaGenerator.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -53,10 +50,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ControlExtension.cs" />
-    <Compile Include="Editors\ArrayPropertyEditor.cs">
+    <Compile Include="Editors\ArrayParsablePropertyEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Editors\StringMapPropertyEditor.cs">
+    <Compile Include="Editors\ArrayStringPropertyEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editors\StringMapStringPropertyEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Editors\StringMapParsablePropertyEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Editors\Vector2PropertyEditor.cs">
@@ -157,6 +160,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\appbar.question.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PtakopyskMetaGenerator\PtakopyskMetaGenerator.csproj">
+      <Project>{1568bfa1-47b1-4af1-8df1-5c95a3ad6237}</Project>
+      <Name>PtakopyskMetaGenerator</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

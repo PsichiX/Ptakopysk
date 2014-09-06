@@ -8,8 +8,8 @@ namespace ZasuvkaPtakopyskaExtender.Editors
     {
         private class Info
         {
-            public string id;
-            public string type;
+            public string id = "";
+            public string type = "";
         }
 
         private string m_type;

@@ -22,6 +22,7 @@ DLL_EXPORT const char* _PluginListAll();
 DLL_EXPORT bool _PluginSetCurrent( const char* path );
 DLL_EXPORT const char* _PluginGetCurrent();
 DLL_EXPORT const char* _PluginQuery( const char* query );
+DLL_EXPORT const char* _PluginErrors();
 
 #ifdef __cplusplus
 }

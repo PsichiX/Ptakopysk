@@ -1,4 +1,6 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.IO;
+using System.Runtime.InteropServices;
 
 namespace ZasuvkaPtakopyskaExtender
 {
@@ -19,7 +21,7 @@ namespace ZasuvkaPtakopyskaExtender
             public string error = null;
             public T result = default(T);
         }
-        
+
         #endregion
 
 
@@ -28,20 +30,41 @@ namespace ZasuvkaPtakopyskaExtender
 
         public static bool Load(string path)
         {
+            if (string.IsNullOrEmpty(path))
+                return false;
+            if (!File.Exists(path))
+            {
+                Console.WriteLine("Plugin library does not exists: " + path);
+                return false;
+            }
             try
             {
-                return _PluginLoad(path);
+                var result = _PluginLoad(path);
+                ErrorsToConsole();
+                return result;
             }
-            catch { return false; }
+            catch (Exception ex)
+            {
+                Console.WriteLine(">>> " + ex.GetType().Name + ": " + ex.Message);
+                return false;
+            }
         }
 
         public static bool Unload(string path)
         {
+            if (string.IsNullOrEmpty(path))
+                return false;
             try
             {
-                return _PluginUnload(path);
+                var result = _PluginUnload(path);
+                ErrorsToConsole();
+                return result;
             }
-            catch { return false; }
+            catch (Exception ex)
+            {
+                Console.WriteLine(">>> " + ex.GetType().Name + ": " + ex.Message);
+                return false;
+            }
         }
 
         public static void UnloadAll()
@@ -49,18 +72,27 @@ namespace ZasuvkaPtakopyskaExtender
             try
             {
                 _PluginUnloadAll();
+                ErrorsToConsole();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Console.WriteLine(">>> " + ex.GetType().Name + ": " + ex.Message);
+            }
         }
 
         public static string[] ListAll()
         {
             try
             {
-                string result = _PluginListAll();
+                var result = Marshal.PtrToStringAnsi(_PluginListAll());
+                ErrorsToConsole();
                 return string.IsNullOrEmpty(result) ? null : result.Split(new string[] { ";" }, System.StringSplitOptions.RemoveEmptyEntries);
             }
-            catch { return null; }
+            catch (Exception ex)
+            {
+                Console.WriteLine(">>> " + ex.GetType().Name + ": " + ex.Message);
+                return null;
+            }
         }
 
         public static bool SetCurrent(string path)
@@ -69,27 +101,47 @@ namespace ZasuvkaPtakopyskaExtender
                 return false;
             try
             {
-                return _PluginSetCurrent(path);
+                var result = _PluginSetCurrent(path);
+                ErrorsToConsole();
+                return result;
             }
-            catch { return false; }
+            catch (Exception ex)
+            {
+                Console.WriteLine(">>> " + ex.GetType().Name + ": " + ex.Message);
+                return false;
+            }
         }
 
         public static string GetCurrent()
         {
             try
             {
-                return _PluginGetCurrent();
+                var result = Marshal.PtrToStringAnsi(_PluginGetCurrent());
+                ErrorsToConsole();
+                return result;
             }
-            catch { return null; }
+            catch (Exception ex)
+            {
+                Console.WriteLine(">>> " + ex.GetType().Name + ": " + ex.Message);
+                return null;
+            }
         }
 
         public static string Query(string query)
         {
+            if (string.IsNullOrEmpty(query))
+                return null;
             try
             {
-                return _PluginQuery(query);
+                var result = Marshal.PtrToStringAnsi(_PluginQuery(query));
+                ErrorsToConsole();
+                return result;
             }
-            catch { return null; }
+            catch (Exception ex)
+            {
+                Console.WriteLine(">>> " + ex.GetType().Name + ": " + ex.Message);
+                return null;
+            }
         }
 
         public static Result<TR> QueryFunction<TR>(string funcName, params object[] args)
@@ -100,11 +152,29 @@ namespace ZasuvkaPtakopyskaExtender
                 if (!string.IsNullOrEmpty(a))
                 {
                     string r = Query("{ \"" + funcName + "\": " + a + " }");
+                    ErrorsToConsole();
                     return Newtonsoft.Json.JsonConvert.DeserializeObject<Result<TR>>(r);
                 }
                 return new Result<TR>();
             }
-            catch { return new Result<TR>(); }
+            catch (Exception ex)
+            {
+                Console.WriteLine(">>> " + ex.GetType().Name + ": " + ex.Message);
+                return new Result<TR>();
+            }
+        }
+
+        public static void ErrorsToConsole()
+        {
+            try
+            {
+                string text = Marshal.PtrToStringAnsi(_PluginErrors());
+                Console.WriteLine(text);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(">>> " + ex.GetType().Name + ": " + ex.Message);
+            }
         }
 
         #endregion
@@ -132,8 +202,7 @@ namespace ZasuvkaPtakopyskaExtender
         private static extern void _PluginUnloadAll();
 
         [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
-        [return: MarshalAs(UnmanagedType.LPStr)]
-        private static extern string _PluginListAll();
+        private static extern IntPtr _PluginListAll();
 
         [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
         [return: MarshalAs(UnmanagedType.I1)]
@@ -143,15 +212,16 @@ namespace ZasuvkaPtakopyskaExtender
             );
 
         [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
-        [return: MarshalAs(UnmanagedType.LPStr)]
-        private static extern string _PluginGetCurrent();
+        private static extern IntPtr _PluginGetCurrent();
 
         [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
-        [return: MarshalAs(UnmanagedType.LPStr)]
-        private static extern string _PluginQuery(
+        private static extern IntPtr _PluginQuery(
             [MarshalAs(UnmanagedType.LPStr)]
             string query
             );
+
+        [DllImport(DLL, CallingConvention = CallingConvention.StdCall)]
+        private static extern IntPtr _PluginErrors();
 
         #endregion
     }

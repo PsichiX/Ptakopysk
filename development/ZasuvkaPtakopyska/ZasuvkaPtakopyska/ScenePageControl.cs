@@ -32,6 +32,7 @@ namespace ZasuvkaPtakopyska
         private MetroButton m_gameObjectsMenuButton;
         private MetroButton m_sceneMenuButton;
         private MetroButton m_assetsMenuButton;
+        private MetroLabel m_zoomLabel;
         private RendererSurfaceControl m_renderer;
         private MetroSidePanel m_gameObjectsPanel;
         private TreeView m_gameObjectsTree;
@@ -118,9 +119,6 @@ namespace ZasuvkaPtakopyska
 
         public bool SaveScene(string path)
         {
-            if (string.IsNullOrEmpty(m_scenePath))
-                return false;
-
             string json = SceneViewPlugin.ConvertSceneToJson();
             File.WriteAllText(path, json);
             if (File.Exists(path))
@@ -243,6 +241,16 @@ namespace ZasuvkaPtakopyska
             m_assetsMenuButton.Click += new EventHandler(m_assetsMenuButton_Click);
             m_toolbarContent.Controls.Add(m_assetsMenuButton);
             x = m_assetsMenuButton.Right + DEFAULT_TOOLBAR_SEPARATOR;
+
+            m_zoomLabel = new MetroLabel();
+            MetroSkinManager.ApplyMetroStyle(m_zoomLabel);
+            m_zoomLabel.Top = DEFAULT_TOOLBAR_SEPARATOR;
+            m_zoomLabel.Text = "Zoom: 100%";
+            m_zoomLabel.Left = x;
+            m_zoomLabel.FontWeight = MetroFramework.MetroLabelWeight.Bold;
+            m_zoomLabel.Size = m_zoomLabel.GetPreferredSize(new Size());
+            m_toolbarContent.Controls.Add(m_zoomLabel);
+            x = m_zoomLabel.Right + DEFAULT_TOOLBAR_SEPARATOR;
         }
 
         private void InitializeSceneView()
@@ -254,6 +262,7 @@ namespace ZasuvkaPtakopyska
             m_renderer.Height = Height;
             m_renderer.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
             Controls.Add(m_renderer);
+            m_renderer.ZoomChanged += m_renderer_ZoomChanged;
 
             m_gameObjectsPanel = new MetroSidePanel();
             MetroSkinManager.ApplyMetroStyle(m_gameObjectsPanel);
@@ -458,9 +467,6 @@ namespace ZasuvkaPtakopyska
 
         private void m_sceneMenuButton_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(m_scenePath))
-                return;
-
             MetroButton btn = sender as MetroButton;
             if (btn == null)
                 return;
@@ -468,23 +474,35 @@ namespace ZasuvkaPtakopyska
             MetroContextMenu menu = new MetroContextMenu(null);
             MetroSkinManager.ApplyMetroStyle(menu);
             ToolStripMenuItem menuItem;
+            
+            if (string.IsNullOrEmpty(m_scenePath))
+            {
+                menuItem = new ToolStripMenuItem("New Scene");
+                menuItem.Click += new EventHandler(menuItem_newScene_Click);
+                menu.Items.Add(menuItem);
+            }
+            else
+            {
+                menuItem = new ToolStripMenuItem("New Scene");
+                menuItem.Click += new EventHandler(menuItem_newScene_Click);
+                menu.Items.Add(menuItem);
 
-            menuItem = new ToolStripMenuItem("Save Scene");
-            menuItem.Click += new EventHandler(menuItem_saveScene_Click);
-            menu.Items.Add(menuItem);
+                menuItem = new ToolStripMenuItem("Save Scene");
+                menuItem.Click += new EventHandler(menuItem_saveScene_Click);
+                menu.Items.Add(menuItem);
 
-            menuItem = new ToolStripMenuItem("Save Scene As...");
-            menuItem.Click += new EventHandler(menuItem_saveSceneAs_Click);
-            menu.Items.Add(menuItem);
+                menuItem = new ToolStripMenuItem("Save Scene As...");
+                menuItem.Click += new EventHandler(menuItem_saveSceneAs_Click);
+                menu.Items.Add(menuItem);
 
-            menuItem = new ToolStripMenuItem("Reload Scene");
-            menuItem.Click += new EventHandler(menuItem_reloadScene_Click);
-            menu.Items.Add(menuItem);
+                menuItem = new ToolStripMenuItem("Reload Scene");
+                menuItem.Click += new EventHandler(menuItem_reloadScene_Click);
+                menu.Items.Add(menuItem);
 
-            menuItem = new ToolStripMenuItem("Close Scene");
-            menuItem.Click += new EventHandler(menuItem_closeScene_Click);
-            menu.Items.Add(menuItem);
-
+                menuItem = new ToolStripMenuItem("Close Scene");
+                menuItem.Click += new EventHandler(menuItem_closeScene_Click);
+                menu.Items.Add(menuItem);
+            }
             menu.Show(btn, new Point(0, btn.Height));
         }
 
@@ -536,6 +554,20 @@ namespace ZasuvkaPtakopyska
         private void menuItem_gameObjectsRemove_Click(object sender, EventArgs e)
         {
             RemoveAllGameObjects(IsGameObjectsPrefabsMode);
+        }
+
+        private void menuItem_newScene_Click(object sender, EventArgs e)
+        {
+            CloseScene();
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.InitialDirectory = Path.GetDirectoryName(m_scenePath);
+            dialog.FileName = Path.GetFileName(m_scenePath);
+            dialog.RestoreDirectory = true;
+            dialog.OverwritePrompt = true;
+            dialog.Filter = DEFAULT_SCENE_FILTER;
+            DialogResult result = dialog.ShowDialog();
+            if (result == DialogResult.OK)
+                SaveScene(dialog.FileName);
         }
 
         private void menuItem_saveScene_Click(object sender, EventArgs e)
@@ -683,6 +715,13 @@ namespace ZasuvkaPtakopyska
                 return;
 
             AddNewGameObject(false, 0, menuItem.Tag as string);
+        }
+
+        private void m_renderer_ZoomChanged(RendererSurfaceControl sender, float zoom)
+        {
+            zoom = zoom > 0.0f ? 1.0f / zoom : 0.0f;
+            m_zoomLabel.Text = "Zoom: " + zoom.ToString("P2", Settings.DefaultFormatProvider);
+            m_zoomLabel.Size = m_zoomLabel.GetPreferredSize(new Size());
         }
 
         #endregion

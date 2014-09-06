@@ -49,7 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PtakopyskMetaGenerator\PtakopyskMetaGenerator.csproj">
-      <Project>{1568BFA1-47B1-4AF1-8DF1-5C95A3AD6237}</Project>
+      <Project>{1568bfa1-47b1-4af1-8df1-5c95a3ad6237}</Project>
       <Name>PtakopyskMetaGenerator</Name>
     </ProjectReference>
   </ItemGroup>
