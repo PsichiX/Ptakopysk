@@ -17,6 +17,7 @@
 				</Compiler>
 				<Linker>
 					<Add library="libPtakopysk-d.a" />
+					<Add library="libsfml-network-s-d.a" />
 					<Add library="libsfml-audio-s-d.a" />
 					<Add library="libsfml-graphics-s-d.a" />
 					<Add library="libsfml-window-s-d.a" />
@@ -39,6 +40,7 @@
 				<Linker>
 					<Add option="-s" />
 					<Add library="libPtakopysk.a" />
+					<Add library="libsfml-network-s.a" />
 					<Add library="libsfml-audio-s.a" />
 					<Add library="libsfml-graphics-s.a" />
 					<Add library="libsfml-window-s.a" />

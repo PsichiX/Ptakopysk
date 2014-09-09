@@ -31,7 +31,9 @@ namespace XeCore
                                         ~Synchronized();
 
                 void					lock();
+                bool                    tryLock();
                 void					unlock();
+                bool                    isLocked();
 
             private:
                 tthread::mutex*			m_mutex;

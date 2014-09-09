@@ -25,6 +25,6 @@ void TestThread::run()
 {
     SYNCHRONIZED_HERE;
     cout << "run TestThread: " << getId() << endl;
-    for( int i = 0; i < 10; i++ )
+    for( int i = 0; i < 25; i++ )
         cout << "job #" << i << " of TestThread: " << getId() << endl;
 }

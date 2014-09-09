@@ -36,6 +36,7 @@ namespace XeCore
                 unsigned long			getId();
                 State					getState();
                 void					join();
+                bool                    isJoinable();
                 void					start();
                 virtual void			run() {}
 
@@ -43,10 +44,15 @@ namespace XeCore
                 static void             sleep( unsigned int millis );
 
             private:
+                class RunnableData;
+
                 static void				_run( void* args );
+
+                void                    _reset();
 
                 tthread::thread*		m_thread;
                 Runnable*				m_runnable;
+                RunnableData*			m_runnableData;
                 volatile State			m_state;
 
                 class RunnableData

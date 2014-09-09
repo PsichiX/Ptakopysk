@@ -125,7 +125,7 @@ namespace Ptakopysk
             setText( root.asString() );
         else if( property == "Font" && root.isString() )
             setFont( Assets::use().getFont( root.asString() ) );
-        else if( property == "Size" && root.isUInt() )
+        else if( property == "Size" && root.isNumeric() )
             setSize( root.asUInt() );
         else if( property == "Origin" && root.isArray() && root.size() == 2 )
         {

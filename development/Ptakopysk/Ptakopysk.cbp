@@ -22,6 +22,7 @@
 					<Add library="..\requirements\JsonCpp\bin\Debug\libJsonCpp.a" />
 					<Add library="..\requirements\BinaryJson\libs\libBinaryJson-d.a" />
 					<Add library="..\requirements\Box2D\bin\Debug\libBox2D.a" />
+					<Add library="..\requirements\SFML-2.1\lib\libsfml-network-s-d.a" />
 					<Add library="..\requirements\SFML-2.1\lib\libsfml-audio-s-d.a" />
 					<Add library="..\requirements\SFML-2.1\lib\libsfml-graphics-s-d.a" />
 					<Add library="..\requirements\SFML-2.1\lib\libsfml-window-s-d.a" />
@@ -45,6 +46,7 @@
 					<Add library="..\requirements\JsonCpp\bin\Release\libJsonCpp.a" />
 					<Add library="..\requirements\BinaryJson\libs\libBinaryJson.a" />
 					<Add library="..\requirements\Box2D\bin\Release\libBox2D.a" />
+					<Add library="..\requirements\SFML-2.1\lib\libsfml-network-s.a" />
 					<Add library="..\requirements\SFML-2.1\lib\libsfml-audio-s.a" />
 					<Add library="..\requirements\SFML-2.1\lib\libsfml-graphics-s.a" />
 					<Add library="..\requirements\SFML-2.1\lib\libsfml-window-s.a" />
@@ -85,6 +87,7 @@
 		<Unit filename="include/Ptakopysk/System/Math.h" />
 		<Unit filename="include/Ptakopysk/System/Math.inl" />
 		<Unit filename="include/Ptakopysk/System/Meta.h" />
+		<Unit filename="include/Ptakopysk/System/Network.h" />
 		<Unit filename="include/Ptakopysk/System/RenderMaterial.h" />
 		<Unit filename="include/Ptakopysk/System/Tween.h" />
 		<Unit filename="include/Ptakopysk/System/Tween.inl" />
@@ -105,6 +108,7 @@
 		<Unit filename="source/System/Events.cpp" />
 		<Unit filename="source/System/GameManager.cpp" />
 		<Unit filename="source/System/GameObject.cpp" />
+		<Unit filename="source/System/Network.cpp" />
 		<Unit filename="source/System/RenderMaterial.cpp" />
 		<Unit filename="source/System/Tween.cpp" />
 		<Extensions>

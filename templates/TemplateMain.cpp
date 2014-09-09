@@ -1,7 +1,8 @@
+#include <Ptakopysk/System/GameManager.h>
+#include <Ptakopysk/System/Network.h>
 #include <Ptakopysk/System/Assets.h>
 #include <Ptakopysk/System/Events.h>
 #include <Ptakopysk/System/Tween.h>
-#include <Ptakopysk/System/GameManager.h>
 #include <XeCore/Common/Logger.h>
 #include "_include_components.h"
 #include "_include_assets.h"
@@ -27,6 +28,7 @@ int main()
     gameManager->processLifeCycle();
     DELETE_OBJECT( gameManager );
     GameManager::cleanup();
+    Network::destroy();
     Assets::destroy();
     Events::destroy();
     Tweener::destroy();

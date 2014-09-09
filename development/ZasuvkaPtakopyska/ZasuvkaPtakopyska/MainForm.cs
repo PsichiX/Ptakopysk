@@ -276,7 +276,7 @@ namespace ZasuvkaPtakopyska
             if (!File.Exists(path))
                 return;
 
-            ConfigControl editor = new ConfigControl(path);
+            ConfigControl editor = new ConfigControl(path, ProjectModel);
             editor.Dock = DockStyle.Fill;
             m_rightPanel.Content.Controls.Add(editor);
             m_rightPanel.Unroll();
@@ -433,24 +433,28 @@ namespace ZasuvkaPtakopyska
             if (!File.Exists(path) || Path.GetExtension(path) != ".h")
                 return;
 
-            string content = File.ReadAllText(path);
-            string log = "";
-            string json = MetaCpp.GenerateMetaComponentJson(content, out log);
-            if (String.IsNullOrEmpty(json))
-                DoAction(new Action("RemoveMetaComponent", path), true);
-            else
+            try
             {
-                File.WriteAllText(path + ".meta", json);
-                DoAction(new Action("LoadMetaComponent", path), true);
+                string content = File.ReadAllText(path);
+                string log = "";
+                string json = MetaCpp.GenerateMetaComponentJson(content, out log);
+                if (String.IsNullOrEmpty(json))
+                    DoAction(new Action("RemoveMetaComponent", path), true);
+                else
+                {
+                    File.WriteAllText(path + ".meta", json);
+                    DoAction(new Action("LoadMetaComponent", path), true);
+                }
+                json = MetaCpp.GenerateMetaAssetJson(content, out log);
+                if (String.IsNullOrEmpty(json))
+                    DoAction(new Action("RemoveMetaAsset", path), true);
+                else
+                {
+                    File.WriteAllText(path + ".meta", json);
+                    DoAction(new Action("LoadMetaAsset", path), true);
+                }
             }
-            json = MetaCpp.GenerateMetaAssetJson(content, out log);
-            if (String.IsNullOrEmpty(json))
-                DoAction(new Action("RemoveMetaAsset", path), true);
-            else
-            {
-                File.WriteAllText(path + ".meta", json);
-                DoAction(new Action("LoadMetaAsset", path), true);
-            }
+            catch { }
         }
 
         public void RemoveMetaFile(string path)
@@ -1076,8 +1080,18 @@ namespace ZasuvkaPtakopyska
                     DoAction(new Action("EditorCbpChanged"));
                 else if (e.FullPath == ProjectModel.WorkingDirectory + @"\" + ProjectModel.EditorPluginPath)
                     DoAction(new Action("SceneViewPluginChanged"));
-                else if (Path.GetExtension(e.FullPath) == ".h" && ProjectModel.Files.Contains(e.FullPath))
-                    Parallel.Invoke(() => GenerateMetaFile(e.FullPath));
+                else if (Path.GetExtension(e.FullPath) == ".h" || Path.GetExtension(e.FullPath) == ".cpp")
+                {
+                    string cppFile = Path.ChangeExtension(e.FullPath, ".cpp");
+                    string hFile = Path.ChangeExtension(e.FullPath, ".h");
+                    if (File.Exists(cppFile) && !ProjectModel.Files.Contains(cppFile))
+                        ProjectModel.Files.Add(cppFile);
+                    if (File.Exists(hFile) && !ProjectModel.Files.Contains(hFile))
+                        ProjectModel.Files.Add(hFile);
+                    if(e.FullPath == hFile)
+                        GenerateMetaFile(hFile);
+                    ProjectModel.ApplyToCbp(SettingsModel);
+                }
                 if (m_projectFilesPanel != null)
                     m_projectFilesPanel.DoOnUiThread(() => m_projectFilesPanel.RebuildList());
             }

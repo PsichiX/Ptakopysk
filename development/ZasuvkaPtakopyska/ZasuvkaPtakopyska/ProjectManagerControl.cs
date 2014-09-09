@@ -17,6 +17,7 @@ namespace ZasuvkaPtakopyska
         #region Private Static Data.
 
         private static readonly int DEFAULT_SEPARATOR = 12;
+        private static readonly string DEFAULT_CPP_FILTER = "C++ files (*.cpp, *.h)|*.cpp;*.h";
 
         #endregion
 
@@ -175,24 +176,36 @@ namespace ZasuvkaPtakopyska
                 if (!File.Exists(mainForm.SettingsModel.SdkPath + @"\templates\dllmain.cpp"))
                     return;
 
-                File.Copy(mainForm.SettingsModel.SdkPath + @"\templates\dllmain.cpp", dir + @"\dllmain.cpp", true);
-                somethingChanged = true;
+                try
+                {
+                    File.Copy(mainForm.SettingsModel.SdkPath + @"\templates\dllmain.cpp", dir + @"\dllmain.cpp", true);
+                    somethingChanged = true;
+                }
+                catch { }
             }
             if (forced || !File.Exists(dir + @"\openal32.dll"))
             {
                 if (!File.Exists(mainForm.SettingsModel.SdkPath + @"\bin\openal32.dll"))
                     return;
 
-                File.Copy(mainForm.SettingsModel.SdkPath + @"\bin\openal32.dll", dir + @"\openal32.dll", true);
-                somethingChanged = true;
+                try
+                {
+                    File.Copy(mainForm.SettingsModel.SdkPath + @"\bin\openal32.dll", dir + @"\openal32.dll", true);
+                    somethingChanged = true;
+                }
+                catch { }
             }
             if (forced || !File.Exists(dir + @"\libsndfile-1.dll"))
             {
                 if (!File.Exists(mainForm.SettingsModel.SdkPath + @"\bin\libsndfile-1.dll"))
                     return;
 
-                File.Copy(mainForm.SettingsModel.SdkPath + @"\bin\libsndfile-1.dll", dir + @"\libsndfile-1.dll", true);
-                somethingChanged = true;
+                try
+                {
+                    File.Copy(mainForm.SettingsModel.SdkPath + @"\bin\libsndfile-1.dll", dir + @"\libsndfile-1.dll", true);
+                    somethingChanged = true;
+                }
+                catch { }
             }
             string includeComponentsFilePath = dir + @"\__components_headers_list__generated__.h";
             string registerComponentsFilePath = dir + @"\__register_components__generated__.inl";
@@ -464,11 +477,11 @@ namespace ZasuvkaPtakopyska
             MetroSkinManager.ApplyMetroStyle(menu);
             ToolStripMenuItem menuItem;
 
-            menuItem = new ToolStripMenuItem("Build Scene View plugin");
+            menuItem = new ToolStripMenuItem("Build scene view plugin");
             menuItem.Click += new EventHandler(menuItem_buildSceneViewPlugin_Click);
             menu.Items.Add(menuItem);
 
-            menuItem = new ToolStripMenuItem("Rebuild Scene View plugin");
+            menuItem = new ToolStripMenuItem("Rebuild scene view plugin");
             menuItem.Click += new EventHandler(menuItem_rebuildSceneViewPlugin_Click);
             menu.Items.Add(menuItem);
 
@@ -480,7 +493,11 @@ namespace ZasuvkaPtakopyska
             menuItem.Click += new EventHandler(menuItem_newCppCustomAsset_Click);
             menu.Items.Add(menuItem);
 
-            menuItem = new ToolStripMenuItem("Update Main C++ file");
+            menuItem = new ToolStripMenuItem("Add C++ file");
+            menuItem.Click += new EventHandler(menuItem_addCppFile_Click);
+            menu.Items.Add(menuItem);
+
+            menuItem = new ToolStripMenuItem("Update main C++ file");
             menuItem.Click += new EventHandler(menuItem_updateMainCppFile_Click);
             menu.Items.Add(menuItem);
 
@@ -515,6 +532,31 @@ namespace ZasuvkaPtakopyska
                 result = prompt.ShowDialog();
                 if (result == DialogResult.OK)
                     CreateNewComponent(dialog.SelectedPath, prompt.Value);
+            }
+        }
+
+        private void menuItem_addCppFile_Click(object sender, EventArgs e)
+        {
+            MainForm mainForm = FindForm() as MainForm;
+            if (mainForm == null || mainForm.ProjectModel == null)
+                return;
+
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.CheckPathExists = true;
+            dialog.RestoreDirectory = true;
+            dialog.Filter = DEFAULT_CPP_FILTER;
+            DialogResult result = dialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                string cppFile = Path.ChangeExtension(dialog.FileName, ".cpp");
+                string hFile = Path.ChangeExtension(dialog.FileName, ".h");
+                if(File.Exists(cppFile) && !mainForm.ProjectModel.Files.Contains(cppFile))
+                    mainForm.ProjectModel.Files.Add(cppFile);
+                if (File.Exists(hFile) && !mainForm.ProjectModel.Files.Contains(hFile))
+                    mainForm.ProjectModel.Files.Add(hFile);
+                if (dialog.FileName == hFile)
+                    mainForm.GenerateMetaFile(hFile);
+                mainForm.ProjectModel.ApplyToCbp(mainForm.SettingsModel);
             }
         }
 
@@ -578,8 +620,16 @@ namespace ZasuvkaPtakopyska
             if (btn != null && btn.Tag is string && mainForm != null && mainForm.ProjectModel != null && mainForm.ProjectModel.Files != null)
             {
                 string hfile = Path.ChangeExtension(btn.Tag as string, ".h");
-                if (mainForm.ProjectModel.Files.Contains(hfile) && File.Exists(hfile))
-                    File.Delete(btn.Tag as string);
+                string cppfile = Path.ChangeExtension(btn.Tag as string, ".cpp");
+                if (mainForm.ProjectModel.Files.Contains(hfile))
+                    mainForm.ProjectModel.Files.Remove(hfile);
+                if (mainForm.ProjectModel.Files.Contains(cppfile))
+                    mainForm.ProjectModel.Files.Remove(cppfile);
+                mainForm.ProjectModel.ApplyToCbp(mainForm.SettingsModel);
+                if (File.Exists(hfile))
+                    File.Delete(hfile);
+                if (File.Exists(cppfile))
+                    File.Delete(cppfile);
             }
         }
 

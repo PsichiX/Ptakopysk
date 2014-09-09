@@ -775,7 +775,7 @@ namespace Ptakopysk
         {
             GameManager* gm = getGameManagerRoot();
             if( gm )
-                gm->findGameObject( std::string( path, p + 1, -1 ) );
+                return gm->findGameObject( std::string( path, 1, std::string::npos ) );
             else
                 return 0;
         }
@@ -805,7 +805,7 @@ namespace Ptakopysk
                     if( getParent() )
                         return getParent()->findGameObjectInPartOfPath( path, p + 1 );
                     else if( getGameManager() )
-                        return getGameManager()->findGameObject( std::string( path, p + 1, -1 ) );
+                        return getGameManager()->findGameObject( std::string( path, p + 1, std::string::npos ) );
                     else
                         return 0;
                 }
@@ -814,7 +814,12 @@ namespace Ptakopysk
             {
                 GameObject* go = getGameObject( part );
                 if( go )
-                    return go->findGameObjectInPartOfPath( path, p + 1 );
+                {
+                    if( p == std::string::npos )
+                        return go;
+                    else
+                        return go->findGameObjectInPartOfPath( path, p + 1 );
+                }
                 else
                     return 0;
             }

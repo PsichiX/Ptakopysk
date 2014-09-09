@@ -10,14 +10,21 @@ namespace ZasuvkaPtakopyska
 {
     public partial class ScenePageControl : MetroUserControl
     {
-        #region private Static Data.
+        #region Private Static Data.
 
         private static readonly int DEFAULT_TOOLBAR_HEIGHT = 42;
         private static readonly Size DEFAULT_TOOLBAR_ICON_SIZE = new Size(32, 32);
         private static readonly int DEFAULT_TOOLBAR_SEPARATOR = 4;
         private static readonly string GAME_OBJECTS_MODE = "Game Objects";
         private static readonly string PREFABS_MODE = "Prefabs";
-        private static readonly string DEFAULT_SCENE_FILTER = "Ptakopysk scene file (*.json)|*.json";
+
+        #endregion
+
+
+
+        #region Public Static Data.
+
+        public static readonly string DEFAULT_SCENE_FILTER = "Ptakopysk scene file (*.json)|*.json";
 
         #endregion
 
@@ -567,7 +574,8 @@ namespace ZasuvkaPtakopyska
             dialog.Filter = DEFAULT_SCENE_FILTER;
             DialogResult result = dialog.ShowDialog();
             if (result == DialogResult.OK)
-                SaveScene(dialog.FileName);
+                if (SaveScene(dialog.FileName))
+                    OpenScene(dialog.FileName);
         }
 
         private void menuItem_saveScene_Click(object sender, EventArgs e)

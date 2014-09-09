@@ -30,16 +30,16 @@ namespace Ptakopysk
         FORCEINLINE void setText( sf::String v ) { m_text->setString( v ); };
         FORCEINLINE sf::Font* getFont() { return (sf::Font*)m_text->getFont(); };
         FORCEINLINE void setFont( sf::Font* v ) { m_text->setFont( *v ); };
-        FORCEINLINE unsigned int getSize() { return m_text->getCharacterSize(); };
-        FORCEINLINE void setSize( unsigned int v ) { m_text->setCharacterSize( v ); };
+        FORCEINLINE dword getSize() { return m_text->getCharacterSize(); };
+        FORCEINLINE void setSize( dword v ) { m_text->setCharacterSize( v ); };
         FORCEINLINE sf::FloatRect measureText() { return m_text->getLocalBounds(); };
         FORCEINLINE sf::Vector2f getDimensions() { sf::FloatRect r = measureText(); return sf::Vector2f( r.left + r.width, r.top + r.height ); };
         FORCEINLINE sf::Vector2f getOrigin() { return m_text->getOrigin(); };
         FORCEINLINE void setOrigin( sf::Vector2f origin ) { m_text->setOrigin( origin ); };
         sf::Vector2f getOriginPercent();
         void setOriginPercent( sf::Vector2f origin );
-        FORCEINLINE unsigned int getStyle() { return m_text->getStyle(); };
-        FORCEINLINE void setStyle( unsigned int v ) { m_text->setStyle( v ); };
+        FORCEINLINE dword getStyle() { return m_text->getStyle(); };
+        FORCEINLINE void setStyle( dword v ) { m_text->setStyle( v ); };
         FORCEINLINE sf::Color getColor() { return m_text->getColor(); };
         FORCEINLINE void setColor( sf::Color v ) { m_text->setColor( v ); };
         FORCEINLINE sf::RenderStates getRenderStates() { return m_renderStates; };
@@ -63,7 +63,7 @@ namespace Ptakopysk
         META_PROPERTY(
             META_ATTR_DESCRIPTION( "Font size." ),
         )
-        XeCore::Common::Property< unsigned int, TextRenderer > Size;
+        XeCore::Common::Property< dword, TextRenderer > Size;
 
         META_PROPERTY(
             META_ATTR_DESCRIPTION( "Origin (local anchor point)." ),
@@ -79,8 +79,9 @@ namespace Ptakopysk
 
         META_PROPERTY(
             META_ATTR_DESCRIPTION( "Style." ),
+            META_ATTR_VALUE_TYPE( "@Enum:[ \"Regular\", \"Bold\", \"Italic\", \"Underlined\" ]" )
         )
-        XeCore::Common::Property< unsigned int, TextRenderer > Style;
+        XeCore::Common::Property< dword, TextRenderer > Style;
 
         META_PROPERTY(
             META_ATTR_DESCRIPTION( "Color." ),

@@ -642,14 +642,24 @@ namespace Ptakopysk
         if( part.empty() )
             return 0;
         else if( part == "." )
-            return findGameObject( std::string( path, p + 1, std::string::npos ) );
+        {
+            if( p == std::string::npos )
+                return 0;
+            else
+                return findGameObject( std::string( path, p + 1, std::string::npos ) );
+        }
         else if( part == ".." )
             return 0;
         else
         {
             GameObject* go = getGameObject( part );
             if( go )
-                return go->findGameObject( std::string( path, p + 1, std::string::npos ) );
+            {
+                if( p == std::string::npos )
+                    return go;
+                else
+                    return go->findGameObject( std::string( path, p + 1, std::string::npos ) );
+            }
             else
                 return 0;
         }

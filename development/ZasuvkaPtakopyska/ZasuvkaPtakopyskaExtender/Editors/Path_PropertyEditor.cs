@@ -34,14 +34,6 @@ namespace ZasuvkaPtakopyskaExtender.Editors
             m_textBox.Text = Value;
         }
 
-        private static string GetRelativePath(string path, string relativeTo)
-        {
-            Uri from = new Uri(path);
-            Uri to = new Uri(relativeTo);
-            Uri result = to.MakeRelativeUri(from);
-            return Uri.UnescapeDataString(result.ToString());
-        }
-
         private void InitializeComponent()
         {
             m_textBox = new MetroTextBox();
@@ -112,7 +104,7 @@ namespace ZasuvkaPtakopyskaExtender.Editors
             {
                 result = MetroMessageBox.Show(FindForm(), "Keep relative path?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.Yes)
-                    path = GetRelativePath(path, RootPath);
+                    path = Utils.GetRelativePath(path, RootPath);
                 textBox.Text = path;
             }
         }

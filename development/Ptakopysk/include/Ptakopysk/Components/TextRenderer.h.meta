@@ -21,6 +21,12 @@
       "DefaultValue": null
     },
     {
+      "Name": "Size",
+      "Description": "Font size.",
+      "ValueType": "dword",
+      "DefaultValue": null
+    },
+    {
       "Name": "Origin",
       "Description": "Origin (local anchor point).",
       "ValueType": "sf::Vector2f",
@@ -31,6 +37,12 @@
       "Description": "Origin percent (local anchor point in unit-space).",
       "ValueType": "sf::Vector2f",
       "DefaultValue": "[0, 0]"
+    },
+    {
+      "Name": "Style",
+      "Description": "Style.",
+      "ValueType": "@Enum:[ \\\"Regular\\\", \\\"Bold\\\", \\\"Italic\\\", \\\"Underlined\\\" ]",
+      "DefaultValue": null
     },
     {
       "Name": "Color",

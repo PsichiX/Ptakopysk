@@ -39,6 +39,38 @@ namespace ZasuvkaPtakopyska
             public Dictionary<string, string> scenes = new Dictionary<string, string>();
         }
 
+        public class ArrayStylePropertyEditor : CollectionPropertyEditor<string>
+        {
+            private static readonly string[] STYLES = new string[] { "Titlebar", "Resize", "Close", "Fullscreen", "Default" };
+
+            public ArrayStylePropertyEditor(Dictionary<string, string> properties, string propertyName)
+                : base(
+                properties,
+                propertyName,
+                CollectionPropertyEditorUtils.CollectionType.JsonArray,
+                (pd, pn) => new EnumPropertyEditor(pd, pn, STYLES)
+                )
+            {
+            }
+        }
+
+        public class StringMapPathPropertyEditor : CollectionPropertyEditor<string>
+        {
+            public StringMapPathPropertyEditor(Dictionary<string, string> properties, string propertyName, string rootPath)
+                : base(
+                properties,
+                propertyName,
+                CollectionPropertyEditorUtils.CollectionType.JsonObject,
+                (pd, pn) => {
+                    Path_PropertyEditor editor = new Path_PropertyEditor(pd, pn);
+                    editor.FileFilter = ScenePageControl.DEFAULT_SCENE_FILTER;
+                    editor.RootPath = rootPath;
+                    return editor;
+                })
+            {
+            }
+        }
+
         #endregion
 
 
@@ -62,10 +94,10 @@ namespace ZasuvkaPtakopyska
         private ParsablePropertyEditor<uint> m_windowWidth;
         private ParsablePropertyEditor<uint> m_windowHeight;
         private String_PropertyEditor m_windowName;
-        private ArrayStringPropertyEditor m_windowStyles;
+        private ArrayStylePropertyEditor m_windowStyles;
         private ParsablePropertyEditor<float> m_lifeCycleFixedFps;
         private ParsablePropertyEditor<float> m_lifeCycleFixedStep;
-        private StringMapStringPropertyEditor m_scenes;
+        private StringMapPathPropertyEditor m_scenes;
         private Dictionary<string, string> m_properties = new Dictionary<string, string>();
 
         #endregion
@@ -97,7 +129,7 @@ namespace ZasuvkaPtakopyska
 
         #region Construction and Destruction.
 
-        public ConfigControl(string path)
+        public ConfigControl(string path, ProjectModel model)
         {
             m_path = path;
             string json = File.ReadAllText(m_path);
@@ -184,7 +216,7 @@ namespace ZasuvkaPtakopyska
             m_windowName.EditorJsonValueChangedCallback = this;
             y = m_windowName.Bottom + DEFAULT_SEPARATOR;
 
-            m_windowStyles = new ArrayStringPropertyEditor(m_properties, "windowStyles");
+            m_windowStyles = new ArrayStylePropertyEditor(m_properties, "windowStyles");
             m_windowStyles.Text = "Window Styles";
             m_windowStyles.Width = Width;
             m_windowStyles.Top = y;
@@ -211,7 +243,7 @@ namespace ZasuvkaPtakopyska
             m_lifeCycleFixedStep.EditorJsonValueChangedCallback = this;
             y = m_lifeCycleFixedStep.Bottom + DEFAULT_SEPARATOR;
 
-            m_scenes = new StringMapStringPropertyEditor(m_properties, "scenes");
+            m_scenes = new StringMapPathPropertyEditor(m_properties, "scenes", model == null ? null : model.WorkingDirectory + @"\" + model.ActiveTargetWorkingDirectory);
             m_scenes.Text = "Scenes";
             m_scenes.Width = Width;
             m_scenes.Top = y;
