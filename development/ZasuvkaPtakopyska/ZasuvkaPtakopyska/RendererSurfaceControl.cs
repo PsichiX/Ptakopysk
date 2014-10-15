@@ -123,6 +123,11 @@ namespace ZasuvkaPtakopyska
 
         #region Private Events Handlers.
 
+        private void m_timer_Tick(object sender, EventArgs e)
+        {
+            Invalidate();
+        }
+
         private void RendererSurfaceControl_Load(object sender, EventArgs e)
         {
             SceneViewPlugin.Initialize(Handle.ToInt64());
@@ -138,11 +143,6 @@ namespace ZasuvkaPtakopyska
         {
             if (SceneViewPlugin.IsLoaded)
                 SceneViewPlugin.SetSceneViewSize(Width, Height);
-        }
-
-        private void m_timer_Tick(object sender, EventArgs e)
-        {
-            Invalidate();
         }
 
         private void RendererSurfaceControl_MouseDown(object sender, MouseEventArgs e)

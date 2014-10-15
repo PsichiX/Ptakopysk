@@ -3,6 +3,10 @@
 
 #include "Base.h"
 
+#define XECORE_COMMON_PROPERTY_DECLARE( PT, OT, name )          XeCore::Common::Property< PT, OT > name
+#define XECORE_COMMON_PROPERTY_DEFINE( OT, name )               name( this, &OT::get#name, &OT::set#name )
+#define XECORE_COMMON_PROPERTY_GETTER_SETTER( PT, name, field ) PT get#name() { return field; }; void set#name( PT v ) { field = v; };
+
 namespace XeCore
 {
 	namespace Common

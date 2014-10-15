@@ -127,6 +127,8 @@ namespace Ptakopysk
         void processRemoving();
         bool isWaitingToAdd( GameObject* go );
         bool isWaitingToRemove( GameObject* go );
+        FORCEINLINE float getFixedStep() { return m_fixedStep; };
+        FORCEINLINE void setFixedStep( float v ) { m_fixedStep = v; };
 
         XeCore::Common::Property< b2Vec2, GameManager > PhysicsGravity;
         XeCore::Common::Property< sf::RenderWindow*, GameManager > RenderWindow;

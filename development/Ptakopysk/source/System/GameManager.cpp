@@ -515,11 +515,21 @@ namespace Ptakopysk
     {
         if( !go || go->getType() != RTTI_CLASS_TYPE( GameObject ) || hasGameObject( go ) || isWaitingToAdd( go ) )
             return;
-        GameObject::List& cgo = prefab ? m_prefabGameObjects : m_gameObjectsToCreate;
-        cgo.push_back( go );
-        go->setGameManager( this );
-        go->setPrefab( prefab );
-        go->setDestroying( false );
+        if( prefab )
+        {
+            go->setGameManager( this );
+            m_prefabGameObjects.push_back( go );
+            go->setPrefab( prefab );
+            go->setDestroying( false );
+            go->processAdding();
+        }
+        else
+        {
+            m_gameObjectsToCreate.push_back( go );
+            go->setGameManager( this );
+            go->setPrefab( prefab );
+            go->setDestroying( false );
+        }
     }
 
     void GameManager::removeGameObject( GameObject* go, bool prefab )
@@ -529,6 +539,7 @@ namespace Ptakopysk
         if( prefab )
         {
             m_prefabGameObjects.remove( go );
+            go->processRemoving();
             go->setGameManager( 0 );
             go->setPrefab( false );
             DELETE_OBJECT( go );
@@ -536,11 +547,8 @@ namespace Ptakopysk
         else
         {
             m_gameObjectsToDestroy.push_back( go );
-            if( !prefab )
-            {
-                go->setDestroying( true );
-                go->onDestroy();
-            }
+            go->setDestroying( true );
+            go->onDestroy();
         }
     }
 
@@ -552,6 +560,7 @@ namespace Ptakopysk
         if( prefab )
         {
             m_prefabGameObjects.remove( go );
+            go->processRemoving();
             go->setGameManager( 0 );
             go->setPrefab( false );
             DELETE_OBJECT( go );
@@ -559,11 +568,8 @@ namespace Ptakopysk
         else
         {
             m_gameObjectsToDestroy.push_back( go );
-            if( !prefab )
-            {
-                go->setDestroying( true );
-                go->onDestroy();
-            }
+            go->setDestroying( true );
+            go->onDestroy();
         }
     }
 
@@ -575,6 +581,7 @@ namespace Ptakopysk
             for( GameObject::List::iterator it = m_prefabGameObjects.begin(); it != m_prefabGameObjects.end(); it++ )
             {
                 go = *it;
+                go->processRemoving();
                 go->setGameManager( 0 );
                 go->setPrefab( false );
                 DELETE_OBJECT( go );
@@ -731,24 +738,31 @@ namespace Ptakopysk
             timer.update();
             float dt = timer.deltaSeconds();
             fixedStepAccum += dt;
-            bool processFixedStep = false;
-            while( fixedStepAccum > m_fixedStep )
+            bool processStep = true;
+            float stepDt = dt;
+            if( m_fixedStep > 0.0f )
             {
-                processFixedStep = true;
-                fixedStepAccum -= m_fixedStep;
+                processStep = false;
+                while( fixedStepAccum > m_fixedStep )
+                {
+                    processStep = true;
+                    stepDt = m_fixedStep;
+                    fixedStepAccum -= m_fixedStep;
+                }
             }
 
             Events::use().dispatch();
-            if( processFixedStep )
+            if( processStep )
             {
-                Tweener::use().processTweens( m_fixedStep );
-                processPhysics( m_fixedStep );
-                processUpdate( m_fixedStep );
+                Tweener::use().processTweens( stepDt );
+                processPhysics( stepDt );
+                processUpdate( stepDt );
             }
             m_renderWindow->clear( m_bgColor );
             processRender( m_renderWindow );
             m_renderWindow->display();
-            XeCore::Common::Concurrent::Thread::sleep( (unsigned int)( 1000.0f * m_fixedStep ) );
+            if( stepDt > 0.0f )
+                XeCore::Common::Concurrent::Thread::sleep( (unsigned int)( 1000.0f * stepDt ) );
         }
         timer.stop();
     }
@@ -825,6 +839,7 @@ namespace Ptakopysk
             go = *it;
             m_gameObjects.push_back( go );
             go->onCreate();
+            go->processAdding();
         }
         m_gameObjectsToCreate.clear();
     }
@@ -837,6 +852,7 @@ namespace Ptakopysk
             go = *it;
             if( std::find( m_gameObjects.begin(), m_gameObjects.end(), go ) == m_gameObjects.end() )
                 continue;
+            go->processRemoving();
             m_gameObjects.remove( go );
             go->setGameManager( 0 );
             go->setPrefab( false );

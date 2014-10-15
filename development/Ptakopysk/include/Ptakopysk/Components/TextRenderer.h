@@ -29,7 +29,7 @@ namespace Ptakopysk
         FORCEINLINE sf::String getText() { return m_text->getString(); };
         FORCEINLINE void setText( sf::String v ) { m_text->setString( v ); };
         FORCEINLINE sf::Font* getFont() { return (sf::Font*)m_text->getFont(); };
-        FORCEINLINE void setFont( sf::Font* v ) { m_text->setFont( *v ); };
+        FORCEINLINE void setFont( sf::Font* v ) { if( v ) m_text->setFont( *v ); };
         FORCEINLINE dword getSize() { return m_text->getCharacterSize(); };
         FORCEINLINE void setSize( dword v ) { m_text->setCharacterSize( v ); };
         FORCEINLINE sf::FloatRect measureText() { return m_text->getLocalBounds(); };

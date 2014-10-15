@@ -256,28 +256,16 @@ namespace Ptakopysk
         }
     }
 
-    void Network::sendPacketToClients( sf::Packet& packet )
+    void Network::process()
     {
         if( m_sync.tryLock() )
         {
             for( std::map< std::string, Client* >::iterator it = m_clients.begin(); it != m_clients.end(); it++ )
-                it->second->sendPacket( packet );
-            m_sync.unlock();
-        }
-    }
-
-    void Network::run()
-    {
-        m_working = true;
-        while( true )
-        {
-            if( !m_working )
-                break;
-            m_sync.lock();
-            for( std::map< std::string, Client* >::iterator it = m_clients.begin(); it != m_clients.end(); it++ )
                 it->second->receivePacket();
             m_sync.unlock();
-            m_syncToRemove.lock();
+        }
+        if( m_syncToRemove.tryLock() )
+        {
             if( m_clientsToRemoveAll.first )
             {
                 removeAllClients( m_clientsToRemoveAll.second );
@@ -295,6 +283,43 @@ namespace Ptakopysk
                 m_clientsToRemoveObject.clear();
             }
             m_syncToRemove.unlock();
+        }
+        if( m_syncToSend.tryLock() )
+        {
+            for( std::list< DelayedPacket >::iterator it = m_packetsToSend.begin(); it != m_packetsToSend.end(); it++ )
+                sendPacketToClients( it->packet, it->excludeClient );
+            m_packetsToSend.clear();
+            m_syncToSend.unlock();
+        }
+    }
+
+    bool Network::sendPacketToClients( sf::Packet& packet, Client* excludeClient )
+    {
+        if( m_sync.tryLock() )
+        {
+            for( std::map< std::string, Client* >::iterator it = m_clients.begin(); it != m_clients.end(); it++ )
+                if( it->second != excludeClient )
+                    it->second->sendPacket( packet );
+            m_sync.unlock();
+            return true;
+        }
+        return false;
+    }
+
+    void Network::sendPacketToClientsDelayed( sf::Packet& packet, Client* excludeClient )
+    {
+        SYNCHRONIZED_OBJECT( m_syncToSend );
+        m_packetsToSend.push_back( DelayedPacket( packet, excludeClient ) );
+    }
+
+    void Network::run()
+    {
+        m_working = true;
+        while( true )
+        {
+            if( !m_working )
+                break;
+            process();
             if( m_receivingInterval > 0 )
                 XeCore::Common::Concurrent::Thread::sleep( m_receivingInterval );
         }

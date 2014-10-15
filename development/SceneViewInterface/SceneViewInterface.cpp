@@ -300,7 +300,7 @@ void SceneViewInterface::query( const Json::Value& root, Json::Value& result )
             Json::Value handle = func[ 0u ];
             Json::Value isPrefab = func[ 1u ];
             if( handle.isNumeric() && isPrefab.isBool() )
-                result = makeResultJson( destroyGameObject( handle.asInt(), isPrefab.asInt() ) );
+                result = makeResultJson( destroyGameObject( handle.asInt(), isPrefab.asBool() ) );
             else
                 result = makeErrorJson( "Some argument have wrong type!" );
         }
@@ -315,7 +315,7 @@ void SceneViewInterface::query( const Json::Value& root, Json::Value& result )
             Json::Value handle = func[ 0u ];
             Json::Value isPrefab = func[ 1u ];
             if( handle.isNumeric() && isPrefab.isBool() )
-                result = makeResultJson( clearGameObject( handle.asInt(), isPrefab.asInt() ) );
+                result = makeResultJson( clearGameObject( handle.asInt(), isPrefab.asBool() ) );
             else
                 result = makeErrorJson( "Some argument have wrong type!" );
         }
@@ -332,7 +332,7 @@ void SceneViewInterface::query( const Json::Value& root, Json::Value& result )
             Json::Value handleTo = func[ 2u ];
             Json::Value isPrefabTo = func[ 3u ];
             if( handleFrom.isNumeric() && isPrefabFrom.isBool() && handleTo.isNumeric() && isPrefabTo.isBool() )
-                result = makeResultJson( duplicateGameObject( handleFrom.asInt(), isPrefabFrom.asInt(), handleTo.asInt(), isPrefabTo.asBool() ) );
+                result = makeResultJson( duplicateGameObject( handleFrom.asInt(), isPrefabFrom.asBool(), handleTo.asInt(), isPrefabTo.asBool() ) );
             else
                 result = makeErrorJson( "Some argument have wrong type!" );
         }
@@ -349,7 +349,7 @@ void SceneViewInterface::query( const Json::Value& root, Json::Value& result )
             Json::Value compId = func[ 2u ];
             Json::Value funcName = func[ 3u ];
             if( handle.isNumeric() && isPrefab.isBool() && compId.isString() && funcName.isString() )
-                result = makeResultJson( triggerGameObjectComponentFunctionality( handle.asInt(), isPrefab.asInt(), compId.asString(), funcName.asString() ) );
+                result = makeResultJson( triggerGameObjectComponentFunctionality( handle.asInt(), isPrefab.asBool(), compId.asString(), funcName.asString() ) );
             else
                 result = makeErrorJson( "Some argument have wrong type!" );
         }
@@ -365,7 +365,7 @@ void SceneViewInterface::query( const Json::Value& root, Json::Value& result )
             Json::Value isPrefab = func[ 1u ];
             Json::Value json = func[ 2u ];
             if( handle.isNumeric() && isPrefab.isBool() )
-                result = makeResultJson( applyJsonToGameObject( handle.asInt(), isPrefab.asInt(), json ) );
+                result = makeResultJson( applyJsonToGameObject( handle.asInt(), isPrefab.asBool(), json ) );
             else
                 result = makeErrorJson( "Some argument have wrong type!" );
         }
@@ -380,7 +380,7 @@ void SceneViewInterface::query( const Json::Value& root, Json::Value& result )
             Json::Value handle = func[ 0u ];
             Json::Value isPrefab = func[ 1u ];
             if( handle.isNumeric() && isPrefab.isBool() )
-                result = makeResultJson( convertGameObjectToJson( handle.asInt(), isPrefab.asInt() ) );
+                result = makeResultJson( convertGameObjectToJson( handle.asInt(), isPrefab.asBool() ) );
             else
                 result = makeErrorJson( "Some argument have wrong type!" );
         }
@@ -440,7 +440,7 @@ void SceneViewInterface::query( const Json::Value& root, Json::Value& result )
             Json::Value isPrefab = func[ 1u ];
             Json::Value json = func[ 2u ];
             if( handle.isNumeric() && isPrefab.isBool() )
-                result = makeResultJson( queryGameObject( handle.asInt(), isPrefab.asInt(), json ) );
+                result = makeResultJson( queryGameObject( handle.asInt(), isPrefab.asBool(), json ) );
             else
                 result = makeErrorJson( "Some argument have wrong type!" );
         }
@@ -734,10 +734,11 @@ bool SceneViewInterface::destroyGameObject( int handle, bool isPrefab )
 
     if( go )
     {
-        if( go->getParent() )
+        GameObject* parent = go->getParent();
+        if( parent )
         {
-            go->getParent()->removeGameObject( go );
-            go->getParent()->processRemoving();
+            parent->removeGameObject( go );
+            parent->processRemoving();
             return true;
         }
         else
@@ -768,7 +769,10 @@ bool SceneViewInterface::duplicateGameObject( int handleFrom, bool isPrefabFrom,
     GameObject* goTo = findGameObject( handleTo, isPrefabTo );
     if( goFrom && goTo )
     {
+        std::string toId = goTo->getId();
         goTo->duplicate( goFrom );
+        if( isPrefabTo )
+            goTo->setId( toId );
         return true;
     }
     return false;
@@ -1096,7 +1100,7 @@ Json::Value SceneViewInterface::queryGameObject( int handle, bool isPrefab, cons
                                         ss.clear();
                                         ss.str( "" );
                                         ss << "components/" << *it << "/" << _item.asString();
-                                        result[ ss.str() ] = v;
+                                        result[ ss.str() ] = v.toStyledString();
                                     }
                                 }
                             }

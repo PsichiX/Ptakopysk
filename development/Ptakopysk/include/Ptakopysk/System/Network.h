@@ -54,23 +54,36 @@ namespace Ptakopysk
         bool removeClientDelayed( Client* client, bool destroyObject = true );
         void removeAllClientsDelayed( bool destroyObjects = true );
         void fetchPendingClients( ICallback* onFetchClientCallback = 0 );
-        void sendPacketToClients( sf::Packet& packet );
+        void process();
+        bool sendPacketToClients( sf::Packet& packet, Client* excludeClient = 0 );
+        void sendPacketToClientsDelayed( sf::Packet& packet, Client* excludeClient = 0 );
 
     private:
+        struct DelayedPacket
+        {
+            DelayedPacket() : excludeClient( 0 ) {};
+            DelayedPacket( const sf::Packet& p, Client* ec ) : packet( p ), excludeClient( ec ) {};
+
+            sf::Packet packet;
+            Client* excludeClient;
+        };
+
         virtual void run();
         bool onFetchClient( Client* client );
 
         XeCore::Common::Concurrent::Synchronized m_sync;
         XeCore::Common::Concurrent::Synchronized m_syncToRemove;
+        XeCore::Common::Concurrent::Synchronized m_syncToSend;
         unsigned long m_lastAcceptedId;
         volatile bool m_working;
         unsigned int m_receivingInterval;
         std::map< std::string, Server* > m_servers;
         std::map< std::string, Client* > m_clients;
+        //std::map< std::string, Handshakes* > m_handshakes;
+        std::list< DelayedPacket > m_packetsToSend;
         std::map< std::string, bool > m_clientsToRemoveId;
         std::map< Client*, bool > m_clientsToRemoveObject;
         std::pair< bool, bool > m_clientsToRemoveAll;
-        //std::map< std::string, Handshakes* > m_handshakes;
 
     public:
         class ICallback

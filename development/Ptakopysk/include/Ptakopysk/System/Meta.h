@@ -4,6 +4,7 @@
 #define META_COMPONENT(...)
 #define META_PROPERTY(...)
 #define META_ASSET(...)
+#define META_ENUM(...)
 #define META_ATTR_NAME(text)
 #define META_ATTR_VALUE_TYPE(text)
 #define META_ATTR_DESCRIPTION(text)

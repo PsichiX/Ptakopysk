@@ -357,19 +357,39 @@ namespace Ptakopysk
     {
         if( !go || go->getType() != RTTI_CLASS_TYPE( GameObject ) || hasGameObject( go ) || isWaitingToAdd( go ) )
             return;
-        m_gameObjectsToCreate.push_back( go );
-        go->setParent( this );
-        go->setPrefab( m_prefab );
-        go->setDestroying( m_isDestroying );
+        if( m_prefab )
+        {
+            m_gameObjects.push_back( go );
+            go->setParent( this );
+            go->setPrefab( m_prefab );
+            go->setDestroying( m_isDestroying );
+        }
+        else
+        {
+            m_gameObjectsToCreate.push_back( go );
+            go->setParent( this );
+            go->setPrefab( m_prefab );
+            go->setDestroying( m_isDestroying );
+        }
     }
 
     void GameObject::removeGameObject( GameObject* go )
     {
         if( !hasGameObject( go ) )
             return;
-        m_gameObjectsToDestroy.push_back( go );
-        go->setDestroying( true );
-        go->onDestroy();
+        if( m_prefab )
+        {
+            m_gameObjects.remove( go );
+            go->setParent( 0 );
+            go->setPrefab( false );
+            DELETE_OBJECT( go );
+        }
+        else
+        {
+            m_gameObjectsToDestroy.push_back( go );
+            go->setDestroying( true );
+            go->onDestroy();
+        }
     }
 
     void GameObject::removeGameObject( const std::string& id )
@@ -377,20 +397,44 @@ namespace Ptakopysk
         GameObject* go = getGameObject( id );
         if( !go )
             return;
-        m_gameObjectsToDestroy.push_back( go );
-        go->setDestroying( true );
-        go->onDestroy();
+        if( m_prefab )
+        {
+            m_gameObjects.remove( go );
+            go->setParent( 0 );
+            go->setPrefab( false );
+            DELETE_OBJECT( go );
+        }
+        else
+        {
+            m_gameObjectsToDestroy.push_back( go );
+            go->setDestroying( true );
+            go->onDestroy();
+        }
     }
 
     void GameObject::removeAllGameObjects()
     {
         GameObject* go;
-        for( List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+        if( m_prefab )
         {
-            go = *it;
-            m_gameObjectsToDestroy.push_back( go );
-            go->setDestroying( true );
-            go->onDestroy();
+            for( List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            {
+                go = *it;
+                go->setParent( 0 );
+                go->setPrefab( false );
+                DELETE_OBJECT( go );
+            }
+            m_gameObjects.clear();
+        }
+        else
+        {
+            for( List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
+            {
+                go = *it;
+                m_gameObjectsToDestroy.push_back( go );
+                go->setDestroying( true );
+                go->onDestroy();
+            }
         }
     }
 
@@ -439,6 +483,7 @@ namespace Ptakopysk
             go = *it;
             m_gameObjects.push_back( go );
             go->onCreate();
+            go->processAdding();
         }
         m_gameObjectsToCreate.clear();
     }
@@ -451,6 +496,7 @@ namespace Ptakopysk
             go = *it;
             if( std::find( m_gameObjects.begin(), m_gameObjects.end(), go ) == m_gameObjects.end() )
                 continue;
+            go->processRemoving();
             m_gameObjects.remove( go );
             go->setParent( 0 );
             go->setPrefab( false );
@@ -525,6 +571,7 @@ namespace Ptakopysk
         dst->setOrder( m_order );
         dst->setMetaData( m_metaData );
         XeCore::Common::IRtti::Derivation type;
+        dst->removeAllComponents();
         Component* comp;
         for( Components::iterator it = m_components.begin(); it != m_components.end(); it++ )
         {
@@ -539,6 +586,7 @@ namespace Ptakopysk
                 dst->addComponent( comp );
             }
         }
+        dst->removeAllGameObjects();
         for( List::iterator it = m_gameObjectsToCreate.begin(); it != m_gameObjectsToCreate.end(); it++ )
         {
             GameObject* go = xnew GameObject();

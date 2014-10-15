@@ -16,6 +16,7 @@ namespace ZasuvkaPtakopyska
 
         private static readonly Size DEFAULT_TILE_SIZE = new Size(128, 128);
         private static readonly Point DEFAULT_TILE_SEPARATOR = new Point(8, 8);
+        private static readonly int DEFAULT_SECTION_SEPARATOR = 32;
         private static readonly string DEFAULT_PROJECT_FILTER = "Zásuvka Ptakopyska project file (*.zasuvka)|*.zasuvka";
         
         #endregion
@@ -71,8 +72,8 @@ namespace ZasuvkaPtakopyska
             MetroSkinManager.ApplyMetroStyle(m_generalPanel);
             m_generalPanel.Size = new Size();
             m_generalPanel.AutoSize = true;
-            m_generalPanel.Left = 64;
-            m_generalPanel.Top = 64;
+            m_generalPanel.Left = DEFAULT_SECTION_SEPARATOR;
+            m_generalPanel.Top = DEFAULT_SECTION_SEPARATOR;
             Controls.Add(m_generalPanel);
 
             MetroLabel title = new MetroLabel();
@@ -116,8 +117,8 @@ namespace ZasuvkaPtakopyska
             MetroSkinManager.ApplyMetroStyle(m_specificPanel);
             m_specificPanel.Size = new Size();
             m_specificPanel.AutoSize = true;
-            m_specificPanel.Left = 64;
-            m_specificPanel.Top = m_generalPanel.Bottom + 64;
+            m_specificPanel.Left = DEFAULT_SECTION_SEPARATOR;
+            m_specificPanel.Top = m_generalPanel.Bottom + DEFAULT_SECTION_SEPARATOR;
             Controls.Add(m_specificPanel);
 
             MetroLabel title = new MetroLabel();

@@ -1080,7 +1080,7 @@ namespace ZasuvkaPtakopyska
                     DoAction(new Action("EditorCbpChanged"));
                 else if (e.FullPath == ProjectModel.WorkingDirectory + @"\" + ProjectModel.EditorPluginPath)
                     DoAction(new Action("SceneViewPluginChanged"));
-                else if (Path.GetExtension(e.FullPath) == ".h" || Path.GetExtension(e.FullPath) == ".cpp")
+                else if ((Path.GetExtension(e.FullPath) == ".h" || Path.GetExtension(e.FullPath) == ".cpp") && !e.FullPath.StartsWith(Path.GetDirectoryName(ProjectModel.WorkingDirectory + @"\" + ProjectModel.EditorCbpPath)))
                 {
                     string cppFile = Path.ChangeExtension(e.FullPath, ".cpp");
                     string hFile = Path.ChangeExtension(e.FullPath, ".h");

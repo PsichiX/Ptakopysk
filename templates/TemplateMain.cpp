@@ -13,7 +13,7 @@ void onEvent( Events::Event* ev )
 {
 }
 
-int main()
+int main( int argc, char* argv[] )
 {
     LOG_SETUP( "log.log" );
     Events::use().setCallback( &onEvent );
@@ -22,9 +22,11 @@ int main()
 #include "_register_components.inl"
 #include "_register_assets.inl"
 
+    std::string runScene = "main";
     Json::Value config = Assets::loadJson( "config.json" );
     GameManager* gameManager = xnew GameManager( config );
-    gameManager->runScene( "main" );
+    if( !gameManager->runScene( runScene ) )
+        LOGNL( "Cannot run scene: %s", runScene.c_str() );
     gameManager->processLifeCycle();
     DELETE_OBJECT( gameManager );
     GameManager::cleanup();
