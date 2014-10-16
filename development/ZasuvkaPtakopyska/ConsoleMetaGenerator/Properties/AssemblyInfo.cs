@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("ConsoleMetaGenerator")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Smerf")]
+[assembly: AssemblyCompany("PsichiX")]
 [assembly: AssemblyProduct("ConsoleMetaGenerator")]
-[assembly: AssemblyCopyright("Copyright © Smerf 2014")]
+[assembly: AssemblyCopyright("Copyright © PsichiX 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

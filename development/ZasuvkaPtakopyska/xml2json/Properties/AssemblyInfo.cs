@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("xml2json")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Smerf")]
+[assembly: AssemblyCompany("PsichiX")]
 [assembly: AssemblyProduct("xml2json")]
-[assembly: AssemblyCopyright("Copyright © Smerf 2014")]
+[assembly: AssemblyCopyright("Copyright © PsichiX 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

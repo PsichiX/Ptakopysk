@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("ZasuvkaPtakopyskaExtender")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Smerf")]
+[assembly: AssemblyCompany("PsichiX")]
 [assembly: AssemblyProduct("ZasuvkaPtakopyskaExtender")]
-[assembly: AssemblyCopyright("Copyright © Smerf 2014")]
+[assembly: AssemblyCopyright("Copyright © PsichiX 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
