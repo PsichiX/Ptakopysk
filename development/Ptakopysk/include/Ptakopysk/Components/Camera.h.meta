@@ -37,6 +37,24 @@
       "Description": "Determines if view settings should be used when camera renders content into RenderTexture.",
       "ValueType": "bool",
       "DefaultValue": "false"
+    },
+    {
+      "Name": "KeepAspectRatio",
+      "Description": "Determines how view should keep aspect ratio relative to window.",
+      "ValueType": "@Enum:[ \\\"karNone\\\", \\\"karAxisX\\\", \\\"karAxisY\\\" ]",
+      "DefaultValue": "\"karNone\""
+    },
+    {
+      "Name": "GenerateRenderTexture",
+      "Description": "Determines how to generate render texture.",
+      "ValueType": "@Enum:[ \\\"grtNone\\\", \\\"grtFromValue\\\", \\\"grtFromView\\\" ]",
+      "DefaultValue": "\"grtNone\""
+    },
+    {
+      "Name": "RenderTextureSize",
+      "Description": "Size of render texture.",
+      "ValueType": "sf::Vector2u",
+      "DefaultValue": "[0, 0]"
     }
   ],
   "FunctionalityTriggers": []

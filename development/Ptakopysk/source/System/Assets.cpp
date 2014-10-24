@@ -345,12 +345,20 @@ namespace Ptakopysk
             return 0;
         Json::Value id = root[ "id" ];
         Json::Value path = root[ "path" ];
+        Json::Value smooth = root[ "smooth" ];
+        Json::Value repeated = root[ "repeated" ];
         if( id.isString() && path.isString() )
         {
             Json::Value tags = root[ "tags" ];
             if( tags.isArray() && tags.size() )
                 parseTags( tags, m_tagsTextures[ id.asString() ] );
-            return loadTexture( id.asString(), path.asString() );
+            sf::Texture* t = loadTexture( id.asString(), path.asString() );
+            if( t )
+            {
+                t->setSmooth( smooth.isBool() ? smooth.asBool() : true );
+                t->setRepeated( repeated.isBool() ? repeated.asBool() : false );
+            }
+            return t;
         }
         return 0;
     }
@@ -558,6 +566,12 @@ namespace Ptakopysk
         Json::Value root;
         root[ "id" ] = id;
         root[ "path" ] = m_metaTextures[ id ];
+        if( m_textures.count( id ) )
+        {
+            sf::Texture* t = m_textures[ id ];
+            root[ "smooth" ] = t->isSmooth();
+            root[ "repeated" ] = t->isRepeated();
+        }
         if( m_tagsTextures.count( id ) )
             root[ "tags" ] = jsonTags( m_tagsTextures[ id ] );
         return root;

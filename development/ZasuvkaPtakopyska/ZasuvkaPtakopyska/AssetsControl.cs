@@ -15,12 +15,12 @@ namespace ZasuvkaPtakopyska
 
         public class Asset_PropertyEditor : PropertyEditor<object>, IEditorJsonValueChangedCallback
         {
-            public struct MetaEditorInfo
+            public struct ItemEditorInfo
             {
                 public string property;
                 public Type editorType;
 
-                public MetaEditorInfo(string property, Type editorType)
+                public ItemEditorInfo(string property, Type editorType)
                 {
                     this.property = property;
                     this.editorType = editorType;
@@ -44,20 +44,29 @@ namespace ZasuvkaPtakopyska
             private string m_lastId;
             private String_PropertyEditor m_idEditor;
             private List<KeyValuePair<string, IEditorJsonValue>> m_metaEditors = new List<KeyValuePair<string, IEditorJsonValue>>();
+            private List<KeyValuePair<string, IEditorJsonValue>> m_propertyEditors = new List<KeyValuePair<string, IEditorJsonValue>>();
             private Tags_PropertyEditor m_tagsEditor;
             private Dictionary<string, string> m_subProperties = new Dictionary<string, string>();
 
-            public Asset_PropertyEditor(Dictionary<string, string> properties, string propertyName, SceneViewPlugin.AssetType assetType, MetaEditorInfo[] metaEditors, string id, string meta, string tags)
+            public Asset_PropertyEditor(Dictionary<string, string> properties, string propertyName, SceneViewPlugin.AssetType assetType, ItemEditorInfo[] metaEditors, ItemEditorInfo[] propertyEditors, string id, string meta, string tags)
                 : base(properties, propertyName)
             {
                 m_assetType = assetType;
                 m_lastId = id;
-                InitializeComponent(metaEditors, id, meta, tags);
+                InitializeComponent(metaEditors, propertyEditors, id, meta, tags);
             }
 
             public T GetMetaEditor<T>(string name) where T : class, IEditorJsonValue
             {
                 foreach (var editor in m_metaEditors)
+                    if (editor.Key == name && editor.Value is T)
+                        return editor.Value as T;
+                return null;
+            }
+
+            public T GetPropertyEditor<T>(string name) where T : class, IEditorJsonValue
+            {
+                foreach (var editor in m_propertyEditors)
                     if (editor.Key == name && editor.Value is T)
                         return editor.Value as T;
                 return null;
@@ -84,6 +93,14 @@ namespace ZasuvkaPtakopyska
                                 metaEditor.Value.UpdateEditorValue();
                             }
                         }
+                        foreach (var propEditor in m_propertyEditors)
+                        {
+                            if (data.TryGetValue(propEditor.Key, out v))
+                            {
+                                m_subProperties[propEditor.Key] = v.ToString(Newtonsoft.Json.Formatting.None);
+                                propEditor.Value.UpdateEditorValue();
+                            }
+                        }
                         if (data.TryGetValue("tags", out v))
                         {
                             m_subProperties["tags"] = v.ToString(Newtonsoft.Json.Formatting.None);
@@ -100,7 +117,7 @@ namespace ZasuvkaPtakopyska
                 UpdateJsonValue();
             }
 
-            private void InitializeComponent(MetaEditorInfo[] metaEditors, string id, string meta, string tags)
+            private void InitializeComponent(ItemEditorInfo[] metaEditors, ItemEditorInfo[] propertyEditors, string id, string meta, string tags)
             {
                 IsProxyEditor = true;
 
@@ -142,7 +159,7 @@ namespace ZasuvkaPtakopyska
                 {
                     string[] metaParts = string.IsNullOrEmpty(meta) ? null : meta.Split('|');
                     int metaPartsIndex = 0;
-                    foreach (MetaEditorInfo info in metaEditors)
+                    foreach (ItemEditorInfo info in metaEditors)
                     {
                         if (metaParts != null && metaPartsIndex < metaParts.Length)
                             m_subProperties[info.property] = Newtonsoft.Json.JsonConvert.SerializeObject(metaParts[metaPartsIndex]);
@@ -182,6 +199,46 @@ namespace ZasuvkaPtakopyska
                     }
                 }
 
+                if (propertyEditors != null && propertyEditors.Length > 0)
+                {
+                    foreach (ItemEditorInfo info in propertyEditors)
+                    {
+                        m_subProperties[info.property] = "null";
+                        try
+                        {
+                            object obj = Activator.CreateInstance(info.editorType, m_subProperties, info.property);
+                            MetroUserControl editor = obj as MetroUserControl;
+                            IEditorJsonValue jvEditor = obj as IEditorJsonValue;
+                            if (editor != null && jvEditor != null)
+                            {
+                                jvEditor.Text = info.property;
+                                jvEditor.UpdateEditorValue();
+                                editor.Top = Height;
+                                editor.Width = Width - 20;
+                                editor.Left = 10;
+                                editor.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+                                Controls.Add(editor);
+                                jvEditor.EditorJsonValueChangedCallback = this;
+                                m_propertyEditors.Add(new KeyValuePair<string, IEditorJsonValue>(info.property, jvEditor));
+                                Height += editor.Height + DEFAULT_SEPARATOR;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            while (ex.InnerException != null)
+                                ex = ex.InnerException;
+                            ErrorPropertyEditor editor = new ErrorPropertyEditor(info.property, ex.Message);
+                            editor.Tag = string.Format("{0}\n{1}\n\nStack trace:\n{2}", ex.GetType().Name, ex.Message, ex.StackTrace);
+                            editor.Top = Height;
+                            editor.Width = Width - 20;
+                            editor.Left = 10;
+                            editor.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+                            Controls.Add(editor);
+                            Height += editor.Height + DEFAULT_SEPARATOR;
+                        }
+                    }
+                }
+
                 m_tagsEditor = new Tags_PropertyEditor(m_subProperties, "tags");
                 m_tagsEditor.Width = Width - 20;
                 m_tagsEditor.Top = Height;
@@ -192,6 +249,7 @@ namespace ZasuvkaPtakopyska
                 Height += m_tagsEditor.Height;
 
                 UpdateJsonValue();
+                UpdateProperties();
             }
 
             private void UpdateJsonValue()
@@ -201,6 +259,9 @@ namespace ZasuvkaPtakopyska
                 foreach (var metaEditor in m_metaEditors)
                     if (!m_subProperties.ContainsKey(metaEditor.Key))
                         return;
+                foreach (var propEditor in m_propertyEditors)
+                    if (!m_subProperties.ContainsKey(propEditor.Key))
+                        return;
 
                 string json = "{ \"id\": " + m_subProperties["id"];
                 foreach (var metaEditor in m_metaEditors)
@@ -209,10 +270,31 @@ namespace ZasuvkaPtakopyska
                 JsonValue = json;
             }
 
+            private void UpdateProperties()
+            {
+                List<string> props = new List<string>();
+                foreach (var propEditor in m_propertyEditors)
+                    if (m_subProperties.ContainsKey(propEditor.Key))
+                        props.Add("\"" + propEditor.Key + "\"");
+                string query = "{ \"getProperty\": [ { \"id\": " + m_subProperties["id"] + ", \"properties\": [ " + string.Join(", ", props) + "] } ] }";
+                var result = SceneViewPlugin.QueryAssets<Dictionary<string, string>>(m_assetType, query);
+                foreach (var item in result)
+                    foreach (var data in item)
+                        if (m_propertyEditors.Exists(e => e.Key == data.Key) && m_subProperties.ContainsKey(data.Key))
+                            m_subProperties[data.Key] = data.Value;
+                foreach (var item in m_propertyEditors)
+                    item.Value.UpdateEditorValue();
+            }
+
             private void applyButton_Click(object sender, EventArgs e)
             {
                 string freeQuery = "\"free\": [ \"" + m_lastId + "\" ], ";
-                string query = "{ " + (string.IsNullOrEmpty(m_lastId) ? "" : freeQuery) + "\"load\": [ " + JsonValue + " ] }";
+                List<string> setList = new List<string>();
+                foreach (var item in m_propertyEditors)
+                    if (m_subProperties.ContainsKey(item.Key))
+                        setList.Add(String.Format("\"{0}\": {1}", item.Key, m_subProperties[item.Key]));
+                string setQuery = "{ \"id\": \"" + m_lastId + "\", " + String.Join(", ", setList) + " }";
+                string query = "{ " + (string.IsNullOrEmpty(m_lastId) ? "" : freeQuery) + "\"load\": [ " + JsonValue + " ], \"setProperty\": [ " + setQuery + " ] }";
                 if (SceneViewPlugin.QueryAssets(m_assetType, query) != null)
                 {
                     MainForm mainForm = FindForm() as MainForm;
@@ -222,6 +304,7 @@ namespace ZasuvkaPtakopyska
                         mainForm.RefreshSceneView();
                     }
                 }
+                UpdateProperties();
             }
 
             private void removeButton_Click(object sender, EventArgs e)
@@ -320,7 +403,7 @@ namespace ZasuvkaPtakopyska
             var data = SceneViewPlugin.GetAssetsInfo(m_type, assets);
             foreach (var d in data)
                 y = AddAsset(d.id, d.meta, d.tags == null ? "" : string.Join("|", d.tags.ToArray()), projectModel, out temp, y);
-            
+
             m_addAssetButton = new MetroButton();
             MetroSkinManager.ApplyMetroStyle(m_addAssetButton);
             m_addAssetButton.Text = "Add New Asset";
@@ -342,8 +425,12 @@ namespace ZasuvkaPtakopyska
             if (m_type == SceneViewPlugin.AssetType.Texture)
             {
                 editor = new Asset_PropertyEditor(m_properties, id, m_type,
-                    new Asset_PropertyEditor.MetaEditorInfo[] {
-                        new Asset_PropertyEditor.MetaEditorInfo("path", typeof(Path_PropertyEditor))
+                    new Asset_PropertyEditor.ItemEditorInfo[]{
+                        new Asset_PropertyEditor.ItemEditorInfo("path", typeof(Path_PropertyEditor))
+                    },
+                    new Asset_PropertyEditor.ItemEditorInfo[]{
+                        new Asset_PropertyEditor.ItemEditorInfo("smooth", typeof(Bool_PropertyEditor)),
+                        new Asset_PropertyEditor.ItemEditorInfo("repeated", typeof(Bool_PropertyEditor))
                     }, id, meta, tags);
                 Path_PropertyEditor pathEditor = editor == null ? null : editor.GetMetaEditor<Path_PropertyEditor>("path");
                 if (pathEditor != null)
@@ -356,10 +443,10 @@ namespace ZasuvkaPtakopyska
             else if (m_type == SceneViewPlugin.AssetType.Shader)
             {
                 editor = new Asset_PropertyEditor(m_properties, id, m_type,
-                    new Asset_PropertyEditor.MetaEditorInfo[] {
-                        new Asset_PropertyEditor.MetaEditorInfo("vspath", typeof(Path_PropertyEditor)),
-                        new Asset_PropertyEditor.MetaEditorInfo("fspath", typeof(Path_PropertyEditor))
-                    }, id, meta, tags);
+                    new Asset_PropertyEditor.ItemEditorInfo[]{
+                        new Asset_PropertyEditor.ItemEditorInfo("vspath", typeof(Path_PropertyEditor)),
+                        new Asset_PropertyEditor.ItemEditorInfo("fspath", typeof(Path_PropertyEditor))
+                    }, null, id, meta, tags);
                 Path_PropertyEditor vspathEditor = editor == null ? null : editor.GetMetaEditor<Path_PropertyEditor>("vspath");
                 if (vspathEditor != null)
                 {
@@ -378,9 +465,9 @@ namespace ZasuvkaPtakopyska
             else if (m_type == SceneViewPlugin.AssetType.Sound)
             {
                 editor = new Asset_PropertyEditor(m_properties, id, m_type,
-                    new Asset_PropertyEditor.MetaEditorInfo[] {
-                        new Asset_PropertyEditor.MetaEditorInfo("path", typeof(Path_PropertyEditor))
-                    }, id, meta, tags);
+                    new Asset_PropertyEditor.ItemEditorInfo[]{
+                        new Asset_PropertyEditor.ItemEditorInfo("path", typeof(Path_PropertyEditor))
+                    }, null, id, meta, tags);
                 Path_PropertyEditor pathEditor = editor == null ? null : editor.GetMetaEditor<Path_PropertyEditor>("path");
                 if (pathEditor != null)
                 {
@@ -392,9 +479,9 @@ namespace ZasuvkaPtakopyska
             else if (m_type == SceneViewPlugin.AssetType.Music)
             {
                 editor = new Asset_PropertyEditor(m_properties, id, m_type,
-                    new Asset_PropertyEditor.MetaEditorInfo[] {
-                        new Asset_PropertyEditor.MetaEditorInfo("path", typeof(Path_PropertyEditor))
-                    }, id, meta, tags);
+                    new Asset_PropertyEditor.ItemEditorInfo[]{
+                        new Asset_PropertyEditor.ItemEditorInfo("path", typeof(Path_PropertyEditor))
+                    }, null, id, meta, tags);
                 Path_PropertyEditor pathEditor = editor == null ? null : editor.GetMetaEditor<Path_PropertyEditor>("path");
                 if (pathEditor != null)
                 {
@@ -406,9 +493,9 @@ namespace ZasuvkaPtakopyska
             else if (m_type == SceneViewPlugin.AssetType.Font)
             {
                 editor = new Asset_PropertyEditor(m_properties, id, m_type,
-                    new Asset_PropertyEditor.MetaEditorInfo[] {
-                        new Asset_PropertyEditor.MetaEditorInfo("path", typeof(Path_PropertyEditor))
-                    }, id, meta, tags);
+                    new Asset_PropertyEditor.ItemEditorInfo[]{
+                        new Asset_PropertyEditor.ItemEditorInfo("path", typeof(Path_PropertyEditor))
+                    }, null, id, meta, tags);
                 Path_PropertyEditor pathEditor = editor == null ? null : editor.GetMetaEditor<Path_PropertyEditor>("path");
                 if (pathEditor != null)
                 {
@@ -420,10 +507,10 @@ namespace ZasuvkaPtakopyska
             else if (m_type == SceneViewPlugin.AssetType.CustomAsset)
             {
                 editor = new Asset_PropertyEditor(m_properties, id, m_type,
-                    new Asset_PropertyEditor.MetaEditorInfo[] {
-                        new Asset_PropertyEditor.MetaEditorInfo("type", typeof(EnumPropertyEditor)),
-                        new Asset_PropertyEditor.MetaEditorInfo("path", typeof(Path_PropertyEditor))
-                    }, id, meta, tags);
+                    new Asset_PropertyEditor.ItemEditorInfo[]{
+                        new Asset_PropertyEditor.ItemEditorInfo("type", typeof(EnumPropertyEditor)),
+                        new Asset_PropertyEditor.ItemEditorInfo("path", typeof(Path_PropertyEditor))
+                    }, null, id, meta, tags);
                 EnumPropertyEditor typeEditor = editor == null ? null : editor.GetMetaEditor<EnumPropertyEditor>("type");
                 if (typeEditor != null)
                 {

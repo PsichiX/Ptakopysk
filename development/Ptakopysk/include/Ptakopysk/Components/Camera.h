@@ -2,6 +2,7 @@
 #define __PTAKOPYSK__CAMERA__
 
 #include "Component.h"
+#include "../Serialization/EnumSerializer.h"
 #include <SFML/Graphics/View.hpp>
 #include <SFML/Graphics/RenderTexture.hpp>
 
@@ -21,6 +22,20 @@ namespace Ptakopysk
         RTTI_CLASS_DECLARE( Camera );
 
     public:
+        enum GenerateRenderTextureMode
+        {
+            grtNone,
+            grtFromValue,
+            grtFromView
+        };
+
+        enum KeepAspectRatioMode
+        {
+            karNone,
+            karAxisX,
+            karAxisY
+        };
+
         Camera();
         virtual ~Camera();
 
@@ -35,8 +50,15 @@ namespace Ptakopysk
         void setZoom( float v );
         FORCEINLINE float getZoomOut() { return m_zoomInv; };
         void setZoomOut( float v );
+        FORCEINLINE KeepAspectRatioMode getKeepAspectRatioMode() { return m_keepAspectRatioMode; };
+        FORCEINLINE void setKeepAspectRatioMode( KeepAspectRatioMode v ) { m_keepAspectRatioMode = v; setSize( m_size ); };
         FORCEINLINE sf::RenderTexture* getTargetTexture() { return m_renderTexture; };
-        FORCEINLINE void setTargetTexture( sf::RenderTexture* v ) { m_renderTexture = v; };
+        FORCEINLINE void setTargetTexture( sf::RenderTexture* v ) { if( m_renderTexture != v && m_renderTextureMine ) { m_renderTextureMine = false; DELETE_OBJECT( m_renderTexture ) }; m_renderTexture = v; };
+        FORCEINLINE bool isTargetTextureMine() { return m_renderTextureMine; }
+        FORCEINLINE GenerateRenderTextureMode getGenerateRenderTextureMode() { return m_generateRenderTextureMode; };
+        FORCEINLINE void setGenerateRenderTextureMode( GenerateRenderTextureMode v ) { m_generateRenderTextureMode = v; };
+        FORCEINLINE sf::Vector2u getRenderTextureMineSize() { return m_renderTextureMineSize; };
+        FORCEINLINE void setRenderTextureMineSize( sf::Vector2u v ) { m_renderTextureMineSize = v; createRenderTexture(); };
         FORCEINLINE bool isApplyViewToRenderTexture() { return m_applyViewToRT; };
         FORCEINLINE void setApplyViewToRenderTexture( bool v ) { m_applyViewToRT = v; };
 
@@ -72,6 +94,26 @@ namespace Ptakopysk
         )
         XeCore::Common::Property< bool, Camera > ApplyViewToRenderTexture;
 
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Determines how view should keep aspect ratio relative to window." ),
+            META_ATTR_VALUE_TYPE( "@Enum:[ \"karNone\", \"karAxisX\", \"karAxisY\" ]" ),
+            META_ATTR_DEFAULT_VALUE( "\"karNone\"" )
+        )
+        XeCore::Common::Property< KeepAspectRatioMode, Camera > KeepAspectRatio;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Determines how to generate render texture." ),
+            META_ATTR_VALUE_TYPE( "@Enum:[ \"grtNone\", \"grtFromValue\", \"grtFromView\" ]" ),
+            META_ATTR_DEFAULT_VALUE( "\"grtNone\"" )
+        )
+        XeCore::Common::Property< GenerateRenderTextureMode, Camera > GenerateRenderTexture;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Size of render texture." ),
+            META_ATTR_DEFAULT_VALUE( "[0, 0]" )
+        )
+        XeCore::Common::Property< sf::Vector2u, Camera > RenderTextureSize;
+
     protected:
         virtual Json::Value onSerialize( const std::string& property );
         virtual void onDeserialize( const std::string& property, const Json::Value& root );
@@ -83,14 +125,50 @@ namespace Ptakopysk
         virtual void onRenderEditor( sf::RenderTarget* target );
 
     private:
-        static sf::RenderTexture* s_currentRT;
+        class GenerateRenderTextureModeSerializer
+        : public EnumSerializer
+        {
+        public:
+            GenerateRenderTextureModeSerializer()
+            {
+                EnumSerializer::EnumKeyValues kv;
+                kv[ "grtNone" ] = grtNone;
+                kv[ "grtFromValue" ] = grtFromValue;
+                kv[ "grtFromView" ] = grtFromView;
+                setup( kv );
+            }
+        };
 
+        class KeepAspectRatioModeSerializer
+        : public EnumSerializer
+        {
+        public:
+            KeepAspectRatioModeSerializer()
+            {
+                EnumSerializer::EnumKeyValues kv;
+                kv[ "karNone" ] = karNone;
+                kv[ "karAxisX" ] = karAxisX;
+                kv[ "karAxisY" ] = karAxisY;
+                setup( kv );
+            }
+        };
+
+        void createRenderTexture();
+
+        static sf::RenderTexture* s_currentRT;
+        static sf::RenderTarget* s_mainRT;
+
+        bool m_isReady;
         sf::View* m_view;
         sf::Vector2f m_size;
         float m_zoom;
         float m_zoomInv;
         sf::RenderTexture* m_renderTexture;
         bool m_applyViewToRT;
+        KeepAspectRatioMode m_keepAspectRatioMode;
+        GenerateRenderTextureMode m_generateRenderTextureMode;
+        bool m_renderTextureMine;
+        sf::Vector2u m_renderTextureMineSize;
     };
 
 }

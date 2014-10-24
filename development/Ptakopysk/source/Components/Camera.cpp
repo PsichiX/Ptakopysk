@@ -15,6 +15,7 @@ namespace Ptakopysk
                             )
 
     sf::RenderTexture* Camera::s_currentRT = 0;
+    sf::RenderTarget* Camera::s_mainRT = 0;
 
     Camera::Camera()
     : RTTI_CLASS_DEFINE( Camera )
@@ -25,22 +26,34 @@ namespace Ptakopysk
     , Viewport( this, &Camera::getViewport, &Camera::setViewport )
     , TargetTexture( this, &Camera::getTargetTexture, &Camera::setTargetTexture )
     , ApplyViewToRenderTexture( this, &Camera::isApplyViewToRenderTexture, &Camera::setApplyViewToRenderTexture )
+    , KeepAspectRatio( this, &Camera::getKeepAspectRatioMode, &Camera::setKeepAspectRatioMode )
+    , GenerateRenderTexture( this, &Camera::getGenerateRenderTextureMode, &Camera::setGenerateRenderTextureMode )
+    , RenderTextureSize( this, &Camera::getRenderTextureMineSize, &Camera::setRenderTextureMineSize )
+    , m_isReady( false )
     , m_zoom( 1.0f )
     , m_zoomInv( 1.0f )
     , m_renderTexture( 0 )
     , m_applyViewToRT( false )
+    , m_keepAspectRatioMode( karNone )
+    , m_generateRenderTextureMode( grtNone )
+    , m_renderTextureMine( false )
     {
         serializableProperty( "Size" );
         serializableProperty( "ZoomOut" );
         serializableProperty( "Zoom" );
         serializableProperty( "Viewport" );
         serializableProperty( "ApplyViewToRenderTexture" );
+        serializableProperty( "KeepAspectRatio" );
+        serializableProperty( "GenerateRenderTexture" );
+        serializableProperty( "RenderTextureSize" );
         m_view = xnew sf::View();
     }
 
     Camera::~Camera()
     {
         DELETE_OBJECT( m_view );
+        if( m_renderTextureMine )
+            DELETE_OBJECT( m_renderTexture );
     }
 
     void Camera::setSize( sf::Vector2f v )
@@ -57,6 +70,10 @@ namespace Ptakopysk
                         v.x = (float)wnd->getSize().x;
                     if( v.y < 0.0f )
                         v.y = (float)wnd->getSize().y;
+                    if( m_keepAspectRatioMode == karAxisX )
+                        v.x = v.y * (float)wnd->getSize().x / (float)wnd->getSize().y;
+                    else if( m_keepAspectRatioMode == karAxisY )
+                        v.y = v.x * (float)wnd->getSize().y / (float)wnd->getSize().x;
                 }
             }
         }
@@ -107,6 +124,18 @@ namespace Ptakopysk
         }
         else if( property == "ApplyViewToRenderTexture" )
             return Json::Value( m_applyViewToRT );
+        else if( property == "KeepAspectRatio" )
+            return KeepAspectRatioModeSerializer().serialize( &m_keepAspectRatioMode );
+        else if( property == "RenderTextureSize" )
+        {
+            sf::Vector2u s = getRenderTextureMineSize();
+            Json::Value v;
+            v.append( Json::Value( s.x ) );
+            v.append( Json::Value( s.y ) );
+            return v;
+        }
+        else if( property == "GenerateRenderTexture" )
+            return GenerateRenderTextureModeSerializer().serialize( &m_generateRenderTextureMode );
         else
             return Component::onSerialize( property );
     }
@@ -135,6 +164,23 @@ namespace Ptakopysk
         }
         else if( property == "ApplyViewToRenderTexture" && root.isBool() )
             setApplyViewToRenderTexture( root.asBool() );
+        else if( property == "KeepAspectRatio" && root.isString() )
+        {
+            KeepAspectRatioModeSerializer().deserialize( &m_keepAspectRatioMode, root );
+            setKeepAspectRatioMode( m_keepAspectRatioMode );
+        }
+        else if( property == "RenderTextureSize" && root.isArray() && root.size() == 2 )
+        {
+            setRenderTextureMineSize( sf::Vector2u(
+                root[ 0u ].asUInt(),
+                root[ 1u ].asUInt()
+            ) );
+        }
+        else if( property == "GenerateRenderTexture" && root.isString() )
+        {
+            GenerateRenderTextureModeSerializer().deserialize( &m_generateRenderTextureMode, root );
+            createRenderTexture();
+        }
         else
             Component::onDeserialize( property, root );
     }
@@ -143,7 +189,9 @@ namespace Ptakopysk
     {
         if( !getGameObject() || getGameObject()->isPrefab() )
             return;
+        m_isReady = true;
         setSize( m_size );
+        createRenderTexture();
     }
 
     void Camera::onDuplicate( Component* dst )
@@ -159,6 +207,9 @@ namespace Ptakopysk
         c->setZoom( getZoom() );
         c->setViewport( getViewport() );
         c->setApplyViewToRenderTexture( isApplyViewToRenderTexture() );
+        c->setKeepAspectRatioMode( getKeepAspectRatioMode() );
+        c->setRenderTextureMineSize( getRenderTextureMineSize() );
+        c->setGenerateRenderTextureMode( getGenerateRenderTextureMode() );
     }
 
     void Camera::onUpdate( float dt )
@@ -179,12 +230,14 @@ namespace Ptakopysk
         {
             s_currentRT = m_renderTexture;
             target = m_renderTexture;
+            target->clear( sf::Color( 0, 0, 0, 0 ) );
             if( m_applyViewToRT )
                 target->setView( *m_view );
         }
         else
         {
             s_currentRT = 0;
+            target = s_mainRT;
             target->setView( *m_view );
         }
     }
@@ -198,6 +251,10 @@ namespace Ptakopysk
             s.x = (float)target->getSize().x;
         if( s.y < 0.0f )
             s.y = (float)target->getSize().y;
+        if( m_keepAspectRatioMode == karAxisX )
+            s.x = s.y * (float)target->getSize().x / (float)target->getSize().y;
+        else if( m_keepAspectRatioMode == karAxisX )
+            s.y = s.x * (float)target->getSize().y / (float)target->getSize().x;
         s.x *= m_zoomInv;
         s.y *= m_zoomInv;
         sf::RectangleShape rect( s );
@@ -209,6 +266,31 @@ namespace Ptakopysk
         rect.setOutlineColor( sf::Color( 255, 255, 255, 64 ) );
         rect.setOutlineThickness( 4 );
         target->draw( rect );
+    }
+
+    void Camera::createRenderTexture()
+    {
+        if( !m_isReady || m_generateRenderTextureMode == grtNone || GameManager::isEditMode() || !getGameObject() || getGameObject()->isPrefab() )
+            return;
+        sf::RenderTexture* rt = xnew sf::RenderTexture();
+        unsigned int w = m_renderTextureMineSize.x;
+        unsigned int h = m_renderTextureMineSize.y;
+        if( m_generateRenderTextureMode == grtFromView )
+        {
+            w = m_size.x;
+            h = m_size.y;
+        }
+        if( rt->create( w, h ) )
+        {
+            setTargetTexture( rt );
+            m_renderTextureMine = true;
+        }
+        else
+        {
+            setTargetTexture( 0 );
+            m_renderTextureMine = false;
+            DELETE_OBJECT( rt );
+        }
     }
 
 }

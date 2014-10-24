@@ -782,7 +782,7 @@
 	"Component.h"
 	<Box2D/Box2D.h>
 
-1409081520 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\component.h
+1413579427 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\component.h
 	<XeCore/Common/Property.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -839,7 +839,7 @@
 	"../../include/Ptakopysk/System/GameObject.h"
 	"../../include/Ptakopysk/System/GameManager.h"
 
-1409081520 source:d:\git\ptakopysk\development\ptakopysk\source\components\spriterenderer.cpp
+1413672064 source:d:\git\ptakopysk\development\ptakopysk\source\components\spriterenderer.cpp
 	"../../include/Ptakopysk/Components/SpriteRenderer.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/System/GameManager.h"
@@ -880,7 +880,7 @@
 1407743070 source:d:\git\ptakopysk\development\ptakopysk\source\serialization\serialized.cpp
 	"../../include/Ptakopysk/Serialization/Serialized.h"
 
-1410051748 source:d:\git\ptakopysk\development\ptakopysk\source\system\assets.cpp
+1413680990 source:d:\git\ptakopysk\development\ptakopysk\source\system\assets.cpp
 	"../../include/Ptakopysk/System/Assets.h"
 	"../../include/Ptakopysk/CustomAssets/SpriteAtlasAsset.h"
 	<XeCore/Common/String.h>
@@ -899,7 +899,7 @@
 	<string>
 	<list>
 
-1413237805 source:d:\git\ptakopysk\development\ptakopysk\source\system\gamemanager.cpp
+1413565051 source:d:\git\ptakopysk\development\ptakopysk\source\system\gamemanager.cpp
 	"../../include/Ptakopysk/System/GameManager.h"
 	"../../include/Ptakopysk/System/Assets.h"
 	"../../include/Ptakopysk/System/Events.h"
@@ -932,7 +932,7 @@
 	<XeCore/Common/Logger.h>
 	<sstream>
 
-1410051748 source:d:\git\ptakopysk\development\ptakopysk\source\components\camera.cpp
+1413668914 source:d:\git\ptakopysk\development\ptakopysk\source\components\camera.cpp
 	"../../include/Ptakopysk/Components/Camera.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/System/GameObject.h"
@@ -941,8 +941,9 @@
 	<SFML/Graphics/RectangleShape.hpp>
 	<SFML/Graphics/Color.hpp>
 
-1408339116 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\camera.h
+1413670251 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\camera.h
 	"Component.h"
+	"../Serialization/EnumSerializer.h"
 	<SFML/Graphics/View.hpp>
 	<SFML/Graphics/RenderTexture.hpp>
 

@@ -807,6 +807,7 @@ namespace Ptakopysk
             XWARNING( "Cannot process render without target!" );
             return;
         }
+        Camera::s_mainRT = target;
         target->setView( target->getDefaultView() );
         sf::RenderTarget*& currentTarget = target;
         for( GameObject::List::iterator it = m_gameObjects.begin(); it != m_gameObjects.end(); it++ )
@@ -814,6 +815,7 @@ namespace Ptakopysk
         target->setView( target->getDefaultView() );
         if( Camera::s_currentRT )
             Camera::s_currentRT->display();
+        Camera::s_mainRT = 0;
     }
 
     void GameManager::processRenderEditor( sf::View& view, sf::RenderTarget* target )
@@ -907,28 +909,24 @@ namespace Ptakopysk
                         if( videoMode.isMember( "width" ) )
                         {
                             Json::Value width = videoMode[ "width" ];
-                            if( width.isNumeric() && width.asUInt() > 0 )
+                            if( width.isNumeric() )
                                 vm.width = width.asUInt();
                         }
                         if( videoMode.isMember( "height" ) )
                         {
                             Json::Value height = videoMode[ "height" ];
-                            if( height.isNumeric() && height.asUInt() > 0 )
+                            if( height.isNumeric() )
                                 vm.height = height.asUInt();
                         }
                         if( videoMode.isMember( "bitsPerPixel" ) )
                         {
                             Json::Value bitsPerPixel = videoMode[ "bitsPerPixel" ];
-                            if( bitsPerPixel.isNumeric() && bitsPerPixel.asUInt() > 0 )
+                            if( bitsPerPixel.isNumeric() )
                                 vm.bitsPerPixel = bitsPerPixel.asUInt();
                         }
                     }
                     else if( videoMode.isString() && videoMode.asString() == "fullscreen" )
-                    {
-                        const std::vector< sf::VideoMode >& f = sf::VideoMode::getFullscreenModes();
-                        if( f.size() > 0 )
-                            vm = f[ 0 ];
-                    }
+                        st = sf::Style::Fullscreen;
                 }
                 if( window.isMember( "name" ) )
                 {
@@ -955,11 +953,13 @@ namespace Ptakopysk
                                 else if( item.asString() == "Close" )
                                     st |= sf::Style::Close;
                                 else if( item.asString() == "Fullscreen" )
-                                    st |= sf::Style::Fullscreen;
+                                    st = sf::Style::Fullscreen;
                             }
                         }
                     }
                 }
+                if( st == sf::Style::Fullscreen || !vm.isValid() )
+                    vm = sf::VideoMode::getDesktopMode();
                 m_renderWindow = xnew sf::RenderWindow( vm, nm, st );
             }
             if( config.isMember( "lifeCycle" ) )

@@ -1327,6 +1327,7 @@ Json::Value SceneViewInterface::queryAssets( AssetType type, const Json::Value& 
                 item = get[ i ];
                 if( item.isString() )
                 {
+                    info = Json::Value::null;
                     if( type == atTexture )
                     {
                         info[ "id" ] = item.asString();
@@ -1386,6 +1387,77 @@ Json::Value SceneViewInterface::queryAssets( AssetType type, const Json::Value& 
                             for( std::vector< std::string >::iterator it = tags->begin(); it != tags->end(); it++ )
                                 info[ "tags" ].append( *it );
                         result.append( info );
+                    }
+                }
+            }
+        }
+    }
+    if( query.isMember( "getProperty" ) )
+    {
+        Json::Value getProperty = query[ "getProperty" ];
+        if( getProperty.isArray() && !getProperty.empty() )
+        {
+            Json::Value item;
+            Json::Value info;
+            Json::Value props;
+            Json::Value prop;
+            sf::Texture* texture;
+            for( unsigned int i = 0; i < getProperty.size(); i++ )
+            {
+                item = getProperty[ i ];
+                if( item.isObject() )
+                {
+                    info = Json::Value::null;
+                    if( type == atTexture && item.isMember( "id" ) && item.isMember( "properties" ) )
+                    {
+                        texture = Assets::use().getTexture( item[ "id" ].asString() );
+                        if( texture )
+                        {
+                            props = item[ "properties" ];
+                            if( props.isArray() )
+                            {
+                                info[ "id" ] = item[ "id" ];
+                                for( unsigned int j = 0; j < props.size(); j++ )
+                                {
+                                    prop = props[ j ];
+                                    if( prop.isString() )
+                                    {
+                                        if( prop == "smooth" )
+                                            info[ "smooth" ] = Json::Value( texture->isSmooth() ).toStyledString();
+                                        else if( prop == "repeated" )
+                                            info[ "repeated" ] = Json::Value( texture->isRepeated() ).toStyledString();
+                                    }
+                                }
+                                result.append( info );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    if( query.isMember( "setProperty" ) )
+    {
+        Json::Value setProperty = query[ "setProperty" ];
+        if( setProperty.isArray() && !setProperty.empty() )
+        {
+            Json::Value item;
+            sf::Texture* texture;
+            for( unsigned int i = 0; i < setProperty.size(); i++ )
+            {
+                item = setProperty[ i ];
+                if( item.isObject() )
+                {
+                    if( type == atTexture && item.isMember( "id" ) )
+                    {
+                        texture = Assets::use().getTexture( item[ "id" ].asString() );
+                        if( texture )
+                        {
+                            if( item.isMember( "smooth" ) && item[ "smooth" ].isBool() )
+                                texture->setSmooth( item[ "smooth" ].asBool() );
+                            if( item.isMember( "repeated" ) && item[ "repeated" ].isBool() )
+                                texture->setRepeated( item[ "repeated" ].asBool() );
+                        }
                     }
                 }
             }
