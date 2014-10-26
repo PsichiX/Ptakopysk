@@ -13,32 +13,32 @@
 	<json/json.h>
 	<map>
 
-1411420468 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\base.h
+1411416868 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\base.h
 	<stdarg.h>
 	<cmath>
 	<algorithm>
 
-1411420468 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\irtti.h
+1411416868 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\irtti.h
 	"Base.h"
 	"IRtti.inl"
 
-1411420468 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\irtti.inl
+1411416868 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\irtti.inl
 
-1411420468 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\memorymanager.h
+1411416868 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\memorymanager.h
 	<new>
 	"IRtti.h"
 	"Singleton.h"
 	"MemoryManager.inl"
 
-1411420468 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\singleton.h
+1411416868 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\singleton.h
 	"Singleton.inl"
 
-1411420468 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\singleton.inl
+1411416868 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\singleton.inl
 	"MemoryManager.h"
 
-1411420468 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\memorymanager.inl
+1411416868 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\memorymanager.inl
 
-1368000880 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics.hpp
+1367997280 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics.hpp
 	<SFML/Window.hpp>
 	<SFML/Graphics/BlendMode.hpp>
 	<SFML/Graphics/Color.hpp>
@@ -61,7 +61,7 @@
 	<SFML/Graphics/VertexArray.hpp>
 	<SFML/Graphics/View.hpp>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\window.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\window.hpp
 	<SFML/System.hpp>
 	<SFML/Window/Context.hpp>
 	<SFML/Window/ContextSettings.hpp>
@@ -73,7 +73,7 @@
 	<SFML/Window/Window.hpp>
 	<SFML/Window/WindowStyle.hpp>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system.hpp
 	<SFML/Config.hpp>
 	<SFML/System/Clock.hpp>
 	<SFML/System/Err.hpp>
@@ -89,65 +89,65 @@
 	<SFML/System/Vector2.hpp>
 	<SFML/System/Vector3.hpp>
 
-1374393734 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\config.hpp
+1374390134 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\config.hpp
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\clock.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\clock.hpp
 	<SFML/System/Export.hpp>
 	<SFML/System/Time.hpp>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\export.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\export.hpp
 	<SFML/Config.hpp>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\time.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\time.hpp
 	<SFML/System/Export.hpp>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\err.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\err.hpp
 	<SFML/System/Export.hpp>
 	<ostream>
 
-1368102974 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\inputstream.hpp
+1368099374 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\inputstream.hpp
 	<SFML/Config.hpp>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\lock.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\lock.hpp
 	<SFML/System/Export.hpp>
 	<SFML/System/NonCopyable.hpp>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\noncopyable.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\noncopyable.hpp
 	<SFML/System/Export.hpp>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\mutex.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\mutex.hpp
 	<SFML/System/Export.hpp>
 	<SFML/System/NonCopyable.hpp>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\sleep.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\sleep.hpp
 	<SFML/System/Export.hpp>
 	<SFML/System/Time.hpp>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\string.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\string.hpp
 	<SFML/System/Export.hpp>
 	<locale>
 	<string>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\thread.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\thread.hpp
 	<SFML/System/Export.hpp>
 	<SFML/System/NonCopyable.hpp>
 	<cstdlib>
 	<SFML/System/Thread.inl>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\thread.inl
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\thread.inl
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\threadlocal.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\threadlocal.hpp
 	<SFML/System/Export.hpp>
 	<SFML/System/NonCopyable.hpp>
 	<cstdlib>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\threadlocalptr.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\threadlocalptr.hpp
 	<SFML/System/ThreadLocal.hpp>
 	<SFML/System/ThreadLocalPtr.inl>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\threadlocalptr.inl
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\threadlocalptr.inl
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\utf.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\utf.hpp
 	<SFML/Config.hpp>
 	<algorithm>
 	<locale>
@@ -155,53 +155,53 @@
 	<cstdlib>
 	<SFML/System/Utf.inl>
 
-1372057024 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\utf.inl
+1372053424 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\utf.inl
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\vector2.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\vector2.hpp
 	<SFML/System/Vector2.inl>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\vector2.inl
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\vector2.inl
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\vector3.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\vector3.hpp
 	<SFML/System/Vector3.inl>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\vector3.inl
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\system\vector3.inl
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\window\context.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\window\context.hpp
 	<SFML/Window/Export.hpp>
 	<SFML/Window/GlResource.hpp>
 	<SFML/Window/ContextSettings.hpp>
 	<SFML/System/NonCopyable.hpp>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\window\export.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\window\export.hpp
 	<SFML/Config.hpp>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\window\glresource.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\window\glresource.hpp
 	<SFML/Window/Export.hpp>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\window\contextsettings.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\window\contextsettings.hpp
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\window\event.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\window\event.hpp
 	<SFML/Config.hpp>
 	<SFML/Window/Joystick.hpp>
 	<SFML/Window/Keyboard.hpp>
 	<SFML/Window/Mouse.hpp>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\window\joystick.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\window\joystick.hpp
 	<SFML/Window/Export.hpp>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\window\keyboard.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\window\keyboard.hpp
 	<SFML/Window/Export.hpp>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\window\mouse.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\window\mouse.hpp
 	<SFML/Window/Export.hpp>
 	<SFML/System/Vector2.hpp>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\window\videomode.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\window\videomode.hpp
 	<SFML/Window/Export.hpp>
 	<vector>
 
-1371064794 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\window\window.hpp
+1371061194 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\window\window.hpp
 	<SFML/Window/Export.hpp>
 	<SFML/Window/ContextSettings.hpp>
 	<SFML/Window/VideoMode.hpp>
@@ -213,20 +213,20 @@
 	<SFML/System/NonCopyable.hpp>
 	<SFML/System/String.hpp>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\window\windowhandle.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\window\windowhandle.hpp
 	<SFML/Config.hpp>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\window\windowstyle.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\window\windowstyle.hpp
 
-1368000880 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\blendmode.hpp
+1367997280 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\blendmode.hpp
 
-1368000880 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\color.hpp
+1367997280 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\color.hpp
 	<SFML/Graphics/Export.hpp>
 
-1368000880 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\export.hpp
+1367997280 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\export.hpp
 	<SFML/Config.hpp>
 
-1368000880 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\font.hpp
+1367997280 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\font.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Glyph.hpp>
 	<SFML/Graphics/Texture.hpp>
@@ -237,45 +237,45 @@
 	<string>
 	<vector>
 
-1368000880 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\glyph.hpp
+1367997280 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\glyph.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Rect.hpp>
 
-1368000880 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\rect.hpp
+1367997280 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\rect.hpp
 	<SFML/System/Vector2.hpp>
 	<algorithm>
 	<SFML/Graphics/Rect.inl>
 
-1368309202 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\rect.inl
+1368305602 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\rect.inl
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\texture.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\texture.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Image.hpp>
 	<SFML/Window/GlResource.hpp>
 
-1368175718 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\image.hpp
+1368172118 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\image.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Color.hpp>
 	<SFML/Graphics/Rect.hpp>
 	<string>
 	<vector>
 
-1368000880 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\renderstates.hpp
+1367997280 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\renderstates.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/BlendMode.hpp>
 	<SFML/Graphics/Transform.hpp>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\transform.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\transform.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Rect.hpp>
 	<SFML/System/Vector2.hpp>
 
-1368000880 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\rendertexture.hpp
+1367997280 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\rendertexture.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Texture.hpp>
 	<SFML/Graphics/RenderTarget.hpp>
 
-1368000880 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\rendertarget.hpp
+1367997280 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\rendertarget.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Color.hpp>
 	<SFML/Graphics/Rect.hpp>
@@ -287,27 +287,27 @@
 	<SFML/Graphics/Vertex.hpp>
 	<SFML/System/NonCopyable.hpp>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\view.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\view.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Rect.hpp>
 	<SFML/Graphics/Transform.hpp>
 	<SFML/System/Vector2.hpp>
 
-1368000880 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\primitivetype.hpp
+1367997280 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\primitivetype.hpp
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\vertex.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\vertex.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Color.hpp>
 	<SFML/System/Vector2.hpp>
 
-1368000880 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\renderwindow.hpp
+1367997280 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\renderwindow.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/RenderTarget.hpp>
 	<SFML/Graphics/Image.hpp>
 	<SFML/Window/Window.hpp>
 	<string>
 
-1371550874 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\shader.hpp
+1371547274 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\shader.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Transform.hpp>
 	<SFML/Graphics/Color.hpp>
@@ -318,22 +318,22 @@
 	<map>
 	<string>
 
-1368000880 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\shape.hpp
+1367997280 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\shape.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Drawable.hpp>
 	<SFML/Graphics/Transformable.hpp>
 	<SFML/Graphics/VertexArray.hpp>
 	<SFML/System/Vector2.hpp>
 
-1368000880 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\drawable.hpp
+1367997280 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\drawable.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/RenderStates.hpp>
 
-1368258666 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\transformable.hpp
+1368255066 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\transformable.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Transform.hpp>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\vertexarray.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\vertexarray.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Vertex.hpp>
 	<SFML/Graphics/PrimitiveType.hpp>
@@ -341,27 +341,27 @@
 	<SFML/Graphics/Drawable.hpp>
 	<vector>
 
-1368000880 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\circleshape.hpp
+1367997280 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\circleshape.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Shape.hpp>
 
-1368000880 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\rectangleshape.hpp
+1367997280 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\rectangleshape.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Shape.hpp>
 
-1368000880 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\convexshape.hpp
+1367997280 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\convexshape.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Shape.hpp>
 	<vector>
 
-1368000880 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\sprite.hpp
+1367997280 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\sprite.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Drawable.hpp>
 	<SFML/Graphics/Transformable.hpp>
 	<SFML/Graphics/Vertex.hpp>
 	<SFML/Graphics/Rect.hpp>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\text.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\graphics\text.hpp
 	<SFML/Graphics/Export.hpp>
 	<SFML/Graphics/Drawable.hpp>
 	<SFML/Graphics/Transformable.hpp>
@@ -372,7 +372,7 @@
 	<string>
 	<vector>
 
-1368000880 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\audio.hpp
+1367997280 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\audio.hpp
 	<SFML/System.hpp>
 	<SFML/Audio/Listener.hpp>
 	<SFML/Audio/Music.hpp>
@@ -382,14 +382,14 @@
 	<SFML/Audio/SoundRecorder.hpp>
 	<SFML/Audio/SoundStream.hpp>
 
-1368000880 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\audio\listener.hpp
+1367997280 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\audio\listener.hpp
 	<SFML/Audio/Export.hpp>
 	<SFML/System/Vector3.hpp>
 
-1368000880 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\audio\export.hpp
+1367997280 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\audio\export.hpp
 	<SFML/Config.hpp>
 
-1368000880 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\audio\music.hpp
+1367997280 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\audio\music.hpp
 	<SFML/Audio/Export.hpp>
 	<SFML/Audio/SoundStream.hpp>
 	<SFML/System/Mutex.hpp>
@@ -397,57 +397,57 @@
 	<string>
 	<vector>
 
-1368000880 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\audio\soundstream.hpp
+1367997280 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\audio\soundstream.hpp
 	<SFML/Audio/Export.hpp>
 	<SFML/Audio/SoundSource.hpp>
 	<SFML/System/Thread.hpp>
 	<SFML/System/Time.hpp>
 	<cstdlib>
 
-1368000880 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\audio\soundsource.hpp
+1367997280 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\audio\soundsource.hpp
 	<SFML/Audio/Export.hpp>
 	<SFML/System/Vector3.hpp>
 
-1368000880 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\audio\sound.hpp
+1367997280 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\audio\sound.hpp
 	<SFML/Audio/Export.hpp>
 	<SFML/Audio/SoundSource.hpp>
 	<SFML/System/Time.hpp>
 	<cstdlib>
 
-1368000880 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\audio\soundbuffer.hpp
+1367997280 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\audio\soundbuffer.hpp
 	<SFML/Audio/Export.hpp>
 	<SFML/System/Time.hpp>
 	<string>
 	<vector>
 	<set>
 
-1368000880 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\audio\soundbufferrecorder.hpp
+1367997280 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\audio\soundbufferrecorder.hpp
 	<SFML/Audio/Export.hpp>
 	<SFML/Audio/SoundBuffer.hpp>
 	<SFML/Audio/SoundRecorder.hpp>
 	<vector>
 
-1368000880 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\audio\soundrecorder.hpp
+1367997280 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\audio\soundrecorder.hpp
 	<SFML/Audio/Export.hpp>
 	<SFML/System/Thread.hpp>
 	<vector>
 
-1268382696 d:\git\ptakopysk\development\requirements\jsoncpp-src-0.5.0\include\json\json.h
+1268379096 d:\git\ptakopysk\development\requirements\jsoncpp-src-0.5.0\include\json\json.h
 	"autolink.h"
 	"value.h"
 	"reader.h"
 	"writer.h"
 	"features.h"
 
-1268382696 d:\git\ptakopysk\development\requirements\jsoncpp-src-0.5.0\include\json\autolink.h
+1268379096 d:\git\ptakopysk\development\requirements\jsoncpp-src-0.5.0\include\json\autolink.h
 	"config.h"
 	<cpptl/cpptl_autolink.h>
 	"autolink.h"
 
-1268382696 d:\git\ptakopysk\development\requirements\jsoncpp-src-0.5.0\include\json\config.h
+1268379096 d:\git\ptakopysk\development\requirements\jsoncpp-src-0.5.0\include\json\config.h
 	<cpptl/config.h>
 
-1268382696 d:\git\ptakopysk\development\requirements\jsoncpp-src-0.5.0\include\json\value.h
+1268379096 d:\git\ptakopysk\development\requirements\jsoncpp-src-0.5.0\include\json\value.h
 	"forwards.h"
 	<string>
 	<vector>
@@ -455,10 +455,10 @@
 	<cpptl/smallmap.h>
 	<cpptl/forwards.h>
 
-1268382696 d:\git\ptakopysk\development\requirements\jsoncpp-src-0.5.0\include\json\forwards.h
+1268379096 d:\git\ptakopysk\development\requirements\jsoncpp-src-0.5.0\include\json\forwards.h
 	"config.h"
 
-1268382696 d:\git\ptakopysk\development\requirements\jsoncpp-src-0.5.0\include\json\reader.h
+1268379096 d:\git\ptakopysk\development\requirements\jsoncpp-src-0.5.0\include\json\reader.h
 	"features.h"
 	"value.h"
 	<deque>
@@ -466,22 +466,22 @@
 	<string>
 	<iostream>
 
-1268382696 d:\git\ptakopysk\development\requirements\jsoncpp-src-0.5.0\include\json\features.h
+1268379096 d:\git\ptakopysk\development\requirements\jsoncpp-src-0.5.0\include\json\features.h
 	"forwards.h"
 
-1268382696 d:\git\ptakopysk\development\requirements\jsoncpp-src-0.5.0\include\json\writer.h
+1268379096 d:\git\ptakopysk\development\requirements\jsoncpp-src-0.5.0\include\json\writer.h
 	"value.h"
 	<vector>
 	<string>
 	<iostream>
 
-1411420468 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\string.h
+1411416868 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\string.h
 	<string>
 	"IRtti.h"
 	"MemoryManager.h"
 	"String.inl"
 
-1411420468 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\string.inl
+1411416868 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\string.inl
 	<sstream>
 
 1393667343 source:d:\git\ptakopysk\development\ptakopysk\source\body.cpp
@@ -501,11 +501,11 @@
 	<string>
 	"Serialized.h"
 
-1411420468 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\property.h
+1411416868 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\property.h
 	"Base.h"
 	"Property.inl"
 
-1411420468 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\property.inl
+1411416868 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\property.inl
 
 1393670444 d:\git\ptakopysk\development\ptakopysk\include\serialized.h
 	<XeCore/Common/IRtti.h>
@@ -517,7 +517,7 @@
 
 1393670469 d:\git\ptakopysk\development\ptakopysk\include\serialized.inl
 
-1315042740 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\box2d.h
+1315039140 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\box2d.h
 	<Box2D/Common/b2Settings.h>
 	<Box2D/Common/b2Draw.h>
 	<Box2D/Common/b2Timer.h>
@@ -546,85 +546,85 @@
 	<Box2D/Dynamics/Joints/b2RopeJoint.h>
 	<Box2D/Dynamics/Joints/b2WeldJoint.h>
 
-1315046962 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\common\b2settings.h
+1315043362 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\common\b2settings.h
 	<cassert>
 	<cmath>
 
-1301254302 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\common\b2draw.h
+1301250702 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\common\b2draw.h
 	<Box2D/Common/b2Math.h>
 
-1315104482 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\common\b2math.h
+1315100882 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\common\b2math.h
 	<Box2D/Common/b2Settings.h>
 	<cmath>
 	<cfloat>
 	<cstddef>
 	<limits>
 
-1315813596 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\common\b2timer.h
+1315809996 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\common\b2timer.h
 	<Box2D/Common/b2Settings.h>
 
-1300990620 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\collision\shapes\b2circleshape.h
+1300987020 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\collision\shapes\b2circleshape.h
 	<Box2D/Collision/Shapes/b2Shape.h>
 
-1313984994 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\collision\shapes\b2shape.h
+1313981394 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\collision\shapes\b2shape.h
 	<Box2D/Common/b2BlockAllocator.h>
 	<Box2D/Common/b2Math.h>
 	<Box2D/Collision/b2Collision.h>
 
-1300990620 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\common\b2blockallocator.h
+1300987020 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\common\b2blockallocator.h
 	<Box2D/Common/b2Settings.h>
 
-1307308962 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\collision\b2collision.h
+1307305362 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\collision\b2collision.h
 	<Box2D/Common/b2Math.h>
 	<climits>
 
-1314863588 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\collision\shapes\b2edgeshape.h
+1314859988 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\collision\shapes\b2edgeshape.h
 	<Box2D/Collision/Shapes/b2Shape.h>
 
-1314862944 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\collision\shapes\b2chainshape.h
+1314859344 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\collision\shapes\b2chainshape.h
 	<Box2D/Collision/Shapes/b2Shape.h>
 
-1300990620 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\collision\shapes\b2polygonshape.h
+1300987020 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\collision\shapes\b2polygonshape.h
 	<Box2D/Collision/Shapes/b2Shape.h>
 
-1301264604 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\collision\b2broadphase.h
+1301261004 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\collision\b2broadphase.h
 	<Box2D/Common/b2Settings.h>
 	<Box2D/Collision/b2Collision.h>
 	<Box2D/Collision/b2DynamicTree.h>
 	<algorithm>
 
-1308991590 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\collision\b2dynamictree.h
+1308987990 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\collision\b2dynamictree.h
 	<Box2D/Collision/b2Collision.h>
 	<Box2D/Common/b2GrowableStack.h>
 
-1300990620 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\common\b2growablestack.h
+1300987020 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\common\b2growablestack.h
 	<Box2D/Common/b2Settings.h>
 	<cstring>
 
-1300990620 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\collision\b2distance.h
+1300987020 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\collision\b2distance.h
 	<Box2D/Common/b2Math.h>
 
-1300990620 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\collision\b2timeofimpact.h
+1300987020 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\collision\b2timeofimpact.h
 	<Box2D/Common/b2Math.h>
 	<Box2D/Collision/b2Distance.h>
 
-1315091544 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\b2body.h
+1315087944 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\b2body.h
 	<Box2D/Common/b2Math.h>
 	<Box2D/Collision/Shapes/b2Shape.h>
 	<memory>
 
-1315075942 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\b2fixture.h
+1315072342 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\b2fixture.h
 	<Box2D/Dynamics/b2Body.h>
 	<Box2D/Collision/b2Collision.h>
 	<Box2D/Collision/Shapes/b2Shape.h>
 
-1314077202 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\b2worldcallbacks.h
+1314073602 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\b2worldcallbacks.h
 	<Box2D/Common/b2Settings.h>
 
-1315812732 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\b2timestep.h
+1315809132 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\b2timestep.h
 	<Box2D/Common/b2Math.h>
 
-1315177598 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\b2world.h
+1315173998 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\b2world.h
 	<Box2D/Common/b2Math.h>
 	<Box2D/Common/b2BlockAllocator.h>
 	<Box2D/Common/b2StackAllocator.h>
@@ -632,49 +632,49 @@
 	<Box2D/Dynamics/b2WorldCallbacks.h>
 	<Box2D/Dynamics/b2TimeStep.h>
 
-1300990620 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\common\b2stackallocator.h
+1300987020 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\common\b2stackallocator.h
 	<Box2D/Common/b2Settings.h>
 
-1300990620 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\b2contactmanager.h
+1300987020 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\b2contactmanager.h
 	<Box2D/Collision/b2BroadPhase.h>
 
-1305790420 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\contacts\b2contact.h
+1305786820 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\contacts\b2contact.h
 	<Box2D/Common/b2Math.h>
 	<Box2D/Collision/b2Collision.h>
 	<Box2D/Collision/Shapes/b2Shape.h>
 	<Box2D/Dynamics/b2Fixture.h>
 
-1315166584 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\joints\b2distancejoint.h
+1315162984 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\joints\b2distancejoint.h
 	<Box2D/Dynamics/Joints/b2Joint.h>
 
-1315178800 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\joints\b2joint.h
+1315175200 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\joints\b2joint.h
 	<Box2D/Common/b2Math.h>
 
-1315177878 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\joints\b2frictionjoint.h
+1315174278 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\joints\b2frictionjoint.h
 	<Box2D/Dynamics/Joints/b2Joint.h>
 
-1315178134 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\joints\b2gearjoint.h
+1315174534 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\joints\b2gearjoint.h
 	<Box2D/Dynamics/Joints/b2Joint.h>
 
-1315178752 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\joints\b2wheeljoint.h
+1315175152 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\joints\b2wheeljoint.h
 	<Box2D/Dynamics/Joints/b2Joint.h>
 
-1315178812 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\joints\b2mousejoint.h
+1315175212 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\joints\b2mousejoint.h
 	<Box2D/Dynamics/Joints/b2Joint.h>
 
-1315369528 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\joints\b2prismaticjoint.h
+1315365928 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\joints\b2prismaticjoint.h
 	<Box2D/Dynamics/Joints/b2Joint.h>
 
-1315178520 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\joints\b2pulleyjoint.h
+1315174920 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\joints\b2pulleyjoint.h
 	<Box2D/Dynamics/Joints/b2Joint.h>
 
-1315175974 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\joints\b2revolutejoint.h
+1315172374 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\joints\b2revolutejoint.h
 	<Box2D/Dynamics/Joints/b2Joint.h>
 
-1315197814 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\joints\b2ropejoint.h
+1315194214 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\joints\b2ropejoint.h
 	<Box2D/Dynamics/Joints/b2Joint.h>
 
-1315174264 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\joints\b2weldjoint.h
+1315170664 d:\git\ptakopysk\development\requirements\box2d_v2.2.1\box2d\dynamics\joints\b2weldjoint.h
 	<Box2D/Dynamics/Joints/b2Joint.h>
 
 1393667753 d:\git\ptakopysk\development\ptakopysk\include\gameobject.h
@@ -747,7 +747,7 @@
 	<XeCore/Common/Logger.h>
 	<sstream>
 
-1411420468 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\logger.h
+1411416868 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\logger.h
 	<cstdio>
 	"Base.h"
 	"Singleton.h"
@@ -769,7 +769,7 @@
 	"../include/GameObject.h"
 	"../include/Body.h"
 
-1409081520 source:d:\git\ptakopysk\development\ptakopysk\source\components\body.cpp
+1409077920 source:d:\git\ptakopysk\development\ptakopysk\source\components\body.cpp
 	"../../include/Ptakopysk/Components/Body.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/Components/SpriteRenderer.h"
@@ -778,11 +778,11 @@
 	"../../include/Ptakopysk/System/GameManager.h"
 	<XeCore/Common/Logger.h>
 
-1410051748 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\body.h
+1410048148 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\body.h
 	"Component.h"
 	<Box2D/Box2D.h>
 
-1413579427 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\component.h
+1413575827 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\component.h
 	<XeCore/Common/Property.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -797,7 +797,7 @@
 	"../System/Meta.h"
 	"../System/Assets.h"
 
-1407743070 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\serialized.h
+1407739470 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\serialized.h
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
 	<json/json.h>
@@ -805,9 +805,9 @@
 	<string>
 	"Serialized.inl"
 
-1394306356 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\serialized.inl
+1394302756 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\serialized.inl
 
-1409081520 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gameobject.h
+1409077920 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gameobject.h
 	<XeCore/Common/Property.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -822,7 +822,7 @@
 	"../Serialization/Serialized.h"
 	"Assets.h"
 
-1410536553 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gamemanager.h
+1410532953 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gamemanager.h
 	<XeCore/Common/Property.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -834,29 +834,29 @@
 	"GameObject.h"
 	"../Components/Component.h"
 
-1407743070 source:d:\git\ptakopysk\development\ptakopysk\source\components\component.cpp
+1407739470 source:d:\git\ptakopysk\development\ptakopysk\source\components\component.cpp
 	"../../include/Ptakopysk/Components/Component.h"
 	"../../include/Ptakopysk/System/GameObject.h"
 	"../../include/Ptakopysk/System/GameManager.h"
 
-1413672064 source:d:\git\ptakopysk\development\ptakopysk\source\components\spriterenderer.cpp
+1413668464 source:d:\git\ptakopysk\development\ptakopysk\source\components\spriterenderer.cpp
 	"../../include/Ptakopysk/Components/SpriteRenderer.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/System/GameManager.h"
 	"../../include/Ptakopysk/System/GameObject.h"
 	"../../include/Ptakopysk/System/Assets.h"
 
-1409081520 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\spriterenderer.h
+1409077920 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\spriterenderer.h
 	"Component.h"
 	<SFML/Graphics.hpp>
 	"../System/RenderMaterial.h"
 
-1410051748 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\transform.h
+1410048148 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\transform.h
 	"Component.h"
 	<SFML/System/Vector2.hpp>
 	<SFML/Graphics/Transform.hpp>
 
-1410051748 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\assets.h
+1410048148 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\assets.h
 	<XeCore/Common/Base.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -867,20 +867,20 @@
 	<map>
 	<sstream>
 
-1406480446 source:d:\git\ptakopysk\development\ptakopysk\source\components\transform.cpp
+1406476846 source:d:\git\ptakopysk\development\ptakopysk\source\components\transform.cpp
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/System/GameObject.h"
 
-1393764848 source:d:\git\ptakopysk\development\ptakopysk\source\serialization\enumserializer.cpp
+1393761248 source:d:\git\ptakopysk\development\ptakopysk\source\serialization\enumserializer.cpp
 	"../../include/Ptakopysk/Serialization/EnumSerializer.h"
 
-1393672288 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\enumserializer.h
+1393668688 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\enumserializer.h
 	"Serialized.h"
 
-1407743070 source:d:\git\ptakopysk\development\ptakopysk\source\serialization\serialized.cpp
+1407739470 source:d:\git\ptakopysk\development\ptakopysk\source\serialization\serialized.cpp
 	"../../include/Ptakopysk/Serialization/Serialized.h"
 
-1413680990 source:d:\git\ptakopysk\development\ptakopysk\source\system\assets.cpp
+1413677390 source:d:\git\ptakopysk\development\ptakopysk\source\system\assets.cpp
 	"../../include/Ptakopysk/System/Assets.h"
 	"../../include/Ptakopysk/CustomAssets/SpriteAtlasAsset.h"
 	<XeCore/Common/String.h>
@@ -888,10 +888,10 @@
 	<BinaryJson/BinaryJson.h>
 	<fstream>
 
-1393677926 source:d:\git\ptakopysk\development\ptakopysk\source\system\events.cpp
+1393674326 source:d:\git\ptakopysk\development\ptakopysk\source\system\events.cpp
 	"../../include/Ptakopysk/System/Events.h"
 
-1393672758 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\events.h
+1393669158 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\events.h
 	<XeCore/Common/Base.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -899,7 +899,7 @@
 	<string>
 	<list>
 
-1413565051 source:d:\git\ptakopysk\development\ptakopysk\source\system\gamemanager.cpp
+1413561451 source:d:\git\ptakopysk\development\ptakopysk\source\system\gamemanager.cpp
 	"../../include/Ptakopysk/System/GameManager.h"
 	"../../include/Ptakopysk/System/Assets.h"
 	"../../include/Ptakopysk/System/Events.h"
@@ -921,18 +921,18 @@
 	<XeCore/Common/Timer.h>
 	<Box2D/Box2D.h>
 
-1393673982 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\b2bodytypeserializer.h
+1393670382 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\b2bodytypeserializer.h
 	"EnumSerializer.h"
 	<Box2D/Box2D.h>
 
-1413417178 source:d:\git\ptakopysk\development\ptakopysk\source\system\gameobject.cpp
+1413413578 source:d:\git\ptakopysk\development\ptakopysk\source\system\gameobject.cpp
 	"../../include/Ptakopysk/System/GameObject.h"
 	"../../include/Ptakopysk/System/GameManager.h"
 	"../../include/Ptakopysk/Components/Component.h"
 	<XeCore/Common/Logger.h>
 	<sstream>
 
-1413668914 source:d:\git\ptakopysk\development\ptakopysk\source\components\camera.cpp
+1414255038 source:d:\git\ptakopysk\development\ptakopysk\source\components\camera.cpp
 	"../../include/Ptakopysk/Components/Camera.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/System/GameObject.h"
@@ -941,42 +941,42 @@
 	<SFML/Graphics/RectangleShape.hpp>
 	<SFML/Graphics/Color.hpp>
 
-1413670251 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\camera.h
+1414201566 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\camera.h
 	"Component.h"
 	"../Serialization/EnumSerializer.h"
 	<SFML/Graphics/View.hpp>
 	<SFML/Graphics/RenderTexture.hpp>
 
-1410242218 source:d:\git\ptakopysk\development\ptakopysk\source\components\textrenderer.cpp
+1410238618 source:d:\git\ptakopysk\development\ptakopysk\source\components\textrenderer.cpp
 	"../../include/Ptakopysk/Components/TextRenderer.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/System/GameObject.h"
 	"../../include/Ptakopysk/System/Assets.h"
 
-1410762077 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\textrenderer.h
+1410758477 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\textrenderer.h
 	"Component.h"
 	<SFML/Graphics.hpp>
 	"../System/RenderMaterial.h"
 
-1393767318 source:d:\git\ptakopysk\development\ptakopysk\source\serialization\bitfieldserializer.cpp
+1393763718 source:d:\git\ptakopysk\development\ptakopysk\source\serialization\bitfieldserializer.cpp
 	"../../include/Ptakopysk/Serialization/BitFieldSerializer.h"
 
-1393764546 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\bitfieldserializer.h
+1393760946 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\bitfieldserializer.h
 	"Serialized.h"
 
-1393762794 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\blendmodeserializer.h
+1393759194 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\blendmodeserializer.h
 	"EnumSerializer.h"
 	<SFML/Graphics/BlendMode.hpp>
 
-1393765310 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\styleserializer.h
+1393761710 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\styleserializer.h
 	"BitFieldSerializer.h"
 	<SFML/Graphics/Text.hpp>
 
-1400485880 source:d:\git\ptakopysk\development\ptakopysk\source\system\tween.cpp
+1400482280 source:d:\git\ptakopysk\development\ptakopysk\source\system\tween.cpp
 	"../../include/Ptakopysk/System/Tween.h"
 	<algorithm>
 
-1400485880 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\tween.h
+1400482280 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\tween.h
 	<XeCore/Common/Base.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -987,18 +987,18 @@
 	<vector>
 	"Tween.inl"
 
-1394503886 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\math.h
+1394500286 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\math.h
 	<XeCore/Common/Base.h>
 	<SFML/System/Vector2.hpp>
 	<SFML/System/Vector3.hpp>
 	"Math.inl"
 
-1394503886 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\math.inl
+1394500286 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\math.inl
 
-1396217026 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\tween.inl
+1396213426 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\tween.inl
 	<XeCore/Common/Base.h>
 
-1400721986 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\rendermaterial.h
+1400718386 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\rendermaterial.h
 	<XeCore/Common/Base.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -1013,22 +1013,22 @@
 	<map>
 	<vector>
 
-1400721986 source:d:\git\ptakopysk\development\ptakopysk\source\system\rendermaterial.cpp
+1400718386 source:d:\git\ptakopysk\development\ptakopysk\source\system\rendermaterial.cpp
 	"../../include/Ptakopysk/System/RenderMaterial.h"
 	"../../include/Ptakopysk/System/Assets.h"
 
-1400485880 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\transformmodeserializer.h
+1400482280 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\transformmodeserializer.h
 	"EnumSerializer.h"
 	"../Components/Transform.h"
 
-1400721986 source:d:\git\ptakopysk\development\ptakopysk\source\components\revolutejoint.cpp
+1400718386 source:d:\git\ptakopysk\development\ptakopysk\source\components\revolutejoint.cpp
 	"../../include/Ptakopysk/Components/RevoluteJoint.h"
 	"../../include/Ptakopysk/Components/Body.h"
 	"../../include/Ptakopysk/System/GameObject.h"
 	"../../include/Ptakopysk/System/GameManager.h"
 	<XeCore/Common/Logger.h>
 
-1405988162 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\revolutejoint.h
+1405984562 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\revolutejoint.h
 	"Component.h"
 	<Box2D/Box2D.h>
 
@@ -1039,56 +1039,56 @@
 	<XeCore/Common/Buffer.h>
 	<json/json.h>
 
-1411420468 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\buffer.h
+1411416868 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\buffer.h
 	"Base.h"
 	"Buffer.inl"
 
-1411420468 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\buffer.inl
+1411416868 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\buffer.inl
 	<cstring>
 	<algorithm>
 	"MemoryManager.h"
 
-1400485880 d:\git\ptakopysk\development\requirements\binaryjson\include\binaryjson\binaryjson.h
+1400482280 d:\git\ptakopysk\development\requirements\binaryjson\include\binaryjson\binaryjson.h
 	<XeCore/Common/Buffer.h>
 	<json/json.h>
 
-1400485880 source:d:\git\ptakopysk\development\ptakopysk\source\serialization\b2filterserializer.cpp
+1400482280 source:d:\git\ptakopysk\development\ptakopysk\source\serialization\b2filterserializer.cpp
 	"../../include/Ptakopysk/Serialization/b2FilterSerializer.h"
 
-1400485880 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\b2filterserializer.h
+1400482280 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\serialization\b2filterserializer.h
 	"Serialized.h"
 	<Box2D/Box2D.h>
 
 1400482278 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\gameobject.inl
 	"../Components/Component.h"
 
-1411419038 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\meta.h
+1411415438 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\meta.h
 
-1410051748 source:d:\git\ptakopysk\development\ptakopysk\source\components\spriteatlas.cpp
+1410048148 source:d:\git\ptakopysk\development\ptakopysk\source\components\spriteatlas.cpp
 	"../../include/Ptakopysk/Components/SpriteAtlas.h"
 	"../../include/Ptakopysk/System/GameObject.h"
 	"../../include/Ptakopysk/Components/SpriteRenderer.h"
 
-1410051748 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\spriteatlas.h
+1410048148 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\spriteatlas.h
 	"Component.h"
 	"../CustomAssets/SpriteAtlasAsset.h"
 
-1410051748 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\customassets\spriteatlasasset.h
+1410048148 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\customassets\spriteatlasasset.h
 	"../System/Assets.h"
 	"../Components/SpriteRenderer.h"
 	<SFML/Graphics/Rect.hpp>
 	<map>
 
-1410051748 source:d:\git\ptakopysk\development\ptakopysk\source\customassets\spriteatlasasset.cpp
+1410048148 source:d:\git\ptakopysk\development\ptakopysk\source\customassets\spriteatlasasset.cpp
 	"../../include/Ptakopysk/CustomAssets/SpriteAtlasAsset.h"
 	<sstream>
 
-1411420468 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\concurrent\thread.h
+1411416868 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\concurrent\thread.h
 	"TinyThreads/tinythread.h"
 	"Synchronized.h"
 	"Runnable.h"
 
-1411420468 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\concurrent\tinythreads\tinythread.h
+1411416868 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\concurrent\tinythreads\tinythread.h
 	<windows.h>
 	<pthread.h>
 	<signal.h>
@@ -1096,23 +1096,23 @@
 	<unistd.h>
 	<ostream>
 
-1411420468 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\concurrent\synchronized.h
+1411416868 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\concurrent\synchronized.h
 	"TinyThreads/tinythread.h"
 	"../MemoryManager.h"
 
-1411420468 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\concurrent\runnable.h
+1411416868 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\concurrent\runnable.h
 	"../MemoryManager.h"
 
-1411420468 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\timer.h
+1411416868 d:\git\ptakopysk\development\requirements\xenon-core-3-sdk\code\engine\xenoncore3\include\xecore\common\timer.h
 	<ctime>
 	"IRtti.h"
 	"MemoryManager.h"
 
-1410541571 source:d:\git\ptakopysk\development\ptakopysk\source\system\network.cpp
+1410537971 source:d:\git\ptakopysk\development\ptakopysk\source\system\network.cpp
 	"../../include/Ptakopysk/System/Network.h"
 	<sstream>
 
-1410541561 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\network.h
+1410537961 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\network.h
 	<XeCore/Common/Base.h>
 	<XeCore/Common/IRtti.h>
 	<XeCore/Common/MemoryManager.h>
@@ -1125,36 +1125,36 @@
 	<map>
 	<list>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\network\tcplistener.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\network\tcplistener.hpp
 	<SFML/Network/Export.hpp>
 	<SFML/Network/Socket.hpp>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\network\export.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\network\export.hpp
 	<SFML/Config.hpp>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\network\socket.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\network\socket.hpp
 	<SFML/Network/Export.hpp>
 	<SFML/Network/SocketHandle.hpp>
 	<SFML/System/NonCopyable.hpp>
 	<vector>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\network\sockethandle.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\network\sockethandle.hpp
 	<SFML/Config.hpp>
 	<basetsd.h>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\network\tcpsocket.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\network\tcpsocket.hpp
 	<SFML/Network/Export.hpp>
 	<SFML/Network/Socket.hpp>
 	<SFML/System/Time.hpp>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\network\ipaddress.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\network\ipaddress.hpp
 	<SFML/Network/Export.hpp>
 	<SFML/System/Time.hpp>
 	<istream>
 	<ostream>
 	<string>
 
-1368000882 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\network\packet.hpp
+1367997282 d:\git\ptakopysk\development\requirements\sfml-2.1\include\sfml\network\packet.hpp
 	<SFML/Network/Export.hpp>
 	<string>
 	<vector>

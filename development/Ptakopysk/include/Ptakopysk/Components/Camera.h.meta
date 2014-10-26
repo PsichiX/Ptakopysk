@@ -55,6 +55,12 @@
       "Description": "Size of render texture.",
       "ValueType": "sf::Vector2u",
       "DefaultValue": "[0, 0]"
+    },
+    {
+      "Name": "RenderTextureSizePower",
+      "Description": "Power of render texture size.",
+      "ValueType": "int",
+      "DefaultValue": "0"
     }
   ],
   "FunctionalityTriggers": []

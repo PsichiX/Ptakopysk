@@ -29,6 +29,7 @@ namespace Ptakopysk
     , KeepAspectRatio( this, &Camera::getKeepAspectRatioMode, &Camera::setKeepAspectRatioMode )
     , GenerateRenderTexture( this, &Camera::getGenerateRenderTextureMode, &Camera::setGenerateRenderTextureMode )
     , RenderTextureSize( this, &Camera::getRenderTextureMineSize, &Camera::setRenderTextureMineSize )
+    , RenderTextureSizePower( this, &Camera::getRenderTextureSizePower, &Camera::setRenderTextureSizePower )
     , m_isReady( false )
     , m_zoom( 1.0f )
     , m_zoomInv( 1.0f )
@@ -37,6 +38,7 @@ namespace Ptakopysk
     , m_keepAspectRatioMode( karNone )
     , m_generateRenderTextureMode( grtNone )
     , m_renderTextureMine( false )
+    , m_renderTextureSizePower( 0 )
     {
         serializableProperty( "Size" );
         serializableProperty( "ZoomOut" );
@@ -46,6 +48,7 @@ namespace Ptakopysk
         serializableProperty( "KeepAspectRatio" );
         serializableProperty( "GenerateRenderTexture" );
         serializableProperty( "RenderTextureSize" );
+        serializableProperty( "RenderTextureSizePower" );
         m_view = xnew sf::View();
     }
 
@@ -134,6 +137,8 @@ namespace Ptakopysk
             v.append( Json::Value( s.y ) );
             return v;
         }
+        else if( property == "RenderTextureSizePower" )
+            return Json::Value( m_renderTextureSizePower );
         else if( property == "GenerateRenderTexture" )
             return GenerateRenderTextureModeSerializer().serialize( &m_generateRenderTextureMode );
         else
@@ -176,6 +181,8 @@ namespace Ptakopysk
                 root[ 1u ].asUInt()
             ) );
         }
+        else if( property == "RenderTextureSizePower" && root.isNumeric() )
+            setRenderTextureSizePower( root.asInt() );
         else if( property == "GenerateRenderTexture" && root.isString() )
         {
             GenerateRenderTextureModeSerializer().deserialize( &m_generateRenderTextureMode, root );
@@ -279,6 +286,17 @@ namespace Ptakopysk
         {
             w = m_size.x;
             h = m_size.y;
+        }
+        int p = abs( m_renderTextureSizePower );
+        if( m_renderTextureSizePower >= 0 )
+        {
+            w = w << p;
+            h = h << p;
+        }
+        else
+        {
+            w = w >> p;
+            h = h >> p;
         }
         if( rt->create( w, h ) )
         {

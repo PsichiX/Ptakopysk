@@ -61,6 +61,8 @@ namespace Ptakopysk
         FORCEINLINE void setRenderTextureMineSize( sf::Vector2u v ) { m_renderTextureMineSize = v; createRenderTexture(); };
         FORCEINLINE bool isApplyViewToRenderTexture() { return m_applyViewToRT; };
         FORCEINLINE void setApplyViewToRenderTexture( bool v ) { m_applyViewToRT = v; };
+        FORCEINLINE int getRenderTextureSizePower() { return m_renderTextureSizePower; };
+        FORCEINLINE void setRenderTextureSizePower( int v ) { m_renderTextureSizePower = v; };
 
         META_PROPERTY(
             META_ATTR_DESCRIPTION( "Size of view in world-space." ),
@@ -113,6 +115,12 @@ namespace Ptakopysk
             META_ATTR_DEFAULT_VALUE( "[0, 0]" )
         )
         XeCore::Common::Property< sf::Vector2u, Camera > RenderTextureSize;
+
+        META_PROPERTY(
+            META_ATTR_DESCRIPTION( "Power of render texture size." ),
+            META_ATTR_DEFAULT_VALUE( "0" )
+        )
+        XeCore::Common::Property< int, Camera > RenderTextureSizePower;
 
     protected:
         virtual Json::Value onSerialize( const std::string& property );
@@ -169,6 +177,7 @@ namespace Ptakopysk
         GenerateRenderTextureMode m_generateRenderTextureMode;
         bool m_renderTextureMine;
         sf::Vector2u m_renderTextureMineSize;
+        int m_renderTextureSizePower;
     };
 
 }
