@@ -501,14 +501,18 @@ namespace Ptakopysk
 
     void GameManager::removeScene( SceneContentType contentFlags )
     {
-        if( contentFlags & GameManager::Assets )
-            Assets::use().freeAll();
         if( contentFlags & GameManager::PrefabGameObjects )
             removeAllGameObjects( true );
         if( contentFlags & GameManager::GameObjects )
+        {
+            processAdding();
             removeAllGameObjects( false );
+            processRemoving();
+        }
         if( contentFlags & GameManager::PhysicsSettings )
             m_filters.clear();
+        if( contentFlags & GameManager::Assets )
+            Assets::use().freeAll();
     }
 
     void GameManager::addGameObject( GameObject* go, bool prefab )
@@ -771,7 +775,7 @@ namespace Ptakopysk
     {
         if( m_sceneToRun.empty() )
             return;
-        removeScene();
+        removeScene( All );
         Json::Value scene = Assets::loadJson( m_sceneToRun );
         jsonToScene( scene );
         m_sceneToRun.clear();
@@ -958,7 +962,7 @@ namespace Ptakopysk
                         }
                     }
                 }
-                if( st == sf::Style::Fullscreen || !vm.isValid() )
+                if( st == sf::Style::Fullscreen && !vm.isValid() )
                     vm = sf::VideoMode::getDesktopMode();
                 m_renderWindow = xnew sf::RenderWindow( vm, nm, st );
             }

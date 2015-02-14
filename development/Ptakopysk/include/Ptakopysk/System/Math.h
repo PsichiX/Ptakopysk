@@ -41,11 +41,11 @@ namespace Ptakopysk
         FORCEINLINE float dot( const sf::Vector3f& a, const sf::Vector3f& b );
         FORCEINLINE sf::Vector3f cross( const sf::Vector3f& a, const sf::Vector3f& b );
 
-        // Easing parameters:
-        // t - current time;
-        // b - start value;
-        // c - end value;
-        // d - time duration.
+        /// Easing parameters:
+        /// t - current time;
+        /// b - start value;
+        /// c - end value;
+        /// d - time duration.
         namespace Easing
         {
 

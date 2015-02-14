@@ -899,7 +899,7 @@
 	<string>
 	<list>
 
-1413561451 source:d:\git\ptakopysk\development\ptakopysk\source\system\gamemanager.cpp
+1414631315 source:d:\git\ptakopysk\development\ptakopysk\source\system\gamemanager.cpp
 	"../../include/Ptakopysk/System/GameManager.h"
 	"../../include/Ptakopysk/System/Assets.h"
 	"../../include/Ptakopysk/System/Events.h"
@@ -947,13 +947,13 @@
 	<SFML/Graphics/View.hpp>
 	<SFML/Graphics/RenderTexture.hpp>
 
-1410238618 source:d:\git\ptakopysk\development\ptakopysk\source\components\textrenderer.cpp
+1414915049 source:d:\git\ptakopysk\development\ptakopysk\source\components\textrenderer.cpp
 	"../../include/Ptakopysk/Components/TextRenderer.h"
 	"../../include/Ptakopysk/Components/Transform.h"
 	"../../include/Ptakopysk/System/GameObject.h"
 	"../../include/Ptakopysk/System/Assets.h"
 
-1410758477 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\textrenderer.h
+1414913940 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\components\textrenderer.h
 	"Component.h"
 	<SFML/Graphics.hpp>
 	"../System/RenderMaterial.h"
@@ -987,7 +987,7 @@
 	<vector>
 	"Tween.inl"
 
-1394500286 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\math.h
+1415049210 d:\git\ptakopysk\development\ptakopysk\include\ptakopysk\system\math.h
 	<XeCore/Common/Base.h>
 	<SFML/System/Vector2.hpp>
 	<SFML/System/Vector3.hpp>

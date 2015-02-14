@@ -63,7 +63,7 @@ namespace Ptakopysk
     Json::Value TextRenderer::onSerialize( const std::string& property )
     {
         if( property == "Text" )
-            return Json::Value( getText() );
+            return Json::Value( escapedString( getText() ) );
         else if( property == "Font" )
             return Json::Value( Assets::use().findFont( getFont() ) );
         else if( property == "Size" )
@@ -122,7 +122,7 @@ namespace Ptakopysk
     void TextRenderer::onDeserialize( const std::string& property, const Json::Value& root )
     {
         if( property == "Text" && root.isString() )
-            setText( root.asString() );
+            setText( unescapedString( root.asString() ) );
         else if( property == "Font" && root.isString() )
             setFont( Assets::use().getFont( root.asString() ) );
         else if( property == "Size" && root.isNumeric() )
@@ -242,6 +242,60 @@ namespace Ptakopysk
     {
         sf::Vector2f p = m_renderStates.transform.getInverse().transformPoint( worldPos );
         return m_text->getGlobalBounds().contains( p );
+    }
+
+    std::string TextRenderer::escapedString( std::string v )
+    {
+        std::stringstream ss;
+        for( std::string::iterator it = v.begin(); it != v.end(); it++ )
+        {
+            switch( *it )
+            {
+                case '\\': ss << "\\\\"; break;
+                case '/': ss << "\\/"; break;
+                case '"': ss << "\\\""; break;
+                case '\b': ss << "\\b"; break;
+                case '\f': ss << "\\f"; break;
+                case '\r': ss << "\\r"; break;
+                case '\n': ss << "\\n"; break;
+                case '\t': ss << "\\t"; break;
+                default: ss << *it; break;
+            }
+        }
+        return ss.str();
+    }
+
+    std::string TextRenderer::unescapedString( std::string v )
+    {
+        bool escaped = false;
+        std::stringstream ss;
+        for( std::string::iterator it = v.begin(); it != v.end(); it++ )
+        {
+            if( escaped )
+            {
+                switch( *it )
+                {
+                    case '\\': ss << '\\'; break;
+                    case '/': ss << '/'; break;
+                    case '"': ss << '\"'; break;
+                    case 'b': ss << '\b'; break;
+                    case 'f': ss << '\f'; break;
+                    case 'r': ss << '\r'; break;
+                    case 'n': ss << '\n'; break;
+                    case 't': ss << '\t'; break;
+                    default: ss << *it; break;
+                }
+                escaped = false;
+            }
+            else
+            {
+                if( *it == '\\' )
+                    escaped = true;
+                else
+                    ss << *it;
+            }
+        }
+        return ss.str();
     }
 
 }

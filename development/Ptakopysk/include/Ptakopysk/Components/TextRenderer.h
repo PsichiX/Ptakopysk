@@ -119,6 +119,9 @@ namespace Ptakopysk
         virtual bool onCheckContainsPoint( const sf::Vector2f& worldPos );
 
     private:
+        std::string escapedString( std::string v );
+        std::string unescapedString( std::string v );
+
         sf::Text* m_text;
         sf::RenderStates m_renderStates;
         RenderMaterial m_material;
