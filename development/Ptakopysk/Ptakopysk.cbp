@@ -6,7 +6,7 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="Debug Static">
+			<Target title="Debug">
 				<Option output="bin/Ptakopysk-d" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="obj/Debug/" />
@@ -29,7 +29,7 @@
 					<Add library="..\requirements\SFML-2.1\lib\libsfml-system-s-d.a" />
 				</Linker>
 			</Target>
-			<Target title="Release Static">
+			<Target title="Release">
 				<Option output="bin/Ptakopysk" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="obj/Release/" />
